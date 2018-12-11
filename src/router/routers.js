@@ -895,7 +895,7 @@ export default [
             icon: 'md-trending-up',
             title: '业务线设置'
           },
-          component: () => import('@/view/components/count-to/count-to.vue')
+          component: () => import('@/view/components/system/business.vue')
         },
         {
           path: 'system_organization',
@@ -904,7 +904,7 @@ export default [
             icon: 'ios-infinite',
             title: '组织结构'
           },
-          component: () => import('@/view/components/drag-list/drag-list.vue')
+          component: () => import('@/view/components/system/organization.vue')
         },
         {
           path: 'system_position',
@@ -913,7 +913,7 @@ export default [
             icon: 'md-git-branch',
             title: '职位'
           },
-          component: () => import('@/view/components/tree-table/index.vue')
+          component: () => import('@/view/components/system/position.vue')
         },
         {
           path: 'system_role',
@@ -922,7 +922,7 @@ export default [
             icon: 'md-crop',
             title: '系统角色'
           },
-          component: () => import('@/view/components/cropper/cropper.vue')
+          component: () => import('@/view/components/system/role.vue')
         },
         {
           path: 'system_PersonnelManagement',
@@ -931,7 +931,7 @@ export default [
             icon: 'md-grid',
             title: '人员管理'
           },
-          component: () => import('@/view/components/tables/tables.vue')
+          component: () => import('@/view/components/system/PersonnelManagement.vue')
         },
         {
           path: 'system_parameter',
@@ -940,7 +940,7 @@ export default [
             icon: 'md-crop',
             title: '系统参数'
           },
-          component: () => import('@/view/components/cropper/cropper.vue')
+          component: () => import('@/view/components/system/parameter.vue')
         },
         {
           path: 'system_journal',
@@ -949,7 +949,7 @@ export default [
             icon: 'md-grid',
             title: '系统日志'
           },
-          component: () => import('@/view/components/tables/tables.vue')
+          component: () => import('@/view/components/system/journal.vue')
         }
       ]
   },
