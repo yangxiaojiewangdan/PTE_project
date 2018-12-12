@@ -3,7 +3,7 @@
 		<Button type="success" long>PersonnelManagement人员管理</Button>
 		<div class="demo-split">
         <Split v-model="split1">
-            <div slot="left" class="demo-split-pane"  >
+            <div slot="left" class="demo-split-pane" >
                		 左面
             </div>
             <div slot="right" class="demo-split-pane">
