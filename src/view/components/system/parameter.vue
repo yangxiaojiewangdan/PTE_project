@@ -156,7 +156,7 @@
     }
     .ivu-drawer {
         width: 40%!important;
-        height: 650px;
+        height: 750px;
         position: relative;
         top: 5%;
         left: 30%;
