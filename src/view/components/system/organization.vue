@@ -2,7 +2,7 @@
 	<div id="PersonnelManagement">
         <Row >
             <Col span="24" style="height:100px;">
-                <h1 class="header">部门用户设置</h1>
+                <h1 class="header">组织结构设置</h1>
             </Col>
         </Row>
         <Row class="content">
@@ -18,7 +18,7 @@
             </Col>
             <Col span="18" style="height:750px;">
                 <Col span="24" style="height:40px;">
-                    <h2 class="content_left">用户列表</h2>
+                    <h2 class="content_left">部门列表</h2>
                 </Col>
                  <Col span="24">
                     <!-- 表格上面的功能 -->
@@ -53,55 +53,77 @@
             </Modal>
         <!-- 删除信息弹出框 end-->
         <!-- 添加信息 弹出框-->
-            <Modal v-model="AddDepartment" width="700" title="添加部门信息">
-               
+            <Modal v-model="AddDepartment" width="600" title="添加部门信息">
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                    <FormItem label="部门代码" prop="Code">
-                        <Input v-model="formValidate.Code" placeholder="请输入"></Input>
-                    </FormItem>
-                    <FormItem label="部门名称" prop="Description">
-                        <Input v-model="formValidate.Description" placeholder="请输入"></Input>
-                    </FormItem>
-                    <FormItem label="部门描述" prop="LongDescription">
-                        <Input v-model="formValidate.LongDescription" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入"></Input>
-                    </FormItem>
-                    <FormItem label="主管姓名" prop="Supervisor">
-                        <Select v-model="formValidate.Supervisor" style="width:400px" placeholder="请选择">
-                            <OptionGroup label="Hot Cities">
-                                <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                            </OptionGroup>
-                            <OptionGroup label="Other Cities">
-                                <Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                            </OptionGroup>
-                        </Select>
-                    </FormItem>
-                    <FormItem label="启用" prop="Enabled" >
-                        <i-switch v-model="formValidate.Enabled" size="large" >
-                            <span slot="open">On</span>
-                            <span slot="close">Off</span>
-                        </i-switch>
-                    </FormItem>
-                    <FormItem label="排序码" prop="SortKey">
-                        <Input v-model="formValidate.SortKey" placeholder="请输入"></Input>
-                    </FormItem>
+                    <Row>
+                        <Col span="24">
+                            <FormItem label="部门代码" prop="Code" >
+                                <Input v-model="formValidate.Code" placeholder="请输入" style="width:460px"></Input>
+                            </FormItem>
+                        </Col>
+                        <Col span="24">
+                            <FormItem label="部门名称" prop="Description">
+                                <Input v-model="formValidate.Description" placeholder="请输入" style="width:460px"></Input>
+                            </FormItem>
+                        </Col>
+                        <Col span="24">
+                            <FormItem label="部门描述" prop="LongDescription">
+                                <Input v-model="formValidate.LongDescription" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
+                            </FormItem>
+                        </Col>
+                        <Col span="24">
+                            <FormItem label="主管姓名" prop="Supervisor">
+                                <Select v-model="formValidate.Supervisor" style="width:460px" placeholder="请选择">
+                                    <OptionGroup label="Hot Cities">
+                                        <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                    </OptionGroup>
+                                    <OptionGroup label="Other Cities">
+                                        <Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                                    </OptionGroup>
+                                </Select>
+                            </FormItem>
+                        </Col>
+                        <Col span="24">
+                            <Col span="15">
+                                <FormItem label="排序码" prop="SortKey">
+                                    <Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:200px"></Input>
+                                </FormItem>
+                            </Col>
+                            <Col span="9">
+                                <FormItem label="启用" prop="Enabled" >
+                                    <i-switch v-model="formValidate.Enabled" size="large" >
+                                        <span slot="open">On</span>
+                                        <span slot="close">Off</span>
+                                    </i-switch>
+                                </FormItem>
+                            </Col>
+                        </Col>
+                    </Row>
                 </Form>
                 <div  slot="footer">
-                    <div style="margin-left: 20px;float: left;">
-                        <span>创建人:闫子健</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>创建时间:2018/12/12 10：28：00</span><br>
-                        <span>更新人:闫子健</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>更新时间:2018/12/12 10：28：00</span>
+                    <div class="footer_left">
+                        <div class="footer_left1">
+                            <div><span>创建人:闫子健</span></div>
+                            <div><span>更新人:闫子健</span></div>
+                        </div>
+                        <div class="footer_left2">
+                            <div><span>创建时间:2018/12/13/ 13:00:00</span></div>
+                            <div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+                        </div>
                     </div>
+                    <button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
+                        <span>取消</span>
+                    </button>
                     <button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('formValidate');">
                         <span>确定</span>
                     </button> 
-                    <button type="error" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
-                        <span>取消</span>
-                    </button>
                 </div>
             </Modal>
         <!-- 添加信息 弹出框 end-->
     </div>
 </template>
 <script>
+import modalStyle from '../modalStyle/modalStyle.css'
     export default {
         data () {
             return {
@@ -175,7 +197,7 @@
                     columns4: [
                         {
                             type: 'selection',
-                            width: 60,
+                            width: 50,
                             align: 'center',
                             fixed: 'left'
                         },
@@ -398,9 +420,7 @@
                         Enabled: true,
                         Code: '',
                         Description: '',
-                        LongDescription: '',
                         Supervisor: '',
-                        SortKey: '',
                     },
                     ruleValidate: {
                         Code: [
@@ -411,15 +431,8 @@
                         Description: [
                             { required: true, message: '部门名称部能为空!', trigger: 'blur' },
                         ],
-                        LongDescription: [
-                            { required: true, message: '部门描述部能为空', trigger: 'blur' }
-                        ],
                         Supervisor: [
                             { required: true, message: '请选择主管姓名', trigger: 'change' }
-                        ],
-                        SortKey: [
-                            { required: true, message: '请输入排序码', trigger: 'change' },
-                            {type: 'number', message:'必须是数字', trigger:'blur'}
                         ],
                     }
                 // 添加信息 弹出框 end  
