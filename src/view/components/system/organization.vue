@@ -53,7 +53,7 @@
             </Modal>
         <!-- 删除信息弹出框 end-->
         <!-- 添加信息 弹出框-->
-            <Modal v-model="AddDepartment" width="600" title="添加部门信息">
+            <Modal v-model="AddDepartment" width="600" title="添加部门信息"  :mask-closable="false">
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <Row>
                         <Col span="24">
@@ -425,7 +425,7 @@
                         Code: [
                             { required: true, message: '部门代码不能为空', trigger: 'blur' },
                             { min: 8, max: 8, message: "长度必须是8位字符", trigger: "blur" },
-                            { pattern:/^[0-9a-zA-Z]*$/g,message: "必须是字母加数值", trigger: "blur" }
+                            { pattern:/[\u4e00-\u9fa5]/gm,message: "必须是字母加数值", trigger: "blur" }
                         ],
                         Description: [
                             { required: true, message: '部门名称部能为空!', trigger: 'blur' },
