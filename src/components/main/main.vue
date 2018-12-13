@@ -127,7 +127,9 @@ export default {
       'getUnreadMessageCount'
     ]),
     turnTochange(name){
-        	// console.log(name);
+    	if(name.length ===0){
+    		return
+    	}
     	this.muneList = this.menuList.filter((item,index) => {
     		if(name[0] === item.name){
     			return item.children;
