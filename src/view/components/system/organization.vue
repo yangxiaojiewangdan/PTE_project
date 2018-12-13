@@ -468,10 +468,7 @@
 </script>
 <style lang="less" scoped>
     #PersonnelManagement{
-        .header{
-            color:#55a;
-            margin:30px;
-        }
+        
         .content{
             background: #fff;
             .content_left{
