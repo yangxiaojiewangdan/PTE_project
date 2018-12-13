@@ -1,3 +1,4 @@
+
 <template>
 <div>
     <Button type="primary" @click="modal2 = true">Display dialog box</Button>
@@ -101,3 +102,4 @@
         }
     }
 </script>
+
