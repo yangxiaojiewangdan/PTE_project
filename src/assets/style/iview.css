@@ -2,3 +2,39 @@
  * 哪个页面的样式
  * 哪个组件的样式
  * */
+
+
+
+ /* 修改iview弹框的样式 */
+    /* iview弹框头部与底部样式 */
+    .ivu-modal-header {
+        background: #ddd;
+        border-radius: 5px 5px 0  0; 
+        height: 40px;
+    }
+    .ivu-modal-header-inner {
+        line-height: 1;
+    }
+    .ivu-modal-close {
+        top: 4px;
+    }
+    .ivu-modal-footer {
+        background: #ddd;
+        border-radius:0 0 5px 5px ; 
+    }
+    .ivu-btn-text {
+        color: #515a6e;
+        background-color: #fff;
+        border-color: #fff;
+    }
+    .footer_left>div{
+        float: left;
+        margin-top: -3px;
+    }
+    .footer_left,.footer_left2{
+        margin-left: 50px;
+    }
+    .footer_left2>div,.footer_left1>div{
+        margin: 2px;
+    }
+ /* 修改iview弹框的样式 end */

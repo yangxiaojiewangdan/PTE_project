@@ -2,7 +2,7 @@
 	<div id="PersonnelManagement">
         <Row >
             <Col span="24" style="height:100px;">
-                <h1 class="header">人员管理设置</h1>
+                <h1 class="setHeader">人员管理设置</h1>
             </Col>
         </Row>
         <Row class="content">
@@ -123,7 +123,6 @@
     </div>
 </template>
 <script>
-import modalStyle from '../modalStyle/modalStyle.css'
     export default {
         data () {
             return {
@@ -195,18 +194,20 @@ import modalStyle from '../modalStyle/modalStyle.css'
                 // 查询下拉框 end    
                 // 表格
                     columns4: [
-                        {
-                            type: 'selection',
-                            width: 50,
-                            align: 'center',
-                            fixed: 'left'
-                        },
-                        {
-                            title: '所属部门名称',
-                            key: 'BusinessUnit',
-                            width:150,
-                            sortable: true
-                        },
+                        {type: 'selection',width: 50,align: 'center',fixed: 'left'},
+                        {title: '所属部门名称',key: 'BusinessUnit',width:130,sortable: true},
+                        {title: '姓',key: 'FirstName',width:80,sortable: true},
+                        {title: '名',key: 'LastName',width:80,sortable: true},
+                        {title: '性别',key: 'Gender',width:80,sortable: true},
+                        {title: '出生日期',key: 'BrithDate',width:120,sortable: true},
+                        {title: '职位',key: 'Title',width:100,sortable: true},
+                        {title: '固定电话',key: 'TelPhone',width:120,sortable: true},
+                        {title: '手机',key: 'MobilePhone',width:100,sortable: true},
+                        {title: '主管姓名',key: 'Supervisor',width:120,sortable: true},
+                        {title: '邮箱',key: 'Email',width:120,sortable: true},
+                        {title: '邮编',key: 'PostalCode',width:100,sortable: true},
+                        {title: '允许登录系统',key: 'AllowLogin',width:150,sortable: true},
+                        {title: '登录账号',key: 'Account',width:120,sortable: true},
 
                     ],
                     data1: [
@@ -334,10 +335,6 @@ import modalStyle from '../modalStyle/modalStyle.css'
 </script>
 <style lang="less" scoped>
     #PersonnelManagement{
-        .header{
-            color:#55a;
-            margin:30px;
-        }
         .content{
             background: #fff;
             .content_left{

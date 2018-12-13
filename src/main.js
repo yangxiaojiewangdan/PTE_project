@@ -11,6 +11,8 @@ import importDirective from '@/directive'
 import installPlugin from '@/plugin'
 import './index.less'
 import '@/assets/icons/iconfont.css'
+import '@/assets/style/iview.css'
+import '@/assets/style/common.css'
 import TreeTable from 'tree-table-vue'
 // 实际打包时应该不引入mock
 /* eslint-disable */

@@ -2,7 +2,7 @@
 	<div id="PersonnelManagement">
         <Row >
             <Col span="24" style="height:100px;">
-                <h1 class="header">组织结构设置</h1>
+                <h1 class="setHeader">组织结构设置</h1>
             </Col>
         </Row>
         <Row class="content">
@@ -123,7 +123,6 @@
     </div>
 </template>
 <script>
-import modalStyle from '../modalStyle/modalStyle.css'
     export default {
         data () {
             return {
