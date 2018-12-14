@@ -21,7 +21,7 @@
         
         <Row>
         	<Col span="20" push="1">
-        		<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="aaa()" stripe="true" size="small" highlight-row="true"></Table>
+        		<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="aaa()" stripe size="small" highlight-row></Table>
         	</Col>
         	<Col span="10"push="10">
         		<Page :total="100" class="page"/>
@@ -31,26 +31,26 @@
         
         
         <!-- 添加信息 弹出框-->
-            <Modal v-model="AddDepartment" width="600" title="添加系统角色">
+            <Modal v-model="AddDepartment" width="600" title="添加系统角色" :mask-closable="false">
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <Row>
                         <Col span="24">
-                            <FormItem label="角色代码" prop="Code" >
-                                <Input v-model="formValidate.Code" placeholder="请输入" style="width:460px"></Input>
+                            <FormItem label="角色代码" prop>
+                                <Input v-model="formValidate.Code" placeholder="请输入" style="width:460px" ></Input>
                             </FormItem>
                         </Col>
                         <Col span="24">
-                            <FormItem label="角色名称" prop="Description">
+                            <FormItem label="角色名称" prop>
                                 <Input v-model="formValidate.Description" placeholder="请输入" style="width:460px"></Input>
                             </FormItem>
                         </Col>
                             <Col span="24">
-                                <FormItem label="排序码" prop="SortKey">
+                                <FormItem label="排序码" prop>
                                     <Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:200px"></Input>
                                 </FormItem>
                             </Col>
                             <Col span="24">
-                                <FormItem label="角色级别" prop="SortKey">
+                                <FormItem label="角色级别" prop>
                                 	<RadioGroup v-model="animal">
         								<Radio label="无"></Radio>
         								<Radio label="个人"></Radio>
@@ -58,38 +58,37 @@
         								<Radio label="本部门及下属部门"></Radio>
         								<Radio label="全组织"></Radio>
     								</RadioGroup>
-                                    
                                 </FormItem>
                             </Col>
                     
                    	</Row>
                    	<Row>
-                            <Col span="6">
-                                <FormItem label="总部可用" prop="Enabled" >
+                            <Col span="12">
+                                <FormItem label="总部可用" prop>
                                     <i-switch v-model="formValidate.Enabled" size="large" >
                                         <span slot="open">On</span>
                                         <span slot="close">Off</span>
                                     </i-switch>
                                 </FormItem>
                             </Col>
-                            <Col span="6">
-                                <FormItem label="内置角色" prop="Enabled" >
+                            <Col span="12">
+                                <FormItem label="门店可用" prop>
                                     <i-switch v-model="formValidate.Enabled" size="large" >
                                         <span slot="open">On</span>
                                         <span slot="close">Off</span>
                                     </i-switch>
                                 </FormItem>
                             </Col>
-                            <Col span="6">
-                                <FormItem label="门店可用" prop="Enabled" >
+                            <Col span="12">
+                                <FormItem label="内置角色" prop>
                                     <i-switch v-model="formValidate.Enabled" size="large" >
                                         <span slot="open">On</span>
                                         <span slot="close">Off</span>
                                     </i-switch>
                                 </FormItem>
                             </Col>
-                            <Col span="6">
-                                <FormItem label="启用" prop="Enabled" >
+                            <Col span="12">
+                                <FormItem label="启用" prop>
                                     <i-switch v-model="formValidate.Enabled" size="large" >
                                         <span slot="open">On</span>
                                         <span slot="close">Off</span>
@@ -120,6 +119,55 @@
                 </div>
             </Modal>
         <!-- 添加信息 弹出框 end-->
+        
+                <!-- 分配权限 弹出框-->
+            <Modal v-model="businessRoles" width="800" title="分配业务角色信息":mask-closable="false">
+                <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+                    <Row>
+                        <Col span="12">
+                            <FormItem label="角色代码" prop>
+                                <Input v-model="formValidate.Code" placeholder="请输入" style="width:250px" ></Input>
+                            </FormItem>
+                        </Col>
+                        <Col span="12">
+                            <FormItem label="角色名称" prop>
+                                <Input v-model="formValidate.Description" placeholder="请输入" style="width:250px"></Input>
+                            </FormItem>
+                        </Col>
+                        <Col span="24" push="1">
+                        	 <Transfer
+						        :data="data3"
+						        :target-keys="targetKeys3"
+						        :list-style="listStyle"
+						        :render-format="render3"
+						        :operations="['删减权限','添加权限']"
+						        :titles="['可分配权限','已分配权限']"
+						        @on-change="handleChange3">
+						    </Transfer>
+                        </Col>
+                        
+                   	</Row>
+                </Form>
+                <div  slot="footer">
+                    <div class="footer_left">
+                        <div class="footer_left1">
+                            <div><span>创建人:闫子健</span></div>
+                            <div><span>更新人:闫子健</span></div>
+                        </div>
+                        <div class="footer_left2">
+                            <div><span>创建时间:2018/12/13/ 13:00:00</span></div>
+                            <div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+                        </div>
+                    </div>
+                    <button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
+                        <span>取消</span>
+                    </button>
+                    <button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('formValidate');">
+                        <span>确定</span>
+                    </button> 
+                </div>
+            </Modal>
+        <!-- 分配权限 弹出框 end-->
     </div>
 </template>
 <script>
@@ -188,6 +236,7 @@
                         {
                             type: 'selection',
                             width: 50,
+                            fixed: 'left'
                            
                            	
                         },
@@ -345,7 +394,10 @@
                         },
                     ],
                 // 表格 end  
+                //添加人员信息弹框
                 AddDepartment: false,
+                //权限分配弹框
+                businessRoles:false,
                     formValidate: {
                         Enabled: true,
                         Code: '',
@@ -364,12 +416,22 @@
 //                      Supervisor: [
 //                          { required: true, message: '请选择主管姓名', trigger: 'change' }
 //                      ],
-                    }
+                    },
+               	//分配权限弹框里的数据
+               	data3:this.getMockData(),
+               	targetKeys3: this.getTargetKeys(),
+               	 listStyle: {
+                    width: '300px',
+                    height: '500px',
+                    marginTop:'30px',
+                    fontWeight: 'bold',
+                },
+                
         	}
         },
         methods: {
         	aaa(){
-        		this.AddDepartment = true;
+        		this.businessRoles = true;
         		
         	},
             // 删除信息 弹出框函数
@@ -394,21 +456,42 @@
                 handleReset (name) {
                     
                     this.$refs[name].resetFields();
-                    this.$Message.info('已取消添加部门');
-                }
+                    this.$Message.info('已取消');
+                    this.businessRoles=false
+                },
             // 添加信息 弹出框函数 end
+            
+            //权限弹框函数
+            getMockData () {
+                let mockData = [];
+                for (let i = 1; i <= 20; i++) {
+                    mockData.push({
+                        key: i.toString(),
+                        label: 'Content ' + i,
+                        description: 'The desc of content  ' + i,
+                        disabled: Math.random() * 3 < 1
+                    });
+                }
+                return mockData;
+            },
+             getTargetKeys () {
+                return this.getMockData().filter(() => Math.random() * 2 > 1).map(item => item.key);            
+            },
+            
+            handleChange3 (newTargetKeys) {
+                this.targetKeys3 = newTargetKeys;
+            },
+            render3 (item) {
+                return item.label + ' - ' + item.description;
+            },
+            
+        },
+        mounted(){
+        	console.log(this.data3)
         }
     }
 </script>
 <style lang="less">
-		.organization{
-				margin: 0 0 30px 0;		
-		}
-        .organization_tableTop{
-                margin: 0 5px;
-               
-            }
-		.page{
-                margin: 20px 30px 0 0;
-            }
+		
+		
 </style>
