@@ -38,3 +38,11 @@
         margin: 2px;
     }
  /* 修改iview弹框的样式 end */
+/* iview表格表头的样式 */
+	.ivu-table-header th{
+	    			color:#000;
+	    			font-weight: bold;
+	    			background: #EEEEEE;
+	    			font-family:STXinwei;
+	    			font-size:14px;
+	  }

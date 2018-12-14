@@ -6,7 +6,7 @@
             </Col> 
         </Row>
         <Row>
-        	<Col span="7" push="17">
+        	<Col span="7" push="14">
 		        <div class="organization">
 		        	<Button type="success" class="organization_tableTop" @click="AddDepartment = true">添加</Button>
 		        	<Button type="error" class="organization_tableTop">删除</Button>
@@ -18,8 +18,17 @@
 		        </div>
         	</Col>
         </Row>
-        <Table height="570"  border ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="aaa(1)"></Table>
-        <Page :total="100" class="page"/>
+        
+        <Row>
+        	<Col span="20" push="1">
+        		<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="aaa()" stripe="true" size="small" highlight-row="true"></Table>
+        	</Col>
+        	<Col span="10"push="10">
+        		<Page :total="100" class="page"/>
+        	</Col>
+        </Row>
+        
+        
         
         <!-- 添加信息 弹出框-->
             <Modal v-model="AddDepartment" width="600" title="添加系统角色">
@@ -35,9 +44,21 @@
                                 <Input v-model="formValidate.Description" placeholder="请输入" style="width:460px"></Input>
                             </FormItem>
                         </Col>
-                            <Col span="15">
+                            <Col span="24">
                                 <FormItem label="排序码" prop="SortKey">
                                     <Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:200px"></Input>
+                                </FormItem>
+                            </Col>
+                            <Col span="24">
+                                <FormItem label="角色级别" prop="SortKey">
+                                	<RadioGroup v-model="animal">
+        								<Radio label="无"></Radio>
+        								<Radio label="个人"></Radio>
+        								<Radio label="本部门"></Radio>
+        								<Radio label="本部门及下属部门"></Radio>
+        								<Radio label="全组织"></Radio>
+    								</RadioGroup>
+                                    
                                 </FormItem>
                             </Col>
                     
@@ -107,6 +128,7 @@
         	return {
         		model1: '',
         		value:'',
+        		animal:'全组织',
         		               cityList: [
                         {
                             value: 'New York',
@@ -166,50 +188,50 @@
                         {
                             type: 'selection',
                             width: 50,
-                            align: 'center',
-                            fixed: 'left'
+                           
+                           	
                         },
                         {
                             title: '角色代码',
                             key: 'Code',
-                            width:150,
-                            sortable: true
+                            width:200,
+                            sortable: true,
+                            
                         },
                         {
                             title: '角色名称',
                             key: 'Description',
                             width:200,
-                            sortable: true
+                            sortable: true,
+                            
                         },
                         {
                             title: '启用',
                             key: 'Supervisor',
                             width:160,
-                            sortable: true
+                            sortable: true,
+                            
                         },
                         {
                             title: '排序码',
                             key: 'Enabled',
-                            width:147,
-                            sortable: true
+                            width:150,
+                            sortable: true,
+                            
                         },
                         {
                             title: '创建人',
                             key: 'SortKey',
                             width:200,
-                            sortable: true
-                        },
-                        {
-                            title: '更新人',
-                            key: 'CreateOn',
-                            width:300,
-                            sortable: true
+                            sortable: true,
+                            
                         },
                         {
                             title: '创建时间',
                             key: 'CreateBy',
                             width:400,
-                            sortable: true
+                            sortable: true,
+                            
                         },
                         
                     ],
@@ -221,7 +243,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -230,7 +252,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -239,7 +261,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                           
                         },
                         {
                             Code: 'A001',
@@ -248,7 +270,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -257,7 +279,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -266,7 +288,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -275,7 +297,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -284,7 +306,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -293,7 +315,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -302,7 +324,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -311,7 +333,7 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
+                            
                         },
                         {
                             Code: 'A001',
@@ -320,7 +342,6 @@
                             Enabled:'是',
                             SortKey:'001',
                             CreateBy:'闫子健',
-                            CreateOn:'2018/12/12 16:49:00'
                         },
                     ],
                 // 表格 end  
@@ -379,7 +400,7 @@
         }
     }
 </script>
-<style scoped lang="less">
+<style lang="less">
 		.organization{
 				margin: 0 0 30px 0;		
 		}
@@ -389,6 +410,5 @@
             }
 		.page{
                 margin: 20px 30px 0 0;
-                float: right;
             }
 </style>
