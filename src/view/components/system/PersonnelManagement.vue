@@ -37,7 +37,7 @@
                 </Col>
                 <Col span="24">
                    <!-- 表格 -->
-                    <Table height="560"  border ref="selection" :columns="columns4" :data="data1"></Table>
+                    <Table height="560" size="small" highlight-row  stripe border ref="selection" :columns="columns4" :data="data1"></Table>
                     <!-- 表格 end-->
                 </Col>
                 <Col span="24">

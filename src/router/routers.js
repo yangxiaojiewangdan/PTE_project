@@ -552,7 +552,7 @@ export default [
               icon: 'md-trending-up',
               title: '基本信息'
             },
-            component: () => import('@/view/components/count-to/count-to.vue')
+            component: () => import('@/view/components/franchisee/information.vue')
           },
           {
             path: 'franchisee_contacts',
@@ -561,7 +561,7 @@ export default [
               icon: 'ios-infinite',
               title: '联系人'
             },
-            component: () => import('@/view/components/drag-list/drag-list.vue')
+            component: () => import('@/view/components/franchisee/contacts.vue')
           },
           {
             path: 'franchisee_bargain',
@@ -570,7 +570,7 @@ export default [
               icon: 'md-git-branch',
               title: '合同管理'
             },
-            component: () => import('@/view/components/tree-table/index.vue')
+            component: () => import('@/view/components/franchisee/bargain.vue')
           },
           {
             path: 'franchisee_opening',
@@ -579,7 +579,7 @@ export default [
               icon: 'md-crop',
               title: '开业管理'
             },
-            component: () => import('@/view/components/cropper/cropper.vue')
+            component: () => import('@/view/components/franchisee/opening.vue')
           },
           {
             path: 'franchisee_default',
@@ -588,7 +588,7 @@ export default [
               icon: 'md-trending-up',
               title: '违约管理'
             },
-            component: () => import('@/view/components/count-to/count-to.vue')
+            component: () => import('@/view/components/franchisee/default.vue')
           },
           {
             path: 'franchisee_assess',
@@ -597,7 +597,7 @@ export default [
               icon: 'ios-infinite',
               title: '考核管理'
             },
-            component: () => import('@/view/components/drag-list/drag-list.vue')
+            component: () => import('@/view/components/franchisee/assess.vue')
           },
           {
             path: 'franchisee_courseCalendar',
@@ -606,7 +606,7 @@ export default [
               icon: 'md-git-branch',
               title: '课程日历'
             },
-            component: () => import('@/view/components/tree-table/index.vue')
+            component: () => import('@/view/components/franchisee/courseCalendar.vue')
           },
           {
             path: 'franchisee_classroomCalendar',
@@ -615,7 +615,7 @@ export default [
               icon: 'md-crop',
               title: '教室日历'
             },
-            component: () => import('@/view/components/cropper/cropper.vue')
+            component: () => import('@/view/components/franchisee/classroomCalendar.vue')
           }
         ]
     },
