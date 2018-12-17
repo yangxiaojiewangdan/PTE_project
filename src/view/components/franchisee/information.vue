@@ -77,14 +77,14 @@
             <Row >
                 <!-- 表格上面的功能 -->
                     <Col span="8" offset="16">
-                        <div class="organization">
-                            <Button @click="AddDepartment = true"  type="success" class="organization_tableTop">添加</Button>
-                            <Button @click="delete1 = true"  type="error" class="organization_tableTop">删除</Button>
-                            <Select v-model="model1" style="width:100px" class="organization_tableTop">
+                        <div class="tableTop">
+                            <Button @click="AddDepartment = true"  type="success" class="tableTops">添加</Button>
+                            <Button @click="delete1 = true"  type="error" class="tableTops">删除</Button>
+                            <Select v-model="model1" style="width:100px" class="tableTops">
                                 <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
-                            <Input v-model="value" placeholder="Enter something..." style="width: 150px" class="organization_tableTop"/>
-                            <Button type="primary" class="organization_tableTop">查询</Button>
+                            <Input v-model="value" placeholder="Enter something..." style="width: 150px" class="tableTops"/>
+                            <Button type="primary" class="tableTops">查询</Button>
                         </div>
                     </Col>
                 <!-- 表格上面的功能 end-->
@@ -756,21 +756,15 @@
 </script>
 <style lang="less" scoped>
     #information{
-        height: 1900px;
         .content{
             .tableTop{
                 margin:30px 20px 10px 0;
                 float: right;
+                height: 50px;
                 .tableTops{
                     margin: 0 4px;
                 }
             }
-            .organization{
-                margin: 0 0 30px 0;		
-            }
-            .organization_tableTop{
-                margin: 0 5px;
-            }
-                }
-            }
+        }
+    }
 </style>
