@@ -875,6 +875,16 @@ export default [
             },
             component: () => import('@/view/components/tables/tables.vue')
           }
+          ,
+          {
+            path: 'apply_PublicDictionary',
+            name: 'apply_PublicDictionary',
+            meta: {
+              icon: 'md-grid',
+              title: '公共字典'
+            },
+            component: () => import('@/view/components/apply/apply_PublicDictionary.vue')
+          }
         ]
     },
   // 应用设置的路由 end
