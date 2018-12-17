@@ -90,7 +90,7 @@
                 <!-- 表格上面的功能 end-->
                 <Col span="24">
                     <!-- 表格 -->
-                        <Table height="560" size="small" highlight-row  stripe border ref="selection" :columns="columns4" :data="data1"></Table>
+                        <Table height="600" size="small" highlight-row  stripe border ref="selection" :columns="columns4" :data="data1"></Table>
                     <!-- 表格 end-->
                 </Col>
                 <Col span="24">
@@ -756,6 +756,7 @@
 </script>
 <style lang="less" scoped>
     #information{
+        height: 1900px;
         .content{
             .tableTop{
                 margin:30px 20px 10px 0;
