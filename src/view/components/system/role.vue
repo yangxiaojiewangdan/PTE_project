@@ -488,8 +488,7 @@
     }
 </script>
 <style lang="less">
-<<<<<<< HEAD
-	    .page{
+	.page{
         margin: 20px 30px 0 0;
     }
     .organization{
@@ -498,18 +497,4 @@
     .organization_tableTop{
         margin: 0 5px;
     }	
-		
-=======
-		.page{
-                margin: 20px 30px 0 0;
-            }
-.organization{
-				margin: 0 0 30px 0;		
-		}
-        .organization_tableTop{
-                margin: 0 5px;
-               
-            }
-
->>>>>>> 756582dd1b4e8d558a0d080d3aff8b729c76cd3b
 </style>
