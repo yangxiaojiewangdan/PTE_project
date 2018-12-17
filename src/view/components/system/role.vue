@@ -492,6 +492,15 @@
     }
 </script>
 <style lang="less">
-		
-		
+		.page{
+                margin: 20px 30px 0 0;
+            }
+.organization{
+				margin: 0 0 30px 0;		
+		}
+        .organization_tableTop{
+                margin: 0 5px;
+               
+            }
+
 </style>
