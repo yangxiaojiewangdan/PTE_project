@@ -38,21 +38,20 @@
         margin: 2px;
     }
  /* 修改iview弹框的样式 end */
-/* iview表格表头的样式 */
+/* iview  系统表格表头的样式 */
 	.ivu-table-header th{
-	    			color:#000;
-	    			font-weight: bold;
-	    			background: #EEEEEE;
-	  }
-	  
-.page{
-                margin: 20px 30px 0 0;
-            }
-.organization{
-				margin: 0 0 30px 0;		
-		}
-        .organization_tableTop{
-                margin: 0 5px;
-               
-            }
-
+        color:#000;
+        font-weight: bold;
+        background: #EEEEEE;
+	}
+/* iview   系统表格表头的样式  end*/
+/* 查询条件的公共样式 */
+         /* 高度在页面里定  */
+.querycriteria{
+    background: #fff;
+    margin-bottom: 10px;
+}
+.queryForm{
+    margin-top: 20px;
+}
+/* 查询条件的公共样式 end */

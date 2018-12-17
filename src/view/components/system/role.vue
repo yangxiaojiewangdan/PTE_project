@@ -27,9 +27,6 @@
         		<Page :total="100" class="page"/>
         	</Col>
         </Row>
-        
-        
-        
         <!-- 添加信息 弹出框-->
             <Modal v-model="AddDepartment" width="600" title="添加系统角色" :mask-closable="false">
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
@@ -119,8 +116,7 @@
                 </div>
             </Modal>
         <!-- 添加信息 弹出框 end-->
-        
-                <!-- 分配权限 弹出框-->
+        <!-- 分配权限 弹出框-->
             <Modal v-model="businessRoles" width="800" title="分配业务角色信息":mask-closable="false">
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
                     <Row>
@@ -492,6 +488,14 @@
     }
 </script>
 <style lang="less">
-		
+	    .page{
+        margin: 20px 30px 0 0;
+    }
+    .organization{
+        margin: 0 0 30px 0;		
+    }
+    .organization_tableTop{
+        margin: 0 5px;
+    }	
 		
 </style>

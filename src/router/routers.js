@@ -130,6 +130,7 @@ import parentView from '@/components/parent-view'
             支付代码设置____path: 'apply_tradePaymentCode'
             加盟商结算规则__path: 'apply_leagueSettlement'
             教师合伙人结算规则_path: 'apply_partnerSettlement'
+          公共字典__________path: 'apply_PublicDictionary'
         #系统设置 /system
           业务线设置________path: 'system_business'
           组织结构__________path: 'system_organization'
@@ -819,7 +820,7 @@ export default [
               icon: 'md-trending-up',
               title: '基础数据字典'
             },
-            component: () => import('@/view/components/count-to/count-to.vue')
+            component: () => import('@/view/components/apply/data.vue')
           },
           {
             path: 'apply_business',
@@ -828,7 +829,7 @@ export default [
               icon: 'ios-infinite',
               title: '业务品牌'
             },
-            component: () => import('@/view/components/drag-list/drag-list.vue')
+            component: () => import('@/view/components/apply/business.vue')
           },
           {
             path: 'apply_member',
@@ -837,7 +838,7 @@ export default [
               icon: 'md-git-branch',
               title: '会员设置'
             },
-            component: () => import('@/view/components/tree-table/index.vue')
+            component: () => import('@/view/components/apply/member.vue')
           },
           {
             path: 'apply_marke',
@@ -846,7 +847,7 @@ export default [
               icon: 'md-crop',
               title: '市场设置'
             },
-            component: () => import('@/view/components/cropper/cropper.vue')
+            component: () => import('@/view/components/apply/marke.vue')
           },
           {
             path: 'apply_league',
@@ -855,7 +856,7 @@ export default [
               icon: 'md-grid',
               title: '加盟商业务设置'
             },
-            component: () => import('@/view/components/tables/tables.vue')
+            component: () => import('@/view/components/apply/league.vue')
           },
           {
             path: 'apply_partner',
@@ -864,7 +865,7 @@ export default [
               icon: 'md-crop',
               title: '教师合伙人业务设置'
             },
-            component: () => import('@/view/components/cropper/cropper.vue')
+            component: () => import('@/view/components/apply/partner.vue')
           },
           {
             path: 'apply_trade',
@@ -873,7 +874,7 @@ export default [
               icon: 'md-grid',
               title: '交易设置'
             },
-            component: () => import('@/view/components/tables/tables.vue')
+            component: () => import('@/view/components/apply/trade.vue')
           }
           ,
           {
@@ -883,7 +884,7 @@ export default [
               icon: 'md-grid',
               title: '公共字典'
             },
-            component: () => import('@/view/components/apply/apply_PublicDictionary.vue')
+            component: () => import('@/view/components/apply/PublicDictionary.vue')
           }
         ]
     },
