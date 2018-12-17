@@ -40,6 +40,7 @@
  /* 修改iview弹框的样式 end */
 /* iview  系统表格表头的样式 */
 	.ivu-table-header th{
+<<<<<<< HEAD
         color:#000;
         font-weight: bold;
         background: #EEEEEE;
@@ -55,3 +56,11 @@
     margin-top: 20px;
 }
 /* 查询条件的公共样式 end */
+=======
+	    			color:#000;
+	    			font-weight: bold;
+	    			background: #EEEEEE;
+	  }
+	  
+
+>>>>>>> 756582dd1b4e8d558a0d080d3aff8b729c76cd3b
