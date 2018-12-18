@@ -35,3 +35,4 @@ export const uploadImg = formData => {
     data: formData
   })
 }
+//

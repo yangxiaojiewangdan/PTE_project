@@ -884,7 +884,7 @@ export default [
               icon: 'md-grid',
               title: '公共字典'
             },
-            component: () => import('@/view/components/apply/PublicDictionary.vue')
+            component: () => import('@/view/components/apply/publicDictionary.vue')
           }
         ]
     },

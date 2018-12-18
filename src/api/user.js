@@ -1,17 +1,18 @@
 import axios from '@/libs/api.request'
 
-export const login = ({ userName, password }) => {
+//登陆
+export const login = ({ account, password }) => {
   const data = {
-    userName,
+    account,
     password
   }
   return axios.request({
-    url: 'login',
+    url: 'http://192.168.31.74:8081/api/Authentication/Authentication/Login',
     data,
     method: 'post'
   })
 }
-
+//获取用户信息
 export const getUserInfo = (token) => {
   return axios.request({
     url: 'get_info',
