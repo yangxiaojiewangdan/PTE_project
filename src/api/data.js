@@ -34,9 +34,5 @@ export const uploadImg = formData => {
     url: 'image/upload',
     data: formData
   })
-<<<<<<< HEAD
 }
-//
-=======
-}
->>>>>>> 8c79e602dc124e1f9077e4e72d21f8b7b13bf135
+
