@@ -130,7 +130,7 @@ import parentView from '@/components/parent-view'
             支付代码设置____path: 'apply_tradePaymentCode'
             加盟商结算规则__path: 'apply_leagueSettlement'
             教师合伙人结算规则_path: 'apply_partnerSettlement'
-          公共字典__________path: 'apply_PublicDictionary'
+          公共字典__________path: 'apply_publicDictionary'
         #系统设置 /system
           业务线设置________path: 'system_business'
           组织结构__________path: 'system_organization'
