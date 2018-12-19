@@ -9,14 +9,14 @@ import {
   restoreTrash,
   getUnreadCount
 } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { settoken, gettoken } from '@/libs/util'
 
 export default {
   state: {
-    account: '',
+    Account: '',
     userId: '',
     avatorImgPath: '',
-    token: getToken(),
+    token: gettoken(),
     access: '',
     hasGetInfo: false,
     unreadCount: 0,
@@ -32,15 +32,15 @@ export default {
     setUserId (state, id) {
       state.userId = id
     },
-    setaccount (state, name) {
-      state.account = name
+    setAccount (state, name) {
+      state.Account = name
     },
     setAccess (state, access) {
       state.access = access
     },
-    setToken (state, token) {
+    settoken (state, token) {
       state.token = token
-      setToken(token)
+      settoken(token)
     },
     setHasGetInfo (state, status) {
       state.hasGetInfo = status
@@ -74,15 +74,17 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, {account, password}) {
-      account = account.trim()
+    handleLogin ({ commit }, {Account, Password}) {
+      Account = Account.trim()
       return new Promise((resolve, reject) => {
         login({
-          account,
-          password
+          Account,
+          Password
         }).then(res => {
-          const data = res.data
-          commit('setToken', data.token)
+        	console.log(res.data)
+          const data = res.data.Data
+          console.log(res.data.Data.SessionToken)
+          commit('settoken', data.SessionToken)
           resolve()
         }).catch(err => {
           reject(err)
@@ -93,14 +95,14 @@ export default {
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
-          commit('setToken', '')
+          commit('settoken', '')
           commit('setAccess', [])
           resolve()
         }).catch(err => {
           reject(err)
         })
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
-        // commit('setToken', '')
+        // commit('settoken', '')
         // commit('setAccess', [])
         // resolve()
       })
@@ -110,13 +112,15 @@ export default {
       return new Promise((resolve, reject) => {
         try {
           getUserInfo(state.token).then(res => {
+          	console.log(res.data)
             const data = res.data
             commit('setAvator', data.avator)
-            commit('setaccount', data.name)
+            commit('setAccount', data.name)
             commit('setUserId', data.user_id)
             commit('setAccess', data.access)
             commit('setHasGetInfo', true)
             resolve(data)
+            
           }).catch(err => {
             reject(err)
           })

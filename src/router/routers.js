@@ -160,8 +160,10 @@ export default [
       component: Main,
       meta: {
         hideInMenu: true,
-        notCache: true
+        notCache: true,
+        access: ['admin'],
       },
+      
       children: [
         {
           path: '/home',

@@ -4,50 +4,51 @@ import qs from 'qs'
 export const apiUrl = 'http://192.168.31.74:8081'
 
 //登陆
-export const login = ({ account, password }) => {
+export const login = ({ Account, Password }) => {
 const data = {
-	account,
-	password
+	Account,
+	Password
 }
 
   return axios.request({
-  	url: apiUrl+'/api/Authentication/Authentication/Login?account=admin&password=admin',
+  	url: apiUrl+'/api/Authentication/Authentication/Login',
     data,
     method: 'post'
   })
 }
 //获取用户信息
-export const getUserInfo = (token) => {
+export const getUserInfo = (SessionToken) => {
   return axios.request({
-    url: apiUrl+'/api/Authentication/UserSecurityLog/GetEntity',
+    url: apiUrl+'/api/Orginazation/BusinessUser/GetEntity',
     params: {
-      token
+      SessionToken,
+      keyId:'100'
     },
     method: 'get'
   })
 }
-
+//退出登陆
 export const logout = (token) => {
   return axios.request({
     url: 'logout',
     method: 'post'
   })
 }
-
+//此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
 export const getUnreadCount = () => {
   return axios.request({
     url: 'message/count',
     method: 'get'
   })
 }
-
+//获取消息列表，其中包含未读、已读、回收站三个列表
 export const getMessage = () => {
   return axios.request({
     url: 'message/init',
     method: 'get'
   })
 }
-
+//根据当前点击的消息的id获取内容
 export const getContentByMsgId = msg_id => {
   return axios.request({
     url: 'message/content',
@@ -57,7 +58,7 @@ export const getContentByMsgId = msg_id => {
     }
   })
 }
-
+ // 把一个未读消息标记为已读
 export const hasRead = msg_id => {
   return axios.request({
     url: 'message/has_read',
@@ -67,7 +68,7 @@ export const hasRead = msg_id => {
     }
   })
 }
-
+// 删除一个已读消息到回收站
 export const removeReaded = msg_id => {
   return axios.request({
     url: 'message/remove_readed',
@@ -77,7 +78,7 @@ export const removeReaded = msg_id => {
     }
   })
 }
-
+ // 还原一个已删除消息到已读消息
 export const restoreTrash = msg_id => {
   return axios.request({
     url: 'message/restore',

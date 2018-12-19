@@ -21,8 +21,8 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        "Content-Type":'application/x-www-form-urlencoded',
-        "user_token":"123",
+        "Content-Type":'application/json',
+        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ1MjE3OTM5LCJleHAiOjE1NDUzMzc5MzksImlhdCI6MTU0NTIxNzkzOX0.oxhnQmHdXHkWfjf8QPeN4Igc8JwMLVzPYyk7-ZpHRBo',
         "signature":"signature"
       }
     }
