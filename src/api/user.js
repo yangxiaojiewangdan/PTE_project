@@ -1,4 +1,4 @@
-import axios from '@/libs/api.request'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  import axios from '@/libs/api.request'
 import qs from 'qs'
 //登陆
 export const login = ({ account, password }) => {
@@ -54,7 +54,7 @@ export const getContentByMsgId = msg_id => {
     }
   })
 }
-  
+
 export const hasRead = msg_id => {
   return axios.request({
     url: 'message/has_read',
