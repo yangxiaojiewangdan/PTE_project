@@ -2,6 +2,10 @@ import axios from '@/libs/api.request'
 import qs from 'qs'
 //登陆
 export const login = ({ account, password }) => {
+const data = qs.stringify({
+	account,
+	password
+})
 
   return axios.request({
     url: 'http://192.168.31.74:8081/api/Authentication/Authentication/Login?account=admin&password=admin',
@@ -50,7 +54,7 @@ export const getContentByMsgId = msg_id => {
     }
   })
 }
-
+  
 export const hasRead = msg_id => {
   return axios.request({
     url: 'message/has_read',
