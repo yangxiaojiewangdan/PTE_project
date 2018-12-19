@@ -23,7 +23,7 @@ export default {
     messageUnreadList: [],
     messageReadedList: [],
     messageTrashList: [],
-    messageContentStore: {}
+    messageContentStore: {},
   },
   mutations: {
     setAvator (state, avatorPath) {
