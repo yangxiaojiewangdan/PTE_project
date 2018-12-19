@@ -34,5 +34,9 @@ export const uploadImg = formData => {
     url: 'image/upload',
     data: formData
   })
+
+
 }
+
+
 
