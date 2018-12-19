@@ -1,22 +1,21 @@
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  import axios from '@/libs/api.request'
+import axios from '@/libs/api.request'
 import qs from 'qs'
 //url变量
 export const apiUrl = 'http://192.168.31.74:8081'
-
 //登陆
-export const login = ({ account, password }) => {
-
+export const login = ({ Account, Password }) => {
 const data = {
-	account,
-	password
+	Account,
+	Password
 }
-
   return axios.request({
-  	url: apiUrl+'/api/Authentication/Authentication/Login?account=admin&password=admin',
+  	url: apiUrl+'/api/Authentication/Authentication/Login?Account=admin&Password=admin',
     data,
-    method: 'post'
+    method: 'post',
   })
 }
+
+
 //获取用户信息
 export const getUserInfo = (token) => {
   return axios.request({

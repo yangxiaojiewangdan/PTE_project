@@ -21,7 +21,7 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        "Content-Type":'application/x-www-form-urlencoded',
+        "Content-Type":'application/json',
         "user_token":"123",
         "signature":"signature"
       }

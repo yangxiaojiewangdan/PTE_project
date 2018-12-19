@@ -165,7 +165,7 @@
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="登录密码" prop="AccountPwd" >
-                                        <Input  type="password" v-model="formValidate.AccountPwd"  placeholder="请输入......" style="width:200px"/>
+                                        <Input  type="Password" v-model="formValidate.AccountPwd"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">

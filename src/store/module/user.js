@@ -13,7 +13,7 @@ import { setToken, getToken } from '@/libs/util'
 
 export default {
   state: {
-    account: '',
+    Account: '',
     userId: '',
     avatorImgPath: '',
     token: getToken(),
@@ -32,8 +32,8 @@ export default {
     setUserId (state, id) {
       state.userId = id
     },
-    setaccount (state, name) {
-      state.account = name
+    setAccount (state, name) {
+      state.Account = name
     },
     setAccess (state, access) {
       state.access = access
@@ -74,12 +74,12 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, {account, password}) {
-      account = account.trim()
+    handleLogin ({ commit }, {Account, Password}) {
+      Account = Account.trim()
       return new Promise((resolve, reject) => {
         login({
-          account,
-          password
+          Account,
+          Password
         }).then(res => {
           const data = res.data
           commit('setToken', data.token)
@@ -112,7 +112,7 @@ export default {
           getUserInfo(state.token).then(res => {
             const data = res.data
             commit('setAvator', data.avator)
-            commit('setaccount', data.name)
+            commit('setAccount', data.name)
             commit('setUserId', data.user_id)
             commit('setAccess', data.access)
             commit('setHasGetInfo', true)
