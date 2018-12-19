@@ -878,8 +878,8 @@ export default [
           }
           ,
           {
-            path: 'apply_PublicDictionary',
-            name: 'apply_PublicDictionary',
+            path: 'apply_publicDictionary',
+            name: 'apply_publicDictionary',
             meta: {
               icon: 'md-grid',
               title: '公共字典'
