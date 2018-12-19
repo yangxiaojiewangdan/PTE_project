@@ -1,14 +1,18 @@
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   import axios from '@/libs/api.request'
 import qs from 'qs'
+//url变量
+export const apiUrl = 'http://192.168.31.74:8081'
+
 //登陆
 export const login = ({ account, password }) => {
-const data = qs.stringify({
+
+const data = {
 	account,
 	password
-})
+}
 
   return axios.request({
-    url: 'http://192.168.31.74:8081/api/Authentication/Authentication/Login?account=admin&password=admin',
+  	url: apiUrl+'/api/Authentication/Authentication/Login?account=admin&password=admin',
     data,
     method: 'post'
   })
@@ -16,7 +20,7 @@ const data = qs.stringify({
 //获取用户信息
 export const getUserInfo = (token) => {
   return axios.request({
-    url: 'get_info',
+    url: apiUrl+'/api/Authentication/UserSecurityLog/GetEntity',
     params: {
       token
     },

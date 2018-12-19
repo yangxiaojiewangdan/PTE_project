@@ -16,8 +16,13 @@ import '@/assets/style/common.css'
 import TreeTable from 'tree-table-vue'
 import qs from 'qs'
 
+<<<<<<< HEAD
 //url全局变量
 //import global_ from "./Global"; //引用文件
+=======
+//url全局变量
+//import global_ from "./Global"; //引用文件
+>>>>>>> 7434377f29e95766d682574459a3ebb30695211d
 //Vue.prototype.GLOBAL = global_; //挂载到Vue实例上面
 // 实际打包时应该不引入mock
 /* eslint-disable */
