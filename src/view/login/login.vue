@@ -18,6 +18,7 @@
 <script>
 import LoginForm from '_c/login-form'
 import { mapActions } from 'vuex'
+import qs from 'qs'
 export default {
   components: {
     LoginForm

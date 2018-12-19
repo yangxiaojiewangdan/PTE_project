@@ -1,13 +1,14 @@
 import axios from '@/libs/api.request'
-
+import qs from 'qs'
 //登陆
 export const login = ({ account, password }) => {
-  const data = {
-    account,
-    password
-  }
+const data = qs.stringify({
+	account,
+	password
+})
+
   return axios.request({
-    url: 'http://192.168.31.74:8081/api/Authentication/Authentication/Login',
+    url: 'http://192.168.31.74:8081/api/Authentication/Authentication/Login?account=admin&password=admin',
     data,
     method: 'post'
   })
@@ -15,7 +16,7 @@ export const login = ({ account, password }) => {
 //获取用户信息
 export const getUserInfo = (token) => {
   return axios.request({
-    url: 'get_info',
+//  url: 'http://192.168.31.74:8081/api/Authentication/UserSecurityLog/GetEntity',
     params: {
       token
     },
