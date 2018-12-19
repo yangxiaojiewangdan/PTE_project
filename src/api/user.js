@@ -16,7 +16,7 @@ const data = qs.stringify({
 //获取用户信息
 export const getUserInfo = (token) => {
   return axios.request({
-//  url: 'http://192.168.31.74:8081/api/Authentication/UserSecurityLog/GetEntity',
+    url: 'get_info',
     params: {
       token
     },
