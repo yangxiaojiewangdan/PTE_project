@@ -22,11 +22,11 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         "Content-Type":'application/json',
-        "user_token":"123",
+        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ1MjE3OTM5LCJleHAiOjE1NDUzMzc5MzksImlhdCI6MTU0NTIxNzkzOX0.oxhnQmHdXHkWfjf8QPeN4Igc8JwMLVzPYyk7-ZpHRBo',
         "signature":"signature"
       }
     }
-    return config
+    return config 
   }
   destroy (url) {
     delete this.queue[url]
@@ -67,6 +67,7 @@ class HttpRequest {
     })
   }
   request (options) {
+    debugger;
     const instance = axios.create()
     options = Object.assign(this.getInsideConfig(), options)
     this.interceptors(instance, options.url)

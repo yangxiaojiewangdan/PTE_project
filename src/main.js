@@ -17,6 +17,7 @@ import TreeTable from 'tree-table-vue'
 import qs from 'qs'
 
 
+
 //url全局变量
 //import global_ from "./Global"; //引用文件
 //Vue.prototype.GLOBAL = global_; //挂载到Vue实例上面
