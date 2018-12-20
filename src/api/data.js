@@ -1,12 +1,13 @@
 import axios from '@/libs/api.request'
-
-export const getTableData = () => {
+//url变量
+export const apiUrl = 'http://192.168.31.74:8081'
+//获取组织结构的树形结构
+export const getTreeList = () => {
   return axios.request({
-    url: 'get_table_data',
+    url: apiUrl+'/api/Orginazation/BusinessUnit/GetBusinessUnit',
     method: 'get'
   })
 }
-
 export const getDragList = () => {
   return axios.request({
     url: 'get_drag_list',
@@ -28,13 +29,13 @@ export const saveErrorLogger = info => {
     method: 'post'
   })
 }
-
-export const uploadImg = formData => {
+//添加人员信息接口
+export const uploadMessage= formData => {
   return axios.request({
-    url: 'image/upload',
-    data: formData
+    url: apiUrl+'/api/Orginazation/BusinessUser/Create',
+    data: formData,
+    method: 'post'
   })
-
 
 }
 
