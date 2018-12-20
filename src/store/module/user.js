@@ -81,11 +81,19 @@ export default {
           Account,
           Password
         }).then(res => {
-        	console.log(res.data)
+        	
           const data = res.data.Data
           console.log(res.data.Data.SessionToken)
           commit('settoken', data.SessionToken)
           resolve()
+          console.log(res.data)
+          if(res.data.Data.AccountName ==='admin'){
+//        	this.$router.push({path:'/'})
+						this.$router.push({
+          		name: this.$config.homeName
+        		})
+          }
+          
         }).catch(err => {
           reject(err)
         })
