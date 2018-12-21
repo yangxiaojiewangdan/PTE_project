@@ -25,7 +25,7 @@
 			<Col span="24">
 			<div class="organization">
 				<Button @click="AddDepartment = true" type="success" class="organization_tableTop">添加</Button>
-				<Button @click="delete1 = true" type="error" class="organization_tableTop">删除</Button>
+				<Button @click="deleteList" type="error" class="organization_tableTop">删除</Button>
 				<Select v-model="model1" style="width:100px" class="organization_tableTop">
 					<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
@@ -37,7 +37,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border ref="selection" :columns="columns4" :data="data1"></Table>
+			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData"></Table>
 			<!-- 表格 end-->
 			</Col>
 			<Col span="24">
@@ -123,7 +123,7 @@
 	</div>
 </template>
 <script>
-	import { getTreeList } from '@/api/data'
+	import { getTreeList, getBusinessUnitData, addBusinessUnit ,deleteBusinessUnit } from '@/api/data'
 	export default {
 		data() {
 			return {
@@ -131,60 +131,14 @@
 				value: '',
 				// input框中的值 end
 				// 树形图
-				treeList: [{
-					title: '',
-					expand: '',
-					children: [{
-							title: '',
-							expand: '',
-							children: [{
-									title: ''
-								},
-								{
-									title: ''
-								}
-							]
-						},
-						{
-							title: '',
-							expand: '',
-							children: [{
-									title: ''
-								},
-								{
-									title: ''
-								}
-							]
-						}
-					]
-				}],
+				treeList: [],
 				// 树形图 end
 				// 查询下拉框
 				cityList: [{
-						value: 'New York',
-						label: 'New York'
-					},
-					{
-						value: 'London',
-						label: 'London'
-					},
-					{
-						value: 'Sydney',
-						label: 'Sydney'
-					},
-					{
-						value: 'Ottawa',
-						label: 'Ottawa'
-					},
-					{
-						value: 'Paris',
-						label: 'Paris'
-					},
-					{
-						value: 'Canberra',
-						label: 'Canberra'
-					}
-				],
+					value: 'New York',
+					label: 'New York'
+				}],
+
 				model1: '',
 				// 查询下拉框 end    
 				// 表格
@@ -238,102 +192,20 @@
 					}
 
 				],
-				data1: [{
-						Code: 'A001',
-						Description: '信息技术部',
-						Supervisor: '吴总',
-						Enabled: '是',
-						SortKey: '001',
-						CreateBy: '闫子健',
-						CreateOn: '2018/12/12 16:49:00'
-					},
-					{
-						Code: 'A001',
-						Description: '信息技术部',
-						Supervisor: '吴总',
-						Enabled: '是',
-						SortKey: '001',
-						CreateBy: '闫子健',
-						CreateOn: '2018/12/12 16:49:00'
-					},
-					{
-						Code: 'A001',
-						Description: '信息技术部',
-						Supervisor: '吴总',
-						Enabled: '是',
-						SortKey: '001',
-						CreateBy: '闫子健',
-						CreateOn: '2018/12/12 16:49:00'
-					},
-					{
-						Code: 'A001',
-						Description: '信息技术部',
-						Supervisor: '吴总',
-						Enabled: '是',
-						SortKey: '001',
-						CreateBy: '闫子健',
-						CreateOn: '2018/12/12 16:49:00'
-					},
-					{
-						Code: 'A001',
-						Description: '信息技术部',
-						Supervisor: '吴总',
-						Enabled: '是',
-						SortKey: '001',
-						CreateBy: '闫子健',
-						CreateOn: '2018/12/12 16:49:00'
-					},
-					{
-						Code: 'A001',
-						Description: '信息技术部',
-						Supervisor: '吴总',
-						Enabled: '是',
-						SortKey: '001',
-						CreateBy: '闫子健',
-						CreateOn: '2018/12/12 16:49:00'
-					},
-					{
-						Code: 'A001',
-						Description: '信息技术部',
-						Supervisor: '吴总',
-						Enabled: '是',
-						SortKey: '001',
-						CreateBy: '闫子健',
-						CreateOn: '2018/12/12 16:49:00'
-					},
-					
-					
-				],
+				data1: [],
+				BusinessUnitData: {
+					"Filters": {},
+				},
+				delBusinessUnitList:[],
 				// 表格 end      
 				// 删除信息弹出框
 				delete1: false,
 				// 删除信息弹出框 end   
 				// 添加信息 弹出框
 				cityList: [{
-						value: 'New York',
-						label: 'New York'
-					},
-					{
-						value: 'London',
-						label: 'London'
-					},
-					{
-						value: 'Sydney',
-						label: 'Sydney'
-					},
-					{
-						value: 'Ottawa',
-						label: 'Ottawa'
-					},
-					{
-						value: 'Paris',
-						label: 'Paris'
-					},
-					{
-						value: 'Canberra',
-						label: 'Canberra'
-					}
-				],
+					value: 'New York',
+					label: 'New York'
+				}],
 				cityList1: [{
 						value: 'New York',
 						label: 'New York'
@@ -369,38 +241,49 @@
 					Supervisor: '',
 				},
 				ruleValidate: {
-					Code: [{
-							required: true,
-							message: '部门代码不能为空',
-							trigger: 'blur'
-						},
-						{
-							min: 8,
-							max: 8,
-							message: "长度必须是8位字符",
-							trigger: "blur"
-						},
-						{
-							pattern: /[\u4e00-\u9fa5]/gm,
-							message: "必须是字母加数值",
-							trigger: "blur"
-						}
-					],
-					Description: [{
-						required: true,
-						message: '部门名称部能为空!',
-						trigger: 'blur'
-					}, ],
-					Supervisor: [{
-						required: true,
-						message: '请选择主管姓名',
-						trigger: 'change'
-					}],
+					//					Code: [{
+					//							required: true,
+					//							message: '部门代码不能为空',
+					//							trigger: 'blur'
+					//						},
+					//						{
+					//							min: 8,
+					//							max: 8,
+					//							message: "长度必须是8位字符",
+					//							trigger: "blur"
+					//						},
+					//						{
+					//							pattern: /[\u4e00-\u9fa5]/gm,
+					//							message: "必须是字母加数值",
+					//							trigger: "blur"
+					//						}
+					//					],
+					//					Description: [{
+					//						required: true,
+					//						message: '部门名称部能为空!',
+					//						trigger: 'blur'
+					//					}, ],
+					//					Supervisor: [{
+					//						required: true,
+					//						message: '请选择主管姓名',
+					//						trigger: 'change'
+					//					}],
 				}
 				// 添加信息 弹出框 end  
 			}
 		},
 		methods: {
+			deleteList(){
+				if(this.delBusinessUnitList.length == 0){
+					this.$Message.info('请先勾选数据');
+				}else{
+					deleteBusinessUnit(this.delBusinessUnitList).then(res => {
+							this.$Message.success('删除成功!')
+						}).catch(err => {
+							console.log(err)
+						})
+				}
+			},
 			// 删除信息 弹出框函数
 			ok() {
 				this.$Message.info('已删除');
@@ -413,8 +296,12 @@
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
 					if(valid) {
-						this.$Message.success('成功!');
-						this.AddDepartment = false;
+						addBusinessUnit(this.formValidate).then(res => {
+							this.$Message.success('成功!');
+							this.AddDepartment = false;
+						}).catch(err => {
+							console.log(err)
+						})
 					} else {
 						this.$Message.error('请输入正确的格式!');
 					}
@@ -424,14 +311,28 @@
 
 				this.$refs[name].resetFields();
 				this.$Message.info('已取消添加部门');
+			},
+			// 删除组织接口
+			delBusinessUnitData(selection){
+				console.log(selection)
+				this.delBusinessUnitList = selection;
+				console.log( this.delBusinessUnitList)
 			}
-			// 添加信息 弹出框函数 end
+			
 		},
 		mounted() {
+			//获取树形结构
 			getTreeList().then(res => {
-				 //this.treeList= []  //初始化
-				console.log(res.data[0].Description)
-				this.treeList.title = res.data[0].Description
+				this.treeList= res.data  //初始化
+				console.log(this.treeList)
+				
+				
+			}).catch(err => {
+				console.log(err)
+			});
+			//获取表格
+			getBusinessUnitData(this.BusinessUnitData).then(res => {
+				this.data1 = res.data
 			}).catch(err => {
 				console.log(err)
 			})
