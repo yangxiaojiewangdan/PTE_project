@@ -59,7 +59,7 @@
                         <Col span="24">
                             <Col span="24">
                                 <FormItem label="部门名称" prop="BusinessUnit" >
-                                    <Input v-model="formValidate.BusinessUnit" disabled placeholder="Enter something..." style="width:200px"/>
+                                    <Input v-model="formValidate.BusinessUnit"  placeholder="Enter something..." style="width:200px"/>
                                 </FormItem>
                             </Col>
                             <Col span="24">
@@ -963,6 +963,7 @@
                     Supervisor: '',
                     AddDepartment: false,
                     formValidate: {
+                        BusinessUnit:'',
                         FirstName:'',
                         LastName:'',
                         Gender:'',

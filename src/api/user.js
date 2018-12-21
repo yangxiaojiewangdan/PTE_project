@@ -17,7 +17,7 @@ const data = {
 //获取用户信息
 export const getUserInfo = (SessionToken) => {
   return axios.request({
-//  url: apiUrl+'/api/Orginazation/BusinessUser/GetEntity',
+    url: apiUrl+'/api/Orginazation/BusinessUser/GetEntity',
     params: {
       SessionToken,
       keyId:'100'
