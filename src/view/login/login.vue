@@ -28,11 +28,14 @@ export default {
     ]),
     handleSubmit ({ Account, Password }) {
       this.handleLogin({ Account, Password }).then(res => {
-        this.getUserInfo().then(res => {
-          this.$router.push({
-            name: this.$config.homeName
-          })
+      	this.$router.push({
+          name: this.$config.homeName
         })
+//      this.getUserInfo().then(res => {
+//        this.$router.push({
+//          name: this.$config.homeName
+//        })
+//      })
       })
     }
   }
