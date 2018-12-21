@@ -37,10 +37,10 @@ export const uploadMessage= formData => {
 }
 
 //修改人员信息接口
-export const UpdateUserData= formData => {
+export const UpdateUserData= formData1 => {
   return axios.request({
     url: apiUrl+'/api/BusinessUser/Update',
-    data: formData,
+    data: formData1,
     method: 'post'
   })
 }

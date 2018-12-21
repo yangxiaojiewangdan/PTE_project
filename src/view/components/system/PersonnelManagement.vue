@@ -240,28 +240,28 @@
         <!-- 添加信息 弹出框 end-->
         <!-- 查看信息 修改信息 弹出框-->
             <Modal v-model="SeeDepartment" width="1300" title="查看用户信息"  :mask-closable="false">
-                <Form ref="SeeformValidate" :model="SeeformValidate" :rules="ruleValidate" :label-width="80" v-for="item in SeeformValidate">
+                <Form ref="SeeDepartment" :model="SeeDepartment" :rules="ruleValidate" :label-width="80" >
                     <Row>
                         <Col span="24">
                             <Col span="24">
                                 <FormItem label="部门名称" prop="BusinessUnit" >
-                                    <Input v-model="SeeformValidate.BusinessUnit"  placeholder="Enter something..." style="width:200px"/>
+                                    <Input v-model="SeeDepartment.BusinessUnit"  placeholder="Enter something..." style="width:200px"/>
                                 </FormItem>
                             </Col>
                             <Col span="24">
                                 <Col span="8">
                                     <FormItem label="姓" prop="FirstName" >
-                                        <Input v-model="SeeformValidate.FirstName"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.FirstName"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="名" prop="LastName" >
-                                        <Input v-model="SeeformValidate.LastName"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.LastName"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="性别" prop="Gender" >
-                                        <RadioGroup v-model="SeeformValidate.Gender">
+                                        <RadioGroup v-model="SeeDepartment.Gender">
                                             <Radio label="男"></Radio>
                                             <Radio label="女"></Radio>
                                         </RadioGroup>
@@ -271,41 +271,41 @@
                             <Col span="24">
                                 <Col span="8">
                                     <FormItem label="出生日期" prop="BrithDate" >
-                                        <DatePicker v-model="SeeformValidate.BrithDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+                                        <DatePicker v-model="SeeDepartment.BrithDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="入职日期" prop="JoinDate" >
-                                        <DatePicker v-model="SeeformValidate.JoinDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+                                        <DatePicker v-model="SeeDepartment.JoinDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="离职日期" prop="LeaveDate" >
-                                        <DatePicker v-model="SeeformValidate.LeaveDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+                                        <DatePicker v-model="SeeDepartment.LeaveDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
                                     </FormItem>
                                 </Col>
                             </Col>
                             <Col span="24">
                                 <Col span="8">
                                     <FormItem label="职位" prop="Title" >
-                                        <Input v-model="SeeformValidate.Title"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.Title"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="固定电话" prop="TelPhone" >
-                                        <Input v-model="SeeformValidate.TelPhone"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.TelPhone"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="手机" prop="MobilePhone" >
-                                        <Input v-model="SeeformValidate.MobilePhone"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.MobilePhone"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                             </Col>
                             <Col span="24">
                                 <Col span="8">
                                     <FormItem label="主管姓名" prop="Supervisor" >
-                                        <Select v-model="SeeformValidate.Supervisor" style="width:200px" placeholder="请选择">
+                                        <Select v-model="SeeDepartment.Supervisor" style="width:200px" placeholder="请选择">
                                             <OptionGroup label="Hot Cities">
                                                 <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
                                             </OptionGroup>
@@ -317,53 +317,53 @@
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="微信号" prop="WeChat" >
-                                        <Input v-model="SeeformValidate.WeChat"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.WeChat"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="QQ号" prop="QQ" >
-                                        <Input v-model="SeeformValidate.QQ"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.QQ"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                             </Col>
                             <Col span="24">
                                 <Col span="8">
                                     <FormItem label="邮箱" prop="Email" >
-                                        <Input v-model="SeeformValidate.Email"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.Email"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="邮编" prop="PostalCode" >
-                                        <Input v-model="SeeformValidate.PostalCode"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.PostalCode"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="地址" prop="Address" >
-                                        <Input v-model="SeeformValidate.Address"  placeholder="请输入......" style="width:305px"/>
+                                        <Input v-model="SeeDepartment.Address"  placeholder="请输入......" style="width:305px"/>
                                     </FormItem>
                                 </Col>
                             </Col>
                              <Col span="24">
                                 <Col span="8">
                                     <FormItem label="登录账号" prop="Account" >
-                                        <Input v-model="SeeformValidate.Account"  placeholder="请输入......" style="width:200px"/>
+                                        <Input v-model="SeeDepartment.Account"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="登录密码" prop="AccountPwd" >
-                                        <Input  type="Password" v-model="SeeformValidate.AccountPwd"  placeholder="请输入......" style="width:200px"/>
+                                        <Input  type="Password" v-model="SeeDepartment.AccountPwd"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                                 <Col span="8">
                                     <FormItem label="角色名称" prop="RoleName" >
-                                        <Input  v-model="SeeformValidate.RoleName"  placeholder="请输入......" style="width:200px"/>
+                                        <Input  v-model="SeeDepartment.RoleName"  placeholder="请输入......" style="width:200px"/>
                                     </FormItem>
                                 </Col>
                             </Col>
                             <Col span="24">
                                 <Col span="6">
                                     <FormItem label="允许登录" prop="AllowLogin" >
-                                        <i-switch v-model="SeeformValidate.AllowLogin" size="large" >
+                                        <i-switch v-model="SeeDepartment.AllowLogin" size="large" >
                                             <span slot="open">On</span>
                                             <span slot="close">Off</span>
                                         </i-switch>
@@ -371,7 +371,7 @@
                                 </Col>
                                 <Col span="6">
                                     <FormItem label="主管标识" prop="IsSupervisor" >
-                                        <i-switch v-model="SeeformValidate.IsSupervisor" size="large" >
+                                        <i-switch v-model="SeeDepartment.IsSupervisor" size="large" >
                                             <span slot="open">On</span>
                                             <span slot="close">Off</span>
                                         </i-switch>
@@ -379,7 +379,7 @@
                                 </Col>
                                 <Col span="6">
                                     <FormItem label="管理员标识" prop="IsAdministrtor" >
-                                        <i-switch v-model="SeeformValidate.IsAdministrtor" size="large" >
+                                        <i-switch v-model="SeeDepartment.IsAdministrtor" size="large" >
                                             <span slot="open">On</span>
                                             <span slot="close">Off</span>
                                         </i-switch>
@@ -387,7 +387,7 @@
                                 </Col>
                                 <Col span="6">
                                     <FormItem label="启用" prop="Enabled" >
-                                        <i-switch v-model="SeeformValidate.Enabled" size="large" >
+                                        <i-switch v-model="SeeDepartment.Enabled" size="large" >
                                             <span slot="open">On</span>
                                             <span slot="close">Off</span>
                                         </i-switch>
@@ -396,7 +396,7 @@
                             </Col>
                             <Col span="24">
                                 <FormItem label="备注" prop="Comments">
-                                    <Input v-model="SeeformValidate.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:1000px;"></Input>
+                                    <Input v-model="SeeDepartment.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:1000px;"></Input>
                                 </FormItem>
                             </Col>
 
@@ -595,7 +595,7 @@
                         Enabled:true,
                         IsAdministrtor:true,
                     },
-                    SeeformValidate:[],
+                    SeeDepartment:[],
                     ruleValidate: {
                         // Code: [
                         //     { required: true, message: '部门代码不能为空', trigger: 'blur' },
@@ -688,10 +688,31 @@
             // 添加信息 弹出框函数 end
             // 查看信息 修改信息 弹出框函数
                 onEditMoney(index){
-                    console.log(index);
+                    console.log(index.FirstName);
                     this.SeeDepartment = index;
-                    console.log( this.SeeDepartment)
-                }
+                    console.log(this.SeeDepartment.FirstName)
+                },
+                handleSubmit (name) {
+                    this.$refs[name].validate((valid) => {
+                        if (valid) {
+                        	//如果正则正确就调用接口发送数据
+                        	uploadMessage(this.formValidate).then(res => {
+								  this.$Message.success('成功!');
+								  this.AddDepartment = false;
+								}).catch(err => {   
+								  	console.log(err)
+								})
+                        } else {
+                            this.$Message.error('请输入正确的格式!');
+                        }
+                    })
+                },
+                handleReset (name) {
+                    
+                    this.$refs[name].resetFields();
+                    this.$Message.info('已取消添加部门');
+                },
+
             // 查看信息 修改信息 弹出框函数 end
         },
         mounted(){
