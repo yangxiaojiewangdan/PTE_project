@@ -240,7 +240,7 @@
     </div>
 </template>
 <script>
-	import { uploadMessage } from '@/api/data'
+	import { uploadMessage ,getTableData} from '@/api/data'
     export default {
         data () {
             return {
@@ -333,29 +333,15 @@
                         {title: '创建人',key: 'CreateBy',width:120,sortable: true},
                         {title: '创建时间',key: 'CreateOn',width:150,sortable: true}
                     ],
-                    data1: [
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        }
-                    ],
+                    //表格数组
+                    data1: [],
+                    //人员信息发送的数据
+                    data4:{
+                    	
+                    		"Filters": {},
+                    	},
+                    	
+                    
                 // 表格 end      
                 // 删除信息弹出框
                     delete1: false,
@@ -498,13 +484,14 @@
                         	uploadMessage(this.formValidate).then(res => {
 								  console.log(res)
 								  this.$Message.success('成功!');
+								  this.AddDepartment = false;
 								}).catch(err => {
 									
 								  	console.log(err)
 								})
                         } else {
                             this.$Message.error('请输入正确的格式!');
-							this.AddDepartment = false;
+							
                         }
                     })
                 },
@@ -514,6 +501,14 @@
                     this.$Message.info('已取消添加部门');
                 }
             // 添加信息 弹出框函数 end
+        },
+        mounted(){
+        	console.log(this.data4)
+        	getTableData(this.data4).then(res => {
+			  this.data1 = res.data
+			}).catch(err => {
+			  console.log(err)
+			})	
         }
     }
 </script>

@@ -11,7 +11,7 @@ const data = {
 }
 
   return axios.request({
-  	url: apiUrl+'/api/Authentication/Authentication/Login',
+  	url: apiUrl+'/api/Authentication/Login',
     data,
     method: 'post'
   })

@@ -4,14 +4,16 @@ export const apiUrl = 'http://192.168.31.74:8081'
 //获取组织结构的树形结构
 export const getTreeList = () => {
   return axios.request({
-    url: apiUrl+'/api/Orginazation/BusinessUnit/GetBusinessUnit',
+    url: apiUrl+'/api/BusinessUnit/GetBusinessUnit',
     method: 'get'
   })
 }
-export const getDragList = () => {
+//获取人员信息表格  多个数据
+export const getTableData = data4 => {
   return axios.request({
-    url: 'get_drag_list',
-    method: 'get'
+    url: apiUrl+'/api/BusinessUser/GetEntities',
+    method: 'post',
+    data:data4
   })
 }
 
@@ -29,15 +31,16 @@ export const saveErrorLogger = info => {
     method: 'post'
   })
 }
+
 //添加人员信息接口
 export const uploadMessage= formData => {
   return axios.request({
-    url: apiUrl+'/api/Orginazation/BusinessUser/Create',
+    url: apiUrl+'/api/BusinessUser/Create',
     data: formData,
     method: 'post'
   })
-
 }
 
+//获取人员信息表格
 
 
