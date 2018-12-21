@@ -1,6 +1,7 @@
 import axios from '@/libs/api.request'
 //url变量
 export const apiUrl = 'http://192.168.31.74:8081'
+
 //获取人员信息表格  多个数据
 export const getTableData = data4 => {
 	return axios.request({
@@ -25,6 +26,7 @@ export const saveErrorLogger = info => {
 	})
 }
 
+
 //添加人员信息接口
 export const uploadMessage = formData => {
 	return axios.request({
@@ -34,13 +36,12 @@ export const uploadMessage = formData => {
 	})
 }
 
-//修改人员信息接口
-export const UpdateUserData = formData1 => {
-	return axios.request({
-		url: apiUrl + '/api/BusinessUser/Update',
-		data: formData1,
-		method: 'post'
-	})
+export const UpdateUserData= formData1 => {
+  return axios.request({
+    url: apiUrl+'/api/BusinessUser/Update',
+    data: formData1,
+    method: 'post'
+  })
 }
 
 

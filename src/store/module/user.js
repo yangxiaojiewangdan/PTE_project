@@ -10,7 +10,6 @@ import {
   getUnreadCount
 } from '@/api/user'
 import { settoken, gettoken } from '@/libs/util'
-
 export default {
   state: {
     Account: '',

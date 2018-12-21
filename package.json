@@ -27,6 +27,7 @@
     "sortablejs": "^1.7.0",
     "tree-table-vue": "^1.1.0",
     "vue": "^2.5.10",
+    "vue-axios": "^2.1.4",
     "vue-i18n": "^7.8.0",
     "vue-router": "^3.0.1",
     "vuedraggable": "^2.16.0",

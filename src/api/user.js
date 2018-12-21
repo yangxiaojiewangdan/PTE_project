@@ -2,24 +2,22 @@ import axios from '@/libs/api.request'
 import qs from 'qs'
 //url变量
 export const apiUrl = 'http://192.168.31.74:8081'
-
 //登陆
 export const login = ({ Account, Password }) => {
 const data = {
 	Account,
 	Password
 }
-
   return axios.request({
   	url: apiUrl+'/api/Authentication/Login',
     data,
-    method: 'post'
+    method: 'post',
   })
 }
 //获取用户信息
 export const getUserInfo = (SessionToken) => {
   return axios.request({
-//  url: apiUrl+'/api/Orginazation/BusinessUser/GetEntity',
+    url: apiUrl+'/api/BusinessUser/GetEntity',
     params: {
       SessionToken,
       keyId:'100'

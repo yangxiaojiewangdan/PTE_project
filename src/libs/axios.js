@@ -26,7 +26,7 @@ class HttpRequest {
         "signature":"signature"
       }
     }
-    return config
+    return config 
   }
   destroy (url) {
     delete this.queue[url]
@@ -67,6 +67,7 @@ class HttpRequest {
     })
   }
   request (options) {
+    
     const instance = axios.create()
     options = Object.assign(this.getInsideConfig(), options)
     this.interceptors(instance, options.url)
