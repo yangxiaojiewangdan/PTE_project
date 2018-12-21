@@ -938,13 +938,13 @@ export default [
           component: () => import('@/view/components/system/role.vue')
         },
         {
-          path: 'system_PersonnelManagement',
-          name: 'system_PersonnelManagement',
+          path: 'system_personnelManagement',
+          name: 'system_personnelManagement',
           meta: {
             icon: 'md-grid',
             title: '人员管理'
           },
-          component: () => import('@/view/components/system/PersonnelManagement.vue')
+          component: () => import('@/view/components/system/personnelManagement.vue')
         },
         {
           path: 'system_parameter',
