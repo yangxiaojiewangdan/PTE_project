@@ -1,16 +1,12 @@
 import axios from '@/libs/api.request'
 
-export const getTableData = () => {
-  return axios.request({
-    url: 'get_table_data',
-    method: 'get'
-  })
-}
 
-export const getDragList = () => {
+//获取人员信息表格  多个数据
+export const getTableData = data4 => {
   return axios.request({
-    url: 'get_drag_list',
-    method: 'get'
+    url: apiUrl+'/api/BusinessUser/GetEntities',
+    method: 'post',
+    data:data4
   })
 }
 
@@ -29,11 +25,15 @@ export const saveErrorLogger = info => {
   })
 }
 
-export const uploadImg = formData => {
+
+//添加人员信息接口
+export const uploadMessage= formData => {
   return axios.request({
-    url: 'image/upload',
-    data: formData
+    url: apiUrl+'/api/BusinessUser/Create',
+    data: formData,
+    method: 'post'
   })
-
-
 }
+
+//获取人员信息表格
+

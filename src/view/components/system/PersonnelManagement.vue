@@ -1,3 +1,4 @@
+
 <template>
 	<div id="PersonnelManagement">
         <Row >
@@ -240,6 +241,7 @@
     </div>
 </template>
 <script>
+	import { uploadMessage ,getTableData} from '@/api/data'
     export default {
         data () {
             return {
@@ -332,575 +334,15 @@
                         {title: '创建人',key: 'CreateBy',width:120,sortable: true},
                         {title: '创建时间',key: 'CreateOn',width:150,sortable: true}
                     ],
-                    data1: [
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        },
-                        {
-                            BusinessUnit: '信息技术部',
-                            FirstName: '闫',
-                            LastName: '子健',
-                            Gender: '男',
-                            BrithDate:'2018/11/12',
-                            Title:'前端',
-                            TelPhone:'020202',
-                            MobilePhone:'13546704118',
-                            Supervisor:'吴总',
-                            Email:'1054512549@qq.com',
-                            PostalCode:'035400',
-                            AllowLogin:'允许',
-                            Account:'13546704118',
-                            RoleName:'CEO',
-                            IsSupervisor:'0',
-                            IsAdministrtor:'0',
-                            Enabled:'是',
-                            CreateBy:'闫子健',
-                            CreateOn:'2018/12/13 17:39:00',
-                        }
-                    ],
+                    //表格数组
+                    data1: [],
+                    //人员信息发送的数据
+                    data4:{
+                    	
+                    		"Filters": {},
+                    	},
+                    	
+                    
                 // 表格 end      
                 // 删除信息弹出框
                     delete1: false,
@@ -911,26 +353,6 @@
                             value: 'New York',
                             label: 'New York'
                         },
-                        {
-                            value: 'London',
-                            label: 'London'
-                        },
-                        {
-                            value: 'Sydney',
-                            label: 'Sydney'
-                        },
-                        {
-                            value: 'Ottawa',
-                            label: 'Ottawa'
-                        },
-                        {
-                            value: 'Paris',
-                            label: 'Paris'
-                        },
-                        {
-                            value: 'Canberra',
-                            label: 'Canberra'
-                        }
                     ],
                     cityList1: [
                         {
@@ -963,7 +385,6 @@
                     Supervisor: '',
                     AddDepartment: false,
                     formValidate: {
-                        BusinessUnit:'',
                         FirstName:'',
                         LastName:'',
                         Gender:'',
@@ -993,55 +414,55 @@
                         //     { min: 8, max: 8, message: "长度必须是8位字符", trigger: "blur" },
                         //     { pattern:/^[0-9a-zA-Z]*$/g,message: "必须是字母加数值", trigger: "blur" }
                         // ],
-                        FirstName: [
-                            { required: true, message: '姓不能为空', trigger: 'blur' },
-                        ],
-                        LastName: [
-                            { required: true, message: '名不能为空', trigger: 'blur' },
-                        ],
-                        Address: [
-                            { required: true, message: '地址不能为空', trigger: 'blur' },
-                        ],
-                        Gender: [
-                            { required: true, message: '请选择性别', trigger: 'change' }
-                        ],
-                        BrithDate: [
-                            { required: true, message: '请选择出生日期', trigger: 'change' },
-                        ],
-                        JoinDate: [
-                            { required: true, message: '请选择入职日期', trigger: 'change' }
-                        ],
-                        TelPhone: [
-                            { pattern:/0\d{2}-\d{7,8}/,message: "请输入正确的座机号码", trigger: "blur" }
-                        ],
-                        MobilePhone: [
-                            { required: true, message: '手机号不能为空', trigger: 'blur' },
-                            { pattern:/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/,message: "请输入正确的手机号码", trigger: "blur" }
-                        ],
-                        Supervisor: [
-                            { required: true, message: '请选择主管姓名', trigger: 'change' }
-                        ],
-                        WeChat: [
-                           { pattern:/[\u4e00-\u9fa5]/gm,message: "请输入正确的微信号", trigger: "blur" }
-                        ],
-                        QQ: [
-                            { pattern:/^\d{5,10}$/,message: "请输入正确的QQ号", trigger: "blur" }
-                        ],
-                        Email: [
-                             {type: "email",required: true, message:"邮箱格式不正确",trigger: "blur"}
-                        ],
-                        PostalCode: [
-                            {type: "number", min: 8, max: 8,message: '邮编格式不正确', trigger: 'blur' },
-                        ],
-                        RoleName: [
-                            { required: true, message: '名不能为空', trigger: 'blur' },
-                        ],
-                        AccountPwd: [
-                            { pattern:/^\d{5,10}$/,message: "请输入正确的密码", trigger: "blur" }
-                        ],
-                        Account: [
-                            { pattern:/^\d{5,10}$/,message: "请输入正确的账号", trigger: "blur" }
-                        ],
+//                      FirstName: [
+//                          { required: true, message: '姓不能为空', trigger: 'blur' },
+//                      ],
+//                      LastName: [
+//                          { required: true, message: '名不能为空', trigger: 'blur' },
+//                      ],
+//                      Address: [
+//                          { required: true, message: '地址不能为空', trigger: 'blur' },
+//                      ],
+//                      Gender: [
+//                          { required: true, message: '请选择性别', trigger: 'change' }
+//                      ],
+//                      BrithDate: [
+//                          { required: true, message: '请选择出生日期', trigger: 'change' },
+//                      ],
+//                      JoinDate: [
+//                          { required: true, message: '请选择入职日期', trigger: 'change' }
+//                      ],
+//                      TelPhone: [
+//                          { pattern:/0\d{2}-\d{7,8}/,message: "请输入正确的座机号码", trigger: "blur" }
+//                      ],
+//                      MobilePhone: [
+//                          { required: true, message: '手机号不能为空', trigger: 'blur' },
+//                          { pattern:/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/,message: "请输入正确的手机号码", trigger: "blur" }
+//                      ],
+//                      Supervisor: [
+//                          { required: true, message: '请选择主管姓名', trigger: 'change' }
+//                      ],
+//                      WeChat: [
+//                         { pattern:/[\u4e00-\u9fa5]/gm,message: "请输入正确的微信号", trigger: "blur" }
+//                      ],
+//                      QQ: [
+//                          { pattern:/^\d{5,10}$/,message: "请输入正确的QQ号", trigger: "blur" }
+//                      ],
+//                      Email: [
+//                           {type: "email",required: true, message:"邮箱格式不正确",trigger: "blur"}
+//                      ],
+//                      PostalCode: [
+//                          {type: "number", min: 8, max: 8,message: '邮编格式不正确', trigger: 'blur' },
+//                      ],
+//                      RoleName: [
+//                          { required: true, message: '名不能为空', trigger: 'blur' },
+//                      ],
+//                      AccountPwd: [
+//                          { pattern:/^\d{5,10}$/,message: "请输入正确的密码", trigger: "blur" }
+//                      ],
+//                      Account: [
+//                          { pattern:/^\d{5,10}$/,message: "请输入正确的账号", trigger: "blur" }
+//                      ],
                     }
                 // 添加信息 弹出框 end  
             }
@@ -1057,12 +478,19 @@
             // 删除信息 弹出框函数 end
             // 添加信息 弹出框函数
                 handleSubmit (name) {
+                	console.log(123)
                     this.$refs[name].validate((valid) => {
                         if (valid) {
-                            this.$Message.success('成功!');
-                            this.AddDepartment = false;
+                        	//如果正则正确就调用接口发送数据
+                        	uploadMessage(this.formValidate).then(res => {
+								  this.$Message.success('成功!');
+								  this.AddDepartment = false;
+								}).catch(err => {
+								  	console.log(err)
+								})
                         } else {
                             this.$Message.error('请输入正确的格式!');
+							
                         }
                     })
                 },
@@ -1072,6 +500,14 @@
                     this.$Message.info('已取消添加部门');
                 }
             // 添加信息 弹出框函数 end
+        },
+        mounted(){
+        	console.log(this.data4)
+        	getTableData(this.data4).then(res => {
+			  this.data1 = res.data
+			}).catch(err => {
+			  console.log(err)
+			})	
         }
     }
 </script>
