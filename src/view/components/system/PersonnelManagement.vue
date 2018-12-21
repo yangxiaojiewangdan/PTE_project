@@ -485,7 +485,7 @@
                         	uploadMessage(this.formValidate).then(res => {
 								  this.$Message.success('成功!');
 								  this.AddDepartment = false;
-								}).catch(err => {
+								}).catch(err => {   
 								  	console.log(err)
 								})
                         } else {
