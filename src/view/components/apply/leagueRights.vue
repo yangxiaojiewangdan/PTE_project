@@ -47,7 +47,7 @@
             </Col>
         </Row>
         <!-- 添加信息 弹出框-->
-		<Modal v-model="AddDepartment" width="600" title="添加加盟商权益金规则" :mask-closable="false">
+		<Modal v-model="AddDepartment" width="600" height="600" title="添加加盟商权益金规则" :mask-closable="false">
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" label-position="right" :label-width="150">
 				<Row>
 					<Col span="24">
@@ -59,7 +59,7 @@
 					</Col>
 					<Col span="24">
                         <FormItem label="权益金规则代码" prop="Code">
-                            <Input v-model="formValidate.Description" placeholder="请输入" style="width:300px"></Input>
+                            <Input v-model="formValidate.Code" placeholder="请输入" style="width:300px"></Input>
                         </FormItem>
 					</Col>
 					<Col span="24">
@@ -69,45 +69,49 @@
 					</Col>
 					<Col span="24">
                         <FormItem label="权益金方式" prop="RoyaltyType">
-                            <Select v-model="formValidate.Supervisor" style="width:300px" placeholder="请选择">
-                                <OptionGroup label="Hot Cities">
-                                    <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                                </OptionGroup>
-                                <OptionGroup label="Other Cities">
-                                    <Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                                </OptionGroup>
+                            <Select v-model="formValidate.RoyaltyType" style="width:300px">
+                                <Option v-for="item in RoyaltyTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
                         </FormItem>
 					</Col>
 					<Col span="24">
 					<Col span="24">
 					<FormItem label="权益金固定值类型" prop="FlatType">
-						<Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
+						<Select v-model="formValidate.FlatType" style="width:300px">
+                            <Option v-for="item in FlatTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
 					</FormItem>
 					</Col>
                     <Col span="24">
 					<FormItem label="天数不足月或年折算方式" prop="ObversionType">
-						<Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
+						<Select v-model="formValidate.ObversionType" style="width:300px">
+                            <Option v-for="item in ObversionTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
 					</FormItem>
 					</Col>
                     <Col span="24">
 					<FormItem label="权益金计算基准" prop="RoyaltyBenchMark">
-						<Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
+						<Select v-model="formValidate.RoyaltyBenchMark" style="width:300px">
+                            <Option v-for="item in RoyaltyBenchMarkList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        </Select>
 					</FormItem>
 					</Col>
                     <Col span="24">
 					<FormItem label="固定值或比例" prop="FlatOrPecent">
-						<Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
+						<Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
 					</FormItem>
 					</Col>
                     <Col span="24">
 					<FormItem label="排序码" prop="SortKey">
-						<Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
+						<Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
 					</FormItem>
 					</Col>
                     <Col span="24">
 					<FormItem label="启用" prop="Enabled">
-						<Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
+						 <i-switch v-model="formValidate.Enabled" size="large" >
+                            <span slot="open">On</span>
+                            <span slot="close">Off</span>
+                        </i-switch>
 					</FormItem>
 					</Col>
                     
@@ -143,20 +147,7 @@
                 // 查询
                 queryRoyaltyType: '',
                 queryDescription: '',
-                RoyaltyTypeList: [
-                    {
-                        value: '固定金额',
-                        label: '固定金额'
-                    },
-                    {
-                        value: '固定比例',
-                        label: '固定比例'
-                    },
-                    {
-                        value: '阶梯',
-                        label: '阶梯'
-                    },
-                ],
+                
                 // 表格
                 columns4: [
                     {type: 'selection',width: 50,align: 'center',fixed: 'left'},
@@ -172,33 +163,61 @@
                 //表格数组
                 data1: [],
                 // 添加信息 弹出框
-				BusinessGroupList: [],
-				cityList1: [{
-						value: 'New York',
-						label: 'New York'
+                    // 所属业务群
+                BusinessGroupList: [],
+                    // 权益金方式下拉框循环数据
+                RoyaltyTypeList: [
+                    {
+                        value: '固定金额',
+                        label: '固定金额'
+                    },
+                    {
+                        value: '固定比例',
+                        label: '固定比例'
+                    },
+                    {
+                        value: '阶梯',
+                        label: '阶梯'
+                    },
+                ],
+                    // 权益金固定值类型下拉框循环数据
+                FlatTypeList: [{
+						value: '按交易笔数',
+						label: '按交易笔数'
 					},
 					{
-						value: 'London',
-						label: 'London'
+						value: '按天',
+						label: '按天'
 					},
 					{
-						value: 'Sydney',
-						label: 'Sydney'
+						value: '按月',
+						label: '按月'
+					},
+					{
+						value: '按年',
+						label: '按年'
 					}
-				],
-				cityList2: [{
-						value: 'Ottawa',
-						label: 'Ottawa'
+                ],
+                    // 天数不足月或年折算方式下拉框循环数据
+                ObversionTypeList: [{
+						value: '按自然天折算',
+						label: '按自然天折算'
 					},
 					{
-						value: 'Paris',
-						label: 'Paris'
-					},
-					{
-						value: 'Canberra',
-						label: 'Canberra'
+						value: '全额',
+						label: '全额'
 					}
-				],
+                ],
+                    // 权益金计算基准下拉框循环数据
+                RoyaltyBenchMarkList: [{
+						value: '按收入',
+						label: '按收入'
+					},
+					{
+						value: '按利润',
+						label: '按利润'
+					}
+                ],
 				Supervisor: '',
 				AddDepartment: false,
 				formValidate: {

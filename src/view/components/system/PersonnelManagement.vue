@@ -696,8 +696,6 @@
                         	//如果正则正确就调用接口发送数据
                         	UpdateUserData(this.SeeDepartment).then(res => {
                                     this.$Message.success('成功!');
-                                    // 成功后刷新页面   体验不好
-                                    // location. reload();
                                     this.SeeDepartment = false;
                                     this.reload();
 								}).catch(err => {   
