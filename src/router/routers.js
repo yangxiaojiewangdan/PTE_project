@@ -656,64 +656,90 @@ export default [
   // 教师合伙人管理的路由 end
   // 财务中心的路由
     {
-      path: '/multilevel9',
+      path: '/finance',
       name: '财务中心',
       meta: {
-        icon: 'md-menu',
+        icon: 'logo-buffer',
         title: '财务中心'
       },
       component: Main,
-      children: [
-        {
-          path: 'level_2_1',
-          name: 'level_2_1',
-          meta: {
-            icon: 'md-funnel',
-            title: '二级-1'
-          },
-          component: () => import('@/view/multilevel/level-2-1.vue')
-        },
-        {
-          path: 'level_2_2',
-          name: 'level_2_2',
-          meta: {
-            access: ['super_admin'],
-            icon: 'md-funnel',
-            showAlways: true,
-            title: '二级-2'
-          },
-          component: parentView,
-          children: [
-            {
-              path: 'level_2_2_1',
-              name: 'level_2_2_1',
-              meta: {
-                icon: 'md-funnel',
-                title: '三级'
-              },
-              component: () => import('@/view/multilevel/level-2-2/level-2-2-1.vue')
+        children: [
+          {
+            path: 'finance_manual',
+            name: 'finance_manual',
+            meta: {
+              icon: 'md-trending-up',
+              title: '手工入账'
             },
-            {
-              path: 'level_2_2_2',
-              name: 'level_2_2_2',
-              meta: {
-                icon: 'md-funnel',
-                title: '三级'
-              },
-              component: () => import('@/view/multilevel/level-2-2/level-2-2-2.vue')
-            }
-          ]
-        },
-        {
-          path: 'level_2_3',
-          name: 'level_2_3',
-          meta: {
-            icon: 'md-funnel',
-            title: '二级-3'
+            component: () => import('@/view/components/finance/manual.vue')
           },
-          component: () => import('@/view/multilevel/level-2-3.vue')
-        }
-      ]
+          {
+            path: 'finance_league',
+            name: 'finance_league',
+            meta: {
+              icon: 'ios-infinite',
+              title: '加盟商财务'
+            },
+            component: () => import('@/view/components/finance/league.vue')
+          },
+          {
+            path: 'Finance_partner',
+            name: 'Finance_partner',
+            meta: {
+              icon: 'ios-infinite',
+              title: '教师合伙人财务'
+            },
+            component: () => import('@/view/components/finance/partner.vue')
+          },
+          {
+            path: 'finance_tradeFlow',
+            name: 'finance_tradeFlow',
+            meta: {
+              icon: 'ios-infinite',
+              title: '交易流水'
+            },
+            component: () => import('@/view/components/finance/tradeFlow.vue')
+          },
+          {
+            path: 'finance_certificateHistory',
+            name: 'finance_certificateHistory',
+            meta: {
+              icon: 'ios-infinite',
+              title: '凭证历史'
+            },
+            component: () => import('@/view/components/finance/certificateHistory.vue')
+          },
+          {
+            path: 'finance_invoiceHistory',
+            name: 'finance_invoiceHistory',
+            meta: {
+              icon: 'ios-infinite',
+              title: '发票历史'
+            },
+            component: () => import('@/view/components/finance/invoiceHistory.vue')
+          },
+          {
+            path: 'finance_expenditureHistory',
+            name: 'finance_expenditureHistory',
+            meta: {
+              icon: 'ios-infinite',
+              title: '支出历史'
+            },
+            component: () => import('@/view/components/finance/expenditureHistory.vue')
+          },
+          {
+            path: 'finance_StudentRefundHistory',
+            name: 'finance_StudentRefundHistory',
+            meta: {
+              icon: 'ios-infinite',
+              title: '学员退费历史'
+            },
+            component: () => import('@/view/components/finance/StudentRefundHistory.vue')
+          }
+
+
+
+        ]
     },
   // 财务中心的路由 end
   // 服务中心的路由
@@ -877,8 +903,7 @@ export default [
               title: '交易设置'
             },
             component: () => import('@/view/components/apply/trade.vue')
-          }
-          ,
+          },
           {
             path: 'apply_publicDictionary',
             name: 'apply_publicDictionary',
@@ -887,6 +912,15 @@ export default [
               title: '公共字典'
             },
             component: () => import('@/view/components/apply/publicDictionary.vue')
+          },
+          {
+            path: 'apply_leagueRights',
+            name: 'apply_leagueRights',
+            meta: {
+              icon: 'md-grid',
+              title: '权益金规则'
+            },
+            component: () => import('@/view/components/apply/leagueRights.vue')
           }
         ]
     },
