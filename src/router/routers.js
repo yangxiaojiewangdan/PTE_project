@@ -978,7 +978,7 @@ export default [
             icon: 'md-grid',
             title: '人员管理'
           },
-          component: () => import('@/view/components/system/PersonnelManagement.vue')
+          component: () => import('@/view/components/system/personnelManagement.vue')
         },
         {
           path: 'system_parameter',

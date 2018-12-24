@@ -1,0 +1,289 @@
+[33mcommit 1407c7f912824716c741158eb5a0ea70c2413ad8[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Fri Dec 21 14:55:05 2018 +0800
+
+    杨 渲染人员信息
+
+[33mcommit 83d28585e5798d3ff4d19310c9e7e86e2d11e6b7[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Fri Dec 21 11:36:18 2018 +0800
+
+    杨 渲染人员信息
+
+[33mcommit 0c4af1cff56086e37d85dcc2a249d45eb256506f[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Thu Dec 20 20:34:22 2018 +0800
+
+    杨 添加接口
+
+[33mcommit 1237f49c858650e638003808279bf9c2fab05f3c[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Thu Dec 20 16:46:11 2018 +0800
+
+    杨 登陆必须刷新
+
+[33mcommit 55ba4f07ccecfa9d57265369e87cbf6a62fdd054[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Thu Dec 20 15:31:43 2018 +0800
+
+    杨 登陆有问题
+
+[33mcommit 0035e42c5d36ef9c9a28d06be6979ad54be70b8d[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Wed Dec 19 20:25:25 2018 +0800
+
+    杨 获取用户信息
+
+[33mcommit 7434377f29e95766d682574459a3ebb30695211d[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Wed Dec 19 14:05:10 2018 +0800
+
+    杨 获取用户信息
+
+[33mcommit 3fb7bad5845191647a068a18cb48e880ec5a689b[m
+Merge: 1983e5c eea6036
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Wed Dec 19 09:44:02 2018 +0800
+
+    杨 12/19
+
+[33mcommit 1983e5c13a99e5026517fb41aa704d3d2911d37c[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Wed Dec 19 09:42:20 2018 +0800
+
+    杨 12/19
+
+[33mcommit eea6036dec87b1237eb0af65342ca280a507842f[m
+Author: yanzijian <l>
+Date:   Tue Dec 18 15:35:46 2018 +0800
+
+    登
+
+[33mcommit 0e44ec726f63efd119520a0f9c6f646347c86f76[m
+Merge: 0e14656 8c79e60
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Tue Dec 18 14:54:19 2018 +0800
+
+    杨 登陆
+
+[33mcommit 0e1465635eea27b2625c9a8db2363a1f18b34118[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Tue Dec 18 14:53:11 2018 +0800
+
+    杨 登陆
+
+[33mcommit 8c79e602dc124e1f9077e4e72d21f8b7b13bf135[m
+Author: yanzijian <l>
+Date:   Mon Dec 17 19:53:43 2018 +0800
+
+    应用设置路由
+
+[33mcommit 6f239ae827845b5372c06b37f7fa497df4ff1f2a[m
+Merge: 194476a 3a265ba
+Author: yanzijian <l>
+Date:   Mon Dec 17 17:40:07 2018 +0800
+
+    Merge branch 'dev' of https://github.com/yangxiaojiewangdan/PTE_project into dev
+
+[33mcommit 194476a085bb325c9ab4ea4e5bcf198e389fe07a[m
+Author: yanzijian <l>
+Date:   Mon Dec 17 17:39:27 2018 +0800
+
+    应用设置路由
+
+[33mcommit 3a265ba2911ac3276cb9d51bf82a0925f7161532[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Mon Dec 17 15:49:08 2018 +0800
+
+    杨 应用目录
+
+[33mcommit ab857182afe8d858382f069b4e8da38a28f23627[m
+Author: yanzijian <l>
+Date:   Mon Dec 17 15:36:57 2018 +0800
+
+    应用设置路由
+
+[33mcommit 7f5ab6e379ef4d06604f56a1359020349f2ac7b9[m
+Author: yanzijian <l>
+Date:   Mon Dec 17 15:20:22 2018 +0800
+
+    应用设置路由
+
+[33mcommit 11745d603252fa1d51f5d2aab5a9aa67ba056560[m
+Merge: 9e728bf 756582d
+Author: yanzijian <l>
+Date:   Mon Dec 17 15:14:47 2018 +0800
+
+    应用设置路由
+
+[33mcommit 9e728bf1b0e186f725913b72233bfac8dcb73d79[m
+Author: yanzijian <l>
+Date:   Mon Dec 17 15:12:13 2018 +0800
+
+    应用设置路由
+
+[33mcommit 756582dd1b4e8d558a0d080d3aff8b729c76cd3b[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Mon Dec 17 14:49:18 2018 +0800
+
+    杨 公共字典and 公共样式
+
+[33mcommit a66441efc7d85d9642803834cd47d5018d977f2c[m
+Author: yanzijian <l>
+Date:   Mon Dec 17 13:38:27 2018 +0800
+
+    添加公共字典
+
+[33mcommit 9db2a4859fd00661aae24529d85b7af0899bc0f7[m
+Merge: 7ce6426 bcfcc94
+Author: yanzijian <l>
+Date:   Fri Dec 14 17:36:46 2018 +0800
+
+    加盟店个人信息，查询
+
+[33mcommit 7ce6426c45fcf8091ecc42f126d0240734ec5c5b[m
+Author: yanzijian <l>
+Date:   Fri Dec 14 17:34:39 2018 +0800
+
+    加盟店个人信息，查询
+
+[33mcommit bcfcc94f5ed249033729d3d7dba6d8735034bebb[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Fri Dec 14 17:33:41 2018 +0800
+
+    杨 系统角色弹框
+
+[33mcommit b8d8691328f2b02538b5d9b8002f9abc159f9de9[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Fri Dec 14 11:03:58 2018 +0800
+
+    杨 系统角色
+
+[33mcommit 3f0b880093623bf012cf44907889ff5de1374475[m
+Merge: 48dc15f 745caf6
+Author: yanzijian <l>
+Date:   Fri Dec 14 08:59:23 2018 +0800
+
+    Merge branch 'dev' of https://github.com/yangxiaojiewangdan/PTE_project into dev
+
+[33mcommit 48dc15f01f87eaae63b61ac532a169217bba010e[m
+Author: yanzijian <l>
+Date:   Thu Dec 13 19:41:33 2018 +0800
+
+    公共css
+
+[33mcommit 745caf62b30988fb4729329f5fce91efa07966e0[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Thu Dec 13 19:38:46 2018 +0800
+
+    杨 系统
+
+[33mcommit f2a671b26f3a90ffc218e5603869c435f1e014e7[m
+Author: yanzijian <l>
+Date:   Thu Dec 13 17:20:20 2018 +0800
+
+    公共css
+
+[33mcommit aca5a3fdc5ccfb6dcb3cd30539b7a7a0846bfe27[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Thu Dec 13 16:58:43 2018 +0800
+
+    杨 拉
+
+[33mcommit 0a5699ec32cf5e445e2b8e236e0602c894ea8055[m
+Author: yanzijian <l>
+Date:   Thu Dec 13 16:51:57 2018 +0800
+
+    完善组织结构页面
+
+[33mcommit 028705af4636ed48b8eae8886b3a092973b25589[m
+Author: yanzijian <l>
+Date:   Thu Dec 13 11:56:45 2018 +0800
+
+    弹框
+
+[33mcommit d1a8b206fff9f0cd566074a5de94adb2d4441333[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Thu Dec 13 10:11:10 2018 +0800
+
+    杨 main双击问题
+
+[33mcommit aa30629b6f5d01a802d142311fcdfabae52fb5fb[m
+Merge: 9c06cca c40c675
+Author: yanzijian <l>
+Date:   Thu Dec 13 09:48:47 2018 +0800
+
+    弹框
+
+[33mcommit 9c06cca5405e3a2e4bdc0b16ec5fbb2f0436d7f0[m
+Author: yanzijian <l>
+Date:   Thu Dec 13 09:46:36 2018 +0800
+
+    弹框
+
+[33mcommit c40c6757bdca1ba26cd3819d7850324f11d3eafe[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Thu Dec 13 09:44:26 2018 +0800
+
+    yang123
+
+[33mcommit 1ddfff9f76822ffab15934f9ec38478148e6f32a[m
+Author: yanzijian <l>
+Date:   Wed Dec 12 19:01:04 2018 +0800
+
+    组织结构的添加
+
+[33mcommit 60c905495f399d835ec7ee13ccd6f0880d49d5cc[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Wed Dec 12 14:06:34 2018 +0800
+
+    yang
+
+[33mcommit 94970197b7c84896156d61240e02e47a3bad089f[m
+Author: yanzijian <l>
+Date:   Wed Dec 12 13:25:01 2018 +0800
+
+    组织结构的添加
+
+[33mcommit 53843b0b75c318a9c23ea9f69fbd342480dca655[m
+Merge: 21ec965 76b1ecf
+Author: yanzijian <l>
+Date:   Wed Dec 12 13:22:07 2018 +0800
+
+    Merge branch 'dev' of https://github.com/yangxiaojiewangdan/PTE_project into dev
+
+[33mcommit 21ec9653409b69496dfce0e5a7db936edb9e53c1[m
+Author: yanzijian <l>
+Date:   Wed Dec 12 13:20:44 2018 +0800
+
+    组织结构的添加
+
+[33mcommit 76b1ecfdfe3c527ac9647fbe1f83264003a844bb[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Wed Dec 12 11:43:42 2018 +0800
+
+    修改
+
+[33mcommit 4cbd278bc981a6308ac058fe3c82ac82678699db[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Wed Dec 12 10:59:10 2018 +0800
+
+    修改
+
+[33mcommit b05d2f1542a63f8da6e06f56b5a6c829b74de789[m
+Author: yanzijian <l>
+Date:   Tue Dec 11 18:29:14 2018 +0800
+
+    修改
+
+[33mcommit b49b059746f92bcaa47a1349ed8971a31812c63c[m
+Author: yanzijian <l>
+Date:   Tue Dec 11 17:52:38 2018 +0800
+
+    修改
+
+[33mcommit c428e8b03477234b89d29b21839d1be5c8b22041[m
+Author: yangxiaojie <1149265110@qq.com>
+Date:   Tue Dec 11 10:02:57 2018 +0800
+
+    杨 12/11 first
