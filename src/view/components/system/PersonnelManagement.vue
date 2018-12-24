@@ -414,13 +414,13 @@
                             <div><span>更新时间:2018/12/13/ 13:00:00</span></div>
                         </div>
                     </div>
-                    <button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="SeehandleReset('SeeformValidate');SeeDepartment = false;">
+                    <button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="SeehandleReset('SeeDepartment');SeeDepartment = false;">
                         <span>取消</span>
                     </button>
-                    <button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="SeehandleSubmit('SeeformValidate');">
-                        <span>确定</span>
+                    <button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="SeehandleSubmit('SeeDepartment');">
+                        <span>修改</span>
                     </button> 
-                </div>
+                </div> 
             </Modal>
         <!-- 查看信息 修改信息 弹出框 end-->
     </div>
@@ -432,6 +432,7 @@
         UpdateUserData
         } from '@/api/data'
     export default {
+        inject:['reload'],
         data () {
             return {
                 // input框中的值
@@ -570,7 +571,7 @@
                     ],
                     Supervisor: '',
                     AddDepartment: false,
-                    SeeDepartment: false,
+                    SeeDepartment: false, 
                     formValidate: {
                         FirstName:'',
                         LastName:'',
@@ -681,24 +682,24 @@
                     })
                 },
                 handleReset (name) {
-                    
                     this.$refs[name].resetFields();
                     this.$Message.info('已取消添加部门');
                 },
             // 添加信息 弹出框函数 end
             // 查看信息 修改信息 弹出框函数
                 onEditMoney(index){
-                    console.log(index.FirstName);
                     this.SeeDepartment = index;
-                    console.log(this.SeeDepartment.FirstName)
                 },
-                handleSubmit (name) {
+                SeehandleSubmit (name) {                    
                     this.$refs[name].validate((valid) => {
                         if (valid) {
                         	//如果正则正确就调用接口发送数据
-                        	uploadMessage(this.formValidate).then(res => {
-								  this.$Message.success('成功!');
-								  this.AddDepartment = false;
+                        	UpdateUserData(this.SeeDepartment).then(res => {
+                                    this.$Message.success('成功!');
+                                    // 成功后刷新页面   体验不好
+                                    // location. reload();
+                                    this.SeeDepartment = false;
+                                    this.reload();
 								}).catch(err => {   
 								  	console.log(err)
 								})
@@ -707,12 +708,11 @@
                         }
                     })
                 },
-                handleReset (name) {
-                    
+                SeehandleReset (name) {
                     this.$refs[name].resetFields();
-                    this.$Message.info('已取消添加部门');
+                    this.$Message.info('已取消');
                 },
-
+               
             // 查看信息 修改信息 弹出框函数 end
         },
         mounted(){

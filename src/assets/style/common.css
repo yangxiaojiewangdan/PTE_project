@@ -16,7 +16,38 @@
   }
 
 /* 查询操作公共样式 */
+/* 头部 */
   .queryHeader{
     color:#55a;
     margin:10px 30px;
+  }
+  /* 查询条件的公共样式 */
+         /* 高度在页面里定  */
+      .querycriteria{
+          background: #fff;
+          margin-bottom: 10px;
+      }
+      .querycriteriadiv{
+          padding: 10px 0 0 20px ;
+      }
+      .queryForm{
+          margin-top: 20px;
+      }
+  /* 查询条件的公共样式 end */
+  /* 查询结果样式 */
+  .queryEnd{
+    color:#55a;
+    margin:10px 30px;
+  }
+  .tableTop{
+    margin-top: 10px;
+  }
+  .tableTops{
+    margin: 0 5px 0 5px;
+  }
+  /* 分页 */
+  .page{
+    float: right;
+    margin-right: 40px;
+    margin-top: 10px;
   }

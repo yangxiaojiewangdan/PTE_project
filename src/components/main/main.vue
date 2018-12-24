@@ -191,7 +191,6 @@ export default {
     /**
      * @description 初始化设置面包屑导航和标签导航
      */
-   
     this.setTagNavList()
     this.setHomeRoute(routers)
     this.addTag({
