@@ -13,7 +13,7 @@
                 </Col>
                 <!-- 树状图 -->
                 <Col span="24">
-                    <Tree :data="data2" class="tree"></Tree>
+                    <Tree :data="treeList" class="tree" :render="renderContent" children-key="ChildNodes"></Tree>
                 </Col>
                 <!-- 树状图 end-->
             </Col>
@@ -26,7 +26,7 @@
                         <Col span="24">
                             <div class="organization">
                                 <Button @click="AddDepartment = true"  type="success" class="organization_tableTop">添加</Button>
-                                <Button @click="delete1 = true"  type="error" class="organization_tableTop">删除</Button>
+                                <Button @click="deleteList"  type="error" class="organization_tableTop">删除</Button>
                                 <Select v-model="model1" style="width:100px" class="organization_tableTop">
                                     <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                                 </Select>
@@ -38,7 +38,14 @@
                 </Col>
                 <Col span="24">
                    <!-- 表格 -->
-                    <Table height="560" size="small"  @on-row-dblclick="onEditMoney"  highlight-row  stripe border ref="selection" :columns="columns4" :data="data1"></Table>
+                    <Table height="560" size="small"  
+                    	@on-row-dblclick="onEditMoney"  
+                    	highlight-row
+                    	stripe border 
+                    	ref="selection" 
+                    	:columns="columns4" 
+                    	:data="data1"
+                    	@on-select="delBusinessUnitData"></Table>
                     <!-- 表格 end-->
                 </Col>
                 <Col span="24">
@@ -429,7 +436,9 @@
 	import { 
         uploadMessage,
         getTableData,
-        UpdateUserData
+        UpdateUserData,
+        getTreeList,
+        deleteBusinessUser,
         } from '@/api/data'
     export default {
         inject:['reload'],
@@ -439,38 +448,16 @@
                     value: '',
                 // input框中的值 end
                 // 树形图
-                    data2: [
-                        {
-                            title: 'parent 1',
-                            expand: true,
-                            children: [
-                                {
-                                    title: 'parent 1-1',
-                                    expand: true,
-                                    children: [
-                                        {
-                                            title: 'leaf 1-1-1'
-                                        },
-                                        {
-                                            title: 'leaf 1-1-2'
-                                        }
-                                    ]
-                                },
-                                {
-                                    title: 'parent 1-2',
-                                    expand: true,
-                                    children: [
-                                        {
-                                            title: 'leaf 1-2-1'
-                                        },
-                                        {
-                                            title: 'leaf 1-2-1'
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ],
+                    treeList: [],
+                    renderContent: (h, {
+					root,
+					node,
+					data
+				}) => {
+					return(
+						<span class="tree-item"> { data.Description } </span>
+					)
+				},
                 // 树形图 end
                 // 查询下拉框
                     cityList: [
@@ -533,6 +520,8 @@
                 // 表格 end      
                 // 删除信息弹出框
                     delete1: false,
+                    delBusinessUnitList: [],
+					delBusinessUnitArrs: [],
                 // 删除信息弹出框 end   
                 // 添加信息 弹出框
                     cityList: [
@@ -657,6 +646,28 @@
             }
         },
         methods: {
+        	
+        	deleteList() {
+				if(this.delBusinessUnitList.length == 0) {
+					this.$Message.info('请先选中删除的数据');
+				} else {
+					deleteBusinessUser(this.delBusinessUnitArrs).then(res => {
+						this.$Message.success('删除成功!')
+						this.reload();
+					}).catch(err => {
+						this.$Message.success('删除失败!')
+						console.log(err)
+					})
+				}
+			},
+			delBusinessUnitData(selection) {
+				console.log(selection);
+				this.delBusinessUnitList = selection;
+				for(var i = 0; i < this.delBusinessUnitList.length; i++) {
+					this.delBusinessUnitArrs.push(this.delBusinessUnitList[i].Id)
+				};
+				console.log(this.delBusinessUnitArrs);
+			},
             // 删除信息 弹出框函数
                 ok () {
                     this.$Message.info('已删除');
@@ -714,11 +725,19 @@
             // 查看信息 修改信息 弹出框函数 end
         },
         mounted(){
+        	//人员表格
         	getTableData(this.data4).then(res => {
 			  this.data1 = res.data
 			}).catch(err => {
 			  console.log(err)
-			})	
+			})
+			//树形结构
+			getTreeList().then(res => {
+				this.treeList = res.data
+				console.log(this.treeList)
+			}).catch(err => {
+				console.log(err)
+			});
         }
     }
 </script>

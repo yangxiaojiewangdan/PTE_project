@@ -37,7 +37,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData" on-select-all="delBusinessUnitDataAll">
+			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData">
 			</Table>
 			<!-- 表格 end-->
 			</Col>
