@@ -387,7 +387,6 @@
 
 		},
 		mounted() {
-			console.log(this.BusinessUnitQuery)
 			//获取树形结构
 			getTreeList().then(res => {
 				this.treeList = res.data
