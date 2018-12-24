@@ -2,7 +2,6 @@ import axios from '@/libs/api.request'
 //url变量
 export const apiUrl = 'http://192.168.31.74:8081'
 
-
 //获取人员信息表格  多个数据
 export const getTableData = data4 => {
   return axios.request({
@@ -27,7 +26,14 @@ export const UpdateUserData = formData => {
     method: 'post'
   })
 }
-
+//删除人员信息接口
+export const deleteBusinessUser = delBusinessUnitList => {
+	  return axios.request({
+	    url: apiUrl + '/api/BusinessUser/DeleteRange',
+	    data: delBusinessUnitList,
+	    method: 'post'
+	  })
+	}
 
 //添加组织信息接口
 export const addBusinessUnit = formData => {
@@ -63,7 +69,7 @@ export const getBusinessUnitData = BusinessUnitData => {
 	  })
 	}
 
-//获取树形结构
+//获取组织树形结构
 export const getTreeList = () => {
 	  return axios.request({
 	    url: apiUrl + '/api/BusinessUnit/GetBusinessUnit',
