@@ -390,6 +390,7 @@
 			//获取树形结构
 			getTreeList().then(res => {
 				this.treeList = res.data
+				console.log(this.treeList)
 			}).catch(err => {
 				console.log(err)
 			});

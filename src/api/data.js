@@ -54,3 +54,19 @@ export const BusinessUnitGetEntities = BusinessUnitQuery => {
     method: 'post'
   })
 }
+//获取组织表格
+export const getBusinessUnitData = BusinessUnitData => {
+	  return axios.request({
+	    url: apiUrl + '/api/BusinessUnit/GetEntities',
+	    data: BusinessUnitData,
+	    method: 'post'
+	  })
+	}
+
+//获取树形结构
+export const getTreeList = () => {
+	  return axios.request({
+	    url: apiUrl + '/api/BusinessUnit/GetBusinessUnit',
+	    method: 'get'
+	  })
+	}
