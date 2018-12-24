@@ -12,7 +12,7 @@
 			</Col>
 			<!-- 树状图 -->
 			<Col span="24">
-			<Tree :data="treeList" class="tree"></Tree>
+			<Tree :data="treeList" :render="renderContent" children-key="ChildNodes" class="tree"></Tree>
 			</Col>
 			<!-- 树状图 end-->
 			</Col>
@@ -26,18 +26,19 @@
 			<div class="organization">
 				<Button @click="AddDepartment = true" type="success" class="organization_tableTop">添加</Button>
 				<Button @click="deleteList" type="error" class="organization_tableTop">删除</Button>
-				<Select v-model="model1" style="width:100px" class="organization_tableTop">
-					<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+				<Select v-model="formSend.label" style="width:100px">
+					<Option v-for="item in department" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
-				<Input v-model="value" placeholder="Enter something..." style="width: 150px" class="organization_tableTop" />
-				<Button type="primary" class="organization_tableTop">查询</Button>
+				<Input v-model="query" placeholder="请输入" style="width: 150px" class="organization_tableTop" />
+				<Button type="primary" class="organization_tableTop" @click="queryData">查询</Button>
 			</div>
 			</Col>
 			<!-- 表格上面的功能 end-->
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData"></Table>
+			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData" on-select-all="delBusinessUnitDataAll">
+			</Table>
 			<!-- 表格 end-->
 			</Col>
 			<Col span="24">
@@ -123,24 +124,59 @@
 	</div>
 </template>
 <script>
-	import { getTreeList, getBusinessUnitData, addBusinessUnit ,deleteBusinessUnit } from '@/api/data'
+	import { getTreeList, getBusinessUnitData, addBusinessUnit, deleteBusinessUnit, BusinessUnitGetEntities } from '@/api/data'
 	export default {
 		data() {
 			return {
+				formSend: {
+					value:'',
+					label:''
+				},
 				// input框中的值
-				value: '',
+				query: '技术部',
+				department: [{
+						value: '技术部',
+						label: '技术部'
+					},
+					{
+						value: '开发部',
+						label: '开发部'
+					},
+					{
+						value: '运营部',
+						label: '运营部'
+					},
+				],
+				//				BusinessUnitQuery: {
+				//					"Filters": [{
+				//						"Relational": 0,
+				//						"Conditions": [{
+				//							"FilterField": "string",
+				//							"Relational": 0,
+				//							"FilterValue":this.query,
+				//						}]
+				//					}],
+				//					"OrderBy": {
+				//						"SortField": "string",
+				//						"Sortable": 0
+				//					},
+				//					"Paging": true,
+				//					"PageSize": 0,
+				//					"PageIndex": 0
+				//				},
 				// input框中的值 end
 				// 树形图
 				treeList: [],
+				renderContent: (h, {
+					root,
+					node,
+					data
+				}) => {
+					return(
+						<span class="tree-item"> { data.Description } </span>
+					)
+				},
 				// 树形图 end
-				// 查询下拉框
-				cityList: [{
-					value: 'New York',
-					label: 'New York'
-				}],
-
-				model1: '',
-				// 查询下拉框 end    
 				// 表格
 				columns4: [{
 						type: 'selection',
@@ -196,7 +232,8 @@
 				BusinessUnitData: {
 					"Filters": {},
 				},
-				delBusinessUnitList:[],
+				delBusinessUnitList: [],
+				delBusinessUnitArrs: [],
 				// 表格 end      
 				// 删除信息弹出框
 				delete1: false,
@@ -273,15 +310,16 @@
 			}
 		},
 		methods: {
-			deleteList(){
-				if(this.delBusinessUnitList.length == 0){
-					this.$Message.info('请先勾选数据');
-				}else{
-					deleteBusinessUnit(this.delBusinessUnitList).then(res => {
-							this.$Message.success('删除成功!')
-						}).catch(err => {
-							console.log(err)
-						})
+			deleteList() {
+				if(this.delBusinessUnitList.length == 0) {
+					this.$Message.info('请先选中删除的数据');
+				} else {
+					deleteBusinessUnit(this.delBusinessUnitArrs).then(res => {
+						this.$Message.success('删除成功!')
+					}).catch(err => {
+						this.$Message.success('删除失败!')
+						console.log(err)
+					})
 				}
 			},
 			// 删除信息 弹出框函数
@@ -313,20 +351,46 @@
 				this.$Message.info('已取消添加部门');
 			},
 			// 删除组织接口
-			delBusinessUnitData(selection){
-				console.log(selection)
+			delBusinessUnitData(selection) {
+				console.log(selection);
 				this.delBusinessUnitList = selection;
-				console.log( this.delBusinessUnitList)
+				for(var i = 0; i < this.delBusinessUnitList.length; i++) {
+					this.delBusinessUnitArrs.push(this.delBusinessUnitList[i].Id)
+				};
+				console.log(this.delBusinessUnitArrs);
+
+			},
+			//组织查询事件
+			queryData() {
+				BusinessUnitGetEntities({
+					"Filters": [{
+						"Relational": 0,
+						"Conditions": [{
+							"FilterField": this.formSend.label,
+							"Relational":"Equal",
+							"FilterValue": this.query,
+						}]
+					}],
+					"OrderBy": {
+						"SortField": "string",
+						"Sortable": 0
+					},
+					"Paging": false,
+					"PageSize": 0,
+					"PageIndex": 0
+				}).then(res => {
+					console.log(res)
+				}).catch(err => {
+					console.log(err)
+				})
 			}
-			
+
 		},
 		mounted() {
+			console.log(this.BusinessUnitQuery)
 			//获取树形结构
 			getTreeList().then(res => {
-				this.treeList= res.data  //初始化
-				console.log(this.treeList)
-				
-				
+				this.treeList = res.data
 			}).catch(err => {
 				console.log(err)
 			});

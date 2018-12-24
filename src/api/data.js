@@ -70,11 +70,20 @@ export const addBusinessUnit = formData => {
 		method: 'post'
 	})
 }
-//删除组织信息接口  多个
+//删除组织信息接口多个
 export const deleteBusinessUnit = delBusinessUnitList => {
 	return axios.request({
 		url: apiUrl + '/api/BusinessUnit/DeleteRange',
 		data: delBusinessUnitList,
+		method: 'post'
+	})
+}
+
+//查询组织接口
+export const BusinessUnitGetEntities = BusinessUnitQuery => {
+	return axios.request({
+		url: apiUrl + '/api/BusinessUnit/GetEntities',
+		data: BusinessUnitQuery,
 		method: 'post'
 	})
 }
