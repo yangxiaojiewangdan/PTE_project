@@ -29,7 +29,7 @@
 				<Select v-model="formSend.label" style="width:100px">
 					<Option v-for="item in department" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
-				<Input v-model="query" placeholder="请输入" style="width: 150px" class="organization_tableTop" />
+				<Input v-model="query" placeholder="请输入" style="width: 150px" class="organization_tableTop"/>
 				<Button type="primary" class="organization_tableTop" @click="queryData">查询</Button>
 			</div>
 			</Col>
@@ -37,7 +37,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData">
+			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData" @on-row-dblclick="upDataBusinessUnit">
 			</Table>
 			<!-- 表格 end-->
 			</Col>
@@ -121,16 +121,84 @@
 			</div>
 		</Modal>
 		<!-- 添加信息 弹出框 end-->
+		<!--查看修改弹框-->
+		<Modal v-model="upDepartment" width="600" title="修改部门信息" :mask-closable="false">
+			<Form ref="upValidate" :model="upValidate" :rules="ruleValidate" :label-width="80">
+				<Row>
+					<Col span="24">
+					<FormItem label="部门代码" prop="Code">
+						<Input v-model="upValidate.Code" placeholder="请输入" style="width:460px"></Input>
+					</FormItem>
+					</Col>
+					<Col span="24">
+					<FormItem label="部门名称" prop="Description">
+						<Input v-model="upValidate.Description" placeholder="请输入" style="width:460px"></Input>
+					</FormItem>
+					</Col>
+					<Col span="24">
+					<FormItem label="部门描述" prop="LongDescription">
+						<Input v-model="upValidate.LongDescription" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
+					</FormItem>
+					</Col>
+					<Col span="24">
+					<FormItem label="主管姓名" prop="Supervisor">
+						<Select v-model="upValidate.Supervisor" style="width:460px" placeholder="请选择">
+							<OptionGroup label="Hot Cities">
+								<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
+							</OptionGroup>
+							<OptionGroup label="Other Cities">
+								<Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
+							</OptionGroup>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="24">
+					<Col span="15">
+					<FormItem label="排序码" prop="SortKey">
+						<Input type="number" v-model="upValidate.SortKey" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					</Col>
+					<Col span="9">
+					<FormItem label="启用" prop="Enabled">
+						<i-switch v-model="upValidate.Enabled" size="large">
+							<span slot="open">On</span>
+							<span slot="close">Off</span>
+						</i-switch>
+					</FormItem>
+					</Col>
+					</Col>
+				</Row>
+			</Form>
+			<div slot="footer">
+				<div class="footer_left">
+					<div class="footer_left1">
+						<div><span>创建人:闫子健</span></div>
+						<div><span>更新人:闫子健</span></div>
+					</div>
+					<div class="footer_left2">
+						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
+						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+					</div>
+				</div>
+				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('upValidate');upDepartment = false;">
+                        <span>取消</span>
+                    </button>
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="upHandleSubmit('upValidate');">
+                        <span>修改</span>
+                    </button>
+			</div>
+		</Modal>
 	</div>
 </template>
 <script>
-	import { getTreeList, getBusinessUnitData, addBusinessUnit, deleteBusinessUnit, BusinessUnitGetEntities } from '@/api/data'
+	import { getTreeList, getBusinessUnitData, addBusinessUnit, deleteBusinessUnit, BusinessUnitGetEntities, upBusinessUnit } from '@/api/data'
 	export default {
+		inject: ['reload'],
 		data() {
 			return {
 				formSend: {
-					value:'',
-					label:''
+					value: '',
+					label: ''
 				},
 				// input框中的值
 				query: '技术部',
@@ -271,40 +339,47 @@
 				],
 				Supervisor: '',
 				AddDepartment: false,
+				upDepartment: false,
 				formValidate: {
 					Enabled: true,
 					Code: '',
 					Description: '',
 					Supervisor: '',
 				},
+				upValidate: {
+					Enabled: true,
+					Code: '',
+					Description: '',
+					Supervisor: '',
+				},
 				ruleValidate: {
-					//					Code: [{
-					//							required: true,
-					//							message: '部门代码不能为空',
-					//							trigger: 'blur'
-					//						},
-					//						{
-					//							min: 8,
-					//							max: 8,
-					//							message: "长度必须是8位字符",
-					//							trigger: "blur"
-					//						},
-					//						{
-					//							pattern: /[\u4e00-\u9fa5]/gm,
-					//							message: "必须是字母加数值",
-					//							trigger: "blur"
-					//						}
-					//					],
-					//					Description: [{
-					//						required: true,
-					//						message: '部门名称部能为空!',
-					//						trigger: 'blur'
-					//					}, ],
-					//					Supervisor: [{
-					//						required: true,
-					//						message: '请选择主管姓名',
-					//						trigger: 'change'
-					//					}],
+					Code: [{
+							required: true,
+							message: '部门代码不能为空',
+							trigger: 'blur'
+						},
+//						{
+//							min: '',
+//							max: '',
+//							message: "",
+//							trigger: "blur"
+//						},
+//						{
+//							pattern: /[\u4e00-\u9fa5]/gm,
+//							message: "必须是字母加数值",
+//							trigger: "blur"
+//						}
+					],
+					Description: [{
+						required: true,
+						message: '部门名称不能为空!',
+						trigger: 'blur'
+					}, ],
+					Supervisor: [{
+						required: true,
+						message: '请选择主管姓名',
+						trigger: 'change'
+					}],
 				}
 				// 添加信息 弹出框 end  
 			}
@@ -316,6 +391,7 @@
 				} else {
 					deleteBusinessUnit(this.delBusinessUnitArrs).then(res => {
 						this.$Message.success('删除成功!')
+						this.reload();
 					}).catch(err => {
 						this.$Message.success('删除失败!')
 						console.log(err)
@@ -325,6 +401,7 @@
 			// 删除信息 弹出框函数
 			ok() {
 				this.$Message.info('已删除');
+				this.reload();
 			},
 			cancel() {
 				this.$Message.info('已取消');
@@ -337,6 +414,7 @@
 						addBusinessUnit(this.formValidate).then(res => {
 							this.$Message.success('成功!');
 							this.AddDepartment = false;
+							this.reload();
 						}).catch(err => {
 							console.log(err)
 						})
@@ -367,7 +445,7 @@
 						"Relational": 0,
 						"Conditions": [{
 							"FilterField": this.formSend.label,
-							"Relational":"Equal",
+							"Relational": "Equal",
 							"FilterValue": this.query,
 						}]
 					}],
@@ -380,6 +458,21 @@
 					"PageIndex": 0
 				}).then(res => {
 					console.log(res)
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			//详情修改页面
+			upDataBusinessUnit(index) {
+				this.upDepartment = true;
+				this.upValidate = index;
+				console.log(index)
+			},
+			//点击修改按钮
+			upHandleSubmit() {
+				upBusinessUnit(this.upValidate).then(res => {
+					this.$Message.success('修改成功!');
+					this.reload();
 				}).catch(err => {
 					console.log(err)
 				})
