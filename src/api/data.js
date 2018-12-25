@@ -29,7 +29,7 @@ export const UpdateUserData = formData => {
 //删除人员信息接口
 export const deleteBusinessUser = delBusinessUnitList => {
 	  return axios.request({
-	    url: apiUrl + '/api/BusinessUser/DeleteRange',
+	    url: apiUrl + '/api/BusinessUser/BatchDelete',
 	    data: delBusinessUnitList,
 	    method: 'post'
 	  })
@@ -46,7 +46,7 @@ export const addBusinessUnit = formData => {
 //删除组织信息接口多个
 export const deleteBusinessUnit = delBusinessUnitList => {
   return axios.request({
-    url: apiUrl + '/api/BusinessUnit/DeleteRange',
+    url: apiUrl + '/api/BusinessUnit/BatchDelete',
     data: delBusinessUnitList,
     method: 'post'
   })
@@ -84,3 +84,19 @@ export const upBusinessUnit = upValidate => {
 	    method: 'post'
 	  })
 	}
+//系统角色表格
+export const getBusinessRolesData = BusinessRolesData => {
+	  return axios.request({
+	    url: apiUrl + '/api/BusinessRole/GetEntities',
+	    data: BusinessRolesData,
+	    method: 'post'
+	  })
+	}
+//添加系统角色
+export const addBusinessRole = formValidate  => {
+  return axios.request({
+    url: apiUrl + '/api/BusinessRole/Create',
+    data: formValidate,
+    method: 'post'
+  })
+}

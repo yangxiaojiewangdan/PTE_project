@@ -646,7 +646,7 @@
             }
         },
         methods: {
-        	
+        	//删除
         	deleteList() {
 				if(this.delBusinessUnitList.length == 0) {
 					this.$Message.info('请先选中删除的数据');
