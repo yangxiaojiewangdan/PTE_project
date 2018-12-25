@@ -76,3 +76,11 @@ export const getTreeList = () => {
 	    method: 'get'
 	  })
 	}
+//修改更新组织
+export const upBusinessUnit = upValidate => {
+	  return axios.request({
+	    url: apiUrl + '/api/BusinessUnit/Update',
+	    data:upValidate,
+	    method: 'post'
+	  })
+	}
