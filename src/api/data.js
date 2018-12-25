@@ -100,3 +100,11 @@ export const addBusinessRole = formValidate  => {
     method: 'post'
   })
 }
+//删除系统角色
+export const deleteBusinessRole = delBusinessRoleArrs => {
+	  return axios.request({
+	    url: apiUrl + '/api/BusinessRole/BatchDelete',
+	    data: delBusinessRoleArrs,
+	    method: 'post'
+	  })
+	}

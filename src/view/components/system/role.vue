@@ -10,7 +10,7 @@
 			<Col span="7" push="14">
 			<div class="organization">
 				<Button type="success" class="organization_tableTop" @click="AddDepartment = true">添加</Button>
-				<Button type="error" class="organization_tableTop">删除</Button>
+				<Button type="error" class="organization_tableTop" @click="deleteList">删除</Button>
 				<Select v-model="model1" style="width:100px" class="organization_tableTop">
 					<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
@@ -23,7 +23,7 @@
 		<Row>
 			<!--表格-->
 			<Col span="20" push="1">
-			<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="aaa()" stripe size="small" highlight-row></Table>
+			<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="aaa()" stripe size="small" highlight-row @on-select="deleteBusinessRole"></Table>
 			</Col>
 			<!--分页-->
 			<Col span="10" push="10">
@@ -34,6 +34,15 @@
 		<Modal v-model="AddDepartment" width="600" title="添加系统角色" :mask-closable="false">
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
 				<Row>
+					<Col span="24">
+					<FormItem label="所属业务群" prop="BusinessGroup">
+						<Select v-model="formValidate.BusinessGroup" placeholder="请选择" style="width:460px">
+							<Option value="技术部">技术部</Option>
+							<Option value="运营部">运营部</Option>
+							<Option value="财务部">财务部</Option>
+						</Select>
+					</FormItem>
+					</Col>
 					<Col span="24">
 					<FormItem label="角色代码" prop="Code">
 						<Input v-model="formValidate.Code" placeholder="请输入" style="width:460px"></Input>
@@ -50,8 +59,8 @@
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<FormItem label="角色级别" prop='animal'>
-						<RadioGroup v-model="formValidate.animal">
+					<FormItem label="角色级别" prop='DataPermissionLevel'>
+						<RadioGroup v-model="formValidate.DataPermissionLevel">
 							<Radio label="无"></Radio>
 							<Radio label="个人"></Radio>
 							<Radio label="本部门"></Radio>
@@ -124,12 +133,12 @@
 				<Row>
 					<Col span="12">
 					<FormItem label="角色代码" prop>
-						<Input v-model="formRoleValidate.Code" placeholder="请输入" style="width:250px"></Input>
+						<Input v-model="formRoleValidate.Code" :readonly="true" style="width:250px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="12">
 					<FormItem label="角色名称" prop>
-						<Input v-model="formRoleValidate.Description" placeholder="请输入" style="width:250px"></Input>
+						<Input v-model="formRoleValidate.Description"  :readonly="true" style="width:250px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="24" push="1">
@@ -162,13 +171,12 @@
 	</div>
 </template>
 <script>
-	import { getBusinessRolesData, addBusinessRole } from '@/api/data'
+	import { getBusinessRolesData, addBusinessRole,deleteBusinessRole} from '@/api/data'
 	export default {
 		data() {
 			return {
 				model1: '',
 				value: '',
-				animal: '全组织',
 				cityList: [{
 						value: 'New York',
 						label: 'New York'
@@ -286,41 +294,42 @@
 					Description: '',
 					Supervisor: '',
 				},
-				formRoleValidate:{
-					Enabled: true,
+				formRoleValidate: {
 					Code: '',
 					Description: '',
-					Supervisor: '',
 				},
 				ruleValidate: {
-//					Code: [{
-//							required: true,
-//							message: '部门代码不能为空',
-//							trigger: 'blur'
-//						},
-//						{
-//							min: 8,
-//							max: 8,
-//							message: "长度必须是8位字符",
-//							trigger: "blur"
-//						},
-//						{
-//							pattern: /^[0-9a-zA-Z]*$/g,
-//							message: "必须是字母加数值",
-//							trigger: "blur"
-//						}
-//					],
-//					Description: [{
-//						required: true,
-//						message: '部门名称部能为空!',
-//						trigger: 'blur'
-//					}, ],
-//					Supervisor: [{
-//						required: true,
-//						message: '请选择主管姓名',
-//						trigger: 'change'
-//					}],
+					//					Code: [{
+					//							required: true,
+					//							message: '部门代码不能为空',
+					//							trigger: 'blur'
+					//						},
+					//						{
+					//							min: 8,
+					//							max: 8,
+					//							message: "长度必须是8位字符",
+					//							trigger: "blur"
+					//						},
+					//						{
+					//							pattern: /^[0-9a-zA-Z]*$/g,
+					//							message: "必须是字母加数值",
+					//							trigger: "blur"
+					//						}
+					//					],
+					//					Description: [{
+					//						required: true,
+					//						message: '部门名称部能为空!',
+					//						trigger: 'blur'
+					//					}, ],
+					//					Supervisor: [{
+					//						required: true,
+					//						message: '请选择主管姓名',
+					//						trigger: 'change'
+					//					}],
 				},
+				//删除数组
+				delBusinessRoleList: [],
+				delBusinessRoleArrs: [],
 				//分配权限弹框里的数据
 				data3: this.getMockData(),
 				targetKeys3: this.getTargetKeys(),
@@ -338,6 +347,20 @@
 				this.businessRoles = true;
 
 			},
+			//删除
+			deleteList() {
+				if(this.delBusinessRoleList.length == 0) {
+					this.$Message.info('请先选中删除的数据');
+				} else {
+					deleteBusinessRole(this.delBusinessRoleList).then(res => {
+						this.$Message.success('删除成功!')
+						this.reload();
+					}).catch(err => {
+						this.$Message.error('删除失败!')
+						console.log(err)
+					})
+				}
+			},
 			// 删除信息 弹出框函数
 			ok() {
 				this.$Message.info('已删除');
@@ -345,13 +368,27 @@
 			cancel() {
 				this.$Message.info('已取消');
 			},
+			//删除组织赋值
+			deleteBusinessRole(selection) {
+				console.log(selection);
+				this.delBusinessRoleList = selection;
+				for(var i = 0; i < this.delBusinessRoleList.length; i++) {
+					this.delBusinessRoleArrs.push(this.delBusinessRoleList[i].Id)
+				};
+				console.log(this.delBusinessRoleArrs);
+
+			},
 			// 删除信息弹出框函数 end
 			// 添加信息弹出框函数
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
-					console.log(valid)
 					if(valid) {
-						this.$Message.success('成功!');
+						addBusinessRole(this.formValidate).then(res => {
+							console.log(res)
+							this.$Message.success('成功!');
+						}).catch(err => {
+							console.log(err)
+						})
 					} else {
 						this.$Message.error('失败!');
 					}
@@ -364,11 +401,10 @@
 				this.businessRoles = false
 			},
 			// 添加信息 弹出框函数 end
-			
+
 			// 权限信息弹出框函数
 			handleSubmit2(name) {
 				this.$refs[name].validate((valid) => {
-					console.log(valid)
 					if(valid) {
 						this.$Message.success('成功!');
 					} else {
@@ -377,13 +413,12 @@
 				})
 			},
 			handleReset2(name) {
-
 				this.$refs[name].resetFields();
 				this.$Message.info('已取消');
 				this.businessRoles = false
 			},
 			// 权限信息 弹出框函数 end
-			
+
 			//权限弹框函数
 			getMockData() {
 				let mockData = [];
@@ -412,7 +447,6 @@
 		mounted() {
 			//获取data信息
 			getBusinessRolesData(this.BusinessRolesData).then(res => {
-				console.log(res.data)
 				this.data1 = res.data;
 			}).catch(err => {
 				console.log(err)
