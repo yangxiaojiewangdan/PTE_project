@@ -37,7 +37,7 @@
                     </Col>
                     <!-- 表格 -->
                     <Col span="24" >
-                        <Table height="560" size="small"  highlight-row  stripe border ref="selection" :columns="columns4" :data="data1"></Table>
+                        <Table height="560" size="small"  highlight-row  stripe border ref="selection" :columns="columnsContent" :data="dataContent"></Table>
                     </Col>
                     <!-- 分页 -->
                     <Col span="24">
@@ -47,8 +47,8 @@
             </Col>
         </Row>
         <!-- 添加信息 弹出框-->
-		<Modal v-model="AddDepartment" width="600" height="600" title="添加加盟商权益金规则" :mask-closable="false"  :styles="{top: '20px'}">
-			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" label-position="right" :label-width="150">
+		<Modal v-model="AddDepartment" scrollable width="600" height="1 00" title="添加加盟商权益金规则" :mask-closable="false"  :styles="{top: '20px'}">
+			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" label-position="right" :label-width="160">
 				<Row>
 					<Col span="24">
                         <FormItem label="所属业务群" prop="BusinessGroup">
@@ -69,50 +69,57 @@
 					</Col>
 					<Col span="24">
                         <FormItem label="权益金方式" prop="RoyaltyType">
-                            <Select v-model="formValidate.RoyaltyType" style="width:300px">
+                            <Select v-model="formValidate.RoyaltyType" :label-in-value="true" @on-change="v=>{setOption(v,'type')}" style="width:300px">
                                 <Option v-for="item in RoyaltyTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
                         </FormItem>
 					</Col>
 					<Col span="24">
 					<Col span="24">
-					<FormItem label="权益金固定值类型" prop="FlatType">
-						<Select v-model="formValidate.FlatType" style="width:300px">
-                            <Option v-for="item in FlatTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                        </Select>
-					</FormItem>
+                        <FormItem label="权益金固定值类型" prop="FlatType">
+                            <Select v-model="formValidate.FlatType" style="width:300px">
+                                <Option v-for="item in FlatTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            </Select>
+                        </FormItem>
 					</Col>
                     <Col span="24">
-					<FormItem label="天数不足月或年折算方式" prop="ObversionType">
-						<Select v-model="formValidate.ObversionType" style="width:300px">
-                            <Option v-for="item in ObversionTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                        </Select>
-					</FormItem>
+                        <FormItem label="天数不足月或年折算方式" prop="ObversionType">
+                            <Select v-model="formValidate.ObversionType" style="width:300px">
+                                <Option v-for="item in ObversionTypeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            </Select>
+                        </FormItem>
 					</Col>
                     <Col span="24">
-					<FormItem label="权益金计算基准" prop="RoyaltyBenchMark">
-						<Select v-model="formValidate.RoyaltyBenchMark" style="width:300px">
-                            <Option v-for="item in RoyaltyBenchMarkList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                        </Select>
-					</FormItem>
+                        <FormItem label="权益金计算基准" prop="RoyaltyBenchMark">
+                            <Select v-model="formValidate.RoyaltyBenchMark" style="width:300px">
+                                <Option v-for="item in RoyaltyBenchMarkList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            </Select>
+                        </FormItem>
 					</Col>
                     <Col span="24">
-					<FormItem label="固定值或比例" prop="FlatOrPecent">
-						<Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
-					</FormItem>
+                        <FormItem label="固定值或比例" prop="FlatOrPecent">
+                            <Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
+                        </FormItem>
 					</Col>
                     <Col span="24">
-					<FormItem label="排序码" prop="SortKey">
-						<Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
-					</FormItem>
+                        <FormItem label="排序码" prop="SortKey">
+                            <Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
+                        </FormItem>
 					</Col>
                     <Col span="24">
-					<FormItem label="启用" prop="Enabled">
-						 <i-switch v-model="formValidate.Enabled" size="large" >
-                            <span slot="open">On</span>
-                            <span slot="close">Off</span>
-                        </i-switch>
-					</FormItem>
+                        <FormItem label="启用" prop="Enabled">
+                            <i-switch v-model="formValidate.Enabled" size="large" >
+                                <span slot="open">On</span>
+                                <span slot="close">Off</span>
+                            </i-switch>
+                        </FormItem>
+					</Col>
+                    <!-- 阶梯表格 -->
+                    <Col span="24" v-if="RoyaltyCodeDetail">
+                        <Card>
+                            <tables search-place="top" ref="tables" size="small" editable   v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete"/>
+                        </Card>
+                        <Button @click="AddDepartment = true"  type="success" style="margin-top:10px;">添加阶梯明细</Button>
 					</Col>
 					</Col>
 				</Row>
@@ -139,7 +146,11 @@
     </div>  
 </template>
 <script>
+import Tables from '_c/tables'
     export default {
+        components: {
+            Tables
+        },
         data () {
             return {
                 // 查询
@@ -154,8 +165,8 @@
                 ],
                 queryvalue:'',
                 querySelect:'',
-                // 表格
-                columns4: [
+                // 内容表格
+                columnsContent: [
                     {type: 'selection',width: 50,align: 'center',fixed: 'left'},
                     {title: '所属业务群',key: 'BusinessGroup',width:175,sortable: true},
                     {title: '权益金规则代码',key: 'Code',width:200,sortable: true},
@@ -167,7 +178,7 @@
                     {title: '创建时间',key: 'CreateOn',width:175,sortable: true},
                 ],
                 //表格数组
-                data1: [],
+                dataContent: [],
                 // 添加信息 弹出框
                     // 所属业务群
                 BusinessGroupList: [],
@@ -227,7 +238,8 @@
                 // 添加权益金规则默认隐藏
 				AddDepartment: false,
                 // 当RoyaltyType为【阶梯】时显示，现在默认隐藏
-                // RoyaltyCodeDetail:false,
+                RoyaltyCodeDetail:false,
+                // 添加信息表单
 				formValidate: {
 					BusinessGroup: '',
 					Code: '',
@@ -238,7 +250,8 @@
 					FlatOrPecent: '',
 					SortKey: '',
 					Enabled: true,
-				},
+                },
+                // 添加信息表单验证
 				ruleValidate: {
                     BusinessGroup: [
                         { required: true, message: '请选择用户群', trigger: 'change' },
@@ -268,11 +281,30 @@
                     SortKey: [
                         { required: true, message: '排序码', trigger: 'change' },
                     ],
-                    Enabled: [
-                        { required: true, message: '启用', trigger: 'change' },
-                    ]
                 },
+                // 阶梯表格信息
+                columnsRoyaltyCodeDetail: [
+                    {title: '下限金额（含）', key: 'LowerValue', editable: true},
+                    {title: '上限金额（不含）', key: 'UpperValue', editable: true},
+                    {title: '固定值或比例', key: 'FlatOrPecent',editable: true},
+                    {title: '操作',key: 'handle',options: ['delete'], }
+                ],
+                // 阶梯表格数组
+                dataRoyaltyCodeDetail:[],
+               
             }
-        }
+        },
+        methods:{
+            // 权益金下拉框选择事件  当选择的是阶梯是出现阶梯明细 
+            setOption(value,type){
+                console.log(value.label);
+                if(value.label == '阶梯'){
+                    this.RoyaltyCodeDetail = true;
+                }
+            },
+            handleDelete (params) {
+                console.log(params)
+            },
+        },
     }
 </script>
