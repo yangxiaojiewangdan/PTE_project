@@ -921,6 +921,15 @@ export default [
               title: '权益金规则'
             },
             component: () => import('@/view/components/apply/leagueRights.vue')
+          },
+          {
+            path: 'apply_leagueSettlement',
+            name: 'apply_leagueSettlement',
+            meta: {
+              icon: 'md-grid',
+              title: '加盟商结算规则'
+            },
+            component: () => import('@/view/components/apply/leagueSettlement.vue')
           }
         ]
     },

@@ -28,10 +28,10 @@
                         <div class="tableTop">
                             <Button @click="AddDepartment = true"  type="success" class="tableTops">添加</Button>
                             <Button @click="delete1 = true"  type="error" class="tableTops">删除</Button>
-                            <Select v-model="model1" style="width:100px" >
-                                <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                            <Select v-model="querySelect" style="width:120px" >
+                                <Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                             </Select>
-                            <Input v-model="value" placeholder="Enter something..." style="width: 150px" class="tableTops"/>
+                            <Input v-model="queryvalue" placeholder="Enter something..." style="width: 150px" class="tableTops"/>
                             <Button type="primary" class="tableTops">查询</Button>
                         </div>
                     </Col>
@@ -47,7 +47,7 @@
             </Col>
         </Row>
         <!-- 添加信息 弹出框-->
-		<Modal v-model="AddDepartment" width="600" height="600" title="添加加盟商权益金规则" :mask-closable="false">
+		<Modal v-model="AddDepartment" width="600" height="600" title="添加加盟商权益金规则" :mask-closable="false"  :styles="{top: '20px'}">
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" label-position="right" :label-width="150">
 				<Row>
 					<Col span="24">
@@ -114,8 +114,6 @@
                         </i-switch>
 					</FormItem>
 					</Col>
-                    
-
 					</Col>
 				</Row>
 			</Form>
@@ -147,7 +145,15 @@
                 // 查询
                 queryRoyaltyType: '',
                 queryDescription: '',
-                
+                querySelectList:[
+                    {
+                        value: '权益金规则代码',
+                        label: '权益金规则代码'
+                    },
+                    
+                ],
+                queryvalue:'',
+                querySelect:'',
                 // 表格
                 columns4: [
                     {type: 'selection',width: 50,align: 'center',fixed: 'left'},
@@ -218,18 +224,54 @@
 						label: '按利润'
 					}
                 ],
-				Supervisor: '',
+                // 添加权益金规则默认隐藏
 				AddDepartment: false,
+                // 当RoyaltyType为【阶梯】时显示，现在默认隐藏
+                // RoyaltyCodeDetail:false,
 				formValidate: {
-					Enabled: true,
+					BusinessGroup: '',
 					Code: '',
 					Description: '',
-					Supervisor: '',
+					RoyaltyType: '',
+					FlatType: '',
+					RoyaltyBenchMark: '',
+					FlatOrPecent: '',
+					SortKey: '',
+					Enabled: true,
 				},
 				ruleValidate: {
-
-				}
-                
+                    BusinessGroup: [
+                        { required: true, message: '请选择用户群', trigger: 'change' },
+                    ],
+                    Code: [
+                        { required: true, message: '请输入权益金规则代码', trigger: 'change' },
+                        { pattern:/[\u4e00-\u9fa5]/gm,message: "请输入正确的权益金规则代码", trigger: "blur" },
+                    ],
+                    Description: [
+                        { required: true, message: '请输入权益金规则描述', trigger: 'blur' },
+                    ],
+                    RoyaltyType: [
+                        { required: true, message: '请选择权益金方式', trigger: 'change' }
+                    ],
+                    FlatType: [
+                        { required: true, message: '请选择权益金固定值类型', trigger: 'change' },
+                    ],
+                    ObversionType: [
+                        { required: true, message: '请选择天数不足月或年折算方式', trigger: 'change' },
+                    ],
+                    RoyaltyBenchMark: [
+                        { required: true, message: '请选择权益金计算基准', trigger: 'change' },
+                    ],
+                    FlatOrPecent: [
+                        { required: true, message: '请选择固定值或比例', trigger: 'change' },
+                    ],
+                    SortKey: [
+                        { required: true, message: '排序码', trigger: 'change' },
+                    ],
+                    Enabled: [
+                        { required: true, message: '启用', trigger: 'change' },
+                    ]
+                },
             }
         }
     }
