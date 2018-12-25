@@ -12,7 +12,7 @@
             <label>结算方式：</label>
             <Select v-model="queryRoyaltyType" style="width:200px">
               <Option
-                v-for="item in RoyaltyTypeList"
+                v-for="item in SettleTypeList"
                 :value="item.value"
                 :key="item.value"
               >{{ item.label }}</Option>
@@ -31,7 +31,7 @@
           <Col span="8">
             <div class="tableTop">
               <Button @click="AddDepartment = true" type="success" class="tableTops">添加</Button>
-              <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+              <Button @click="deleteList" type="error" class="tableTops">删除</Button>
               <Select v-model="querySelect" style="width:120px">
                 <Option
                   v-for="item in querySelectList"
@@ -57,8 +57,8 @@
               stripe
               border
               ref="selection"
-              :columns="columns4"
-              :data="data1"
+              :columns="SettlementCodeTable"
+              :data="SettlementCodeData"
             ></Table>
           </Col>
           <!-- 分页 -->
@@ -68,6 +68,10 @@
         </Row>
       </Col>
     </Row>
+    <!-- 删除信息弹出框 -->
+    <Modal v-model="delete1" title="提示" @on-ok="ok" @on-cancel="cancel">
+      <h2>确定删除此数据？</h2>
+    </Modal>
     <!-- 添加信息 弹出框-->
     <Modal
       v-model="AddDepartment"
@@ -75,6 +79,7 @@
       height="600"
       title="添加加盟商结算规则"
       :mask-closable="false"
+      :styles="{top: '40px'}"
     >
       <Form
         ref="formValidate"
@@ -101,9 +106,9 @@
             </FormItem>
           </Col>
           <Col span="24">
-            <FormItem label="结算方式" prop="Description">
+            <FormItem label="结算规则描述" prop="Description">
               <Input
-                v-model="formValidate.LongDescription"
+                v-model="formValidate.Description"
                 type="textarea"
                 :autosize="{minRows: 2,maxRows: 5}"
                 placeholder="请输入"
@@ -112,57 +117,72 @@
             </FormItem>
           </Col>
           <Col span="24">
-            <FormItem label="可结算起始天" prop="RoyaltyType">
-              <Select v-model="formValidate.RoyaltyType" style="width:300px">
+            <FormItem label="结算方式" prop="SettleType">
+              <Select
+                v-model="formValidate.SettleType"
+                :label-in-value="true"
+                @on-change="v=>{setOption(v,'type')}"
+                style="width:300px"
+              >
                 <Option
-                  v-for="item in RoyaltyTypeList"
+                  v-for="item in SettleTypeList"
                   :value="item.value"
                   :key="item.value"
                 >{{ item.label }}</Option>
               </Select>
             </FormItem>
           </Col>
-          <Col span="24">
-            <FormItem label="权益金固定值类型" prop="FlatType">
-              <Select v-model="formValidate.FlatType" style="width:300px">
+          <Col span="24" v-if="FromDay">
+            <FormItem label="可结算起始天" prop="FromDay">
+              <Select v-model="formValidate.FromDay" style="width:300px">
                 <Option
-                  v-for="item in FlatTypeList"
+                  v-for="item in FromDayList"
                   :value="item.value"
                   :key="item.value"
                 >{{ item.label }}</Option>
               </Select>
             </FormItem>
           </Col>
-          <Col span="24">
-            <FormItem label="天数不足月或年折算方式" prop="ObversionType">
-              <Select v-model="formValidate.ObversionType" style="width:300px">
+          <Col span="24" v-if="ToDay">
+            <FormItem label="可结算终止天" prop="ToDay">
+              <Select v-model="formValidate.ToDay" style="width:300px">
                 <Option
-                  v-for="item in ObversionTypeList"
+                  v-for="item in ToDayList"
                   :value="item.value"
                   :key="item.value"
                 >{{ item.label }}</Option>
               </Select>
             </FormItem>
           </Col>
-          <Col span="24">
-            <FormItem label="权益金计算基准" prop="RoyaltyBenchMark">
-              <Select v-model="formValidate.RoyaltyBenchMark" style="width:300px">
-                <Option
-                  v-for="item in RoyaltyBenchMarkList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
+          <Col span="24" v-if="PeriodOfT">
+            <FormItem label="T+" prop="PeriodOfT">
+              <Input v-model="formValidate.PeriodOfT" placeholder="请输入" style="width:300px"></Input>
             </FormItem>
           </Col>
-          <Col span="24">
-            <FormItem label="固定值或比例" prop="FlatOrPecent">
-              <Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
+          <Col span="24" v-if="ExcludeHoliday">
+            <FormItem label="节假日(含/不含)" prop="ExcludeHoliday">
+              <i-switch v-model="formValidate.ExcludeHoliday" size="large">
+                <span slot="open">On</span>
+                <span slot="close">Off</span>
+              </i-switch>
+            </FormItem>
+          </Col>
+          <Col span="24" v-if="Allow">
+            <FormItem label="允许周几结算" prop="Allow">
+              <CheckboxGroup v-model="formValidate.Allow">
+                <Checkbox label="周一"></Checkbox>
+                <Checkbox label="周二"></Checkbox>
+                <Checkbox label="周三"></Checkbox>
+                <Checkbox label="周四"></Checkbox>
+                <Checkbox label="周五"></Checkbox>
+                <Checkbox label="周六"></Checkbox>
+                <Checkbox label="周日"></Checkbox>
+              </CheckboxGroup>
             </FormItem>
           </Col>
           <Col span="24">
             <FormItem label="排序码" prop="SortKey">
-              <Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
+              <Input v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
             </FormItem>
           </Col>
           <Col span="24">
@@ -213,6 +233,11 @@
   </div>
 </template>
 <script>
+import {
+  getSettlementCodeData,
+  SettlementCodeCreate,
+  deleteSettlementCode
+} from "@/api/data";
 export default {
   data() {
     return {
@@ -228,7 +253,7 @@ export default {
       queryvalue: "",
       querySelect: "",
       // 表格
-      columns4: [
+      SettlementCodeTable: [
         { type: "selection", width: 50, align: "center", fixed: "left" },
         {
           title: "所属业务群",
@@ -249,12 +274,16 @@ export default {
         { title: "创建时间", key: "CreateOn", width: 200, sortable: true }
       ],
       //表格数组
-      data1: [],
+      // 渲染表格发送的参数
+      getTableData: {
+        Filters: {}
+      },
+      SettlementCodeData: [],
       // 添加信息 弹出框
       // 所属业务群
       BusinessGroupList: [],
       // 结算方式下拉框循环数据
-      RoyaltyTypeList: [
+      SettleTypeList: [
         {
           value: "RealTime",
           label: "RealTime"
@@ -276,108 +305,198 @@ export default {
           label: "EndOfYear"
         }
       ],
-      // 权益金固定值类型下拉框循环数据
-      FlatTypeList: [
-        {
-          value: "按交易笔数",
-          label: "按交易笔数"
-        },
-        {
-          value: "按天",
-          label: "按天"
-        },
-        {
-          value: "按月",
-          label: "按月"
-        },
-        {
-          value: "按年",
-          label: "按年"
-        }
+      // 可结算起始天下拉框循环数据
+      FromDayList: [
+        { value: "1", label: "1" },
+        { value: "2", label: "2" },
+        { value: "3", label: "3" },
+        { value: "4", label: "4" },
+        { value: "5", label: "5" },
+        { value: "6", label: "6" },
+        { value: "7", label: "7" },
+        { value: "8", label: "8" },
+        { value: "9", label: "9" },
+        { value: "10", label: "10" },
+        { value: "11", label: "11" },
+        { value: "12", label: "12" },
+        { value: "13", label: "13" },
+        { value: "14", label: "14" },
+        { value: "15", label: "15" },
+        { value: "16", label: "16" },
+        { value: "17", label: "17" },
+        { value: "18", label: "18" },
+        { value: "19", label: "19" },
+        { value: "20", label: "20" },
+        { value: "21", label: "21" },
+        { value: "22", label: "22" },
+        { value: "23", label: "23" },
+        { value: "24", label: "24" },
+        { value: "25", label: "25" },
+        { value: "26", label: "26" },
+        { value: "27", label: "27" },
+        { value: "28", label: "28" },
+        { value: "29", label: "29" },
+        { value: "30", label: "30" },
+        { value: "31", label: "31" }
       ],
-      // 天数不足月或年折算方式下拉框循环数据
-      ObversionTypeList: [
-        {
-          value: "按自然天折算",
-          label: "按自然天折算"
-        },
-        {
-          value: "全额",
-          label: "全额"
-        }
+      // 可结算终止天下拉框循环数据
+      ToDayList: [
+        { value: "1", label: "1" },
+        { value: "2", label: "2" },
+        { value: "3", label: "3" },
+        { value: "4", label: "4" },
+        { value: "5", label: "5" },
+        { value: "6", label: "6" },
+        { value: "7", label: "7" },
+        { value: "8", label: "8" },
+        { value: "9", label: "9" },
+        { value: "10", label: "10" },
+        { value: "11", label: "11" },
+        { value: "12", label: "12" },
+        { value: "13", label: "13" },
+        { value: "14", label: "14" },
+        { value: "15", label: "15" },
+        { value: "16", label: "16" },
+        { value: "17", label: "17" },
+        { value: "18", label: "18" },
+        { value: "19", label: "19" },
+        { value: "20", label: "20" },
+        { value: "21", label: "21" },
+        { value: "22", label: "22" },
+        { value: "23", label: "23" },
+        { value: "24", label: "24" },
+        { value: "25", label: "25" },
+        { value: "26", label: "26" },
+        { value: "27", label: "27" },
+        { value: "28", label: "28" },
+        { value: "29", label: "29" },
+        { value: "30", label: "30" },
+        { value: "31", label: "31" }
       ],
-      // 权益金计算基准下拉框循环数据
-      RoyaltyBenchMarkList: [
-        {
-          value: "按收入",
-          label: "按收入"
-        },
-        {
-          value: "按利润",
-          label: "按利润"
-        }
-      ],
-      // 添加权益金规则默认隐藏
+      // 添加加盟商结算规则默认隐藏
       AddDepartment: false,
-      // 当RoyaltyType为【阶梯】时显示，现在默认隐藏
-      // RoyaltyCodeDetail:false,
+      // 当结算方式选为【Monthly，NextMonth，EndOfYear】时显示，现在默认隐藏
+      Allow: false,
+      // 当结算方式选为【RealTime】时隐藏，现在默认显示
+      ToDay: true,
+      FromDay: true,
+      ExcludeHoliday: true,
+      PeriodOfT: true,
+      // 添加结算方式表单
       formValidate: {
         BusinessGroup: "",
         Code: "",
         Description: "",
-        RoyaltyType: "",
-        FlatType: "",
-        RoyaltyBenchMark: "",
-        FlatOrPecent: "",
+        SettleType: "",
+        FromDay: "",
+        ToDay: "",
+        PeriodOfT: "",
+        Allow: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        ExcludeHoliday: "",
         SortKey: "",
-        Enabled: true
+        Enabled: ""
       },
       ruleValidate: {
         BusinessGroup: [
-          { required: true, message: "请选择用户群", trigger: "change" }
+          // { required: true, message: "请选择用户群", trigger: "change" }
         ],
         Code: [
           {
             required: true,
-            message: "请输入权益金规则代码",
-            trigger: "change"
-          },
-          {
-            pattern: /[\u4e00-\u9fa5]/gm,
-            message: "请输入正确的权益金规则代码",
+            message: "请输入结算规则代码",
             trigger: "blur"
           }
         ],
         Description: [
-          { required: true, message: "请输入权益金规则描述", trigger: "blur" }
+          { required: true, message: "请输入结算规则描述", trigger: "blur" }
         ],
-        RoyaltyType: [
-          { required: true, message: "请选择权益金方式", trigger: "change" }
-        ],
-        FlatType: [
+        PeriodOfT: [
           {
-            required: true,
-            message: "请选择权益金固定值类型",
-            trigger: "change"
+            pattern: "^[0-9]*[1-9][0-9]*$",
+            message: "T+ 必须输入整数",
+            trigger: "blur"
           }
-        ],
-        ObversionType: [
-          {
-            required: true,
-            message: "请选择天数不足月或年折算方式",
-            trigger: "change"
-          }
-        ],
-        RoyaltyBenchMark: [
-          { required: true, message: "请选择权益金计算基准", trigger: "change" }
-        ],
-        FlatOrPecent: [
-          { required: true, message: "请选择固定值或比例", trigger: "change" }
-        ],
-        SortKey: [{ required: true, message: "排序码", trigger: "change" }],
-        Enabled: [{ required: true, message: "启用", trigger: "change" }]
-      }
+        ]
+      },
+      // 删除信息弹出框
+      delete1: false,
+      delBusinessUnitList: [],
+      delBusinessUnitArrs: []
     };
+  },
+  methods: {
+    // 结算方式下拉框选择事件
+    setOption(value, type) {
+      console.log(value.label);
+      if (value.label == "RealTime") {
+        this.ToDay = false;
+        this.FromDay = false;
+        this.ExcludeHoliday = false;
+        this.PeriodOfT = false;
+        this.Allow = false;
+      }
+      if (value.label == "T+N") {
+        this.ToDay = true;
+        this.FromDay = true;
+        this.ExcludeHoliday = true;
+        this.PeriodOfT = true;
+        this.Allow = false;
+      }
+      if (value.label == "Monthly") {
+        this.ToDay = true;
+        this.FromDay = true;
+        this.ExcludeHoliday = true;
+        this.PeriodOfT = true;
+        this.Allow = true;
+      }
+      if (value.label == "NextMonth") {
+        this.ToDay = true;
+        this.FromDay = true;
+        this.ExcludeHoliday = true;
+        this.PeriodOfT = true;
+        this.Allow = true;
+      }
+      if (value.label == "EndOfYear") {
+        this.ToDay = true;
+        this.FromDay = true;
+        this.ExcludeHoliday = true;
+        this.PeriodOfT = true;
+        this.Allow = true;
+      }
+    },
+    // 添加加盟商结算规则信息
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          //如果正则正确就调用接口发送数据
+          SettlementCodeCreate(this.formValidate)
+            .then(res => {
+              this.$Message.success("成功!");
+              this.AddDepartment = false;
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        } else {
+          this.$Message.error("请输入正确的格式!");
+        }
+      });
+    },
+    handleReset(name) {
+      this.$refs[name].resetFields();
+      this.$Message.info("已取消添加结算规则");
+    }
+  },
+  mounted() {
+    //人员表格
+    getSettlementCodeData(this.getTableData)
+      .then(res => {
+        this.SettlementCodeData = res.data;
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>

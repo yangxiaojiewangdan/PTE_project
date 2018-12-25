@@ -28,12 +28,12 @@ export const UpdateUserData = formData => {
 }
 //删除人员信息接口
 export const deleteBusinessUser = delBusinessUnitList => {
-	  return axios.request({
-	    url: apiUrl + '/api/BusinessUser/DeleteRange',
-	    data: delBusinessUnitList,
-	    method: 'post'
-	  })
-	}
+  return axios.request({
+    url: apiUrl + '/api/BusinessUser/DeleteRange',
+    data: delBusinessUnitList,
+    method: 'post'
+  })
+}
 
 //添加组织信息接口
 export const addBusinessUnit = formData => {
@@ -62,25 +62,52 @@ export const BusinessUnitGetEntities = BusinessUnitQuery => {
 }
 //获取组织表格
 export const getBusinessUnitData = BusinessUnitData => {
-	  return axios.request({
-	    url: apiUrl + '/api/BusinessUnit/GetEntities',
-	    data: BusinessUnitData,
-	    method: 'post'
-	  })
-	}
+  return axios.request({
+    url: apiUrl + '/api/BusinessUnit/GetEntities',
+    data: BusinessUnitData,
+    method: 'post'
+  })
+}
 
 //获取组织树形结构
 export const getTreeList = () => {
-	  return axios.request({
-	    url: apiUrl + '/api/BusinessUnit/GetBusinessUnit',
-	    method: 'get'
-	  })
-	}
+  return axios.request({
+    url: apiUrl + '/api/BusinessUnit/GetBusinessUnit',
+    method: 'get'
+  })
+}
 //修改更新组织
 export const upBusinessUnit = upValidate => {
-	  return axios.request({
-	    url: apiUrl + '/api/BusinessUnit/Update',
-	    data:upValidate,
-	    method: 'post'
-	  })
-	}
+  return axios.request({
+    url: apiUrl + '/api/BusinessUnit/Update',
+    data: upValidate,
+    method: 'post'
+  })
+}
+
+
+//获取结算规则信息渲染到表格
+export const getSettlementCodeData = SettlementCodeData => {
+  return axios.request({
+    url: apiUrl + '/api/SettlementCode/GetEntities',
+    data: SettlementCodeData,
+    method: 'post'
+  })
+}
+
+//添加加盟商结算规则接口
+export const SettlementCodeCreate = CreateSettlementCode => {
+  return axios.request({
+    url: apiUrl + '/api/SettlementCode/Create',
+    data: CreateSettlementCode,
+    method: 'post'
+  })
+}
+//删除加盟商结算规则接口
+export const deleteSettlementCode = delSettlementCodeList => {
+  return axios.request({
+    url: apiUrl + '/api/SettlementCode/DeleteRange',
+    data: delSettlementCodeList,
+    method: 'post'
+  })
+}
