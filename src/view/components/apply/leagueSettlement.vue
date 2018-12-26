@@ -13,9 +13,8 @@
             <Select v-model="queryRoyaltyType" style="width:200px">
               <Option
                 v-for="item in SettleTypeList"
-                :value="item.value"
-                :key="item.value"
-              >{{ item.label }}</Option>
+                :key="item.Description"
+              >{{ item.Description }}</Option>
             </Select>
           </div>
           <div class="querycriteriadiv">
@@ -31,7 +30,7 @@
           <Col span="8">
             <div class="tableTop">
               <Button @click="AddDepartment = true" type="success" class="tableTops">添加</Button>
-              <Button @click="deleteList" type="error" class="tableTops">删除</Button>
+              <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
               <Select v-model="querySelect" style="width:120px">
                 <Option
                   v-for="item in querySelectList"
@@ -59,6 +58,8 @@
               ref="selection"
               :columns="SettlementCodeTable"
               :data="SettlementCodeData"
+              @on-select="BatchDelete"
+              @on-row-dblclick="dblclickUpData"
             ></Table>
           </Col>
           <!-- 分页 -->
@@ -69,8 +70,8 @@
       </Col>
     </Row>
     <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="ok" @on-cancel="cancel">
-      <h2>确定删除此数据？</h2>
+    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
+      <h3>确定删除此数据？</h3>
     </Modal>
     <!-- 添加信息 弹出框-->
     <Modal
@@ -128,7 +129,7 @@
                   v-for="item in SettleTypeList"
                   :value="item.value"
                   :key="item.value"
-                >{{ item.label }}</Option>
+                >{{ item.Description }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -230,15 +231,176 @@
         </button>
       </div>
     </Modal>
+    <!-- 修改信息 弹出框-->
+    <Modal
+      v-model="upDepartment"
+      width="600"
+      height="600"
+      title="修改加盟商结算规则"
+      :mask-closable="false"
+      :styles="{top: '40px'}"
+    >
+      <Form
+        ref="UpdateList"
+        :model="UpdateList"
+        :rules="ruleValidate"
+        label-position="right"
+        :label-width="150"
+      >
+        <Row>
+          <Col span="24">
+            <FormItem label="所属业务群" prop="BusinessGroup">
+              <Select v-model="UpdateList.BusinessGroup" style="width:300px">
+                <Option
+                  v-for="item in BusinessGroupList"
+                  :value="item.value"
+                  :key="item.value"
+                >{{ item.label }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="24">
+            <FormItem label="结算规则代码" prop="Code">
+              <Input v-model="UpdateList.Code" placeholder="请输入" style="width:300px"></Input>
+            </FormItem>
+          </Col>
+          <Col span="24">
+            <FormItem label="结算规则描述" prop="Description">
+              <Input
+                v-model="UpdateList.Description"
+                type="textarea"
+                :autosize="{minRows: 2,maxRows: 5}"
+                placeholder="请输入"
+                style="width:300px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="24">
+            <FormItem label="结算方式" prop="SettleType">
+              <Select
+                v-model="UpdateList.SettleType"
+                :label-in-value="true"
+                @on-change="v=>{setOption(v,'type')}"
+                style="width:300px"
+              >
+                <Option
+                  v-for="item in SettleTypeList"
+                  :value="item.value"
+                  :key="item.value"
+                >{{ item.Description }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="24" v-if="FromDay">
+            <FormItem label="可结算起始天" prop="FromDay">
+              <Select v-model="UpdateList.FromDay" style="width:300px">
+                <Option
+                  v-for="item in FromDayList"
+                  :value="item.value"
+                  :key="item.value"
+                >{{ item.label }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="24" v-if="ToDay">
+            <FormItem label="可结算终止天" prop="ToDay">
+              <Select v-model="UpdateList.ToDay" style="width:300px">
+                <Option
+                  v-for="item in ToDayList"
+                  :value="item.value"
+                  :key="item.value"
+                >{{ item.label }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="24" v-if="PeriodOfT">
+            <FormItem label="T+" prop="PeriodOfT">
+              <Input v-model="UpdateList.PeriodOfT" placeholder="请输入" style="width:300px"></Input>
+            </FormItem>
+          </Col>
+          <Col span="24" v-if="ExcludeHoliday">
+            <FormItem label="节假日(含/不含)" prop="ExcludeHoliday">
+              <i-switch v-model="UpdateList.ExcludeHoliday" size="large">
+                <span slot="open">On</span>
+                <span slot="close">Off</span>
+              </i-switch>
+            </FormItem>
+          </Col>
+          <Col span="24" v-if="Allow">
+            <FormItem label="允许周几结算" prop="Allow">
+              <CheckboxGroup v-model="UpdateList.Allow">
+                <Checkbox label="周一"></Checkbox>
+                <Checkbox label="周二"></Checkbox>
+                <Checkbox label="周三"></Checkbox>
+                <Checkbox label="周四"></Checkbox>
+                <Checkbox label="周五"></Checkbox>
+                <Checkbox label="周六"></Checkbox>
+                <Checkbox label="周日"></Checkbox>
+              </CheckboxGroup>
+            </FormItem>
+          </Col>
+          <Col span="24">
+            <FormItem label="排序码" prop="SortKey">
+              <Input v-model="UpdateList.SortKey" placeholder="请输入" style="width:300px"></Input>
+            </FormItem>
+          </Col>
+          <Col span="24">
+            <FormItem label="启用" prop="Enabled">
+              <i-switch v-model="UpdateList.Enabled" size="large">
+                <span slot="open">On</span>
+                <span slot="close">Off</span>
+              </i-switch>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <div class="footer_left">
+          <div class="footer_left1">
+            <div>
+              <span>创建人:闫子健</span>
+            </div>
+            <div>
+              <span>更新人:闫子健</span>
+            </div>
+          </div>
+          <div class="footer_left2">
+            <div>
+              <span>创建时间:2018/12/13/ 13:00:00</span>
+            </div>
+            <div>
+              <span>更新时间:2018/12/13/ 13:00:00</span>
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset('UpdateList');upDepartment = false;"
+        >
+          <span>取消</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-primary ivu-btn-large"
+          @click="UpdateSubmit('UpdateList');"
+        >
+          <span>确定</span>
+        </button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
 import {
   getSettlementCodeData,
   SettlementCodeCreate,
-  deleteSettlementCode
+  SettlementCodeBatchDelete,
+  SettlementCodeUpdate,
+  getSettleType
 } from "@/api/api";
 export default {
+  inject: ["reload"],
   data() {
     return {
       // 查询
@@ -283,28 +445,7 @@ export default {
       // 所属业务群
       BusinessGroupList: [],
       // 结算方式下拉框循环数据
-      SettleTypeList: [
-        {
-          value: "RealTime",
-          label: "RealTime"
-        },
-        {
-          value: "T+N",
-          label: "T+N"
-        },
-        {
-          value: "Monthly",
-          label: "Monthly"
-        },
-        {
-          value: "NextMonth",
-          label: "NextMonth"
-        },
-        {
-          value: "EndOfYear",
-          label: "EndOfYear"
-        }
-      ],
+      SettleTypeList: [],
       // 可结算起始天下拉框循环数据
       FromDayList: [
         { value: "1", label: "1" },
@@ -373,8 +514,9 @@ export default {
         { value: "30", label: "30" },
         { value: "31", label: "31" }
       ],
-      // 添加加盟商结算规则默认隐藏
+      // 添加/修改加盟商结算规则默认隐藏
       AddDepartment: false,
+      upDepartment: false,
       // 当结算方式选为【Monthly，NextMonth，EndOfYear】时显示，现在默认隐藏
       Allow: false,
       // 当结算方式选为【RealTime】时隐藏，现在默认显示
@@ -384,6 +526,20 @@ export default {
       PeriodOfT: true,
       // 添加结算方式表单
       formValidate: {
+        BusinessGroup: "",
+        Code: "",
+        Description: "",
+        SettleType: [],
+        FromDay: "",
+        ToDay: "",
+        PeriodOfT: "",
+        Allow: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        ExcludeHoliday: "",
+        SortKey: "",
+        Enabled: ""
+      },
+      // 修改结算方式表单
+      UpdateList: {
         BusinessGroup: "",
         Code: "",
         Description: "",
@@ -420,8 +576,8 @@ export default {
       },
       // 删除信息弹出框
       delete1: false,
-      delBusinessUnitList: [],
-      delBusinessUnitArrs: []
+      BatchDeleteList: [],
+      delete: []
     };
   },
   methods: {
@@ -473,6 +629,7 @@ export default {
             .then(res => {
               this.$Message.success("成功!");
               this.AddDepartment = false;
+              this.reload();
             })
             .catch(err => {
               console.log(err);
@@ -485,18 +642,64 @@ export default {
     handleReset(name) {
       this.$refs[name].resetFields();
       this.$Message.info("已取消添加结算规则");
+    },
+    // 删除数据接口
+    deleteList() {
+      if (this.BatchDeleteList.length == 0) {
+        this.$Message.info("请先选中删除的数据");
+      } else {
+        SettlementCodeBatchDelete(this.delete)
+          .then(res => {
+            this.$Message.success("删除成功!");
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error("删除失败!");
+            console.log(err);
+          });
+      }
+    },
+    BatchDelete(selection) {
+      console.log(selection);
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete.push(this.BatchDeleteList[i].Id);
+      }
+    },
+    //详情修改页面
+    dblclickUpData(index) {
+      this.upDepartment = true;
+      this.UpdateList = index;
+    },
+    //点击修改按钮
+    UpdateSubmit() {
+      SettlementCodeUpdate(this.UpdateList)
+        .then(res => {
+          this.$Message.success("修改成功!");
+          this.reload();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   mounted() {
-    //人员表格
+    // 人员表格
     getSettlementCodeData(this.getTableData)
       .then(res => {
         this.SettlementCodeData = res.data;
-        console.log(res.data);
       })
       .catch(err => {
         console.log(err);
       });
-  }
-};
+    // 结算方式
+    getSettleType(this.getTableData)
+      .then(res => {
+        this.SettleTypeList = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    }
+}
 </script>

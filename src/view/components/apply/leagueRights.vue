@@ -57,8 +57,8 @@
               stripe
               border
               ref="selection"
-              :columns="columnsContent"
-              :data="dataContent"
+              :columns="SettlementCodeTable"
+              :data="SettlementCodeData"
             ></Table>
           </Col>
           <!-- 分页 -->
@@ -73,7 +73,6 @@
       v-model="AddDepartment"
       scrollable
       width="600"
-      height="1 00"
       title="添加加盟商权益金规则"
       :mask-closable="false"
       :styles="{top: '20px'}"
@@ -169,7 +168,7 @@
           </Col>
           <Col span="24">
             <FormItem label="排序码" prop="SortKey">
-              <Input v-model="formValidate.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
+              <Input v-model="formValidate.SortKey" placeholder="请输入" style="width:300px"></Input>
             </FormItem>
           </Col>
           <Col span="24">
@@ -193,7 +192,6 @@
                 @on-delete="handleDelete"
               />
             </Card>
-            <Button @click="AddDepartment = true" type="success" style="margin-top:10px;">添加阶梯明细</Button>
           </Col>
         </Row>
       </Form>
@@ -236,10 +234,12 @@
 </template>
 <script>
 import Tables from "_c/tables";
+import { RoyaltyCodeGetEntities, RoyaltyCodeCreate } from "@/api/api";
 export default {
   components: {
     Tables
   },
+  inject: ["reload"],
   data() {
     return {
       // 查询
@@ -254,7 +254,7 @@ export default {
       queryvalue: "",
       querySelect: "",
       // 内容表格
-      columnsContent: [
+      SettlementCodeTable: [
         { type: "selection", width: 50, align: "center", fixed: "left" },
         {
           title: "所属业务群",
@@ -281,10 +281,18 @@ export default {
         { title: "创建时间", key: "CreateOn", width: 175, sortable: true }
       ],
       //表格数组
-      dataContent: [],
+      getTableData: {
+        Filters: {}
+      },
+      SettlementCodeData: [],
       // 添加信息 弹出框
       // 所属业务群
-      BusinessGroupList: [],
+      BusinessGroupList: [
+        {
+          value: "用户",
+          label: "用户"
+        }
+      ],
       // 权益金方式下拉框循环数据
       RoyaltyTypeList: [
         {
@@ -358,50 +366,7 @@ export default {
         Enabled: true
       },
       // 添加信息表单验证
-      ruleValidate: {
-        BusinessGroup: [
-          { required: true, message: "请选择用户群", trigger: "change" }
-        ],
-        Code: [
-          {
-            required: true,
-            message: "请输入权益金规则代码",
-            trigger: "change"
-          },
-          {
-            pattern: /[\u4e00-\u9fa5]/gm,
-            message: "请输入正确的权益金规则代码",
-            trigger: "blur"
-          }
-        ],
-        Description: [
-          { required: true, message: "请输入权益金规则描述", trigger: "blur" }
-        ],
-        RoyaltyType: [
-          { required: true, message: "请选择权益金方式", trigger: "change" }
-        ],
-        FlatType: [
-          {
-            required: true,
-            message: "请选择权益金固定值类型",
-            trigger: "change"
-          }
-        ],
-        ObversionType: [
-          {
-            required: true,
-            message: "请选择天数不足月或年折算方式",
-            trigger: "change"
-          }
-        ],
-        RoyaltyBenchMark: [
-          { required: true, message: "请选择权益金计算基准", trigger: "change" }
-        ],
-        FlatOrPecent: [
-          { required: true, message: "请选择固定值或比例", trigger: "change" }
-        ],
-        SortKey: [{ required: true, message: "排序码", trigger: "change" }]
-      },
+      ruleValidate: {},
       // 阶梯表格信息
       columnsRoyaltyCodeDetail: [
         { title: "下限金额（含）", key: "LowerValue", editable: true },
@@ -423,7 +388,40 @@ export default {
     },
     handleDelete(params) {
       console.log(params);
+    },
+    // 添加加盟商结算规则信息
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          //如果正则正确就调用接口发送数据
+          RoyaltyCodeCreate(this.formValidate)
+            .then(res => {
+              this.$Message.success("成功!");
+              this.AddDepartment = false;
+              this.reload();
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        } else {
+          this.$Message.error("请输入正确的格式!");
+        }
+      });
+    },
+    handleReset(name) {
+      this.$refs[name].resetFields();
+      this.$Message.info("已取消添加结算规则");
     }
+  },
+  mounted() {
+    // 人员表格
+    RoyaltyCodeGetEntities(this.getTableData)
+      .then(res => {
+        this.SettlementCodeData = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>
