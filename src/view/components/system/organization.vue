@@ -393,7 +393,7 @@
 						this.$Message.success('删除成功!')
 						this.reload();
 					}).catch(err => {
-						this.$Message.success('删除失败!')
+						this.$Message.error('删除失败!')
 						console.log(err)
 					})
 				}

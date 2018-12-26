@@ -237,7 +237,7 @@ import {
   getSettlementCodeData,
   SettlementCodeCreate,
   deleteSettlementCode
-} from "@/api/data";
+} from "@/api/api";
 export default {
   data() {
     return {
