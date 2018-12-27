@@ -187,7 +187,7 @@
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<tree-transfer :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' height='540px' openAll>
+					<tree-transfer :title="title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'Description',children:'PermissionCollection'}" @addBtn='add' @removeBtn='remove' height='540px' node_key="Id" pid="ParentId" :button_text="['添加', '删减']">
 					</tree-transfer>
 					</Col>
 				</Row>
@@ -381,49 +381,20 @@
 				delBusinessRoleArrs: [],
 				//j角色权限id
 				roleId: '',
-				fromData: [{
-					id: "1",
-					pid: 0,
-					label: "一级 1",
-					children: [{
-							id: "1-1",
-							pid: "1",
-							label: "二级 1-1",
-							children: []
-						},
-						{
-							id: "1-2",
-							pid: "1",
-							label: "二级 1-2",
-							children: [{
-									id: "1-2-1",
-									pid: "1-2",
-									children: [],
-									label: "二级 1-2-1"
-								},
-								{
-									id: "1-2-2",
-									pid: "1-2",
-									children: [],
-									label: "二级 1-2-2"
-								}
-							]
-						}
-					]
-				}, ],
-				toData: []
+				title:['未分配权限','已有权限'],
+				fromData: [],
+				toData: [],
 			}
 		},
 		methods: {
 			upRoleData(index) {
 				this.businessRoles = true;
-				console.log(index);
 				this.formRoleValidate = index;
 				this.roleId = index.Id;
-				console.log(this.roleId);
 				//未分配的权限接口
 				leftRole({roleId:this.roleId}).then(res => {
-					this.fromData = res.data
+					this.fromData = res.data;
+					console.log(this.fromData)
 				}).catch(err => {
 					console.log(err)
 				});
@@ -438,7 +409,6 @@
 			// 监听穿梭框组件添加
 			add(fromData, toData, obj) {
 				// 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的        {keys,nodes,halfKeys,halfNodes}对象
-				// 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
 				console.log("fromData:", fromData);
 				console.log("toData:", toData);
 				console.log("obj:", obj);
@@ -446,7 +416,6 @@
 			// 监听穿梭框组件移除
 			remove(fromData, toData, obj) {
 				// 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
-				// 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
 				console.log("fromData:", fromData);
 				console.log("toData:", toData);
 				console.log("obj:", obj);
