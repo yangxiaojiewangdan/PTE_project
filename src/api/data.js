@@ -110,3 +110,20 @@ export const deleteBusinessRole = delBusinessRoleArrs => {
     method: "post"
   });
 };
+//未分配权限
+export const leftRole = params => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/GetUnAssignedPermission",
+    method: "get",
+    params,
+  });
+};
+//已分配权限
+export const rightRole = params => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/GetAssignedPermission",
+    method: "get",
+    params,
+    
+  });
+};

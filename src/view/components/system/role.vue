@@ -23,7 +23,7 @@
 		<Row>
 			<!--表格-->
 			<Col span="20" push="1">
-			<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="aaa()" stripe size="small" highlight-row @on-select="deleteBusinessRole"></Table>
+			<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="upRoleData" stripe size="small" highlight-row @on-select="deleteBusinessRole"></Table>
 			</Col>
 			<!--分页-->
 			<Col span="10" push="10">
@@ -138,14 +138,58 @@
 					</Col>
 					<Col span="12">
 					<FormItem label="角色名称" prop>
-						<Input v-model="formRoleValidate.Description"  :readonly="true" style="width:250px"></Input>
+						<Input v-model="formRoleValidate.Description" :readonly="true" style="width:250px"></Input>
 					</FormItem>
 					</Col>
-					<Col span="24" push="1">
-					<Transfer :data="data3" :target-keys="targetKeys3" :list-style="listStyle" :render-format="render3" :operations="['删减权限','添加权限']" :titles="['可分配权限','已分配权限']" @on-change="handleChange3">
-					</Transfer>
+					<Col span="24">
+					<FormItem label="角色级别" prop='DataPermissionLevel'>
+						<RadioGroup v-model="formRoleValidate.DataPermissionLevel">
+							<Radio label="无"></Radio>
+							<Radio label="个人"></Radio>
+							<Radio label="本部门"></Radio>
+							<Radio label="本部门及下属部门"></Radio>
+							<Radio label="全组织"></Radio>
+						</RadioGroup>
+					</FormItem>
 					</Col>
-
+				</Row>
+				<Row>
+					<Col span="6">
+					<FormItem label="总部可用" prop='IsHeadquarter'>
+						<i-switch v-model="formRoleValidate.IsHeadquarter" size="large">
+							<span slot="open">On</span>
+							<span slot="close">Off</span>
+						</i-switch>
+					</FormItem>
+					</Col>
+					<Col span="6">
+					<FormItem label="门店可用" prop="IsStoreFranchise">
+						<i-switch v-model="formRoleValidate.IsStoreFranchise" size="large">
+							<span slot="open">On</span>
+							<span slot="close">Off</span>
+						</i-switch>
+					</FormItem>
+					</Col>
+					<Col span="6">
+					<FormItem label="内置角色" prop='IsIntemal'>
+						<i-switch v-model="formRoleValidate.IsIntemal" size="large">
+							<span slot="open">On</span>
+							<span slot="close">Off</span>
+						</i-switch>
+					</FormItem>
+					</Col>
+					<Col span="6">
+					<FormItem label="启用" prop='Enabled'>
+						<i-switch v-model="formRoleValidate.Enabled" size="large">
+							<span slot="open">On</span>
+							<span slot="close">Off</span>
+						</i-switch>
+					</FormItem>
+					</Col>
+					<Col span="24">
+					<tree-transfer :from_data='fromData' :to_data='toData' :defaultProps="{label:'label'}" @addBtn='add' @removeBtn='remove' height='540px' openAll>
+					</tree-transfer>
+					</Col>
 				</Row>
 			</Form>
 			<div slot="footer">
@@ -164,15 +208,20 @@
                     </button>
 				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit2('formRoleValidate');">
                         <span>确定</span>
-                    </button>
+                   </button>
 			</div>
 		</Modal>
 		<!-- 分配权限 弹出框 end-->
 	</div>
 </template>
 <script>
-	import { getBusinessRolesData, addBusinessRole,deleteBusinessRole} from '@/api/data'
+	import treeTransfer from 'el-tree-transfer'
+	import { getBusinessRolesData, addBusinessRole, deleteBusinessRole, leftRole, rightRole } from '@/api/data'
 	export default {
+		name: 'role',
+		components: {
+			treeTransfer
+		},
 		data() {
 			return {
 				model1: '',
@@ -330,22 +379,77 @@
 				//删除数组
 				delBusinessRoleList: [],
 				delBusinessRoleArrs: [],
-				//分配权限弹框里的数据
-				data3: this.getMockData(),
-				targetKeys3: this.getTargetKeys(),
-				listStyle: {
-					width: '300px',
-					height: '500px',
-					marginTop: '30px',
-					fontWeight: 'bold',
-				},
-
+				//j角色权限id
+				roleId: '',
+				fromData: [{
+					id: "1",
+					pid: 0,
+					label: "一级 1",
+					children: [{
+							id: "1-1",
+							pid: "1",
+							label: "二级 1-1",
+							children: []
+						},
+						{
+							id: "1-2",
+							pid: "1",
+							label: "二级 1-2",
+							children: [{
+									id: "1-2-1",
+									pid: "1-2",
+									children: [],
+									label: "二级 1-2-1"
+								},
+								{
+									id: "1-2-2",
+									pid: "1-2",
+									children: [],
+									label: "二级 1-2-2"
+								}
+							]
+						}
+					]
+				}, ],
+				toData: []
 			}
 		},
 		methods: {
-			aaa() {
+			upRoleData(index) {
 				this.businessRoles = true;
+				console.log(index);
+				this.formRoleValidate = index;
+				this.roleId = index.Id;
+				console.log(this.roleId);
+				//未分配的权限接口
+				leftRole({roleId:this.roleId}).then(res => {
+					this.fromData = res.data
+				}).catch(err => {
+					console.log(err)
+				});
+				//已分配的权限接口
+				rightRole({roleId:this.roleId}).then(res => {
+					this.toData = res.data
+				}).catch(err => {
+					console.log(err)
+				})
 
+			},
+			// 监听穿梭框组件添加
+			add(fromData, toData, obj) {
+				// 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的        {keys,nodes,halfKeys,halfNodes}对象
+				// 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+				console.log("fromData:", fromData);
+				console.log("toData:", toData);
+				console.log("obj:", obj);
+			},
+			// 监听穿梭框组件移除
+			remove(fromData, toData, obj) {
+				// 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
+				// 通讯录模式addressList时，返回参数为右侧收件人列表、右侧抄送人列表、右侧密送人列表
+				console.log("fromData:", fromData);
+				console.log("toData:", toData);
+				console.log("obj:", obj);
 			},
 			//删除
 			deleteList() {
@@ -416,31 +520,6 @@
 				this.$refs[name].resetFields();
 				this.$Message.info('已取消');
 				this.businessRoles = false
-			},
-			// 权限信息 弹出框函数 end
-
-			//权限弹框函数
-			getMockData() {
-				let mockData = [];
-				for(let i = 1; i <= 20; i++) {
-					mockData.push({
-						key: i.toString(),
-						label: 'Content ' + i,
-						description: 'The desc of content  ' + i,
-						disabled: Math.random() * 3 < 1
-					});
-				}
-				return mockData;
-			},
-			getTargetKeys() {
-				return this.getMockData().filter(() => Math.random() * 2 > 1).map(item => item.key);
-			},
-
-			handleChange3(newTargetKeys) {
-				this.targetKeys3 = newTargetKeys;
-			},
-			render3(item) {
-				return item.label + ' - ' + item.description;
 			},
 
 		},
