@@ -33,6 +33,9 @@
       .queryForm{
           margin-top: 20px;
       }
+      .querycriteriadivButton{
+        margin: 0 6px;
+      }
   /* 查询条件的公共样式 end */
   /* 查询结果样式 */
   .queryEnd{

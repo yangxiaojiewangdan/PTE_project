@@ -11,10 +11,7 @@
           <div class="querycriteriadiv" style="margin-left:24px;">
             <label>结算方式：</label>
             <Select v-model="queryRoyaltyType" style="width:200px">
-              <Option
-                v-for="item in SettleTypeList"
-                :key="item.Description"
-              >{{ item.Description }}</Option>
+              <Option v-for="item in SettleTypeList" :key="item.Description">{{ item.Description }}</Option>
             </Select>
           </div>
           <div class="querycriteriadiv">
@@ -524,7 +521,7 @@ export default {
       FromDay: true,
       ExcludeHoliday: true,
       PeriodOfT: true,
-      // 添加结算方式表单
+      // 添加结算表单
       formValidate: {
         BusinessGroup: "",
         Code: "",
@@ -700,6 +697,6 @@ export default {
       .catch(err => {
         console.log(err);
       });
-    }
-}
+  }
+};
 </script>

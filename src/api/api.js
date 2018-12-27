@@ -82,3 +82,31 @@ export const RoyaltyCodeUpdate = UpdateList => {
     method: "post"
   });
 };
+//获取权益金规则信息    权益金方式  
+export const getROYALTY_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=ROYALTY_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+//获取权益金规则信息    权益金固定值类型  
+export const getROYALTY_FLAT_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=ROYALTY_FLAT_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+//获取权益金规则信息    天数不足月或年折算方式  
+export const getOBVERSION_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=OBVERSION_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+//获取权益金规则信息    权益金计算基准  
+export const getROYALTY_BENCH_MARK = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=ROYALTY_BENCH_MARK&businessGroup=*",
+    method: "get"
+  });
+};
