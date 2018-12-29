@@ -177,7 +177,7 @@
             </FormItem>
           </Col>
           <!-- 阶梯表格 -->
-          <Col span="24" v-if="RoyaltyCodeDetail"> 
+          <Col span="24" v-if="RoyaltyCodeDetail">
             <Card>
               <tables
                 search-place="top"
@@ -189,7 +189,9 @@
                 @on-delete="handleDelete"
               />
             </Card>
-               <Button type="info"><Icon type="md-add" />添加阶梯</Button>
+            <Button type="info" @click="AddRoyalty = true">
+              <Icon type="md-add"/>添加阶梯
+            </Button>
           </Col>
         </Row>
       </Form>
@@ -229,13 +231,7 @@
       </div>
     </Modal>
     <!-- 修改信息 弹出框-->
-    <Modal
-      v-model="upDepartment"
-      scrollable
-      width="1000"
-      title="修改加盟商权益金规则"
-      :mask-closable="false"
-    >
+    <Modal v-model="upDepartment" scrollable width="1000" title="修改加盟商权益金规则" :mask-closable="false">
       <Form
         ref="UpdateList"
         :model="UpdateList"
@@ -339,7 +335,7 @@
             </FormItem>
           </Col>
           <!-- 阶梯表格 -->
-          <Col span="24" v-if="RoyaltyCodeDetail">
+          <!-- <Col span="24" v-if="RoyaltyCodeDetail">
             <Card>
               <tables
                 search-place="top"
@@ -352,7 +348,7 @@
               />
             </Card>
             <Button icon="ios-search">Search</Button>
-          </Col>
+          </Col>-->
         </Row>
       </Form>
       <div slot="footer">
@@ -387,6 +383,68 @@
           @click="UpdateSubmit('UpdateList');"
         >
           <span>修改</span>
+        </button>
+      </div>
+    </Modal>
+    <!-- 添加阶梯明细页面 -->
+    <Modal v-model="AddRoyalty" scrollable width="600" title="添加自定义明细" :mask-closable="false">
+      <Form
+        ref="FormAddRoyalty"
+        :model="FormAddRoyalty"
+        :rules="ruleValidate"
+        label-position="right"
+        :label-width="160"
+      >
+        <Row>
+          <Col span="24">
+            <FormItem label="下限金额(含)" prop="LowerValue">
+              <Input v-model="FormAddRoyalty.LowerValue" placeholder="请输入" style="width:300px"></Input>
+            </FormItem>
+          </Col>
+          <Col span="24">
+            <FormItem label="上限金额(不含)" prop="UpperValue">
+              <Input v-model="FormAddRoyalty.UpperValue" placeholder="请输入" style="width:300px"></Input>
+            </FormItem>
+          </Col>
+          <Col span="24">
+            <FormItem label="固定值或比例" prop="FlatOrPecent">
+              <Input v-model="FormAddRoyalty.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <div class="footer_left">
+          <div class="footer_left1">
+            <div>
+              <span>创建人:闫子健</span>
+            </div>
+            <div>
+              <span>更新人:闫子健</span>
+            </div>
+          </div>
+          <div class="footer_left2">
+            <div>
+              <span>创建时间:2018/12/13/ 13:00:00</span>
+            </div>
+            <div>
+              <span>更新时间:2018/12/13/ 13:00:00</span>
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset('FormAddRoyalty');AddRoyalty = false;"
+        >
+          <span>取消</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-primary ivu-btn-large"
+          @click="AddRoyaltySubmit('FormAddRoyalty');"
+        >
+          <span>添加</span>
         </button>
       </div>
     </Modal>
@@ -539,6 +597,8 @@ export default {
       // 添加/修改权益金规则默认隐藏
       AddDepartment: false,
       upDepartment: false,
+      // 添加阶梯明细默认隐藏
+      AddRoyalty: false,
       // 当RoyaltyType为【阶梯】时显示，现在默认隐藏
       RoyaltyCodeDetail: false,
       // 删除信息弹出框
@@ -571,6 +631,12 @@ export default {
         SortKey: "",
         Enabled: true
       },
+      // 添加阶梯明细表单信息
+      FormAddRoyalty: {
+        LowerValue: "",
+        UpperValue: "",
+        FlatOrPecent: ""
+      },
       // 添加信息表单验证
       ruleValidate: {},
       // 阶梯表格信息
@@ -582,6 +648,7 @@ export default {
       ],
       // 阶梯表格数组
       dataRoyaltyCodeDetail: [],
+      a: [],
       // 查询启用的按钮样式
       Allelectionprimary1: true,
       Allelectionsuccess1: false,
@@ -598,6 +665,9 @@ export default {
       if (value.value == "2") {
         this.RoyaltyCodeDetail = true;
       }
+      if (value.value == "0" || value.value == "1") {
+        this.RoyaltyCodeDetail = false;
+      }
       if (value.value == "Enabled") {
         this.Checkboxif = true;
         this.queryvalueif = false;
@@ -610,6 +680,7 @@ export default {
         this.Checkboxif = false;
         this.queryvalueif = true;
       }
+      return;
     },
     handleDelete(params) {
       console.log(params);
@@ -633,9 +704,25 @@ export default {
         }
       });
     },
+    // 添加阶梯规则信息
+    AddRoyaltySubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          // this.a.push(JSON.stringify(this.FormAddRoyalty));
+          // console.log(typeof this.a);
+          // console.log(this.a);
+          // console.log(JSON.stringify(this.a.LowerValue));
+
+          // console.log(JSON.stringify(this.dataRoyaltyCodeDetail));
+          // console.log(JSON.parse(this.dataRoyaltyCodeDetail));
+          // // localStorage.setItem("name",this.a);
+        }
+      });
+    },
+    // 取消
     handleReset(name) {
       this.$refs[name].resetFields();
-      this.$Message.info("已取消添加结算规则");
+      this.$Message.info("已取消");
     },
     // 删除数据接口
     deleteList() {
@@ -645,7 +732,7 @@ export default {
         RoyaltyCodeBatchDelete(this.delete)
           .then(res => {
             this.$Message.success("删除成功!");
-            // this.reload();
+            this.reload();
           })
           .catch(err => {
             this.$Message.error("删除失败!");

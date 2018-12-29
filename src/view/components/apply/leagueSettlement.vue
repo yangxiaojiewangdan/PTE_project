@@ -3,22 +3,10 @@
     <!-- 头部 -->
     <Row>
       <Col span="24" style="height:100px;">
-        <h1 class="setHeader">加盟商结算规则</h1>
+        <h1 class="setHeader">结算规则</h1>
       </Col>
       <!-- 内容 -->
       <Col span="24" style="height:780px;">
-        <div class="querycriteria" style="height:100px;">
-          <div class="querycriteriadiv" style="margin-left:24px;">
-            <label>结算方式：</label>
-            <Select v-model="queryRoyaltyType" style="width:200px">
-              <Option v-for="item in SettleTypeList" :key="item.Description">{{ item.Description }}</Option>
-            </Select>
-          </div>
-          <div class="querycriteriadiv">
-            <label>结算规则描述：</label>
-            <Input v-model="queryDescription" placeholder="请输入..." style="width: 500px"/>
-          </div>
-        </div>
         <Row>
           <Col span="15" class="queryEnd">
             <h2>查询结果</h2>
@@ -28,7 +16,12 @@
             <div class="tableTop">
               <Button @click="AddDepartment = true" type="success" class="tableTops">添加</Button>
               <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
-              <Select v-model="querySelect" style="width:120px">
+              <Select
+                v-model="querySelect"
+                :label-in-value="true"
+                @on-change="v=>{setOption(v,'type')}"
+                style="width:120px"
+              >
                 <Option
                   v-for="item in querySelectList"
                   :value="item.value"
@@ -36,12 +29,14 @@
                 >{{ item.label }}</Option>
               </Select>
               <Input
+                v-if="queryvalueif"
                 v-model="queryvalue"
                 placeholder="Enter something..."
                 style="width: 150px"
                 class="tableTops"
               />
-              <Button type="primary" class="tableTops">查询</Button>
+              <Checkbox :checked.sync="single" v-if="Checkboxif" class="tableTops">无效</Checkbox>
+              <Button type="primary" class="tableTops" @click="querytable">查询</Button>
             </div>
           </Col>
           <!-- 表格 -->
@@ -57,6 +52,7 @@
               :data="SettlementCodeData"
               @on-select="BatchDelete"
               @on-row-dblclick="dblclickUpData"
+              @on-select-all="BatchDelete"
             ></Table>
           </Col>
           <!-- 分页 -->
@@ -124,8 +120,8 @@
               >
                 <Option
                   v-for="item in SettleTypeList"
-                  :value="item.value"
-                  :key="item.value"
+                  :value="item.Id"
+                  :key="item.Code"
                 >{{ item.Description }}</Option>
               </Select>
             </FormItem>
@@ -153,8 +149,14 @@
             </FormItem>
           </Col>
           <Col span="24" v-if="PeriodOfT">
-            <FormItem label="T+" prop="PeriodOfT">
-              <Input v-model="formValidate.PeriodOfT" placeholder="请输入" style="width:300px"></Input>
+            <FormItem label="T+N" prop="PeriodOfT">
+              <Select v-model="formValidate.PeriodOfT" style="width:300px">
+                <Option
+                  v-for="item in PeriodOfTList"
+                  :value="item.value"
+                  :key="item.value"
+                >{{ item.label }}</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span="24" v-if="ExcludeHoliday">
@@ -167,15 +169,13 @@
           </Col>
           <Col span="24" v-if="Allow">
             <FormItem label="允许周几结算" prop="Allow">
-              <CheckboxGroup v-model="formValidate.Allow">
-                <Checkbox label="周一"></Checkbox>
-                <Checkbox label="周二"></Checkbox>
-                <Checkbox label="周三"></Checkbox>
-                <Checkbox label="周四"></Checkbox>
-                <Checkbox label="周五"></Checkbox>
-                <Checkbox label="周六"></Checkbox>
-                <Checkbox label="周日"></Checkbox>
-              </CheckboxGroup>
+              <Checkbox v-model="formValidate.AllowMon">周一</Checkbox>
+              <Checkbox v-model="formValidate.AllowTue">周二</Checkbox>
+              <Checkbox v-model="formValidate.AllowWed">周三</Checkbox>
+              <Checkbox v-model="formValidate.AllowThu">周四</Checkbox>
+              <Checkbox v-model="formValidate.AllowFri">周五</Checkbox>
+              <Checkbox v-model="formValidate.AllowSat">周六</Checkbox>
+              <Checkbox v-model="formValidate.AllowSun">周日</Checkbox>
             </FormItem>
           </Col>
           <Col span="24">
@@ -282,15 +282,20 @@
               >
                 <Option
                   v-for="item in SettleTypeList"
-                  :value="item.value"
-                  :key="item.value"
+                  :value="item.Id"
+                  :key="item.Code"
                 >{{ item.Description }}</Option>
               </Select>
             </FormItem>
           </Col>
           <Col span="24" v-if="FromDay">
             <FormItem label="可结算起始天" prop="FromDay">
-              <Select v-model="UpdateList.FromDay" style="width:300px">
+              <Select
+                v-model="UpdateList.FromDay"
+                :label-in-value="true"
+                @on-change="v=>{setOption(v,'type')}"
+                style="width:300px"
+              >
                 <Option
                   v-for="item in FromDayList"
                   :value="item.value"
@@ -311,8 +316,14 @@
             </FormItem>
           </Col>
           <Col span="24" v-if="PeriodOfT">
-            <FormItem label="T+" prop="PeriodOfT">
-              <Input v-model="UpdateList.PeriodOfT" placeholder="请输入" style="width:300px"></Input>
+            <FormItem label="T+N" prop="PeriodOfT">
+              <Select v-model="UpdateList.PeriodOfT" style="width:300px">
+                <Option
+                  v-for="item in PeriodOfTList"
+                  :value="item.value"
+                  :key="item.value"
+                >{{ item.label }}</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span="24" v-if="ExcludeHoliday">
@@ -325,15 +336,13 @@
           </Col>
           <Col span="24" v-if="Allow">
             <FormItem label="允许周几结算" prop="Allow">
-              <CheckboxGroup v-model="UpdateList.Allow">
-                <Checkbox label="周一"></Checkbox>
-                <Checkbox label="周二"></Checkbox>
-                <Checkbox label="周三"></Checkbox>
-                <Checkbox label="周四"></Checkbox>
-                <Checkbox label="周五"></Checkbox>
-                <Checkbox label="周六"></Checkbox>
-                <Checkbox label="周日"></Checkbox>
-              </CheckboxGroup>
+              <Checkbox v-model="UpdateList.AllowMon">周一</Checkbox>
+              <Checkbox v-model="UpdateList.AllowTue">周二</Checkbox>
+              <Checkbox v-model="UpdateList.AllowWed">周三</Checkbox>
+              <Checkbox v-model="UpdateList.AllowThu">周四</Checkbox>
+              <Checkbox v-model="UpdateList.AllowFri">周五</Checkbox>
+              <Checkbox v-model="UpdateList.AllowSat">周六</Checkbox>
+              <Checkbox v-model="UpdateList.AllowSun">周日</Checkbox>
             </FormItem>
           </Col>
           <Col span="24">
@@ -401,16 +410,25 @@ export default {
   data() {
     return {
       // 查询
-      queryRoyaltyType: "",
-      queryDescription: "",
       querySelectList: [
         {
-          value: "结算规则代码",
+          value: "Code",
           label: "结算规则代码"
+        },
+        {
+          value: "Description",
+          label: "结算规则描述"
+        },
+        {
+          value: "Enabled",
+          label: "启用"
         }
       ],
       queryvalue: "",
       querySelect: "",
+      Checkboxif: false,
+      queryvalueif: true,
+      single: false,
       // 表格
       SettlementCodeTable: [
         { type: "selection", width: 50, align: "center", fixed: "left" },
@@ -428,7 +446,28 @@ export default {
           sortable: true
         },
         { title: "排序码", key: "SortKey", width: 200, sortable: true },
-        { title: "启用", key: "Enabled", width: 200, sortable: true },
+        {
+          title: "启用",
+          key: "Enabled",
+          width: 200,
+          sortable: true,
+          // 当Enabled=true时表格显示"是" Enabled=false时表格显示"否"
+          render: (h, params) => {
+            let texts = "";
+            if (params.row.Enabled == true) {
+              texts = "是";
+            } else if (params.row.Enabled == false) {
+              texts = "否";
+            }
+            return h(
+              "div",
+              {
+                props: {}
+              },
+              texts
+            );
+          }
+        },
         { title: "创建人 ", key: "CreateBy", width: 200, sortable: true },
         { title: "创建时间", key: "CreateOn", width: 200, sortable: true }
       ],
@@ -440,76 +479,88 @@ export default {
       SettlementCodeData: [],
       // 添加信息 弹出框
       // 所属业务群
-      BusinessGroupList: [],
+      BusinessGroupList: [
+        { value: "用户", label: "用户" },
+        { value: "3", label: "3" }
+      ],
       // 结算方式下拉框循环数据
       SettleTypeList: [],
       // 可结算起始天下拉框循环数据
       FromDayList: [
-        { value: "1", label: "1" },
-        { value: "2", label: "2" },
-        { value: "3", label: "3" },
-        { value: "4", label: "4" },
-        { value: "5", label: "5" },
-        { value: "6", label: "6" },
-        { value: "7", label: "7" },
-        { value: "8", label: "8" },
-        { value: "9", label: "9" },
-        { value: "10", label: "10" },
-        { value: "11", label: "11" },
-        { value: "12", label: "12" },
-        { value: "13", label: "13" },
-        { value: "14", label: "14" },
-        { value: "15", label: "15" },
-        { value: "16", label: "16" },
-        { value: "17", label: "17" },
-        { value: "18", label: "18" },
-        { value: "19", label: "19" },
-        { value: "20", label: "20" },
-        { value: "21", label: "21" },
-        { value: "22", label: "22" },
-        { value: "23", label: "23" },
-        { value: "24", label: "24" },
-        { value: "25", label: "25" },
-        { value: "26", label: "26" },
-        { value: "27", label: "27" },
-        { value: "28", label: "28" },
-        { value: "29", label: "29" },
-        { value: "30", label: "30" },
-        { value: "31", label: "31" }
+        { value: 1, label: 1 },
+        { value: 2, label: 2 },
+        { value: 3, label: 3 },
+        { value: 4, label: 4 },
+        { value: 5, label: 5 },
+        { value: 6, label: 6 },
+        { value: 7, label: 7 },
+        { value: 8, label: 8 },
+        { value: 9, label: 9 },
+        { value: 10, label: 10 },
+        { value: 11, label: 11 },
+        { value: 12, label: 12 },
+        { value: 13, label: 13 },
+        { value: 14, label: 14 },
+        { value: 15, label: 15 },
+        { value: 16, label: 16 },
+        { value: 17, label: 17 },
+        { value: 18, label: 18 },
+        { value: 19, label: 19 },
+        { value: 20, label: 20 },
+        { value: 21, label: 21 },
+        { value: 22, label: 22 },
+        { value: 23, label: 23 },
+        { value: 24, label: 24 },
+        { value: 25, label: 25 },
+        { value: 26, label: 26 },
+        { value: 27, label: 27 },
+        { value: 28, label: 28 },
+        { value: 29, label: 29 },
+        { value: 30, label: 30 },
+        { value: 31, label: 31 }
       ],
       // 可结算终止天下拉框循环数据
       ToDayList: [
-        { value: "1", label: "1" },
-        { value: "2", label: "2" },
-        { value: "3", label: "3" },
-        { value: "4", label: "4" },
-        { value: "5", label: "5" },
-        { value: "6", label: "6" },
-        { value: "7", label: "7" },
-        { value: "8", label: "8" },
-        { value: "9", label: "9" },
-        { value: "10", label: "10" },
-        { value: "11", label: "11" },
-        { value: "12", label: "12" },
-        { value: "13", label: "13" },
-        { value: "14", label: "14" },
-        { value: "15", label: "15" },
-        { value: "16", label: "16" },
-        { value: "17", label: "17" },
-        { value: "18", label: "18" },
-        { value: "19", label: "19" },
-        { value: "20", label: "20" },
-        { value: "21", label: "21" },
-        { value: "22", label: "22" },
-        { value: "23", label: "23" },
-        { value: "24", label: "24" },
-        { value: "25", label: "25" },
-        { value: "26", label: "26" },
-        { value: "27", label: "27" },
-        { value: "28", label: "28" },
-        { value: "29", label: "29" },
-        { value: "30", label: "30" },
-        { value: "31", label: "31" }
+        { value: 1, label: 1 },
+        { value: 2, label: 2 },
+        { value: 3, label: 3 },
+        { value: 4, label: 4 },
+        { value: 5, label: 5 },
+        { value: 6, label: 6 },
+        { value: 7, label: 7 },
+        { value: 8, label: 8 },
+        { value: 9, label: 9 },
+        { value: 10, label: 10 },
+        { value: 11, label: 11 },
+        { value: 12, label: 12 },
+        { value: 13, label: 13 },
+        { value: 14, label: 14 },
+        { value: 15, label: 15 },
+        { value: 16, label: 16 },
+        { value: 17, label: 17 },
+        { value: 18, label: 18 },
+        { value: 19, label: 19 },
+        { value: 20, label: 20 },
+        { value: 21, label: 21 },
+        { value: 22, label: 22 },
+        { value: 23, label: 23 },
+        { value: 24, label: 24 },
+        { value: 25, label: 25 },
+        { value: 26, label: 26 },
+        { value: 27, label: 27 },
+        { value: 28, label: 28 },
+        { value: 29, label: 29 },
+        { value: 30, label: 30 },
+        { value: 31, label: 31 }
+      ],
+      PeriodOfTList: [
+        { value: 1, label: 1 },
+        { value: 2, label: 2 },
+        { value: 3, label: 3 },
+        { value: 4, label: 4 },
+        { value: 5, label: 5 },
+        { value: 6, label: 6 },
+        { value: 7, label: 7 }
       ],
       // 添加/修改加盟商结算规则默认隐藏
       AddDepartment: false,
@@ -526,14 +577,20 @@ export default {
         BusinessGroup: "",
         Code: "",
         Description: "",
-        SettleType: [],
+        SettleType: "",
         FromDay: "",
         ToDay: "",
         PeriodOfT: "",
-        Allow: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-        ExcludeHoliday: "",
+        AllowMon: true,
+        AllowTue: true,
+        AllowWed: true,
+        AllowThu: true,
+        AllowFri: true,
+        AllowSat: true,
+        AllowSun: true,
+        ExcludeHoliday: true,
         SortKey: "",
-        Enabled: ""
+        Enabled: true
       },
       // 修改结算方式表单
       UpdateList: {
@@ -541,36 +598,21 @@ export default {
         Code: "",
         Description: "",
         SettleType: "",
-        FromDay: "",
+        FromDay: [],
         ToDay: "",
         PeriodOfT: "",
-        Allow: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        AllowMon: "",
+        AllowTue: "",
+        AllowWed: "",
+        AllowThu: "",
+        AllowFri: "",
+        AllowSat: "",
+        AllowSun: "",
         ExcludeHoliday: "",
         SortKey: "",
         Enabled: ""
       },
-      ruleValidate: {
-        BusinessGroup: [
-          // { required: true, message: "请选择用户群", trigger: "change" }
-        ],
-        Code: [
-          {
-            required: true,
-            message: "请输入结算规则代码",
-            trigger: "blur"
-          }
-        ],
-        Description: [
-          { required: true, message: "请输入结算规则描述", trigger: "blur" }
-        ],
-        PeriodOfT: [
-          {
-            pattern: "^[0-9]*[1-9][0-9]*$",
-            message: "T+ 必须输入整数",
-            trigger: "blur"
-          }
-        ]
-      },
+      ruleValidate: {},
       // 删除信息弹出框
       delete1: false,
       BatchDeleteList: [],
@@ -580,41 +622,38 @@ export default {
   methods: {
     // 结算方式下拉框选择事件
     setOption(value, type) {
-      console.log(value.label);
-      if (value.label == "RealTime") {
+      if (value.value == "0") {
         this.ToDay = false;
         this.FromDay = false;
         this.ExcludeHoliday = false;
         this.PeriodOfT = false;
         this.Allow = false;
       }
-      if (value.label == "T+N") {
+      if (value.value == "1") {
         this.ToDay = true;
         this.FromDay = true;
         this.ExcludeHoliday = true;
         this.PeriodOfT = true;
         this.Allow = false;
       }
-      if (value.label == "Monthly") {
+      if (value.value == "2" || value.value == "3" || value.value == "4") {
         this.ToDay = true;
         this.FromDay = true;
         this.ExcludeHoliday = true;
         this.PeriodOfT = true;
         this.Allow = true;
       }
-      if (value.label == "NextMonth") {
-        this.ToDay = true;
-        this.FromDay = true;
-        this.ExcludeHoliday = true;
-        this.PeriodOfT = true;
-        this.Allow = true;
+      if (value.value == "Enabled") {
+        this.Checkboxif = true;
+        this.queryvalueif = false;
       }
-      if (value.label == "EndOfYear") {
-        this.ToDay = true;
-        this.FromDay = true;
-        this.ExcludeHoliday = true;
-        this.PeriodOfT = true;
-        this.Allow = true;
+      if (value.value == "Code") {
+        this.Checkboxif = false;
+        this.queryvalueif = true;
+      }
+      if (value.value == "Description") {
+        this.Checkboxif = false;
+        this.queryvalueif = true;
       }
     },
     // 添加加盟商结算规则信息
@@ -667,6 +706,32 @@ export default {
     dblclickUpData(index) {
       this.upDepartment = true;
       this.UpdateList = index;
+      console.log(index);
+      if (index.SettleType == "0") {
+        this.ToDay = false;
+        this.FromDay = false;
+        this.ExcludeHoliday = false;
+        this.PeriodOfT = false;
+        this.Allow = false;
+      }
+      if (index.SettleType == "1") {
+        this.ToDay = true;
+        this.FromDay = true;
+        this.ExcludeHoliday = true;
+        this.PeriodOfT = true;
+        this.Allow = false;
+      }
+      if (
+        index.SettleType == "2" ||
+        index.SettleType == "3" ||
+        index.SettleType == "4"
+      ) {
+        this.ToDay = true;
+        this.FromDay = true;
+        this.ExcludeHoliday = true;
+        this.PeriodOfT = true;
+        this.Allow = true;
+      }
     },
     //点击修改按钮
     UpdateSubmit() {

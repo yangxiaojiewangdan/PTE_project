@@ -47,6 +47,21 @@ export const getSettleType = () => {
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // 权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金
 
 //获取权益金规则信息渲染到表格
@@ -110,3 +125,4 @@ export const getROYALTY_BENCH_MARK = () => {
     method: "get"
   });
 };
+  
