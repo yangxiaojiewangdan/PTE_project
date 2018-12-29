@@ -127,3 +127,36 @@ export const rightRole = params => {
     
   });
 };
+//增加删减权限接口
+export const branchRole = roleData => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/AssignedPermission",
+    method: "post",
+    data: roleData,
+  });
+};
+//修改角色权限的接口
+export const upBusinessRole = upRole => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/Update",
+    data: upRole,
+    method: "post"
+  });
+};
+//系统角色查询
+export const queryBusinessRole = queryRole => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/GetEntities",
+    data: queryRole,
+    method: "post"
+  });
+};
+//获取数据字典
+export const DataDictionary = params => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities",
+    method: "get",
+    params,
+    
+  });
+};

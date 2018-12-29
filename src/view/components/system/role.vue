@@ -23,7 +23,7 @@
 		<Row>
 			<!--表格-->
 			<Col span="20" push="1">
-			<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="upRoleData" stripe size="small" highlight-row @on-select="deleteBusinessRole"></Table>
+			<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="upRoleData" stripe size="small" highlight-row @on-select="deleteBusinessRole" :loading=loading></Table>
 			</Col>
 			<!--分页-->
 			<Col span="10" push="10">
@@ -59,13 +59,10 @@
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<FormItem label="角色级别" prop='DataPermissionLevel'>
+					<FormItem label="数据权限" prop='DataPermissionLevel'>
 						<RadioGroup v-model="formValidate.DataPermissionLevel">
-							<Radio label="无"></Radio>
-							<Radio label="个人"></Radio>
-							<Radio label="本部门"></Radio>
-							<Radio label="本部门及下属部门"></Radio>
-							<Radio label="全组织"></Radio>
+							<Radio v-for="item in radioList" :label="item.Description" :key="item.Id"></Radio>
+
 						</RadioGroup>
 					</FormItem>
 					</Col>
@@ -98,7 +95,7 @@
 					</Col>
 					<Col span="12">
 					<FormItem label="启用" prop='Enabled'>
-						<i-switch v-model="formValidate.Enabled" size="large">
+						<i-switch v-model="formValidate.Enabled" size="large" :true-value="Number(1)" :false-value="Number(0)">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
@@ -142,13 +139,9 @@
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<FormItem label="角色级别" prop='DataPermissionLevel'>
+					<FormItem label="数据权限" prop='DataPermissionLevel'>
 						<RadioGroup v-model="formRoleValidate.DataPermissionLevel">
-							<Radio label="无"></Radio>
-							<Radio label="个人"></Radio>
-							<Radio label="本部门"></Radio>
-							<Radio label="本部门及下属部门"></Radio>
-							<Radio label="全组织"></Radio>
+							<Radio v-for="item in radioList" :label="item.Description" :key="item.Id"></Radio>
 						</RadioGroup>
 					</FormItem>
 					</Col>
@@ -180,14 +173,14 @@
 					</Col>
 					<Col span="6">
 					<FormItem label="启用" prop='Enabled'>
-						<i-switch v-model="formRoleValidate.Enabled" size="large">
+						<i-switch v-model="formRoleValidate.Enabled" size="large" :true-value="Number(1)" :false-value="Number(0)">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<tree-transfer :title="title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'Description',children:'PermissionCollection'}" @addBtn='add' @removeBtn='remove' height='540px' node_key="Id" pid="ParentId" :button_text="['添加', '删减']">
+					<tree-transfer :title="title" :from_data='fromData' :to_data='toData' :defaultProps="{label:'Description',children:'PermissionCollection'}" @addBtn='add' @removeBtn='remove' height='540px' node_key="Id" pid="ParentId" :button_text="['添加', '删减']" leafOnly>
 					</tree-transfer>
 					</Col>
 				</Row>
@@ -216,8 +209,19 @@
 </template>
 <script>
 	import treeTransfer from 'el-tree-transfer'
-	import { getBusinessRolesData, addBusinessRole, deleteBusinessRole, leftRole, rightRole } from '@/api/data'
+	import {
+		getBusinessRolesData,
+		addBusinessRole,
+		deleteBusinessRole,
+		leftRole,
+		rightRole,
+		branchRole,
+		upBusinessRole,
+		queryBusinessRole,
+		DataDictionary,
+	} from '@/api/data'
 	export default {
+		inject: ['reload'],
 		name: 'role',
 		components: {
 			treeTransfer
@@ -225,6 +229,7 @@
 		data() {
 			return {
 				model1: '',
+				loading: true,
 				value: '',
 				cityList: [{
 						value: 'New York',
@@ -300,28 +305,42 @@
 					},
 					{
 						title: '启用',
-						key: 'Supervisor',
+						key: 'Enabled',
 						width: 160,
 						sortable: true,
+						render: (h, params) => {
+							let texts = "";
+							if(params.row.Enabled == true) {
+								texts = "是";
+							} else if(params.row.Enabled == false) {
+								texts = "否";
+							}
+							return h(
+								"div", {
+									props: {}
+								},
+								texts
+							);
+						}
 
 					},
 					{
 						title: '排序码',
-						key: 'Enabled',
+						key: 'SortKey',
 						width: 150,
 						sortable: true,
 
 					},
 					{
 						title: '创建人',
-						key: 'SortKey',
+						key: 'CreateBy',
 						width: 200,
 						sortable: true,
 
 					},
 					{
 						title: '创建时间',
-						key: 'CreateBy',
+						key: 'CreateOn',
 						width: 400,
 						sortable: true,
 
@@ -338,15 +357,24 @@
 				//权限分配弹框
 				businessRoles: false,
 				formValidate: {
-					Enabled: true,
+					Enabled: 1,
 					Code: '',
 					Description: '',
 					Supervisor: '',
+					IsHeadquarter: false,
+					IsStoreFranchise: false,
+					IsIntemal: false
 				},
 				formRoleValidate: {
+					Enabled: 1,
 					Code: '',
 					Description: '',
+					Supervisor: '',
+					IsHeadquarter: false,
+					IsStoreFranchise: false,
+					IsIntemal: false
 				},
+				radioList: [],
 				ruleValidate: {
 					//					Code: [{
 					//							required: true,
@@ -381,9 +409,14 @@
 				delBusinessRoleArrs: [],
 				//j角色权限id
 				roleId: '',
-				title:['未分配权限','已有权限'],
+				title: ['未分配权限', '已有权限'],
 				fromData: [],
 				toData: [],
+				nodes: [],
+				toDataRole: [],
+				tofromDataRole: [],
+				finalRole: [],
+				aaa: [],
 			}
 		},
 		methods: {
@@ -392,15 +425,19 @@
 				this.formRoleValidate = index;
 				this.roleId = index.Id;
 				//未分配的权限接口
-				leftRole({roleId:this.roleId}).then(res => {
+				leftRole({
+					roleId: this.roleId
+				}).then(res => {
 					this.fromData = res.data;
-					console.log(this.fromData)
 				}).catch(err => {
 					console.log(err)
 				});
 				//已分配的权限接口
-				rightRole({roleId:this.roleId}).then(res => {
+				rightRole({
+					roleId: this.roleId
+				}).then(res => {
 					this.toData = res.data
+					console.log(this.toData)
 				}).catch(err => {
 					console.log(err)
 				})
@@ -408,28 +445,53 @@
 			},
 			// 监听穿梭框组件添加
 			add(fromData, toData, obj) {
-				// 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的        {keys,nodes,halfKeys,halfNodes}对象
-				console.log("fromData:", fromData);
-				console.log("toData:", toData);
-				console.log("obj:", obj);
+				//循环toData
+				this.toData.forEach(item => {
+					item.PermissionCollection.forEach(e => {
+						//添加到新数组
+						this.toDataRole.push(e)
+					})
+				})
+				//调用增删权限的接口
+				branchRole({
+					RoleId: this.roleId,
+					PermissionItemCollection: this.toDataRole
+				}).then(res => {
+					this.$Message.success('修改成功!')
+					console.log(res.data)
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			// 监听穿梭框组件移除
 			remove(fromData, toData, obj) {
-				// 树形穿梭框模式transfer时，返回参数为左侧树移动后数据、右侧树移动后数据、移动的{keys,nodes,halfKeys,halfNodes}对象
-				console.log("fromData:", fromData);
-				console.log("toData:", toData);
-				console.log("obj:", obj);
+				this.fromData.forEach(item => {
+					item.PermissionCollection.forEach(e => {
+						//添加到新数组
+						this.tofromDataRole.push(e)
+					})
+				})
+				//调用增删权限的接口
+				branchRole({
+					RoleId: this.roleId,
+					PermissionItemCollection: this.tofromDataRole
+				}).then(res => {
+					this.$Message.success('修改成功!')
+					console.log(res.data)
+				}).catch(err => {
+					console.log(err)
+				})
+
 			},
 			//删除
 			deleteList() {
 				if(this.delBusinessRoleList.length == 0) {
 					this.$Message.info('请先选中删除的数据');
 				} else {
-					deleteBusinessRole(this.delBusinessRoleList).then(res => {
+					deleteBusinessRole(this.delBusinessRoleArrs).then(res => {
 						this.$Message.success('删除成功!')
 						this.reload();
 					}).catch(err => {
-						this.$Message.error('删除失败!')
 						console.log(err)
 					})
 				}
@@ -468,22 +530,27 @@
 				})
 			},
 			handleReset(name) {
-
 				this.$refs[name].resetFields();
 				this.$Message.info('已取消');
 				this.businessRoles = false
 			},
 			// 添加信息 弹出框函数 end
 
-			// 权限信息弹出框函数
+			//详情弹框提交
 			handleSubmit2(name) {
 				this.$refs[name].validate((valid) => {
 					if(valid) {
-						this.$Message.success('成功!');
+						//修改信息的接口
+						upBusinessRole(this.formRoleValidate).then(res => {
+							this.$Message.success('修改成功!')
+						}).catch(err => {
+							console.log(err)
+						});
+
 					} else {
 						this.$Message.error('失败!');
 					}
-				})
+				});
 			},
 			handleReset2(name) {
 				this.$refs[name].resetFields();
@@ -496,6 +563,17 @@
 			//获取data信息
 			getBusinessRolesData(this.BusinessRolesData).then(res => {
 				this.data1 = res.data;
+				this.loading = false;
+			}).catch(err => {
+				console.log(err)
+			});
+			//获取数据字典
+			DataDictionary({
+				dataCategory: "DATA_PERMISSION_LEVEL",
+				businessGroup: '*'
+			}).then(res => {
+				this.radioList = res.data
+				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			})
