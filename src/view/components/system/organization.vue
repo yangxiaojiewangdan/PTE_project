@@ -29,7 +29,7 @@
 				<Select v-model="formSend.label" style="width:100px">
 					<Option v-for="item in department" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
-				<Input v-model="query" placeholder="请输入" style="width: 150px" class="organization_tableTop"/>
+				<Input v-model="query" placeholder="请输入" style="width: 150px" class="organization_tableTop" />
 				<Button type="primary" class="organization_tableTop" @click="queryData">查询</Button>
 			</div>
 			</Col>
@@ -37,7 +37,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData" @on-row-dblclick="upDataBusinessUnit">
+			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="delBusinessUnitData" @on-row-dblclick="upDataBusinessUnit" :loading=loading>
 			</Table>
 			<!-- 表格 end-->
 			</Col>
@@ -49,7 +49,7 @@
 			</Col>
 		</Row>
 		<!-- 删除信息弹出框 -->
-		<Modal v-model="delete1" title="提示" @on-ok="ok" @on-cancel="cancel">
+		<Modal v-model="delModal" title="提示" @on-ok="ok" @on-cancel="cancel">
 			<h2>确定删除此数据？</h2>
 		</Modal>
 		<!-- 删除信息弹出框 end-->
@@ -92,7 +92,7 @@
 					</Col>
 					<Col span="9">
 					<FormItem label="启用" prop="Enabled">
-						<i-switch v-model="formValidate.Enabled" size="large">
+						<i-switch v-model="formValidate.Enabled" size="large" :true-value="Number(1)" :false-value="Number(0)">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
@@ -160,7 +160,7 @@
 					</Col>
 					<Col span="9">
 					<FormItem label="启用" prop="Enabled">
-						<i-switch v-model="upValidate.Enabled" size="large">
+						<i-switch v-model="upValidate.Enabled" size="large" :true-value="Number(1)" :false-value="Number(0)">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
@@ -196,6 +196,7 @@
 		inject: ['reload'],
 		data() {
 			return {
+				loading: true,
 				formSend: {
 					value: '',
 					label: ''
@@ -274,7 +275,21 @@
 						title: '启用',
 						key: 'Enabled',
 						width: 100,
-						sortable: true
+						sortable: true,
+						render: (h, params) => {
+							let texts = "";
+							if(params.row.Enabled == true) {
+								texts = "是";
+							} else if(params.row.Enabled == false) {
+								texts = "否";
+							}
+							return h(
+								"div", {
+									props: {}
+								},
+								texts
+							);
+						}
 					},
 					{
 						title: '排序码',
@@ -304,7 +319,7 @@
 				delBusinessUnitArrs: [],
 				// 表格 end      
 				// 删除信息弹出框
-				delete1: false,
+				delModal: false,
 				// 删除信息弹出框 end   
 				// 添加信息 弹出框
 				cityList: [{
@@ -341,13 +356,13 @@
 				AddDepartment: false,
 				upDepartment: false,
 				formValidate: {
-					Enabled: true,
+					Enabled: 1,
 					Code: '',
 					Description: '',
 					Supervisor: '',
 				},
 				upValidate: {
-					Enabled: true,
+					Enabled: 1,
 					Code: '',
 					Description: '',
 					Supervisor: '',
@@ -358,17 +373,17 @@
 							message: '部门代码不能为空',
 							trigger: 'blur'
 						},
-//						{
-//							min: '',
-//							max: '',
-//							message: "",
-//							trigger: "blur"
-//						},
-//						{
-//							pattern: /[\u4e00-\u9fa5]/gm,
-//							message: "必须是字母加数值",
-//							trigger: "blur"
-//						}
+						//						{
+						//							min: '',
+						//							max: '',
+						//							message: "",
+						//							trigger: "blur"
+						//						},
+						//						{
+						//							pattern: /[\u4e00-\u9fa5]/gm,
+						//							message: "必须是字母加数值",
+						//							trigger: "blur"
+						//						}
 					],
 					Description: [{
 						required: true,
@@ -389,18 +404,18 @@
 				if(this.delBusinessUnitList.length == 0) {
 					this.$Message.info('请先选中删除的数据');
 				} else {
-					deleteBusinessUnit(this.delBusinessUnitArrs).then(res => {
-						this.$Message.success('删除成功!')
-						this.reload();
-					}).catch(err => {
-						this.$Message.error('删除失败!')
-						console.log(err)
-					})
+					this.delModal = true;
 				}
 			},
 			// 删除信息 弹出框函数
 			ok() {
-				this.$Message.info('已删除');
+				deleteBusinessUnit(this.delBusinessUnitArrs).then(res => {
+					this.$Message.success('删除成功!')
+					this.reload();
+				}).catch(err => {
+					this.$Message.error('删除失败!')
+					console.log(err)
+				})
 				this.reload();
 			},
 			cancel() {
@@ -483,13 +498,13 @@
 			//获取树形结构
 			getTreeList().then(res => {
 				this.treeList = res.data
-				console.log(this.treeList)
 			}).catch(err => {
 				console.log(err)
 			});
 			//获取表格
 			getBusinessUnitData(this.BusinessUnitData).then(res => {
 				this.data1 = res.data
+				this.loading = false;
 			}).catch(err => {
 				console.log(err)
 			})

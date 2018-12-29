@@ -61,8 +61,9 @@
 					<Col span="24">
 					<FormItem label="数据权限" prop='DataPermissionLevel'>
 						<RadioGroup v-model="formValidate.DataPermissionLevel">
-							<Radio v-for="item in radioList" :label="item.Description" :key="item.Id"></Radio>
-
+							<Radio v-for="item in radioList" :label="item.Id">
+								<span>{{item.Description}}</span>
+							</Radio>
 						</RadioGroup>
 					</FormItem>
 					</Col>
@@ -123,25 +124,31 @@
                     </button>
 			</div>
 		</Modal>
+		<!-- 删除信息弹出框 -->
+		<Modal v-model="delModal" title="提示" @on-ok="ok" @on-cancel="cancel">
+			<h2>确定删除此数据？</h2>
+		</Modal>
 		<!-- 添加信息 弹出框 end-->
 		<!-- 分配权限 弹出框-->
 		<Modal v-model="businessRoles" width="800" title="分配业务角色信息" :mask-closable="false">
 			<Form ref="formRoleValidate" :model="formRoleValidate" :rules="ruleValidate" :label-width="80">
 				<Row>
 					<Col span="12">
-					<FormItem label="角色代码" prop>
+					<FormItem label="角色代码" prop="Code">
 						<Input v-model="formRoleValidate.Code" :readonly="true" style="width:250px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="12">
-					<FormItem label="角色名称" prop>
+					<FormItem label="角色名称" prop="Description">
 						<Input v-model="formRoleValidate.Description" :readonly="true" style="width:250px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="24">
 					<FormItem label="数据权限" prop='DataPermissionLevel'>
 						<RadioGroup v-model="formRoleValidate.DataPermissionLevel">
-							<Radio v-for="item in radioList" :label="item.Description" :key="item.Id"></Radio>
+							<Radio v-for="item in radioList" :label="item.Id">
+								<span>{{item.Description}}</span>
+							</Radio>
 						</RadioGroup>
 					</FormItem>
 					</Col>
@@ -231,6 +238,7 @@
 				model1: '',
 				loading: true,
 				value: '',
+				delModal: false,
 				cityList: [{
 						value: 'New York',
 						label: 'New York'
@@ -363,7 +371,8 @@
 					Supervisor: '',
 					IsHeadquarter: false,
 					IsStoreFranchise: false,
-					IsIntemal: false
+					IsIntemal: false,
+					DataPermissionLevel: '',
 				},
 				formRoleValidate: {
 					Enabled: 1,
@@ -420,6 +429,7 @@
 			}
 		},
 		methods: {
+			//分配权限
 			upRoleData(index) {
 				this.businessRoles = true;
 				this.formRoleValidate = index;
@@ -488,22 +498,22 @@
 				if(this.delBusinessRoleList.length == 0) {
 					this.$Message.info('请先选中删除的数据');
 				} else {
-					deleteBusinessRole(this.delBusinessRoleArrs).then(res => {
-						this.$Message.success('删除成功!')
-						this.reload();
-					}).catch(err => {
-						console.log(err)
-					})
+					this.delModal = true;
 				}
 			},
 			// 删除信息 弹出框函数
 			ok() {
-				this.$Message.info('已删除');
+				deleteBusinessRole(this.delBusinessRoleArrs).then(res => {
+					this.$Message.success('删除成功!')
+					this.reload();
+				}).catch(err => {
+					console.log(err)
+				})
 			},
 			cancel() {
 				this.$Message.info('已取消');
 			},
-			//删除组织赋值
+			//循环拿到组织的id
 			deleteBusinessRole(selection) {
 				console.log(selection);
 				this.delBusinessRoleList = selection;
@@ -513,7 +523,6 @@
 				console.log(this.delBusinessRoleArrs);
 
 			},
-			// 删除信息弹出框函数 end
 			// 添加信息弹出框函数
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
@@ -534,7 +543,6 @@
 				this.$Message.info('已取消');
 				this.businessRoles = false
 			},
-			// 添加信息 弹出框函数 end
 
 			//详情弹框提交
 			handleSubmit2(name) {
@@ -573,7 +581,6 @@
 				businessGroup: '*'
 			}).then(res => {
 				this.radioList = res.data
-				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			})
