@@ -45,23 +45,6 @@ export const getSettleType = () => {
     method: "get"
   });
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // 权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金
 
 //获取权益金规则信息渲染到表格
@@ -125,4 +108,31 @@ export const getROYALTY_BENCH_MARK = () => {
     method: "get"
   });
 };
-  
+
+//添加权益金阶梯规则接口
+export const RoyaltyCodeAddOrUpdateLadder = AddOrUpdateLadderList => {
+  return axios.request({
+    url: apiUrl + "/api/RoyaltyCode/AddOrUpdateLadder",
+    data: AddOrUpdateLadderList,
+    method: "post"
+  });
+};
+
+//批量删除权益金阶梯规则接口
+// export const RoyaltyCodeBatchRemoveLadder = BatchRemoveLadderList => {
+//   return axios.request({
+//     url: apiUrl + "/api/RoyaltyCode/BatchRemoveLadder",
+//     data: BatchRemoveLadderList,
+//     method: "post"
+//   });
+// };
+
+
+//批量删除权益金阶梯规则接口
+export const RoyaltyCodeBatchRemoveLadder = (one, two) => {
+  return axios.request({
+    url: apiUrl + "/api/RoyaltyCode/RemoveLadder?royaltyId=" + one + '&detailId=' + two,
+    // data: BatchRemoveLadderList,
+    method: "post"
+  });
+};
