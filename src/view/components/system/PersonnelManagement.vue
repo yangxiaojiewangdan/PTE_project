@@ -12,7 +12,7 @@
 			</Col>
 			<!-- 树状图 -->
 			<Col span="24">
-			<Tree :data="treeList" class="tree" :render="renderContent" children-key="ChildNodes"></Tree>
+			<Tree :data="treeList" class="tree" :render="renderContent" children-key="ChildNodes" show-checkbox ref="tree" @on-check-change="choiceAll"></Tree>
 			</Col>
 			<!-- 树状图 end-->
 			</Col>
@@ -121,12 +121,7 @@
 					<Col span="8">
 					<FormItem label="主管姓名" prop="Supervisor">
 						<Select v-model="formValidate.Supervisor" style="width:200px" placeholder="请选择">
-							<OptionGroup label="Hot Cities">
 								<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
-							<OptionGroup label="Other Cities">
-								<Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
 						</Select>
 					</FormItem>
 					</Col>
@@ -246,170 +241,149 @@
 		</Modal>
 		<!-- 添加信息 弹出框 end-->
 		<!-- 查看信息 修改信息 弹出框-->
-		<Modal v-model="UpDepartment" width="1300" title="查看用户信息" :mask-closable="false">
-			<Form ref="SeeDepartment" :model="SeeDepartment" :rules="ruleValidate" :label-width="80">
-				<Row>
-					<Col span="24">
-					<Col span="8">
+		<Modal v-model="UpDepartment" width="1400" title="编辑用户信息" :mask-closable="false">
+			<Row>
+				<Col span="17">
+				<Form ref="SeeDepartment" :model="SeeDepartment" :label-width="80" :rules="ruleValidate" inline>
 					<FormItem label="部门名称" prop="BusinessUnit">
 						<Input v-model="SeeDepartment.BusinessUnit" placeholder="Enter something..." style="width:200px" />
 					</FormItem>
-					</Col>
-					<Col span="24">
-					<Col span="8">
+
 					<FormItem label="姓" prop="FirstName">
 						<Input v-model="SeeDepartment.FirstName" placeholder="请输入......" style="width:200px" />
 					</FormItem>
-					</Col>
-					<Col span="8">
+
 					<FormItem label="名" prop="LastName">
 						<Input v-model="SeeDepartment.LastName" placeholder="请输入......" style="width:200px" />
 					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="性别" prop="Gender">
+
+					<FormItem label="性别" prop="Gender" style="width:280px">
 						<RadioGroup v-model="SeeDepartment.Gender">
 							<Radio v-for="item in radioList" :label="item.Code">
 								<span>{{item.Description}}</span>
 							</Radio>
 						</RadioGroup>
 					</FormItem>
-					</Col>
-					</Col>
-					<Col span="24">
-					<Col span="8">
+
 					<FormItem label="出生日期" prop="BrithDate">
 						<DatePicker v-model="SeeDepartment.BrithDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
-					</Col>
-					<Col span="8">
+
 					<FormItem label="入职日期" prop="JoinDate">
 						<DatePicker v-model="SeeDepartment.JoinDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="离职日期" prop="LeaveDate">
-						<DatePicker v-model="SeeDepartment.LeaveDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
-					</FormItem>
-					</Col>
-					</Col>
-					<Col span="24">
-					<Col span="8">
+
 					<FormItem label="职位" prop="Title">
 						<Input v-model="SeeDepartment.Title" placeholder="请输入......" style="width:200px" />
 					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="固定电话" prop="TelPhone">
-						<Input v-model="SeeDepartment.TelPhone" placeholder="请输入......" style="width:200px" />
-					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="手机" prop="MobilePhone">
-						<Input v-model="SeeDepartment.MobilePhone" placeholder="请输入......" style="width:200px" />
-					</FormItem>
-					</Col>
-					</Col>
-					<Col span="24">
-					<Col span="8">
-					<FormItem label="主管姓名" prop="Supervisor">
-						<Select v-model="SeeDepartment.Supervisor" style="width:200px" placeholder="请选择">
-							<OptionGroup label="Hot Cities">
-								<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
-							<OptionGroup label="Other Cities">
-								<Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
-						</Select>
-					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="微信号" prop="WeChat">
-						<Input v-model="SeeDepartment.WeChat" placeholder="请输入......" style="width:200px" />
-					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="QQ号" prop="QQ">
-						<Input v-model="SeeDepartment.QQ" placeholder="请输入......" style="width:200px" />
-					</FormItem>
-					</Col>
-					</Col>
-					<Col span="24">
-					<Col span="8">
-					<FormItem label="邮箱" prop="Email">
-						<Input v-model="SeeDepartment.Email" placeholder="请输入......" style="width:200px" />
-					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="邮编" prop="PostalCode">
-						<Input v-model="SeeDepartment.PostalCode" placeholder="请输入......" style="width:200px" />
-					</FormItem>
-					</Col>
-					<Col span="8">
-					<FormItem label="地址" prop="Address">
-						<Input v-model="SeeDepartment.Address" placeholder="请输入......" style="width:305px" />
-					</FormItem>
-					</Col>
-					</Col>
-					<Col span="24">
-					<Col span="8">
+					
 					<FormItem label="登录账号" prop="Account">
 						<Input v-model="SeeDepartment.Account" placeholder="请输入......" style="width:200px" />
 					</FormItem>
-					</Col>
-					<Col span="8">
+
 					<FormItem label="登录密码" prop="AccountPwd">
 						<Input type="Password" v-model="SeeDepartment.AccountPwd" placeholder="请输入......" style="width:200px" />
 					</FormItem>
-					</Col>
-					<Col span="8">
+
 					<FormItem label="角色名称" prop="RoleName">
 						<Input v-model="SeeDepartment.RoleName" placeholder="请输入......" style="width:200px" />
 					</FormItem>
-					</Col>
-					</Col>
-					<Col span="24">
-					<Col span="6">
+					<FormItem label="固定电话" prop="TelPhone">
+						<Input v-model="SeeDepartment.TelPhone" placeholder="请输入......" style="width:200px" />
+					</FormItem>
+
+					<FormItem label="手机" prop="MobilePhone">
+						<Input v-model="SeeDepartment.MobilePhone" placeholder="请输入......" style="width:200px" />
+					</FormItem>
+
+					<FormItem label="主管姓名" prop="Supervisor">
+						<Select v-model="SeeDepartment.Supervisor" style="width:200px" placeholder="请选择">
+								<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>
+					</FormItem>
+
+					<FormItem label="微信号" prop="WeChat">
+						<Input v-model="SeeDepartment.WeChat" placeholder="请输入......" style="width:200px" />
+					</FormItem>
+
+					<FormItem label="QQ号" prop="QQ">
+						<Input v-model="SeeDepartment.QQ" placeholder="请输入......" style="width:200px" />
+					</FormItem>
+
+					<FormItem label="邮箱" prop="Email">
+						<Input v-model="SeeDepartment.Email" placeholder="请输入......" style="width:200px" />
+					</FormItem>
+
+					<FormItem label="邮编" prop="PostalCode">
+						<Input v-model="SeeDepartment.PostalCode" placeholder="请输入......" style="width:200px" />
+					</FormItem>
+
+					<FormItem label="地址" prop="Address">
+						<Input v-model="SeeDepartment.Address" placeholder="请输入......" style="width:200px" />
+					</FormItem>
+
 					<FormItem label="允许登录" prop="AllowLogin">
 						<i-switch v-model="SeeDepartment.AllowLogin" size="large">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
-					</Col>
-					<Col span="6">
+
 					<FormItem label="主管标识" prop="IsSupervisor">
 						<i-switch v-model="SeeDepartment.IsSupervisor" size="large">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
-					</Col>
-					<Col span="6">
+
 					<FormItem label="管理员标识" prop="IsAdministrtor">
 						<i-switch v-model="SeeDepartment.IsAdministrtor" size="large">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
-					</Col>
-					<Col span="6">
+
 					<FormItem label="启用" prop="Enabled">
 						<i-switch v-model="SeeDepartment.Enabled" size="large">
 							<span slot="open">On</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
-					</Col>
-					</Col>
-					<Col span="24">
+
 					<FormItem label="备注" prop="Comments">
-						<Input v-model="SeeDepartment.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:1000px;"></Input>
+						<Input v-model="SeeDepartment.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:800px;"></Input>
 					</FormItem>
-					</Col>
-					</Col>
-				</Row>
-			</Form>
+				</Form>
+				</Col>
+				<!--右边-->
+				<Col span="7" style="border-left: 2px solid #DCDEE2;">
+				<Form ref="SeeDepartment" :model="SeeDepartment" :label-width="80"  readonly  style="margin-left: 20px;">
+					<FormItem label="部门名称" prop="BusinessUnit">
+						<Input v-model="SeeDepartment.BusinessUnit" readonly style="width:200px"/>
+					</FormItem>
+					<FormItem label="姓" prop="FirstName">
+						<Input v-model="SeeDepartment.FirstName" readonly style="width:200px"/>
+					</FormItem>
+
+					<FormItem label="名" prop="LastName">
+						<Input v-model="SeeDepartment.LastName"  readonly style="width:200px"/>
+					</FormItem>
+					<FormItem label="登录账号" prop="Account">
+						<Input v-model="SeeDepartment.Account"  readonly style="width:200px"/>
+					</FormItem>
+
+					<FormItem label="登录密码" prop="AccountPwd">
+						<Input type="Password" v-model="SeeDepartment.AccountPwd" readonly style="width:200px"/>
+					</FormItem>
+					<FormItem label="角色名称" prop="RoleName">
+						<Input v-model="SeeDepartment.RoleName"  readonly style="width:200px"/>
+					</FormItem>
+					<FormItem label="入职日期" prop="JoinDate">
+						<Input v-model="SeeDepartment.JoinDate"  readonly style="width: 200px"/>
+					</FormItem>
+				</Form>
+				</Col>
+			</Row>
 			<div slot="footer">
 				<div class="footer_left">
 					<div class="footer_left1">
@@ -447,7 +421,8 @@
 		UpdateUserData,
 		getTreeList,
 		deleteBusinessUser,
-		DataDictionary
+		DataDictionary,
+		BusinessUserGetEntities
 	} from '@/api/data'
 	export default {
 		inject: ['reload'],
@@ -676,6 +651,7 @@
 						sortable: true
 					}
 				],
+				treePid: [],
 				//表格数组
 				data1: [],
 				//人员信息发送的数据
@@ -693,19 +669,7 @@
 					value: 'New York',
 					label: 'New York'
 				}, ],
-				cityList1: [{
-						value: 'New York',
-						label: 'New York'
-					},
-					{
-						value: 'London',
-						label: 'London'
-					},
-					{
-						value: 'Sydney',
-						label: 'Sydney'
-					}
-				],
+				cityList1: [],
 				cityList2: [{
 						value: 'Ottawa',
 						label: 'Ottawa'
@@ -771,117 +735,144 @@
 					IsAdministrtor: '',
 				},
 				ruleValidate: {
-					Code: [{
-							required: true,
-							message: '部门代码不能为空',
-							trigger: 'blur'
-						},
-						{
-							min: 8,
-							max: 8,
-							message: "长度必须是8位字符",
-							trigger: "blur"
-						},
-						{
-							pattern: /^[0-9a-zA-Z]*$/g,
-							message: "必须是字母加数值",
-							trigger: "blur"
-						}
-					],
-					FirstName: [{
-						required: true,
-						message: '姓不能为空',
-						trigger: 'blur'
-					}, ],
-					LastName: [{
-						required: true,
-						message: '名不能为空',
-						trigger: 'blur'
-					}, ],
-					Address: [{
-						required: true,
-						message: '地址不能为空',
-						trigger: 'blur'
-					}, ],
-					Gender: [{
-						required: true,
-						message: '请选择性别',
-						trigger: 'change'
-					}],
-					BrithDate: [{
-						required: true,
-						message: '请选择出生日期',
-						trigger: 'change'
-					}, ],
-					JoinDate: [{
-						required: true,
-						message: '请选择入职日期',
-						trigger: 'change'
-					}],
-					TelPhone: [{
-						pattern: /0\d{2}-\d{7,8}/,
-						message: "请输入正确的座机号码",
-						trigger: "blur"
-					}],
-					MobilePhone: [{
-							required: true,
-							message: '手机号不能为空',
-							trigger: 'blur'
-						},
-						{
-							pattern: /^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/,
-							message: "请输入正确的手机号码",
-							trigger: "blur"
-						}
-					],
-					Supervisor: [{
-						required: true,
-						message: '请选择主管姓名',
-						trigger: 'change'
-					}],
-					WeChat: [{
-						pattern: /[\u4e00-\u9fa5]/gm,
-						message: "请输入正确的微信号",
-						trigger: "blur"
-					}],
-					QQ: [{
-						pattern: /^\d{5,10}$/,
-						message: "请输入正确的QQ号",
-						trigger: "blur"
-					}],
-					Email: [{
-						type: "email",
-						required: true,
-						message: "邮箱格式不正确",
-						trigger: "blur"
-					}],
-					PostalCode: [{
-						type: "number",
-						min: 8,
-						max: 8,
-						message: '邮编格式不正确',
-						trigger: 'blur'
-					}, ],
-					RoleName: [{
-						required: true,
-						message: '名不能为空',
-						trigger: 'blur'
-					}, ],
-					AccountPwd: [{
-						pattern: /^\d{5,10}$/,
-						message: "请输入正确的密码",
-						trigger: "blur"
-					}],
-					Account: [{
-						pattern: /^\d{5,10}$/,
-						message: "请输入正确的账号",
-						trigger: "blur"
-					}],
+//					Code: [{
+//							required: true,
+//							message: '部门代码不能为空',
+//							trigger: 'blur'
+//						},
+//						{
+//							min: 8,
+//							max: 8,
+//							message: "长度必须是8位字符",
+//							trigger: "blur"
+//						},
+//						{
+//							pattern: /^[0-9a-zA-Z]*$/g,
+//							message: "必须是字母加数值",
+//							trigger: "blur"
+//						}
+//					],
+//					FirstName: [{
+//						required: true,
+//						message: '姓不能为空',
+//						trigger: 'blur'
+//					}, ],
+//					LastName: [{
+//						required: true,
+//						message: '名不能为空',
+//						trigger: 'blur'
+//					}, ],
+//					Address: [{
+//						required: true,
+//						message: '地址不能为空',
+//						trigger: 'blur'
+//					}, ],
+//					Gender: [{
+//						required: true,
+//						message: '请选择性别',
+//						trigger: 'change'
+//					}],
+//					BrithDate: [{
+//						required: true,
+//						message: '请选择出生日期',
+//						trigger: 'change'
+//					}, ],
+//					JoinDate: [{
+//						required: true,
+//						message: '请选择入职日期',
+//						trigger: 'change'
+//					}],
+//					TelPhone: [{
+//						pattern: /0\d{2}-\d{7,8}/,
+//						message: "请输入正确的座机号码",
+//						trigger: "blur"
+//					}],
+//					MobilePhone: [{
+//							required: true,
+//							message: '手机号不能为空',
+//							trigger: 'blur'
+//						},
+//						{
+//							pattern: /^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/,
+//							message: "请输入正确的手机号码",
+//							trigger: "blur"
+//						}
+//					],
+//					Supervisor: [{
+//						required: true,
+//						message: '请选择主管姓名',
+//						trigger: 'change'
+//					}],
+//					WeChat: [{
+//						pattern: /[\u4e00-\u9fa5]/gm,
+//						message: "请输入正确的微信号",
+//						trigger: "blur"
+//					}],
+//					QQ: [{
+//						pattern: /^\d{5,10}$/,
+//						message: "请输入正确的QQ号",
+//						trigger: "blur"
+//					}],
+//					Email: [{
+//						type: "email",
+//						required: true,
+//						message: "邮箱格式不正确",
+//						trigger: "blur"
+//					}],
+//					PostalCode: [{
+//						type: "number",
+//						min: 8,
+//						max: 8,
+//						message: '邮编格式不正确',
+//						trigger: 'blur'
+//					}, ],
+//					RoleName: [{
+//						required: true,
+//						message: '名不能为空',
+//						trigger: 'blur'
+//					}, ],
+//					AccountPwd: [{
+//						pattern: /^\d{5,10}$/,
+//						message: "请输入正确的密码",
+//						trigger: "blur"
+//					}],
+//					Account: [{
+//						pattern: /^\d{5,10}$/,
+//						message: "请输入正确的账号",
+//						trigger: "blur"
+//					}],
 				}
 				// 添加信息 弹出框 end  
 			}
 		},
 		methods: {
+			choiceAll(data) {
+				console.log(data)
+				//let choicesAll=this.$refs.tree.getCheckedNodes;
+				//console.log(choicesAll)
+				data.forEach(item => {
+					this.treePid = item.ParentId
+				})
+				this.loading = true;
+				//调用接口刷新页面
+				BusinessUserGetEntities({
+					"Filters": [{
+						"Relational": 'Or',
+						"Conditions": [{
+							"FilterField": 'ParentId',
+							"Relational": "Equal",
+							"FilterValue": this.treePid,
+						}]
+					}]
+				}).then(res => {
+					console.log(res)
+					this.data1 = res.data;
+					this.loading = false;
+				}).catch(err => {
+					console.log(err)
+				})
+
+			},
 			//删除
 			deleteList() {
 				if(this.delBusinessUnitList.length == 0) {
@@ -956,6 +947,12 @@
 			getTableData(this.data4).then(res => {
 				this.data1 = res.data
 				this.loading = false;
+				//循环data1拿到主管姓名
+				this.data1.forEach(item =>{
+					this.cityList1.push(item.Supervisor)
+				})
+				console.log(this.cityList1)
+				
 			}).catch(err => {
 				console.log(err)
 			});
@@ -971,7 +968,6 @@
 				businessGroup: '*'
 			}).then(res => {
 				this.radioList = res.data
-				console.log(this.radioList)
 			}).catch(err => {
 				console.log(err)
 			})
