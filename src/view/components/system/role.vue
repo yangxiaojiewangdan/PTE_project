@@ -385,33 +385,33 @@
 				},
 				radioList: [],
 				ruleValidate: {
-					//					Code: [{
-					//							required: true,
-					//							message: '部门代码不能为空',
-					//							trigger: 'blur'
-					//						},
-					//						{
-					//							min: 8,
-					//							max: 8,
-					//							message: "长度必须是8位字符",
-					//							trigger: "blur"
-					//						},
-					//						{
-					//							pattern: /^[0-9a-zA-Z]*$/g,
-					//							message: "必须是字母加数值",
-					//							trigger: "blur"
-					//						}
-					//					],
-					//					Description: [{
-					//						required: true,
-					//						message: '部门名称部能为空!',
-					//						trigger: 'blur'
-					//					}, ],
-					//					Supervisor: [{
-					//						required: true,
-					//						message: '请选择主管姓名',
-					//						trigger: 'change'
-					//					}],
+					Code: [{
+							required: true,
+							message: '部门代码不能为空',
+							trigger: 'blur'
+						},
+						{
+							min: 8,
+							max: 8,
+							message: "长度必须是8位字符",
+							trigger: "blur"
+						},
+						{
+							pattern: /^[0-9a-zA-Z]*$/g,
+							message: "必须是字母加数值",
+							trigger: "blur"
+						}
+					],
+					Description: [{
+						required: true,
+						message: '部门名称部能为空!',
+						trigger: 'blur'
+					}, ],
+					Supervisor: [{
+						required: true,
+						message: '请选择主管姓名',
+						trigger: 'change'
+					}],
 				},
 				//删除数组
 				delBusinessRoleList: [],

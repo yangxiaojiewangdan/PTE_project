@@ -373,17 +373,17 @@
 							message: '部门代码不能为空',
 							trigger: 'blur'
 						},
-						//						{
-						//							min: '',
-						//							max: '',
-						//							message: "",
-						//							trigger: "blur"
-						//						},
-						//						{
-						//							pattern: /[\u4e00-\u9fa5]/gm,
-						//							message: "必须是字母加数值",
-						//							trigger: "blur"
-						//						}
+						{
+							min: '',
+							max: '',
+							message: "",
+							trigger: "blur"
+						},
+						{
+							pattern: /[\u4e00-\u9fa5]/gm,
+							message: "必须是字母加数值",
+							trigger: "blur"
+						}
 					],
 					Description: [{
 						required: true,
@@ -457,7 +457,7 @@
 			queryData() {
 				BusinessUnitGetEntities({
 					"Filters": [{
-						"Relational": 0,
+						"Relational": or,
 						"Conditions": [{
 							"FilterField": this.formSend.label,
 							"Relational": "Equal",

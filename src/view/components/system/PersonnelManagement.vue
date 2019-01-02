@@ -250,7 +250,7 @@
 			<Form ref="SeeDepartment" :model="SeeDepartment" :rules="ruleValidate" :label-width="80">
 				<Row>
 					<Col span="24">
-					<Col span="24">
+					<Col span="8">
 					<FormItem label="部门名称" prop="BusinessUnit">
 						<Input v-model="SeeDepartment.BusinessUnit" placeholder="Enter something..." style="width:200px" />
 					</FormItem>
@@ -453,7 +453,7 @@
 		inject: ['reload'],
 		data() {
 			return {
-				radioList:'',
+				radioList: '',
 				loading: true,
 				// input框中的值
 				value: '',
@@ -608,7 +608,7 @@
 						key: 'IsSupervisor',
 						width: 120,
 						sortable: true,
-												render: (h, params) => {
+						render: (h, params) => {
 							let texts = "";
 							if(params.row.Enabled == true) {
 								texts = "是";
@@ -628,7 +628,7 @@
 						key: 'IsAdministrtor',
 						width: 120,
 						sortable: true,
-												render: (h, params) => {
+						render: (h, params) => {
 							let texts = "";
 							if(params.row.Enabled == true) {
 								texts = "是";
@@ -771,60 +771,112 @@
 					IsAdministrtor: '',
 				},
 				ruleValidate: {
-					// Code: [
-					//     { required: true, message: '部门代码不能为空', trigger: 'blur' },
-					//     { min: 8, max: 8, message: "长度必须是8位字符", trigger: "blur" },
-					//     { pattern:/^[0-9a-zA-Z]*$/g,message: "必须是字母加数值", trigger: "blur" }
-					// ],
-					//                      FirstName: [
-					//                          { required: true, message: '姓不能为空', trigger: 'blur' },
-					//                      ],
-					//                      LastName: [
-					//                          { required: true, message: '名不能为空', trigger: 'blur' },
-					//                      ],
-					//                      Address: [
-					//                          { required: true, message: '地址不能为空', trigger: 'blur' },
-					//                      ],
-					//                      Gender: [
-					//                          { required: true, message: '请选择性别', trigger: 'change' }
-					//                      ],
-					//                      BrithDate: [
-					//                          { required: true, message: '请选择出生日期', trigger: 'change' },
-					//                      ],
-					//                      JoinDate: [
-					//                          { required: true, message: '请选择入职日期', trigger: 'change' }
-					//                      ],
-					//                      TelPhone: [
-					//                          { pattern:/0\d{2}-\d{7,8}/,message: "请输入正确的座机号码", trigger: "blur" }
-					//                      ],
-					//                      MobilePhone: [
-					//                          { required: true, message: '手机号不能为空', trigger: 'blur' },
-					//                          { pattern:/^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/,message: "请输入正确的手机号码", trigger: "blur" }
-					//                      ],
-					//                      Supervisor: [
-					//                          { required: true, message: '请选择主管姓名', trigger: 'change' }
-					//                      ],
-					//                      WeChat: [
-					//                         { pattern:/[\u4e00-\u9fa5]/gm,message: "请输入正确的微信号", trigger: "blur" }
-					//                      ],
-					//                      QQ: [
-					//                          { pattern:/^\d{5,10}$/,message: "请输入正确的QQ号", trigger: "blur" }
-					//                      ],
-					//                      Email: [
-					//                           {type: "email",required: true, message:"邮箱格式不正确",trigger: "blur"}
-					//                      ],
-					//                      PostalCode: [
-					//                          {type: "number", min: 8, max: 8,message: '邮编格式不正确', trigger: 'blur' },
-					//                      ],
-					//                      RoleName: [
-					//                          { required: true, message: '名不能为空', trigger: 'blur' },
-					//                      ],
-					//                      AccountPwd: [
-					//                          { pattern:/^\d{5,10}$/,message: "请输入正确的密码", trigger: "blur" }
-					//                      ],
-					//                      Account: [
-					//                          { pattern:/^\d{5,10}$/,message: "请输入正确的账号", trigger: "blur" }
-					//                      ],
+					Code: [{
+							required: true,
+							message: '部门代码不能为空',
+							trigger: 'blur'
+						},
+						{
+							min: 8,
+							max: 8,
+							message: "长度必须是8位字符",
+							trigger: "blur"
+						},
+						{
+							pattern: /^[0-9a-zA-Z]*$/g,
+							message: "必须是字母加数值",
+							trigger: "blur"
+						}
+					],
+					FirstName: [{
+						required: true,
+						message: '姓不能为空',
+						trigger: 'blur'
+					}, ],
+					LastName: [{
+						required: true,
+						message: '名不能为空',
+						trigger: 'blur'
+					}, ],
+					Address: [{
+						required: true,
+						message: '地址不能为空',
+						trigger: 'blur'
+					}, ],
+					Gender: [{
+						required: true,
+						message: '请选择性别',
+						trigger: 'change'
+					}],
+					BrithDate: [{
+						required: true,
+						message: '请选择出生日期',
+						trigger: 'change'
+					}, ],
+					JoinDate: [{
+						required: true,
+						message: '请选择入职日期',
+						trigger: 'change'
+					}],
+					TelPhone: [{
+						pattern: /0\d{2}-\d{7,8}/,
+						message: "请输入正确的座机号码",
+						trigger: "blur"
+					}],
+					MobilePhone: [{
+							required: true,
+							message: '手机号不能为空',
+							trigger: 'blur'
+						},
+						{
+							pattern: /^(0|86|17951)?(13[0-9]|15[012356789]|18[0-9]|14[57]|17[678])[0-9]{8}$/,
+							message: "请输入正确的手机号码",
+							trigger: "blur"
+						}
+					],
+					Supervisor: [{
+						required: true,
+						message: '请选择主管姓名',
+						trigger: 'change'
+					}],
+					WeChat: [{
+						pattern: /[\u4e00-\u9fa5]/gm,
+						message: "请输入正确的微信号",
+						trigger: "blur"
+					}],
+					QQ: [{
+						pattern: /^\d{5,10}$/,
+						message: "请输入正确的QQ号",
+						trigger: "blur"
+					}],
+					Email: [{
+						type: "email",
+						required: true,
+						message: "邮箱格式不正确",
+						trigger: "blur"
+					}],
+					PostalCode: [{
+						type: "number",
+						min: 8,
+						max: 8,
+						message: '邮编格式不正确',
+						trigger: 'blur'
+					}, ],
+					RoleName: [{
+						required: true,
+						message: '名不能为空',
+						trigger: 'blur'
+					}, ],
+					AccountPwd: [{
+						pattern: /^\d{5,10}$/,
+						message: "请输入正确的密码",
+						trigger: "blur"
+					}],
+					Account: [{
+						pattern: /^\d{5,10}$/,
+						message: "请输入正确的账号",
+						trigger: "blur"
+					}],
 				}
 				// 添加信息 弹出框 end  
 			}
@@ -835,7 +887,7 @@
 				if(this.delBusinessUnitList.length == 0) {
 					this.$Message.info('请先选中删除的数据');
 				} else {
-						this.delModal = true;
+					this.delModal = true;
 				}
 			},
 			//拿到删除的数组id
@@ -848,13 +900,13 @@
 			},
 			// 删除信息 弹出框函数
 			ok() {
-					deleteBusinessUser(this.delBusinessUnitArrs).then(res => {
-						this.$Message.success('删除成功!')
-						this.reload();
-					}).catch(err => {
-						this.$Message.success('删除失败!')
-						console.log(err)
-					})
+				deleteBusinessUser(this.delBusinessUnitArrs).then(res => {
+					this.$Message.success('删除成功!')
+					this.reload();
+				}).catch(err => {
+					this.$Message.success('删除失败!')
+					console.log(err)
+				})
 			},
 			cancel() {
 				this.$Message.info('已取消');
