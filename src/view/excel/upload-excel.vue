@@ -1,114 +1,755 @@
-<style lang="less">
-  @import "./common.less";
-</style>
 <template>
-  <div>
-    <Card title="导入EXCEL">
-      <Row>
-        <Upload action="" :before-upload="handleBeforeUpload" accept=".xls, .xlsx">
-          <Button icon="ios-cloud-upload-outline" :loading="uploadLoading" @click="handleUploadFile">上传文件</Button>
-        </Upload>
-      </Row>
-      <Row>
-        <div class="ivu-upload-list-file" v-if="file !== null">
-          <Icon type="ios-stats"></Icon>
-            {{ file.name }}
-          <Icon v-show="showRemoveFile" type="ios-close" class="ivu-upload-list-remove" @click.native="handleRemove()"></Icon>
-        </div>
-      </Row>
-      <Row>
-        <transition name="fade">
-          <Progress v-if="showProgress" :percent="progressPercent" :stroke-width="2">
-            <div v-if="progressPercent == 100">
-              <Icon type="ios-checkmark-circle"></Icon>
-              <span>成功</span>
-            </div>
-          </Progress>
-        </transition>
-      </Row>
-    </Card>
-    <Row class="margin-top-10">
-      <Table :columns="tableTitle" :data="tableData" :loading="tableLoading"></Table>
-    </Row>
-  </div>
+	<div id="CustomerProfile">
+		<Row>
+			<Col span="24" style="height:50px;">
+			<h1 class="queryHeader">学员档案</h1>
+			</Col>
+		</Row>
+		<!--查询条件-->
+		<Row>
+			<Col span="24" class="querycriteria" style="height: 200px;">
+			<Col span="24" class="Col">
+			<h3 class="queryquery" style="padding-left:32px;">客户类型：</h3>
+			<Button @click="allinformationData" type="text" class="tableTops">全部</Button>
+			<RadioGroup v-model="customerType" type="button">
+				<Radio v-for="item in customerTypeData" :label="item.Code">
+					<span>{{item.Description}}</span>
+				</Radio>
+			</RadioGroup>
+			</Col>
+			<Col span="24" class="Col">
+			<h3 class="queryquery" style="padding-left:32px;">会员类型：</h3>
+			<Button @click="allinformationData" type="text" class="tableTops">全部</Button>
+			<RadioGroup v-model="MemberType" type="button">
+				<Radio v-for="item in MemberTypeData" :label="item.Code">
+					<span>{{item.Description}}</span>
+				</Radio>
+			</RadioGroup>
+			</Col>
+			<Col span="6" class="Col">
+			<h3 class="queryquery" style="padding-left:32px;">来源渠道：</h3>
+			<Select v-model="model1" style="width:200px">
+				<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+			</Select>
+			</Col>
+			<Col span="6" class="Col">
+			<h3 class="queryquery">市场分类：</h3>
+			<Select v-model="model1" style="width:200px">
+				<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+			</Select>
+			</Col>
+			<Col span="6" class="Col">
+			<h3 class="queryquery">市场代码：</h3>
+			<Select v-model="model1" style="width:200px">
+				<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+			</Select>
+			</Col>
+			<Col span="6" class="Col">
+			<h3 class="queryquery">所在小区：</h3>
+			<Select v-model="model1" style="width:200px">
+				<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+			</Select>
+			</Col>
+			<Col span="6" class="Col">
+			<h3 class="queryquery" style="padding-left:32px;">业务部门：</h3>
+			<Select v-model="model1" style="width:200px">
+				<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+			</Select>
+			</Col>
+			<Col span="6" class="Col">
+			<h3 class="queryquery">负责人员：</h3>
+			<Select v-model="model1" style="width:200px">
+				<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+			</Select>
+			</Col>
+			</Col>
+		</Row>
+		<!--增删改查-->
+		<Row>
+			<Col span="15" class="queryEnd">
+			<h2>查询结果</h2>
+			</Col>
+			<Col span="8">
+			<div class="tableTop">
+				<Button type="success" class="tableTops" @click="AddDepartment = true">添加</Button>
+				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
+				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
+					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+				</Select>
+				<Input v-model="queryvalue" placeholder="请输入" style="width: 150px" class="tableTops" />
+				<Button type="primary" class="tableTops">查询</Button>
+			</div>
+			</Col>
+			<Col span="24">
+			<!-- 表格 -->
+			<Table height="550" size="small" highlight-row stripe border ref="selection" :columns="CustomerTable" :data="CustomerData" @on-select="BatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="BatchDelete"></Table>
+			</Col>
+			<Col span="24">
+			<!-- 分页 -->
+			<Page :total="100" class="page" />
+			</Col>
+		</Row>
+		<!--确定删除弹框-->
+		<Modal v-model="delModal" title="提示" @on-ok="ok" @on-cancel="cancel">
+			<h2>确定删除此数据？</h2>
+		</Modal>
+		<!--添加弹框-->
+		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false">
+			<Form ref="CustomerFrom" :model="CustomerFrom" :rules="ruleValidate" :label-width="80" inline>
+				<FormItem label="姓" prop="FirstName">
+					<Input v-model="CustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="名" prop="LastName">
+					<Input v-model="CustomerFrom.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="性别" prop="Gender">
+					<RadioGroup v-model="CustomerFrom.Gender" style="width: 200px;">
+						<Radio v-for="item in radioList" :label="item.Code">
+							<span>{{item.Description}}</span>
+						</Radio>
+					</RadioGroup>
+				</FormItem>
+				<FormItem label="昵称" prop="NickName">
+					<Input v-model="CustomerFrom.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="英文名" prop="EngName">
+					<Input v-model="CustomerFrom.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="客户类型" prop="CustomerType">
+					<Select v-model="CustomerFrom.CustomerType" style="width: 200px;">
+						<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
+					</Select>
+				</FormItem>
+
+				<FormItem label="出生日期" prop="BrithDate">
+					<DatePicker type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;"></DatePicker>
+				</FormItem>
+				<FormItem label="月龄" prop="BornMonth">
+					<Input v-model="CustomerFrom.BornMonth" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="会员类型" prop="MemberType">
+					<Select v-model="CustomerFrom.MemberType" style="width: 200px;">
+						<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
+
+					</Select>
+				</FormItem>
+				<FormItem label="会员号" prop="MemberNo">
+					<Input v-model="CustomerFrom.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="来源渠道" prop="ChannelCode">
+					<Select v-model="CustomerFrom.ChannelCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="市场分类" prop="MarketClass">
+					<Select v-model="CustomerFrom.MarketClass" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="市场代码" prop="MarketCode">
+					<Select v-model="CustomerFrom.MarketCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在省" prop="ProviceCode">
+					<Select v-model="CustomerFrom.ProviceCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在市" prop="CityCode">
+					<Select v-model="CustomerFrom.CityCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在县区" prop="DistinctCode">
+					<Select v-model="CustomerFrom.DistinctCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在小区" prop="VillageCode">
+					<Select v-model="CustomerFrom.VillageCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="详细地址" prop="Address">
+					<Input v-model="CustomerFrom.Address" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="家长姓名" prop="ContactName">
+					<Input v-model="CustomerFrom.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="家长手机" prop="ContactPhone">
+					<Input v-model="CustomerFrom.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="家长邮箱" prop="ContactEMail">
+					<Input v-model="CustomerFrom.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="业务部门ID" prop="BusinessUnitId">
+					<Input v-model="CustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="业务部门" prop="BusinessUnit">
+					<Select v-model="CustomerFrom.BusinessUnit" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="负责人ID" prop="OwnerId">
+					<Input v-model="CustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="负责人" prop="BusinessUnit">
+					<Select v-model="CustomerFrom.BusinessUnit" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+			</Form>
+			<div slot="footer">
+				<div class="footer_left">
+					<div class="footer_left1">
+						<div>
+							<span>创建人:闫子健</span>
+						</div>
+						<div>
+							<span>更新人:闫子健</span>
+						</div>
+					</div>
+					<div class="footer_left2">
+						<div>
+							<span>创建时间:2018/12/13/ 13:00:00</span>
+						</div>
+						<div>
+							<span>更新时间:2018/12/13/ 13:00:00</span>
+						</div>
+					</div>
+				</div>
+				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('CustomerFrom');AddDepartment = false;">
+          <span>取消</span>
+        </button>
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('CustomerFrom');">
+          <span>确定</span>
+        </button>
+			</div>
+		</Modal>
+		<!--修改弹框-->
+		<Modal v-model="upDepartment" scrollable width="1100" title="修改学员档案信息" :mask-closable="false">
+			<Form ref="upCustomerFrom" :model="upCustomerFrom" :rules="ruleValidate" :label-width="80" inline>
+				<FormItem label="姓" prop="FirstName">
+					<Input v-model="upCustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="名" prop="LastName">
+					<Input v-model="upCustomerFrom.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="性别" prop="Gender">
+					<RadioGroup v-model="upCustomerFrom.Gender" style="width: 200px;">
+						<Radio v-for="item in radioList" :label="item.Code">
+							<span>{{item.Description}}</span>
+						</Radio>
+					</RadioGroup>
+				</FormItem>
+				<FormItem label="昵称" prop="NickName">
+					<Input v-model="upCustomerFrom.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="英文名" prop="EngName">
+					<Input v-model="upCustomerFrom.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="客户类型" prop="CustomerType">
+					<Select v-model="upCustomerFrom.CustomerType" style="width: 200px;">
+						<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
+					</Select>
+				</FormItem>
+
+				<FormItem label="出生日期" prop="BrithDate">
+					<DatePicker type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;"></DatePicker>
+				</FormItem>
+				<FormItem label="月龄" prop="BornMonth">
+					<Input v-model="upCustomerFrom.BornMonth" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="会员类型" prop="MemberType">
+					<Select v-model="upCustomerFrom.MemberType" style="width: 200px;">
+						<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
+
+					</Select>
+				</FormItem>
+				<FormItem label="会员号" prop="MemberNo">
+					<Input v-model="upCustomerFrom.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="来源渠道" prop="ChannelCode">
+					<Select v-model="upCustomerFrom.ChannelCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="市场分类" prop="MarketClass">
+					<Select v-model="upCustomerFrom.MarketClass" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="市场代码" prop="MarketCode">
+					<Select v-model="upCustomerFrom.MarketCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在省" prop="ProviceCode">
+					<Select v-model="upCustomerFrom.ProviceCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在市" prop="CityCode">
+					<Select v-model="upCustomerFrom.CityCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在县区" prop="DistinctCode">
+					<Select v-model="upCustomerFrom.DistinctCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="所在小区" prop="VillageCode">
+					<Select v-model="upCustomerFrom.VillageCode" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="详细地址" prop="Address">
+					<Input v-model="upCustomerFrom.Address" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="家长姓名" prop="ContactName">
+					<Input v-model="upCustomerFrom.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="家长手机" prop="ContactPhone">
+					<Input v-model="upCustomerFrom.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="家长邮箱" prop="ContactEMail">
+					<Input v-model="upCustomerFrom.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="业务部门ID" prop="BusinessUnitId">
+					<Input v-model="upCustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="业务部门" prop="BusinessUnit">
+					<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="负责人ID" prop="OwnerId">
+					<Input v-model="upCustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+				<FormItem label="负责人" prop="BusinessUnit">
+					<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
+						<Option value="beijing">New York</Option>
+						<Option value="shanghai">London</Option>
+						<Option value="shenzhen">Sydney</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="大头像">
+					<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+						<div style="padding: 5px">
+							<Icon type="ios-cloud-upload" size="50"></Icon>
+						</div>
+					</Upload>
+				</FormItem>
+				<FormItem label="普通照片">
+					<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+						<div style="padding: 5px">
+							<Icon type="ios-cloud-upload" size="50"></Icon>
+						</div>
+					</Upload>
+				</FormItem>
+			</Form>
+			<div slot="footer">
+				<div class="footer_left">
+					<div class="footer_left1">
+						<div>
+							<span>创建人:闫子健</span>
+						</div>
+						<div>
+							<span>更新人:闫子健</span>
+						</div>
+					</div>
+					<div class="footer_left2">
+						<div>
+							<span>创建时间:2018/12/13/ 13:00:00</span>
+						</div>
+						<div>
+							<span>更新时间:2018/12/13/ 13:00:00</span>
+						</div>
+					</div>
+				</div>
+				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleResetUp('upCustomerFrom');upDepartment = false;">
+          <span>取消</span>
+        </button>
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmitUp('upCustomerFrom');">
+          <span>修改</span>
+        </button>
+			</div>
+		</Modal>
+	</div>
 </template>
 <script>
-import excel from '@/libs/excel'
-export default {
-  name: 'upload-excel',
-  data () {
-    return {
-      uploadLoading: false,
-      progressPercent: 0,
-      showProgress: false,
-      showRemoveFile: false,
-      file: null,
-      tableData: [],
-      tableTitle: [],
-      tableLoading: false
-    }
-  },
-  methods: {
-    initUpload () {
-      this.file = null
-      this.showProgress = false
-      this.loadingProgress = 0
-      this.tableData = []
-      this.tableTitle = []
-    },
-    handleUploadFile () {
-      this.initUpload()
-    },
-    handleRemove () {
-      this.initUpload()
-      this.$Message.info('上传的文件已删除！')
-    },
-    handleBeforeUpload (file) {
-      const fileExt = file.name.split('.').pop().toLocaleLowerCase()
-      if (fileExt === 'xlsx' || fileExt === 'xls') {
-        this.readFile(file)
-        this.file = file
-      } else {
-        this.$Notice.warning({
-          title: '文件类型错误',
-          desc: '文件：' + file.name + '不是EXCEL文件，请选择后缀为.xlsx或者.xls的EXCEL文件。'
-        })
-      }
-      return false
-    },
-    // 读取文件
-    readFile (file) {
-      const reader = new FileReader()
-      reader.readAsArrayBuffer(file)
-      reader.onloadstart = e => {
-        this.uploadLoading = true
-        this.tableLoading = true
-        this.showProgress = true
-      }
-      reader.onprogress = e => {
-        this.progressPercent = Math.round(e.loaded / e.total * 100)
-      }
-      reader.onerror = e => {
-        this.$Message.error('文件读取出错')
-      }
-      reader.onload = e => {
-        this.$Message.info('文件读取成功')
-        const data = e.target.result
-        const { header, results } = excel.read(data, 'array')
-        const tableTitle = header.map(item => { return { title: item, key: item } })
-        this.tableData = results
-        this.tableTitle = tableTitle
-        this.uploadLoading = false
-        this.tableLoading = false
-        this.showRemoveFile = true
-      }
-    }
-  },
-  created () {
+	import { CustomerData, DataDictionary, CustomerCreate, CustomerDelete, CustomerUp} from "@/api/data";
+	export default {
+		inject: ['reload'],
+		name: 'CustomerProfile',
+		data() {
+			return {
+				radioList: [],
+				customerTypeData: [],
+				MemberTypeData: [],
+				customerType: '',
+				MemberType: '',
+				addressInp: '',
+				model1: '',
+				cityList: [{
+						value: 'New York',
+						label: 'New York'
+					},
+					{
+						value: 'London',
+						label: 'London'
+					},
+				],
+				querySelect: '',
+				querySelectList: '',
+				queryvalue: '',
+				CustomerData1: {
+					"Filters": {},
+				},
+				CustomerData: [],
+				CustomerTable: [{
+						type: "selection",
+						width: 45
+					},
+					{
+						title: "姓",
+						key: "FirstName",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "名",
+						key: "LastName",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "昵称",
+						key: "NickName",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "英文名",
+						key: "EngName",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "客户类型",
+						key: "CustomerType",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "姓别",
+						key: "Gender",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "出生日期",
+						key: "BrithDate",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "月龄",
+						key: "BornMonth",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "会员类型",
+						key: "MemberType",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "会员号",
+						key: "MemberNo",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "来源渠道",
+						key: "ChannelCode",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "市场分类",
+						key: "MarketClass",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "市场代码",
+						key: "MarketCode",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "所在小区",
+						key: "VillageCode",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "详细地址",
+						key: "Address",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "家长姓名",
+						key: "ContactName",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "家长手机",
+						key: "ContactPhone",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "业务部门",
+						key: "BusinessUnit",
+						width: 120,
+						sortable: true
+					},
+					{
+						title: "负责人",
+						key: "BusinessUnit",
+						width: 120,
+						sortable: true
+					},
+				],
+				AddDepartment: false,
+				upDepartment: false,
+				delModal: false,
+				CustomerFrom: {
+					FirstName: '',
+					LastName: '',
+					NickName: '',
+					EngName: '',
+					CustomerType: '',
+					Gender: '',
+					BrithDate: '',
+					BornMonth: '',
+					MemberType: '',
+					MemberNo: '',
+					ChannelCode: '',
+					MarketClass: '',
+					MarketCode: '',
+					ProviceCode: '',
+					CityCode: '',
+					DistinctCode: '',
+					VillageCode: '',
+					Address: '',
+					IdPhotoUrl: '',
+					LifePhotoUrl: '',
+					ContactName: '',
+					ContactPhone: '',
+					ContactEMail: '',
+					BusinessUnitId: '',
+					BusinessUnit: '',
+					OwnerId: '',
+					BusinessUnit: '',
+				},
+				upCustomerFrom: {
+					FirstName: '',
+					LastName: '',
+					NickName: '',
+					EngName: '',
+					CustomerType: '',
+					Gender: '',
+					BrithDate: '',
+					BornMonth: '',
+					MemberType: '',
+					MemberNo: '',
+					ChannelCode: '',
+					MarketClass: '',
+					MarketCode: '',
+					ProviceCode: '',
+					CityCode: '',
+					DistinctCode: '',
+					VillageCode: '',
+					Address: '',
+					IdPhotoUrl: '',
+					LifePhotoUrl: '',
+					ContactName: '',
+					ContactPhone: '',
+					ContactEMail: '',
+					BusinessUnitId: '',
+					BusinessUnit: '',
+					OwnerId: '',
+					BusinessUnit: '',
+				},
+				ruleValidate: {
 
-  },
-  mounted () {
+				},
+				//选中的数组id
+				batchArr: [],
+			}
+		},
+		methods: {
 
-  }
-}
+			//批量操作的ID
+			BatchDelete(selection) {
+				console.log(selection)
+				for(var i = 0; i < selection.length; i++) {
+					this.batchArr.push(selection[i].Id)
+				};
+			},
+			deleteList() {
+				if(this.batchArr.length == 0) {
+					this.$Message.info('请先选中删除的数据');
+				} else {
+					this.delModal = true;
+				}
+			},
+			//确定删除
+			ok() {
+				CustomerDelete(this.batchArr).then(res => {
+					this.$Message.success('删除成功!')
+					this.reload();
+				}).catch(err => {
+					this.$Message.success('删除失败!')
+					console.log(err)
+				})
+			},
+			cancel() {
+				this.$Message.info('已取消');
+			},
+			//修改赋值
+			dblclickUpData(index) {
+				this.upDepartment = true;
+				this.upCustomerFrom = index;
+			},
+			//点击修改
+			handleSubmitUp(){
+				CustomerUp(this.upCustomerFrom).then( res =>{
+					this.$Message.success("修改成功!");
+					this.reload();
+					console.log(res)
+				}).catch( err=>{
+					console.log(err)
+					this.$Message.error("修改失败!");
+				})
+			},
+			handleResetUp(){
+				this.$Message.info('已取消添加部门');
+			},
+			// 点击全部查询全部数据
+			allinformationData() {
+				CustomerData(this.CustomerData1).then(res => {
+					console.log(res)
+					this.CustomerData = res.data;
+				}).catch(err => {
+					console.log(err)
+				});
+			},
+			//添加学员
+			handleSubmit(name) {
+				this.$refs[name].validate((valid) => {
+					if(valid) {
+						CustomerCreate(this.CustomerFrom).then(res => {
+							console.log(res)
+							this.$Message.success('成功!');
+						}).catch(err => {
+							console.log(err)
+						})
+					} else {
+						this.$Message.error('失败!');
+					}
+				})
+			},
+			handleReset(name) {
+				this.$refs[name].resetFields();
+				this.$Message.info('已取消添加部门');
+			},
+		},
+		created() {
+
+		},
+		mounted() {
+			//获取表格数据
+			CustomerData(this.CustomerData1).then(res => {
+				this.CustomerData = res.data;
+			}).catch(err => {
+				console.log(err)
+			});
+			//性别
+			DataDictionary({
+				dataCategory: "GENDER_TYPE",
+				businessGroup: '*'
+			}).then(res => {
+				this.radioList = res.data
+			}).catch(err => {
+				console.log(err)
+			});
+			//客户类型
+			DataDictionary({
+				dataCategory: "CUSTOMER_TYPE",
+				businessGroup: '*'
+			}).then(res => {
+				this.customerTypeData = res.data
+			}).catch(err => {
+				console.log(err)
+			});
+			//会员类型
+			DataDictionary({
+				dataCategory: "MEMBERSHIP_TYPE",
+				businessGroup: '*'
+			}).then(res => {
+				this.MemberTypeData = res.data
+			}).catch(err => {
+				console.log(err)
+			});
+
+		}
+	}
 </script>
+<style lang="less" scoped>
+	.Col {
+		margin-top: 16px;
+	}
+</style>
