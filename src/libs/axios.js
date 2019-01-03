@@ -22,7 +22,7 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         "Content-Type":'application/json',
-        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ1MjE3OTM5LCJleHAiOjE1NDUzMzc5MzksImlhdCI6MTU0NTIxNzkzOX0.oxhnQmHdXHkWfjf8QPeN4Igc8JwMLVzPYyk7-ZpHRBo',
+        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ2NDA3NTg0LCJleHAiOjE1NDY1Mjc1ODQsImlhdCI6MTU0NjQwNzU4NH0.ZR1H4d42r3UyXTrf5jC6jzmuUua2QltmM4bVobe0z9w',
         "signature":"signature"
       }
     }

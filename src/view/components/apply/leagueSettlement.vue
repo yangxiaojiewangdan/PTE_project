@@ -403,7 +403,8 @@ import {
   SettlementCodeCreate,
   SettlementCodeBatchDelete,
   SettlementCodeUpdate,
-  getSettleType
+  getSettleType,
+  SettlementCodeValidateUnique
 } from "@/api/api";
 export default {
   inject: ["reload"],
@@ -468,7 +469,7 @@ export default {
             );
           }
         },
-        { title: "创建人 ", key: "CreateBy", width: 200, sortable: true },
+        { title: "创建人 ", key: "CreateByName", width: 200, sortable: true },
         { title: "创建时间", key: "CreateOn", width: 200, sortable: true }
       ],
       //表格数组
@@ -479,10 +480,7 @@ export default {
       SettlementCodeData: [],
       // 添加信息 弹出框
       // 所属业务群
-      BusinessGroupList: [
-        { value: "用户", label: "用户" },
-        { value: "3", label: "3" }
-      ],
+      BusinessGroupList: [{ value: "0", label: "比特易早教" }],
       // 结算方式下拉框循环数据
       SettleTypeList: [],
       // 可结算起始天下拉框循环数据
@@ -612,7 +610,26 @@ export default {
         SortKey: "",
         Enabled: ""
       },
-      ruleValidate: {},
+      // 表单验证
+      ruleValidate: {
+        // BusinessGroup: [
+        //   { required: true, message: "请选择所属业务群", trigger: "change" }
+        // ],
+        // Code: [
+        //   { required: true, message: "请输入结算规则代码", trigger: "blur" },
+        //   {
+        //     pattern: /^[0-9a-zA-Z]*$/g,
+        //     message: "结算规则代码必须是字母加数值",
+        //     trigger: "blur"
+        //   }
+        // ],
+        // Description: [
+        //   { required: true, message: "请输入结算规则描述", trigger: "blur" }
+        // ],
+        // SettleType: [
+        //   { required: true, message: "请选择结算方式", trigger: "blur" }
+        // ]
+      },
       // 删除信息弹出框
       delete1: false,
       BatchDeleteList: [],
@@ -622,7 +639,7 @@ export default {
   methods: {
     // 结算方式下拉框选择事件
     setOption(value, type) {
-      if (value.value == "0") {
+      if (value.value == "0" || value.value == "2") {
         this.ToDay = false;
         this.FromDay = false;
         this.ExcludeHoliday = false;
@@ -636,7 +653,7 @@ export default {
         this.PeriodOfT = true;
         this.Allow = false;
       }
-      if (value.value == "2" || value.value == "3" || value.value == "4") {
+      if (value.value == "3" || value.value == "4" || value.value == "5") {
         this.ToDay = true;
         this.FromDay = true;
         this.ExcludeHoliday = true;
@@ -660,16 +677,26 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          //如果正则正确就调用接口发送数据
-          SettlementCodeCreate(this.formValidate)
-            .then(res => {
-              this.$Message.success("成功!");
-              this.AddDepartment = false;
-              this.reload();
-            })
-            .catch(err => {
-              console.log(err);
-            });
+          let Code = this.formValidate.Code;
+          let BusinessGroup = this.formValidate.BusinessGroup;
+          SettlementCodeValidateUnique(Code, BusinessGroup).then(res => {
+            if (res.data == true) {
+              SettlementCodeCreate(this.formValidate)
+                .then(res => {
+                  this.$Message.success("成功!");
+                  this.AddDepartment = false;
+                  this.reload();
+                  this.formValidate = { brand_right: 0 };
+                })
+                .catch(err => {
+                  console.log(err);
+                  this.reload();
+                  this.formValidate = { brand_right: 0 };
+                });
+            } else {
+              this.$Message.success("Code重复,请更改Code");
+            }
+          });
         } else {
           this.$Message.error("请输入正确的格式!");
         }
@@ -707,7 +734,7 @@ export default {
       this.upDepartment = true;
       this.UpdateList = index;
       console.log(index);
-      if (index.SettleType == "0") {
+      if (index.SettleType == "0" || index.SettleType == "2") {
         this.ToDay = false;
         this.FromDay = false;
         this.ExcludeHoliday = false;
@@ -722,7 +749,7 @@ export default {
         this.Allow = false;
       }
       if (
-        index.SettleType == "2" ||
+        index.SettleType == "5" ||
         index.SettleType == "3" ||
         index.SettleType == "4"
       ) {

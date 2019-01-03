@@ -2,9 +2,9 @@ import axios from "@/libs/api.request";
 //url变量
 export const apiUrl = "http://192.168.31.74:8081";
 
-// 加盟商结算规则  加盟商结算规则  加盟商结算规则  加盟商结算规则  加盟商结算规则  加盟商结算规则
+// 结算规则  结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则  
 
-//获取加盟商结算规则信息渲染到表格
+//获取结算规则信息渲染到表格
 export const getSettlementCodeData = SettlementCodeData => {
   return axios.request({
     url: apiUrl + "/api/SettlementCode/GetEntities",
@@ -13,7 +13,7 @@ export const getSettlementCodeData = SettlementCodeData => {
   });
 };
 
-//添加加盟商结算规则接口
+//添加结算规则接口
 export const SettlementCodeCreate = CreateSettlementCode => {
   return axios.request({
     url: apiUrl + "/api/SettlementCode/Create",
@@ -21,7 +21,7 @@ export const SettlementCodeCreate = CreateSettlementCode => {
     method: "post"
   });
 };
-//删除加盟商结算规则接口
+//删除结算规则接口
 export const SettlementCodeBatchDelete = BatchDeleteList => {
   return axios.request({
     url: apiUrl + "/api/SettlementCode/BatchDelete",
@@ -29,7 +29,7 @@ export const SettlementCodeBatchDelete = BatchDeleteList => {
     method: "post"
   });
 };
-//修改加盟商结算规则接口
+//修改结算规则接口
 export const SettlementCodeUpdate = UpdateList => {
   return axios.request({
     url: apiUrl + "/api/SettlementCode/Update",
@@ -38,10 +38,19 @@ export const SettlementCodeUpdate = UpdateList => {
   });
 };
 
-//获取加盟商结算规则信息    数据字典里的结算方式  SETTLE_TYPE
+//获取结算规则信息    数据字典里的结算方式  SETTLE_TYPE
 export const getSettleType = () => {
   return axios.request({
     url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=SETTLE_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+
+
+//查重Code结算规则接口 
+export const SettlementCodeValidateUnique = (Code, BusinessGroup) => {
+  return axios.request({
+    url: apiUrl + "/api/SettlementCode/ValidateUnique?Code=" + Code + '&BusinessGroup=' + BusinessGroup,
     method: "get"
   });
 };
@@ -118,21 +127,74 @@ export const RoyaltyCodeAddOrUpdateLadder = AddOrUpdateLadderList => {
   });
 };
 
-//批量删除权益金阶梯规则接口
-// export const RoyaltyCodeBatchRemoveLadder = BatchRemoveLadderList => {
-//   return axios.request({
-//     url: apiUrl + "/api/RoyaltyCode/BatchRemoveLadder",
-//     data: BatchRemoveLadderList,
-//     method: "post"
-//   });
-// };
-
-
-//批量删除权益金阶梯规则接口
-export const RoyaltyCodeBatchRemoveLadder = (one, two) => {
+//删除权益金阶梯规则接口
+export const RoyaltyCodeBatchRemoveLadder = (royaltyId, detailId) => {
   return axios.request({
-    url: apiUrl + "/api/RoyaltyCode/RemoveLadder?royaltyId=" + one + '&detailId=' + two,
+    url: apiUrl + "/api/RoyaltyCode/RemoveLadder?royaltyId=" + royaltyId + '&detailId=' + detailId,
     // data: BatchRemoveLadderList,
     method: "post"
+  });
+};
+
+//查重Code权益金接口 
+export const RoyaltyCodeValidateUnique = (Code, BusinessGroup) => {
+  return axios.request({
+    url: apiUrl + "/api/RoyaltyCode/ValidateUnique?Code=" + Code + '&BusinessGroup=' + BusinessGroup,
+    method: "get"
+  });
+};
+
+
+// 加盟商基本信息 加盟商基本信息 加盟商基本信息 加盟商基本信息 加盟商基本信息
+//获取加盟商基本信息渲染到表格
+export const FranchiserProfileGetEntities = FranchiserProfileGetEntities => {
+  return axios.request({
+    url: apiUrl + "/api/FranchiserProfile/GetEntities",
+    data: FranchiserProfileGetEntities,
+    method: "post"
+  });
+};
+//添加加盟商基本信息
+export const FranchiserProfileCreate = FranchiserProfileCreate => {
+  return axios.request({
+    url: apiUrl + "/api/FranchiserProfile/Create",
+    data: FranchiserProfileCreate,
+    method: "post"
+  });
+};
+//删除加盟商基本信息接口
+export const FranchiserProfileBatchDelete = FranchiserProfileBatchDelete => {
+  return axios.request({
+    url: apiUrl + "/api/FranchiserProfile/BatchDelete",
+    data: FranchiserProfileBatchDelete,
+    method: "post"
+  });
+};
+//获取加盟商基本信息    业务状态
+export const getFRANCHISER_STATUS = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=FRANCHISER_STATUS&businessGroup=*",
+    method: "get"
+  });
+};
+//获取加盟商基本信息    加盟商类型
+export const getFRANCHISER_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=FRANCHISER_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+//获取加盟商基本信息    证件类型
+export const getCERTIFICATE_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=CERTIFICATE_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+//获取加盟商基本信息    加盟方式
+export const getLEAGE_MODE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=LEAGE_MODE&businessGroup=*",
+    method: "get"
   });
 };

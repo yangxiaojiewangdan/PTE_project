@@ -16,7 +16,7 @@
   }
 
 /* 查询操作公共样式 */
-/* 头部 */
+/* 头部 */  
   .queryHeader{
     color:#55a;
     margin:10px 30px;
@@ -27,14 +27,12 @@
           background: #fff;
           margin-bottom: 10px;
       }
-      .querycriteriadiv{
-          padding: 10px 0 0 20px ;
+      .queryquery{
+        margin-left:30px;
+        display: inline-block;
       }
-      .queryForm{
-          margin-top: 20px;
-      }
-      .querycriteriadivButton{
-        margin: 0 6px;
+      .queryquerytop{
+        margin-top: 15px;
       }
   /* 查询条件的公共样式 end */
   /* 查询结果样式 */
@@ -43,7 +41,7 @@
     margin:10px 30px;
   }
   .tableTop{
-    margin-top: 10px;
+    margin-bottom: 10px;
   }
   .tableTops{
     margin: 0 5px 0 5px;

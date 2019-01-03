@@ -180,6 +180,7 @@
           <Col span="24" v-if="RoyaltyCodeDetail">
             <Card>
               <tables
+                disabled-hover
                 search-place="top"
                 ref="tables"
                 size="small"
@@ -338,6 +339,7 @@
           <Col span="24" v-if="RoyaltyCodeDetail">
             <Card>
               <tables
+                disabled-hover
                 search-place="top"
                 ref="tables"
                 size="small"
@@ -526,7 +528,8 @@ import {
   getOBVERSION_TYPE,
   getROYALTY_BENCH_MARK,
   RoyaltyCodeAddOrUpdateLadder,
-  RoyaltyCodeBatchRemoveLadder
+  RoyaltyCodeBatchRemoveLadder,
+  RoyaltyCodeValidateUnique
 } from "@/api/api";
 export default {
   components: {
@@ -605,7 +608,7 @@ export default {
             );
           }
         },
-        { title: "创建人 ", key: "CreateBy", width: 175, sortable: true },
+        { title: "创建人 ", key: "CreateByName", width: 175, sortable: true },
         { title: "创建时间", key: "CreateOn", width: 175, sortable: true }
       ],
       //表格数组
@@ -648,8 +651,8 @@ export default {
       // 所属业务群
       BusinessGroupList: [
         {
-          value: "用户",
-          label: "用户"
+          value: "0",
+          label: "比特易早教"
         }
       ],
       // 权益金方式下拉框循环数据
@@ -696,7 +699,6 @@ export default {
         RoyaltyBenchMark: "",
         FlatOrPecent: "",
         SortKey: "",
-
         Enabled: true
       },
       // 添加阶梯明细表单信息
@@ -711,7 +713,54 @@ export default {
         FlatOrPecent: ""
       },
       // 添加信息表单验证
-      ruleValidate: {},
+      ruleValidate: {
+        // BusinessGroup: [
+        //   { required: true, message: "请选择所属业务群", trigger: "change" }
+        // ],
+        // Code: [
+        //   { required: true, message: "请输入权益金规则代码", trigger: "blur" },
+        //   {
+        //     pattern: /^[0-9a-zA-Z]*$/g,
+        //     message: "权益金规则代码必须是字母加数值",
+        //     trigger: "blur"
+        //   }
+        // ],
+        // Description: [
+        //   { required: true, message: "请输入权益金规则描述", trigger: "blur" }
+        // ],
+        // RoyaltyType: [
+        //   { required: true, message: "请选择权益金方式", trigger: "change" }
+        // ],
+        // FlatType: [
+        //   {
+        //     required: true,
+        //     message: "请选择权益金固定值类型",
+        //     trigger: "change"
+        //   }
+        // ],
+        // ObversionType: [
+        //   {
+        //     required: true,
+        //     message: "请选择天数不足月或年折算方式",
+        //     trigger: "change"
+        //   }
+        // ],
+        // RoyaltyBenchMark: [
+        //   { required: true, message: "请选择权益金计算基准", trigger: "change" }
+        // ],
+        // FlatOrPecent: [
+        //   {
+        //     required: true,
+        //     message: "请选择权益金计算基准",
+        //     trigger: "change"
+        //   },
+        //   {
+        //     pattern: /^(([1-9]{1}\d*)|(0{1}))(\.\d{2})$/,
+        //     message: "小数,保留2位",
+        //     trigger: "change"
+        //   }
+        // ]
+      },
       // 阶梯表格信息
       columnsRoyaltyCodeDetail: [
         { title: "下限金额（含）", key: "LowerValue", editable: true },
@@ -740,7 +789,6 @@ export default {
   methods: {
     // 权益金下拉框选择事件  当选择的是阶梯是出现阶梯明细
     setOption(value, type) {
-      console.log(value.value);
       if (value.value == "2") {
         this.RoyaltyCodeDetail = true;
       }
@@ -778,7 +826,7 @@ export default {
       console.log(params);
     },
 
-    // 添加加盟商结算规则信息
+    // 添加加盟商权益金规则信息
     handleSubmit(name, params) {
       this.$refs[name].validate(valid => {
         localStorage.setItem(
@@ -786,38 +834,46 @@ export default {
           JSON.stringify(this.dataRoyaltyCodeDetail)
         );
         if (valid) {
-          RoyaltyCodeCreate(this.formValidate)
-            .then(res => {
-              if (res.data.Data.RoyaltyType == "2") {
-                let royaltyId = res.data.Data.Id;
-                let DetailCollection = JSON.parse(
-                  localStorage.dataRoyaltyCodeDetail
-                );
-                RoyaltyCodeAddOrUpdateLadder({
-                  RoyaltyId: royaltyId,
-                  DetailCollection: DetailCollection
-                })
-                  .then(res => {
+          let Code = this.formValidate.Code;
+          let BusinessGroup = this.formValidate.BusinessGroup;
+          RoyaltyCodeValidateUnique(Code, BusinessGroup).then(res => {
+            if (res.data == true) {
+              RoyaltyCodeCreate(this.formValidate)
+                .then(res => {
+                  if (res.data.Data.RoyaltyType == "2") {
+                    let royaltyId = res.data.Data.Id;
+                    let DetailCollection = JSON.parse(
+                      localStorage.dataRoyaltyCodeDetail
+                    );
+                    RoyaltyCodeAddOrUpdateLadder({
+                      RoyaltyId: royaltyId,
+                      DetailCollection: DetailCollection
+                    })
+                      .then(res => {
+                        this.$Message.success("成功!");
+                        this.AddDepartment = false;
+                        localStorage.removeItem("dataRoyaltyCodeDetail");
+                        this.reload();
+                        this.formValidate = { brand_right: 0 };
+                      })
+                      .catch(err => {
+                        this.$Message.error("失败!");
+                        console.log(err);
+                      });
+                  } else {
                     this.$Message.success("成功!");
                     this.AddDepartment = false;
-                    localStorage.removeItem("dataRoyaltyCodeDetail");
                     this.reload();
-                    this.formValidate = { brand_right: 0 };
-                  })
-                  .catch(err => {
-                    this.$Message.error("失败!");
-                    console.log(err);
-                  });
-              } else {
-                this.$Message.success("成功!");
-                this.AddDepartment = false;
-                this.reload();
-              }
-            })
-            .catch(err => {
-              this.$Message.success("添加失败，请查看添加信息是否完整!");
-              console.log(err);
-            });
+                  }
+                })
+                .catch(err => {
+                  this.$Message.success("添加失败，请查看添加信息是否完整!");
+                  console.log(err);
+                });
+            } else {
+              this.$Message.success("Code重复,请更改Code");
+            }
+          });
         } else {
           this.$Message.error("请输入正确的格式!");
         }
