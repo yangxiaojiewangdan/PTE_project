@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
+
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -18,11 +19,13 @@ class HttpRequest {
     this.queue = {}
   }
   getInsideConfig () {
+  	//取出sessionStorage
+let see = JSON.parse(sessionStorage.getItem('userInfo'))
     const config = {
       baseURL: this.baseUrl,
       headers: {
         "Content-Type":'application/json',
-        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ2NDA3NTg0LCJleHAiOjE1NDY1Mjc1ODQsImlhdCI6MTU0NjQwNzU4NH0.ZR1H4d42r3UyXTrf5jC6jzmuUua2QltmM4bVobe0z9w',
+        "user_token":see.SessionToken,
         "signature":"signature"
       }
     }

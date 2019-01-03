@@ -74,7 +74,6 @@ export default {
   actions: {
     // 登录
     handleLogin ({ commit }, {Account, Password}) {
-    	
       Account = Account.trim()
       return new Promise((resolve, reject) => {
         login({
@@ -85,9 +84,11 @@ export default {
           console.log(res.data.Data.SessionToken)
           commit('settoken', data.SessionToken)
           resolve()
-          console.log(res.data)
-          
-          
+          //将登陆信息保存在sessionStorage中
+          sessionStorage.setItem('userInfo',JSON.stringify(res.data.Data))
+          let see = JSON.parse(sessionStorage.getItem('userInfo'))
+         
+          console.log( see.RoleName)
           
         }).catch(err => {
           reject(err)

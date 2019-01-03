@@ -35,6 +35,15 @@ export const deleteBusinessUser = delBusinessUnitList => {
   });
 };
 
+//查询人员接口
+export const BusinessUserGetEntities = BusinessUserQuery => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessUser/GetEntities",
+    data: BusinessUserQuery,
+    method: "post"
+  });
+};
+
 //添加组织信息接口
 export const addBusinessUnit = formData => {
   return axios.request({

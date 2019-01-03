@@ -12,7 +12,7 @@
 			</Col>
 			<!-- 树状图 -->
 			<Col span="24">
-			<Tree :data="treeList" :render="renderContent" children-key="ChildNodes" class="tree"></Tree>
+			<Tree :data="treeList" :render="renderContent" children-key="ChildNodes" class="tree" show-checkbox ref="tree" @on-check-change="choiceAll" @on-select-change='selectChange'></Tree>
 			</Col>
 			<!-- 树状图 end-->
 			</Col>
@@ -58,6 +58,13 @@
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
 				<Row>
 					<Col span="24">
+					<FormItem label="上级部门" prop="ParentId">
+						<Select v-model="formValidate.ParentId" disabled style="width:460px" placeholder="请选择">
+							<Option v-for="item in ParentId" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="24">
 					<FormItem label="部门代码" prop="Code">
 						<Input v-model="formValidate.Code" placeholder="请输入" style="width:460px"></Input>
 					</FormItem>
@@ -75,12 +82,7 @@
 					<Col span="24">
 					<FormItem label="主管姓名" prop="Supervisor">
 						<Select v-model="formValidate.Supervisor" style="width:460px" placeholder="请选择">
-							<OptionGroup label="Hot Cities">
-								<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
-							<OptionGroup label="Other Cities">
-								<Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
+							<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
@@ -126,6 +128,13 @@
 			<Form ref="upValidate" :model="upValidate" :rules="ruleValidate" :label-width="80">
 				<Row>
 					<Col span="24">
+					<FormItem label="上级部门" prop="ParentId">
+						<Select v-model="upValidate.ParentId" disabled style="width:460px" placeholder="请选择">
+							<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="24">
 					<FormItem label="部门代码" prop="Code">
 						<Input v-model="upValidate.Code" placeholder="请输入" style="width:460px"></Input>
 					</FormItem>
@@ -143,12 +152,7 @@
 					<Col span="24">
 					<FormItem label="主管姓名" prop="Supervisor">
 						<Select v-model="upValidate.Supervisor" style="width:460px" placeholder="请选择">
-							<OptionGroup label="Hot Cities">
-								<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
-							<OptionGroup label="Other Cities">
-								<Option v-for="item in cityList2" :value="item.value" :key="item.value">{{ item.label }}</Option>
-							</OptionGroup>
+							<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
@@ -242,274 +246,314 @@
 					data
 				}) => {
 					return(
-						<span class="tree-item"> { data.Description } </span>
-					)
-				},
-				// 树形图 end
-				// 表格
-				columns4: [{
-						type: 'selection',
-						width: 50,
-						align: 'center',
-						fixed: 'left'
-					},
-					{
-						title: '部门代码',
-						key: 'Code',
-						width: 150,
-						sortable: true
-					},
-					{
-						title: '部门名称',
-						key: 'Description',
-						width: 200,
-						sortable: true
-					},
-					{
-						title: '主管姓名',
-						key: 'Supervisor',
-						width: 150,
-						sortable: true
-					},
-					{
-						title: '启用',
-						key: 'Enabled',
-						width: 100,
-						sortable: true,
-						render: (h, params) => {
-							let texts = "";
-							if(params.row.Enabled == true) {
-								texts = "是";
-							} else if(params.row.Enabled == false) {
-								texts = "否";
-							}
-							return h(
-								"div", {
-									props: {}
-								},
-								texts
-							);
-						}
-					},
-					{
-						title: '排序码',
-						key: 'SortKey',
-						width: 100,
-						sortable: true
-					},
-					{
-						title: '创建人',
-						key: 'CreateBy',
-						width: 200,
-						sortable: true
-					},
-					{
-						title: '创建时间',
-						key: 'CreateOn',
-						width: 240,
-						sortable: true
-					}
+							<span> { data.Description } </span>
 
-				],
-				data1: [],
-				BusinessUnitData: {
-					"Filters": {},
-				},
-				delBusinessUnitList: [],
-				delBusinessUnitArrs: [],
-				// 表格 end      
-				// 删除信息弹出框
-				delModal: false,
-				// 删除信息弹出框 end   
-				// 添加信息 弹出框
-				cityList: [{
-					value: 'New York',
-					label: 'New York'
-				}],
-				cityList1: [{
-						value: 'New York',
-						label: 'New York'
-					},
-					{
-						value: 'London',
-						label: 'London'
-					},
-					{
-						value: 'Sydney',
-						label: 'Sydney'
-					}
-				],
-				cityList2: [{
-						value: 'Ottawa',
-						label: 'Ottawa'
-					},
-					{
-						value: 'Paris',
-						label: 'Paris'
-					},
-					{
-						value: 'Canberra',
-						label: 'Canberra'
-					}
-				],
-				Supervisor: '',
-				AddDepartment: false,
-				upDepartment: false,
-				formValidate: {
-					Enabled: 1,
-					Code: '',
-					Description: '',
-					Supervisor: '',
-				},
-				upValidate: {
-					Enabled: 1,
-					Code: '',
-					Description: '',
-					Supervisor: '',
-				},
-				ruleValidate: {
-					Code: [{
-							required: true,
-							message: '部门代码不能为空',
-							trigger: 'blur'
+							)
 						},
-						{
-							min: '',
-							max: '',
-							message: "",
-							trigger: "blur"
+						// 树形图 end
+						// 表格
+						columns4: [{
+								type: 'selection',
+								width: 50,
+								align: 'center',
+								fixed: 'left'
+							},
+							{
+								title: '部门代码',
+								key: 'Code',
+								width: 150,
+								sortable: true
+							},
+							{
+								title: '部门名称',
+								key: 'Description',
+								width: 200,
+								sortable: true
+							},
+							{
+								title: '主管姓名',
+								key: 'Supervisor',
+								width: 150,
+								sortable: true
+							},
+							{
+								title: '启用',
+								key: 'Enabled',
+								width: 100,
+								sortable: true,
+								render: (h, params) => {
+									let texts = "";
+									if(params.row.Enabled == true) {
+										texts = "是";
+									} else if(params.row.Enabled == false) {
+										texts = "否";
+									}
+									return h(
+										"div", {
+											props: {}
+										},
+										texts
+									);
+								}
+							},
+							{
+								title: '排序码',
+								key: 'SortKey',
+								width: 100,
+								sortable: true
+							},
+							{
+								title: '创建人',
+								key: 'CreateBy',
+								width: 200,
+								sortable: true
+							},
+							{
+								title: '创建时间',
+								key: 'CreateOn',
+								width: 240,
+								sortable: true
+							}
+
+						],
+						ParentId: [{
+								value: 'New York',
+								label: '招商部'
+							},
+							{
+								value: 'London',
+								label: '运营部'
+							},
+							{
+								value: 'Sydney',
+								label: '技术部'
+							}
+						],
+						data1: [],
+						BusinessUnitData: {
+							"Filters": {},
 						},
-						{
-							pattern: /[\u4e00-\u9fa5]/gm,
-							message: "必须是字母加数值",
-							trigger: "blur"
+						treePid: '',
+						delBusinessUnitList: [],
+						delBusinessUnitArrs: [],
+						// 表格 end      
+						// 删除信息弹出框
+						delModal: false,
+						// 删除信息弹出框 end   
+						// 添加信息 弹出框
+						cityList: [{
+							value: 'New York',
+							label: 'New York'
+						}],
+						cityList1: [],
+						cityList2: [{
+								value: 'Ottawa',
+								label: 'Ottawa'
+							},
+							{
+								value: 'Paris',
+								label: 'Paris'
+							},
+							{
+								value: 'Canberra',
+								label: 'Canberra'
+							}
+						],
+						Supervisor: '',
+						AddDepartment: false,
+						upDepartment: false,
+						formValidate: {
+							ParentId: '',
+							Enabled: 1,
+							Code: '',
+							Description: '',
+							Supervisor: '',
+						},
+						upValidate: {
+							Enabled: 1,
+							Code: '',
+							Description: '',
+							Supervisor: '',
+						},
+						ruleValidate: {
+							Code: [{
+									required: true,
+									message: '部门代码不能为空',
+									trigger: 'blur'
+								},
+								{
+									min: '',
+									max: '',
+									message: "",
+									trigger: "blur"
+								},
+								//						{
+								//							pattern: /[\u4e00-\u9fa5]/gm,
+								//							message: "必须是字母加数值",
+								//							trigger: "blur"
+								//						}
+							],
+							Description: [{
+								required: true,
+								message: '部门名称不能为空!',
+								trigger: 'blur'
+							}, ],
+							Supervisor: [{
+								required: true,
+								message: '请选择主管姓名',
+								trigger: 'change'
+							}],
 						}
-					],
-					Description: [{
-						required: true,
-						message: '部门名称不能为空!',
-						trigger: 'blur'
-					}, ],
-					Supervisor: [{
-						required: true,
-						message: '请选择主管姓名',
-						trigger: 'change'
-					}],
-				}
-				// 添加信息 弹出框 end  
-			}
-		},
-		methods: {
-			deleteList() {
-				if(this.delBusinessUnitList.length == 0) {
-					this.$Message.info('请先选中删除的数据');
-				} else {
-					this.delModal = true;
+					// 添加信息 弹出框 end  
 				}
 			},
-			// 删除信息 弹出框函数
-			ok() {
-				deleteBusinessUnit(this.delBusinessUnitArrs).then(res => {
-					this.$Message.success('删除成功!')
-					this.reload();
-				}).catch(err => {
-					this.$Message.error('删除失败!')
-					console.log(err)
-				})
-				this.reload();
-			},
-			cancel() {
-				this.$Message.info('已取消');
-			},
-			// 删除信息 弹出框函数 end
-			// 添加信息 弹出框函数
-			handleSubmit(name) {
-				this.$refs[name].validate((valid) => {
-					if(valid) {
-						addBusinessUnit(this.formValidate).then(res => {
-							this.$Message.success('成功!');
-							this.AddDepartment = false;
+			methods: {
+					selectChange(selectedList) {
+						console.log(selectedList);
+
+					},
+					choiceAll(data) {
+						console.log(data)
+						//let choicesAll=this.$refs.tree.getCheckedNodes;
+						//console.log(choicesAll)
+						data.forEach(item => {
+							this.treePid = item.ParentId
+						})
+						this.loading = true;
+						//调用接口刷新页面
+						BusinessUnitGetEntities({
+							"Filters": [{
+								"Relational": 'Or',
+								"Conditions": [{
+									"FilterField": 'ParentId',
+									"Relational": "Equal",
+									"FilterValue": this.treePid,
+								}]
+							}]
+						}).then(res => {
+							console.log(res)
+							this.data1 = res.data;
+							this.loading = false;
+						}).catch(err => {
+							console.log(err)
+						})
+
+					},
+					deleteList() {
+						if(this.delBusinessUnitList.length == 0) {
+							this.$Message.info('请先选中删除的数据');
+						} else {
+							this.delModal = true;
+						}
+					},
+					// 删除信息 弹出框函数
+					ok() {
+						deleteBusinessUnit(this.delBusinessUnitArrs).then(res => {
+							this.$Message.success('删除成功!')
+							this.reload();
+						}).catch(err => {
+							this.$Message.error('删除失败!')
+							console.log(err)
+						})
+						this.reload();
+					},
+					cancel() {
+						this.$Message.info('已取消');
+					},
+					// 删除信息 弹出框函数 end
+					// 添加信息 弹出框函数
+					handleSubmit(name) {
+						this.$refs[name].validate((valid) => {
+							if(valid) {
+								addBusinessUnit(this.formValidate).then(res => {
+									this.treeList = res.data
+									this.$Message.success('成功!');
+									this.AddDepartment = false;
+									this.reload();
+								}).catch(err => {
+									console.log(err)
+								})
+							} else {
+								this.$Message.error('请输入正确的格式!');
+							}
+						})
+					},
+					handleReset(name) {
+
+						this.$refs[name].resetFields();
+						this.$Message.info('已取消添加部门');
+					},
+					// 删除组织接口
+					delBusinessUnitData(selection) {
+						console.log(selection);
+						this.delBusinessUnitList = selection;
+						for(var i = 0; i < this.delBusinessUnitList.length; i++) {
+							this.delBusinessUnitArrs.push(this.delBusinessUnitList[i].Id)
+						};
+						console.log(this.delBusinessUnitArrs);
+
+					},
+					//组织查询事件
+					queryData() {
+						BusinessUnitGetEntities({
+							"Filters": [{
+								"Relational": or,
+								"Conditions": [{
+									"FilterField": this.formSend.label,
+									"Relational": "Equal",
+									"FilterValue": this.query,
+								}]
+							}],
+							"OrderBy": {
+								"SortField": "string",
+								"Sortable": 0
+							},
+							"Paging": false,
+							"PageSize": 0,
+							"PageIndex": 0
+						}).then(res => {
+							console.log(res)
+						}).catch(err => {
+							console.log(err)
+						})
+					},
+					//详情修改页面
+					upDataBusinessUnit(index) {
+						this.upDepartment = true;
+						this.upValidate = index;
+						console.log(index)
+					},
+					//点击修改按钮
+					upHandleSubmit() {
+						upBusinessUnit(this.upValidate).then(res => {
+							this.$Message.success('修改成功!');
 							this.reload();
 						}).catch(err => {
 							console.log(err)
 						})
-					} else {
-						this.$Message.error('请输入正确的格式!');
 					}
-				})
-			},
-			handleReset(name) {
 
-				this.$refs[name].resetFields();
-				this.$Message.info('已取消添加部门');
-			},
-			// 删除组织接口
-			delBusinessUnitData(selection) {
-				console.log(selection);
-				this.delBusinessUnitList = selection;
-				for(var i = 0; i < this.delBusinessUnitList.length; i++) {
-					this.delBusinessUnitArrs.push(this.delBusinessUnitList[i].Id)
-				};
-				console.log(this.delBusinessUnitArrs);
-
-			},
-			//组织查询事件
-			queryData() {
-				BusinessUnitGetEntities({
-					"Filters": [{
-						"Relational": or,
-						"Conditions": [{
-							"FilterField": this.formSend.label,
-							"Relational": "Equal",
-							"FilterValue": this.query,
-						}]
-					}],
-					"OrderBy": {
-						"SortField": "string",
-						"Sortable": 0
-					},
-					"Paging": false,
-					"PageSize": 0,
-					"PageIndex": 0
-				}).then(res => {
-					console.log(res)
-				}).catch(err => {
-					console.log(err)
-				})
-			},
-			//详情修改页面
-			upDataBusinessUnit(index) {
-				this.upDepartment = true;
-				this.upValidate = index;
-				console.log(index)
-			},
-			//点击修改按钮
-			upHandleSubmit() {
-				upBusinessUnit(this.upValidate).then(res => {
-					this.$Message.success('修改成功!');
-					this.reload();
-				}).catch(err => {
-					console.log(err)
-				})
-			}
-
-		},
-		mounted() {
-			//获取树形结构
-			getTreeList().then(res => {
-				this.treeList = res.data
-			}).catch(err => {
-				console.log(err)
-			});
-			//获取表格
-			getBusinessUnitData(this.BusinessUnitData).then(res => {
-				this.data1 = res.data
-				this.loading = false;
-			}).catch(err => {
-				console.log(err)
-			})
+				},
+				mounted() {
+					//获取树形结构
+					getTreeList().then(res => {
+						this.treeList = res.data
+					}).catch(err => {
+						console.log(err)
+					});
+					//获取表格
+					getBusinessUnitData(this.BusinessUnitData).then(res => {
+						this.data1 = res.data
+						this.loading = false;
+						//循环主管姓名
+						this.data1.forEach(item => {
+							this.cityList1.push(item.Supervisor)
+						})
+					}).catch(err => {
+						console.log(err)
+					})
+				}
 		}
-	}
 </script>
 <style lang="less" scoped>
 	#PersonnelManagement {
