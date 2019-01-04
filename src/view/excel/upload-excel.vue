@@ -158,22 +158,18 @@
 					</Select>
 				</FormItem>
 				<FormItem label="所在省" prop="ProviceCode">
-					<Select v-model="AddCustomerFrom.ProviceCode" style="width:200px">
-								<Option v-for="item in relationship" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
-							</Select>
+					<Select v-model="AddCustomerFrom.ProviceCode" @on-change="SelectProviceCode" style="width:200px">
+						<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+					</Select>
 				</FormItem>
 				<FormItem label="所在市" prop="CityCode">
-					<Select v-model="CustomerFrom.CityCode" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
+					<Select v-model="AddCustomerFrom.CityCode" @on-change="SelectCityCode" style="width:200px">
+						<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name}}</Option>
 					</Select>
 				</FormItem>
 				<FormItem label="所在县区" prop="DistinctCode">
-					<Select v-model="CustomerFrom.DistinctCode" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
+					<Select v-model="AddCustomerFrom.DistinctCode" style="width:200px">
+						<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 					</Select>
 				</FormItem>
 				<FormItem label="所在小区" prop="VillageCode">
@@ -519,13 +515,16 @@
 </template>
 <script>
 	import { CustomerData, DataDictionary, CustomerCreate, CustomerDelete, CustomerUp, CustomerQuery, CustomerContactCreate } from "@/api/data";
+	import { DistrictGetProvince, DistrictGetArea } from "@/api/api";
 	export default {
 		inject: ['reload'],
 		name: 'CustomerProfile',
 		data() {
 			return {
 				radioList: [],
-				province:[],
+				province: [],
+				city: [],
+				county: [],
 				relationship: [],
 				customerTypeData: [],
 				MemberTypeData: [],
@@ -804,9 +803,24 @@
 				},
 				//选中的数组id
 				batchArr: [],
+				 queryDistinctCode: "",
 			}
 		},
 		methods: {
+			SelectProviceCode(Id) {
+				DistrictGetArea(Id).then(res=>{
+					this.city = res.data
+				}).catch(err =>{
+					console.log(err)
+				})
+			},
+			SelectCityCode(Id){
+				DistrictGetArea(Id).then(res=>{
+					this.county = res.data
+				}).catch(err =>{
+					console.log(err)
+				})
+			},
 			//批量操作的ID
 			BatchDelete(selection) {
 				console.log(selection)
@@ -1001,6 +1015,12 @@
 			}).catch(err => {
 				console.log(err)
 			});
+			DistrictGetProvince().then(res => {
+				console.log(res.data)
+				this.province = res.data;
+			}).catch(err => {
+				console.log(err)
+			})
 
 		}
 	}

@@ -218,12 +218,3 @@ export const CustomerContactCreate = AddCustomerFrom => {
   });
 };
 
-//三级联动
-export const GetProvince = params => {
-  return axios.request({
-    url: apiUrl + "/api/District/GetProvince",
-    method: "get",
-    params,
-    
-  });
-};
