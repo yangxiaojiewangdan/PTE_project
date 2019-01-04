@@ -807,7 +807,7 @@ export default {
         this.Checkboxif = false;
         this.queryvalueif = true;
       }
-      return;
+
     },
     handleDelete(params) {
       let index = localStorage.row;
@@ -970,6 +970,7 @@ export default {
     },
     // 点击查询按钮查询信息
     querytable() {
+      console.log(this.querySelect)
       RoyaltyCodeGetEntities({
         Filters: [
           {

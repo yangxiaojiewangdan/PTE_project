@@ -37,6 +37,9 @@
     .footer_left2>div,.footer_left1>div{
         margin: 2px;
     }
+    .footer_left1 span,.footer_left2 span{
+        float: left;
+    }
  /* 修改iview弹框的样式 end */
 /* iview  系统表格表头的样式 */
 	.ivu-table-header th{

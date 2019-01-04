@@ -19,13 +19,11 @@ class HttpRequest {
     this.queue = {}
   }
   getInsideConfig () {
-  	//取出sessionStorage
-let see = JSON.parse(sessionStorage.getItem('userInfo'))
     const config = {
       baseURL: this.baseUrl,
       headers: {
         "Content-Type":'application/json',
-        "user_token":see.SessionToken,
+        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ2NTc0MTg1LCJleHAiOjE1NDY2OTQxODUsImlhdCI6MTU0NjU3NDE4NX0.ftCAH7spo8GIA9RgnJ5vfOiZeQjJKSzz7uYoUmamvg8',
         "signature":"signature"
       }
     }

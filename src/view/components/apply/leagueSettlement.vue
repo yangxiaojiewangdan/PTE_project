@@ -596,7 +596,7 @@ export default {
         Code: "",
         Description: "",
         SettleType: "",
-        FromDay: [],
+        FromDay: "",
         ToDay: "",
         PeriodOfT: "",
         AllowMon: "",

@@ -143,956 +143,956 @@ import parentView from '@/components/parent-view'
           系统运行日志____path: 'system_journalFunction'
 */
 export default [
-	// 登陆 首页 消息的路由
-	{
-		path: '/login',
-		name: 'login',
-		meta: {
-			title: 'Login - 登录',
-			hideInMenu: true
-		},
-		component: () =>
-			import('@/view/login/login.vue')
-	},
-	{
-		path: '/',
-		name: '_home',
-		redirect: '/home',
-		component: Main,
-		meta: {
-			hideInMenu: true,
-			notCache: true,
-			access: ['admin'],
-		},
+  // 登陆 首页 消息的路由
+  {
+    path: '/login',
+    name: 'login',
+    meta: {
+      title: 'Login - 登录',
+      hideInMenu: true
+    },
+    component: () =>
+      import('@/view/login/login.vue')
+  },
+  {
+    path: '/',
+    name: '_home',
+    redirect: '/home',
+    component: Main,
+    meta: {
+      hideInMenu: true,
+      notCache: true,
+      access: ['admin'],
+    },
 
-		children: [{
-			path: '/home',
-			name: 'home',
-			meta: {
-				hideInMenu: true,
-				title: '首页',
-				notCache: true,
-				icon: 'md-home'
-			},
-			component: () =>
-				import('@/view/single-page/home')
-		}]
-	},
-	{
-		path: '/message',
-		name: 'message',
-		component: Main,
-		meta: {
-			hideInBread: true,
-			hideInMenu: true
-		},
-		children: [{
-			path: 'message_page',
-			name: 'message_page',
-			meta: {
-				icon: 'md-notifications',
-				title: '消息中心'
-			},
-			component: () =>
-				import('@/view/single-page/message/index.vue')
-		}]
-	},
-	// 登陆 首页 消息的路由 end
-	// 工作台的路由
-	{
-		path: '/work',
-		name: '工作台',
-		meta: {
-			icon: 'logo-buffer',
-			title: '工作台'
-		},
-		component: Main,
-		children: [{
-				path: 'wor_shortcut',
-				name: 'work_shortcut',
-				meta: {
-					icon: 'md-trending-up',
-					title: '快捷方式'
-				},
-				component: () =>
-					import('@/view/components/count-to/count-to.vue')
-			},
-			{
-				path: 'work_workbench',
-				name: 'work_workbench',
-				meta: {
-					icon: 'ios-infinite',
-					title: '工作台'
-				},
-				component: () =>
-					import('@/view/components/drag-list/drag-list.vue')
-			},
-			{
-				path: 'work_Notice',
-				name: 'work_Notice',
-				meta: {
-					icon: 'md-git-branch',
-					title: '公告'
-				},
-				component: () =>
-					import('@/view/components/tree-table/index.vue')
-			},
-			{
-				path: 'work_notice',
-				name: 'work_notice',
-				meta: {
-					icon: 'md-crop',
-					title: '通知'
-				},
-				component: () =>
-					import('@/view/components/cropper/cropper.vue')
-			},
-			{
-				path: 'work_remind',
-				name: 'work_remind',
-				meta: {
-					icon: 'md-grid',
-					title: '提醒'
-				},
-				component: () =>
-					import('@/view/components/tables/tables.vue')
-			}
-		]
-	},
-	// 工作台的路由 end
-	// 市场营销中心的路由
-	{
-		path: '/marke',
-		name: '市场营销中心',
-		meta: {
-			icon: 'logo-buffer',
-			title: '市场营销中心'
-		},
-		component: Main,
-		children: [{
-				path: 'marke_competitor',
-				name: 'marke_competitor',
-				meta: {
-					icon: 'md-trending-up',
-					title: '竞争对手'
-				},
-				component: () =>
-					import('@/view/components/count-to/count-to.vue')
-			},
-			{
-				path: 'marke_industry',
-				name: 'marke_industry',
-				meta: {
-					icon: 'ios-infinite',
-					title: '行业动态'
-				},
-				component: () =>
-					import('@/view/components/drag-list/drag-list.vue')
-			},
-			{
-				path: 'marke_plan',
-				name: 'marke_plan',
-				meta: {
-					icon: 'md-git-branch',
-					title: '市场计划'
-				},
-				component: () =>
-					import('@/view/components/tree-table/index.vue')
-			},
-			{
-				path: 'marke_programme',
-				name: 'marke_programme',
-				meta: {
-					icon: 'md-crop',
-					title: '市场方案'
-				},
-				component: () =>
-					import('@/view/components/cropper/cropper.vue')
-			},
-			{
-				path: 'marke_activity',
-				name: 'marke_activity',
-				meta: {
-					icon: 'md-grid',
-					title: '市场活动'
-				},
-				component: () =>
-					import('@/view/components/tables/tables.vue')
-			}
-		]
-	},
-	// 市场营销中心的路由 end
-	// 销售中心的路由
-	{
-		path: '/sale',
-		name: '销售中心',
-		meta: {
-			icon: 'md-cloud-upload',
-			title: '销售中心'
-		},
-		component: Main,
-		children: [{
-				path: 'sale_clue',
-				name: 'sale_clue',
-				meta: {
-					icon: 'ios-document',
-					title: '线索管理'
-				},
-				component: () =>
-					import('@/view/update/update-table.vue')
-			},
-			{
-				path: 'sale_customer',
-				name: 'sale_customer',
-				meta: {
-					icon: 'md-clipboard',
-					title: '客户管理'
-				},
-				component: () =>
-					import('@/view/update/update-paste.vue')
-			},
-			{
-				path: 'sale_customerSea',
-				name: 'sale_customerSea',
-				meta: {
-					icon: 'ios-document',
-					title: '客户公海'
-				},
-				component: () =>
-					import('@/view/update/update-table.vue')
-			},
-			{
-				path: 'sale_merchant',
-				name: 'sale_merchant',
-				meta: {
-					icon: 'md-clipboard',
-					title: '商机管理'
-				},
-				component: () =>
-					import('@/view/update/update-paste.vue')
-			},
-			{
-				path: 'sale_order',
-				name: 'sale_order',
-				meta: {
-					icon: 'md-clipboard',
-					title: '订单管理'
-				},
-				component: () =>
-					import('@/view/update/update-paste.vue')
-			}
-		]
-	},
-	// 销售中心的路由 end
-	// 会员中心的路由
-	{
-		path: '/member',
-		name: '会员中心',
-		meta: {
-			icon: 'ios-stats',
-			title: '会员中心'
-		},
-		component: Main,
-		children: [{
-				path: 'member_studentFiles',
-				name: 'member_studentFiles',
-				meta: {
-					icon: 'md-add',
-					title: '学员档案'
-				},
-				component: () =>
-					import('@/view/excel/upload-excel.vue')
-			},
-			{
-				path: 'member_admAss',
-				name: 'member_admAss',
-				meta: {
-					icon: 'md-download',
-					title: '入学评估'
-				},
-				component: () =>
-					import('@/view/excel/export-excel.vue')
-			},
-			{
-				path: 'member_order',
-				name: 'member_order',
-				meta: {
-					icon: 'md-add',
-					title: '订单管理'
-				},
-				component: () =>
-					import('@/view/excel/upload-excel.vue')
-			},
-			{
-				path: 'member_attendanceClass',
-				name: 'member_attendanceClass',
-				meta: {
-					icon: 'md-download',
-					title: '考勤销课'
-				},
-				component: () =>
-					import('@/view/excel/export-excel.vue')
-			},
-			{
-				path: 'member_studentCourse',
-				name: 'member_studentCourse',
-				meta: {
-					icon: 'md-download',
-					title: '学员课程'
-				},
-				component: () =>
-					import('@/view/excel/export-excel.vue')
-			},
-			{
-				path: 'member_studentRetreat',
-				name: 'member_studentRetreat',
-				meta: {
-					icon: 'md-add',
-					title: '学员退课'
-				},
-				component: () =>
-					import('@/view/excel/upload-excel.vue')
-			},
-			{
-				path: 'member_studentRetreatHistory',
-				name: 'member_studentRetreatHistory',
-				meta: {
-					icon: 'md-download',
-					title: '学员退课历史'
-				},
-				component: () =>
-					import('@/view/excel/export-excel.vue')
-			}
-		]
-	},
-	// 会员中心的路由 end
-	// 教务中心的路由
-	{
-		path: '/edAd',
-		name: '教务中心',
-		meta: {
-			icon: 'logo-buffer',
-			title: '教务中心'
-		},
-		component: Main,
-		children: [{
-				path: 'edAd_course',
-				name: 'edAd_course',
-				meta: {
-					icon: 'ios-infinite',
-					title: '课程管理'
-				},
-				component: () =>
-					import('@/view/components/drag-list/drag-list.vue')
-			},
-			{
-				path: 'edAd_courseCalendar',
-				name: 'edAd_courseCalendar',
-				meta: {
-					icon: 'md-git-branch',
-					title: '课程日历'
-				},
-				component: () =>
-					import('@/view/components/tree-table/index.vue')
-			},
-			{
-				path: 'edAd_classroomCalendar',
-				name: 'edAd_classroomCalendar',
-				meta: {
-					icon: 'md-crop',
-					title: '教室日历'
-				},
-				component: () =>
-					import('@/view/components/cropper/cropper.vue')
-			}
-		]
-	},
-	// 教务中心的路由 end
-	// 门店管理的路由 
-	{
-		path: '/store',
-		name: '门店管理',
-		meta: {
-			icon: 'logo-buffer',
-			title: '门店管理'
-		},
-		component: Main,
-		children: [{
-				path: 'store_storeManagement',
-				name: 'store_storeManagement',
-				meta: {
-					icon: 'md-trending-up',
-					title: '门店管理'
-				},
-				component: () =>
-					import('@/view/components/count-to/count-to.vue')
-			},
-			{
-				path: 'store_classroomManagement',
-				name: 'store_classroomManagement',
-				meta: {
-					icon: 'ios-infinite',
-					title: '教室管理'
-				},
-				component: () =>
-					import('@/view/components/drag-list/drag-list.vue')
-			},
-			{
-				path: 'store_courseCalendar',
-				name: 'store_courseCalendar',
-				meta: {
-					icon: 'md-git-branch',
-					title: '课程日历'
-				},
-				component: () =>
-					import('@/view/components/tree-table/index.vue')
-			},
-			{
-				path: 'store_classroomCalendar',
-				name: 'store_classroomCalendar',
-				meta: {
-					icon: 'md-crop',
-					title: '教室日历'
-				},
-				component: () =>
-					import('@/view/components/cropper/cropper.vue')
-			}
-		]
-	},
-	// 门店管理的路由  end
-	// 加盟商管理路由
-	{
-		path: '/franchisee',
-		name: '加盟商管理',
-		meta: {
-			icon: 'logo-buffer',
-			title: '加盟商管理'
-		},
-		component: Main,
-		children: [{
-				path: 'franchisee_information',
-				name: 'franchisee_information',
-				meta: {
-					icon: 'md-trending-up',
-					title: '基本信息'
-				},
-				component: () =>
-					import('@/view/components/franchisee/information.vue')
-			},
-			{
-				path: 'franchisee_contacts',
-				name: 'franchisee_contacts',
-				meta: {
-					icon: 'ios-infinite',
-					title: '联系人'
-				},
-				component: () =>
-					import('@/view/components/franchisee/contacts.vue')
-			},
-			{
-				path: 'franchisee_bargain',
-				name: 'franchisee_bargain',
-				meta: {
-					icon: 'md-git-branch',
-					title: '合同管理'
-				},
-				component: () =>
-					import('@/view/components/franchisee/bargain.vue')
-			},
-			{
-				path: 'franchisee_opening',
-				name: 'franchisee_opening',
-				meta: {
-					icon: 'md-crop',
-					title: '开业管理'
-				},
-				component: () =>
-					import('@/view/components/franchisee/opening.vue')
-			},
-			{
-				path: 'franchisee_default',
-				name: 'franchisee_default',
-				meta: {
-					icon: 'md-trending-up',
-					title: '违约管理'
-				},
-				component: () =>
-					import('@/view/components/franchisee/default.vue')
-			},
-			{
-				path: 'franchisee_assess',
-				name: 'franchisee_assess',
-				meta: {
-					icon: 'ios-infinite',
-					title: '考核管理'
-				},
-				component: () =>
-					import('@/view/components/franchisee/assess.vue')
-			},
-			{
-				path: 'franchisee_courseCalendar',
-				name: 'franchisee_courseCalendar',
-				meta: {
-					icon: 'md-git-branch',
-					title: '课程日历'
-				},
-				component: () =>
-					import('@/view/components/franchisee/courseCalendar.vue')
-			},
-			{
-				path: 'franchisee_classroomCalendar',
-				name: 'franchisee_classroomCalendar',
-				meta: {
-					icon: 'md-crop',
-					title: '教室日历'
-				},
-				component: () =>
-					import('@/view/components/franchisee/classroomCalendar.vue')
-			}
-		]
-	},
-	// 加盟商管理路由 end
-	// 教师合伙人管理的路由
-	{
-		path: '/partner',
-		name: '教师合伙人管理',
-		meta: {
-			icon: 'logo-buffer',
-			title: '教师合伙人管理'
-		},
-		component: Main,
-		children: [{
-				path: 'partner_information',
-				name: 'partner_information',
-				meta: {
-					icon: 'md-trending-up',
-					title: '个人信息'
-				},
-				component: () =>
-					import('@/view/components/count-to/count-to.vue')
-			},
-			{
-				path: 'partner',
-				name: 'partner',
-				meta: {
-					icon: 'ios-infinite',
-					title: '更多'
-				},
-				component: () =>
-					import('@/view/components/drag-list/drag-list.vue')
-			}
-		]
-	},
-	// 教师合伙人管理的路由 end
-	// 财务中心的路由
-	{
-		path: '/finance',
-		name: '财务中心',
-		meta: {
-			icon: 'logo-buffer',
-			title: '财务中心'
-		},
-		component: Main,
-		children: [{
-				path: 'finance_manual',
-				name: 'finance_manual',
-				meta: {
-					icon: 'md-trending-up',
-					title: '手工入账'
-				},
-				component: () =>
-					import('@/view/components/finance/manual.vue')
-			},
-			{
-				path: 'finance_league',
-				name: 'finance_league',
-				meta: {
-					icon: 'ios-infinite',
-					title: '加盟商财务'
-				},
-				component: () =>
-					import('@/view/components/finance/league.vue')
-			},
-			{
-				path: 'Finance_partner',
-				name: 'Finance_partner',
-				meta: {
-					icon: 'ios-infinite',
-					title: '教师合伙人财务'
-				},
-				component: () =>
-					import('@/view/components/finance/partner.vue')
-			},
-			{
-				path: 'finance_tradeFlow',
-				name: 'finance_tradeFlow',
-				meta: {
-					icon: 'ios-infinite',
-					title: '交易流水'
-				},
-				component: () =>
-					import('@/view/components/finance/tradeFlow.vue')
-			},
-			{
-				path: 'finance_certificateHistory',
-				name: 'finance_certificateHistory',
-				meta: {
-					icon: 'ios-infinite',
-					title: '凭证历史'
-				},
-				component: () =>
-					import('@/view/components/finance/certificateHistory.vue')
-			},
-			{
-				path: 'finance_invoiceHistory',
-				name: 'finance_invoiceHistory',
-				meta: {
-					icon: 'ios-infinite',
-					title: '发票历史'
-				},
-				component: () =>
-					import('@/view/components/finance/invoiceHistory.vue')
-			},
-			{
-				path: 'finance_expenditureHistory',
-				name: 'finance_expenditureHistory',
-				meta: {
-					icon: 'ios-infinite',
-					title: '支出历史'
-				},
-				component: () =>
-					import('@/view/components/finance/expenditureHistory.vue')
-			},
-			{
-				path: 'finance_StudentRefundHistory',
-				name: 'finance_StudentRefundHistory',
-				meta: {
-					icon: 'ios-infinite',
-					title: '学员退费历史'
-				},
-				component: () =>
-					import('@/view/components/finance/StudentRefundHistory.vue')
-			}
+    children: [{
+      path: '/home',
+      name: 'home',
+      meta: {
+        hideInMenu: true,
+        title: '首页',
+        notCache: true,
+        icon: 'md-home'
+      },
+      component: () =>
+        import('@/view/single-page/home')
+    }]
+  },
+  {
+    path: '/message',
+    name: 'message',
+    component: Main,
+    meta: {
+      hideInBread: true,
+      hideInMenu: true
+    },
+    children: [{
+      path: 'message_page',
+      name: 'message_page',
+      meta: {
+        icon: 'md-notifications',
+        title: '消息中心'
+      },
+      component: () =>
+        import('@/view/single-page/message/index.vue')
+    }]
+  },
+  // 登陆 首页 消息的路由 end
+  // 工作台的路由
+  {
+    path: '/work',
+    name: '工作台',
+    meta: {
+      icon: 'logo-buffer',
+      title: '工作台'
+    },
+    component: Main,
+    children: [{
+        path: 'wor_shortcut',
+        name: 'work_shortcut',
+        meta: {
+          icon: 'md-trending-up',
+          title: '快捷方式'
+        },
+        component: () =>
+          import('@/view/components/count-to/count-to.vue')
+      },
+      {
+        path: 'work_workbench',
+        name: 'work_workbench',
+        meta: {
+          icon: 'ios-infinite',
+          title: '工作台'
+        },
+        component: () =>
+          import('@/view/components/drag-list/drag-list.vue')
+      },
+      {
+        path: 'work_Notice',
+        name: 'work_Notice',
+        meta: {
+          icon: 'md-git-branch',
+          title: '公告'
+        },
+        component: () =>
+          import('@/view/components/tree-table/index.vue')
+      },
+      {
+        path: 'work_notice',
+        name: 'work_notice',
+        meta: {
+          icon: 'md-crop',
+          title: '通知'
+        },
+        component: () =>
+          import('@/view/components/cropper/cropper.vue')
+      },
+      {
+        path: 'work_remind',
+        name: 'work_remind',
+        meta: {
+          icon: 'md-grid',
+          title: '提醒'
+        },
+        component: () =>
+          import('@/view/components/tables/tables.vue')
+      }
+    ]
+  },
+  // 工作台的路由 end
+  // 市场营销中心的路由
+  {
+    path: '/marke',
+    name: '市场营销中心',
+    meta: {
+      icon: 'logo-buffer',
+      title: '市场营销中心'
+    },
+    component: Main,
+    children: [{
+        path: 'marke_competitor',
+        name: 'marke_competitor',
+        meta: {
+          icon: 'md-trending-up',
+          title: '竞争对手'
+        },
+        component: () =>
+          import('@/view/components/count-to/count-to.vue')
+      },
+      {
+        path: 'marke_industry',
+        name: 'marke_industry',
+        meta: {
+          icon: 'ios-infinite',
+          title: '行业动态'
+        },
+        component: () =>
+          import('@/view/components/drag-list/drag-list.vue')
+      },
+      {
+        path: 'marke_plan',
+        name: 'marke_plan',
+        meta: {
+          icon: 'md-git-branch',
+          title: '市场计划'
+        },
+        component: () =>
+          import('@/view/components/tree-table/index.vue')
+      },
+      {
+        path: 'marke_programme',
+        name: 'marke_programme',
+        meta: {
+          icon: 'md-crop',
+          title: '市场方案'
+        },
+        component: () =>
+          import('@/view/components/cropper/cropper.vue')
+      },
+      {
+        path: 'marke_activity',
+        name: 'marke_activity',
+        meta: {
+          icon: 'md-grid',
+          title: '市场活动'
+        },
+        component: () =>
+          import('@/view/components/tables/tables.vue')
+      }
+    ]
+  },
+  // 市场营销中心的路由 end
+  // 销售中心的路由
+  {
+    path: '/sale',
+    name: '销售中心',
+    meta: {
+      icon: 'md-cloud-upload',
+      title: '销售中心'
+    },
+    component: Main,
+    children: [{
+        path: 'sale_clue',
+        name: 'sale_clue',
+        meta: {
+          icon: 'ios-document',
+          title: '线索管理'
+        },
+        component: () =>
+          import('@/view/update/update-table.vue')
+      },
+      {
+        path: 'sale_customer',
+        name: 'sale_customer',
+        meta: {
+          icon: 'md-clipboard',
+          title: '客户管理'
+        },
+        component: () =>
+          import('@/view/update/update-paste.vue')
+      },
+      {
+        path: 'sale_customerSea',
+        name: 'sale_customerSea',
+        meta: {
+          icon: 'ios-document',
+          title: '客户公海'
+        },
+        component: () =>
+          import('@/view/update/update-table.vue')
+      },
+      {
+        path: 'sale_merchant',
+        name: 'sale_merchant',
+        meta: {
+          icon: 'md-clipboard',
+          title: '商机管理'
+        },
+        component: () =>
+          import('@/view/update/update-paste.vue')
+      },
+      {
+        path: 'sale_order',
+        name: 'sale_order',
+        meta: {
+          icon: 'md-clipboard',
+          title: '订单管理'
+        },
+        component: () =>
+          import('@/view/update/update-paste.vue')
+      }
+    ]
+  },
+  // 销售中心的路由 end
+  // 会员中心的路由
+  {
+    path: '/member',
+    name: '会员中心',
+    meta: {
+      icon: 'ios-stats',
+      title: '会员中心'
+    },
+    component: Main,
+    children: [{
+        path: 'member_studentFiles',
+        name: 'member_studentFiles',
+        meta: {
+          icon: 'md-add',
+          title: '学员档案'
+        },
+        component: () =>
+          import('@/view/excel/upload-excel.vue')
+      },
+      {
+        path: 'member_admAss',
+        name: 'member_admAss',
+        meta: {
+          icon: 'md-download',
+          title: '入学评估'
+        },
+        component: () =>
+          import('@/view/excel/export-excel.vue')
+      },
+      {
+        path: 'member_order',
+        name: 'member_order',
+        meta: {
+          icon: 'md-add',
+          title: '订单管理'
+        },
+        component: () =>
+          import('@/view/excel/upload-excel.vue')
+      },
+      {
+        path: 'member_attendanceClass',
+        name: 'member_attendanceClass',
+        meta: {
+          icon: 'md-download',
+          title: '考勤销课'
+        },
+        component: () =>
+          import('@/view/excel/export-excel.vue')
+      },
+      {
+        path: 'member_studentCourse',
+        name: 'member_studentCourse',
+        meta: {
+          icon: 'md-download',
+          title: '学员课程'
+        },
+        component: () =>
+          import('@/view/excel/export-excel.vue')
+      },
+      {
+        path: 'member_studentRetreat',
+        name: 'member_studentRetreat',
+        meta: {
+          icon: 'md-add',
+          title: '学员退课'
+        },
+        component: () =>
+          import('@/view/excel/upload-excel.vue')
+      },
+      {
+        path: 'member_studentRetreatHistory',
+        name: 'member_studentRetreatHistory',
+        meta: {
+          icon: 'md-download',
+          title: '学员退课历史'
+        },
+        component: () =>
+          import('@/view/excel/export-excel.vue')
+      }
+    ]
+  },
+  // 会员中心的路由 end
+  // 教务中心的路由
+  {
+    path: '/edAd',
+    name: '教务中心',
+    meta: {
+      icon: 'logo-buffer',
+      title: '教务中心'
+    },
+    component: Main,
+    children: [{
+        path: 'edAd_course',
+        name: 'edAd_course',
+        meta: {
+          icon: 'ios-infinite',
+          title: '课程管理'
+        },
+        component: () =>
+          import('@/view/components/drag-list/drag-list.vue')
+      },
+      {
+        path: 'edAd_courseCalendar',
+        name: 'edAd_courseCalendar',
+        meta: {
+          icon: 'md-git-branch',
+          title: '课程日历'
+        },
+        component: () =>
+          import('@/view/components/tree-table/index.vue')
+      },
+      {
+        path: 'edAd_classroomCalendar',
+        name: 'edAd_classroomCalendar',
+        meta: {
+          icon: 'md-crop',
+          title: '教室日历'
+        },
+        component: () =>
+          import('@/view/components/cropper/cropper.vue')
+      }
+    ]
+  },
+  // 教务中心的路由 end
+  // 门店管理的路由 
+  {
+    path: '/store',
+    name: '门店管理',
+    meta: {
+      icon: 'logo-buffer',
+      title: '门店管理'
+    },
+    component: Main,
+    children: [{
+        path: 'store_storeManagement',
+        name: 'store_storeManagement',
+        meta: {
+          icon: 'md-trending-up',
+          title: '门店管理'
+        },
+        component: () =>
+          import('@/view/components/store/storeManagement.vue')
+      },
+      {
+        path: 'store_classroomManagement',
+        name: 'store_classroomManagement',
+        meta: {
+          icon: 'ios-infinite',
+          title: '教室管理'
+        },
+        component: () =>
+          import('@/view/components/store/classroomManagement.vue')
+      },
+      {
+        path: 'store_courseCalendar',
+        name: 'store_courseCalendar',
+        meta: {
+          icon: 'md-git-branch',
+          title: '课程日历'
+        },
+        component: () =>
+          import('@/view/components/store/courseCalendar.vue')
+      },
+      {
+        path: 'store_classroomCalendar',
+        name: 'store_classroomCalendar',
+        meta: {
+          icon: 'md-crop',
+          title: '教室日历'
+        },
+        component: () =>
+          import('@/view/components/store/classroomCalendar.vue')
+      }
+    ]
+  },
+  // 门店管理的路由  end
+  // 加盟商管理路由
+  {
+    path: '/franchisee',
+    name: '加盟商管理',
+    meta: {
+      icon: 'logo-buffer',
+      title: '加盟商管理'
+    },
+    component: Main,
+    children: [{
+        path: 'franchisee_information',
+        name: 'franchisee_information',
+        meta: {
+          icon: 'md-trending-up',
+          title: '基本信息'
+        },
+        component: () =>
+          import('@/view/components/franchisee/information.vue')
+      },
+      {
+        path: 'franchisee_contacts',
+        name: 'franchisee_contacts',
+        meta: {
+          icon: 'ios-infinite',
+          title: '联系人'
+        },
+        component: () =>
+          import('@/view/components/franchisee/contacts.vue')
+      },
+      {
+        path: 'franchisee_bargain',
+        name: 'franchisee_bargain',
+        meta: {
+          icon: 'md-git-branch',
+          title: '合同管理'
+        },
+        component: () =>
+          import('@/view/components/franchisee/bargain.vue')
+      },
+      {
+        path: 'franchisee_opening',
+        name: 'franchisee_opening',
+        meta: {
+          icon: 'md-crop',
+          title: '开业管理'
+        },
+        component: () =>
+          import('@/view/components/franchisee/opening.vue')
+      },
+      {
+        path: 'franchisee_default',
+        name: 'franchisee_default',
+        meta: {
+          icon: 'md-trending-up',
+          title: '违约管理'
+        },
+        component: () =>
+          import('@/view/components/franchisee/default.vue')
+      },
+      {
+        path: 'franchisee_assess',
+        name: 'franchisee_assess',
+        meta: {
+          icon: 'ios-infinite',
+          title: '考核管理'
+        },
+        component: () =>
+          import('@/view/components/franchisee/assess.vue')
+      },
+      {
+        path: 'franchisee_courseCalendar',
+        name: 'franchisee_courseCalendar',
+        meta: {
+          icon: 'md-git-branch',
+          title: '课程日历'
+        },
+        component: () =>
+          import('@/view/components/franchisee/courseCalendar.vue')
+      },
+      {
+        path: 'franchisee_classroomCalendar',
+        name: 'franchisee_classroomCalendar',
+        meta: {
+          icon: 'md-crop',
+          title: '教室日历'
+        },
+        component: () =>
+          import('@/view/components/franchisee/classroomCalendar.vue')
+      }
+    ]
+  },
+  // 加盟商管理路由 end
+  // 教师合伙人管理的路由
+  {
+    path: '/partner',
+    name: '教师合伙人管理',
+    meta: {
+      icon: 'logo-buffer',
+      title: '教师合伙人管理'
+    },
+    component: Main,
+    children: [{
+        path: 'partner_information',
+        name: 'partner_information',
+        meta: {
+          icon: 'md-trending-up',
+          title: '个人信息'
+        },
+        component: () =>
+          import('@/view/components/count-to/count-to.vue')
+      },
+      {
+        path: 'partner',
+        name: 'partner',
+        meta: {
+          icon: 'ios-infinite',
+          title: '更多'
+        },
+        component: () =>
+          import('@/view/components/drag-list/drag-list.vue')
+      }
+    ]
+  },
+  // 教师合伙人管理的路由 end
+  // 财务中心的路由
+  {
+    path: '/finance',
+    name: '财务中心',
+    meta: {
+      icon: 'logo-buffer',
+      title: '财务中心'
+    },
+    component: Main,
+    children: [{
+        path: 'finance_manual',
+        name: 'finance_manual',
+        meta: {
+          icon: 'md-trending-up',
+          title: '手工入账'
+        },
+        component: () =>
+          import('@/view/components/finance/manual.vue')
+      },
+      {
+        path: 'finance_league',
+        name: 'finance_league',
+        meta: {
+          icon: 'ios-infinite',
+          title: '加盟商财务'
+        },
+        component: () =>
+          import('@/view/components/finance/league.vue')
+      },
+      {
+        path: 'Finance_partner',
+        name: 'Finance_partner',
+        meta: {
+          icon: 'ios-infinite',
+          title: '教师合伙人财务'
+        },
+        component: () =>
+          import('@/view/components/finance/partner.vue')
+      },
+      {
+        path: 'finance_tradeFlow',
+        name: 'finance_tradeFlow',
+        meta: {
+          icon: 'ios-infinite',
+          title: '交易流水'
+        },
+        component: () =>
+          import('@/view/components/finance/tradeFlow.vue')
+      },
+      {
+        path: 'finance_certificateHistory',
+        name: 'finance_certificateHistory',
+        meta: {
+          icon: 'ios-infinite',
+          title: '凭证历史'
+        },
+        component: () =>
+          import('@/view/components/finance/certificateHistory.vue')
+      },
+      {
+        path: 'finance_invoiceHistory',
+        name: 'finance_invoiceHistory',
+        meta: {
+          icon: 'ios-infinite',
+          title: '发票历史'
+        },
+        component: () =>
+          import('@/view/components/finance/invoiceHistory.vue')
+      },
+      {
+        path: 'finance_expenditureHistory',
+        name: 'finance_expenditureHistory',
+        meta: {
+          icon: 'ios-infinite',
+          title: '支出历史'
+        },
+        component: () =>
+          import('@/view/components/finance/expenditureHistory.vue')
+      },
+      {
+        path: 'finance_StudentRefundHistory',
+        name: 'finance_StudentRefundHistory',
+        meta: {
+          icon: 'ios-infinite',
+          title: '学员退费历史'
+        },
+        component: () =>
+          import('@/view/components/finance/StudentRefundHistory.vue')
+      }
 
-		]
-	},
-	// 财务中心的路由 end
-	// 服务中心的路由
-	{
-		path: '/serviceCentre',
-		name: '服务中心',
-		meta: {
-			icon: 'logo-buffer',
-			title: '服务中心'
-		},
-		component: Main,
-		children: [{
-				path: 'serviceCentre',
-				name: 'serviceCentre',
-				meta: {
-					icon: 'md-trending-up',
-					title: '服务中心'
-				},
-				component: () =>
-					import('@/view/components/count-to/count-to.vue')
-			},
-			{
-				path: 'serviceCentre',
-				name: 'serviceCentre',
-				meta: {
-					icon: 'ios-infinite',
-					title: '更多'
-				},
-				component: () =>
-					import('@/view/components/drag-list/drag-list.vue')
-			}
-		]
-	},
-	// 服务中心的路由 end
-	// 业务分析的路由
-	{
-		path: '/business',
-		name: '业务分析',
-		meta: {
-			icon: 'logo-buffer',
-			title: '业务分析'
-		},
-		component: Main,
-		children: [{
-				path: 'business_sale',
-				name: 'business_sale',
-				meta: {
-					icon: 'md-trending-up',
-					title: '销售'
-				},
-				component: () =>
-					import('@/view/components/count-to/count-to.vue')
-			},
-			{
-				path: 'business_marke',
-				name: 'business_marke',
-				meta: {
-					icon: 'ios-infinite',
-					title: '市场'
-				},
-				component: () =>
-					import('@/view/components/drag-list/drag-list.vue')
-			},
-			{
-				path: 'business_finance',
-				name: 'business_finance',
-				meta: {
-					icon: 'md-git-branch',
-					title: '财务'
-				},
-				component: () =>
-					import('@/view/components/tree-table/index.vue')
-			},
-			{
-				path: 'business_service',
-				name: 'business_service',
-				meta: {
-					icon: 'md-crop',
-					title: '服务'
-				},
-				component: () =>
-					import('@/view/components/cropper/cropper.vue')
-			},
-			{
-				path: 'business_member',
-				name: 'business_member',
-				meta: {
-					icon: 'md-grid',
-					title: '会员'
-				},
-				component: () =>
-					import('@/view/components/tables/tables.vue')
-			}
-		]
-	},
-	// 业务分析的路由 end
-	// 应用设置的路由
-	{
-		path: '/apply',
-		name: '应用设置',
-		meta: {
-			icon: 'logo-buffer',
-			title: '应用设置'
-		},
-		component: Main,
-		children: [{
-				path: 'apply_data',
-				name: 'apply_data',
-				meta: {
-					icon: 'md-trending-up',
-					title: '基础数据字典'
-				},
-				component: () =>
-					import('@/view/components/apply/data.vue')
-			},
-			{
-				path: 'apply_business',
-				name: 'apply_business',
-				meta: {
-					icon: 'ios-infinite',
-					title: '业务品牌'
-				},
-				component: () =>
-					import('@/view/components/apply/business.vue')
-			},
-			{
-				path: 'apply_member',
-				name: 'apply_member',
-				meta: {
-					icon: 'md-git-branch',
-					title: '会员设置'
-				},
-				component: () =>
-					import('@/view/components/apply/member.vue')
-			},
-			{
-				path: 'apply_marke',
-				name: 'apply_marke',
-				meta: {
-					icon: 'md-crop',
-					title: '市场设置'
-				},
-				component: () =>
-					import('@/view/components/apply/marke.vue')
-			},
-			{
-				path: 'apply_league',
-				name: 'apply_league',
-				meta: {
-					icon: 'md-grid',
-					title: '加盟商业务设置'
-				},
-				component: () =>
-					import('@/view/components/apply/league.vue')
-			},
-			{
-				path: 'apply_partner',
-				name: 'apply_partner',
-				meta: {
-					icon: 'md-crop',
-					title: '教师合伙人业务设置'
-				},
-				component: () =>
-					import('@/view/components/apply/partner.vue')
-			},
-			{
-				path: 'apply_trade',
-				name: 'apply_trade',
-				meta: {
-					icon: 'md-grid',
-					title: '交易设置'
-				},
-				component: () =>
-					import('@/view/components/apply/trade.vue')
-			},
-			{
-				path: 'apply_publicDictionary',
-				name: 'apply_publicDictionary',
-				meta: {
-					icon: 'md-grid',
-					title: '公共字典'
-				},
-				component: () =>
-					import('@/view/components/apply/publicDictionary.vue')
-			},
-			{
-				path: 'apply_leagueRights',
-				name: 'apply_leagueRights',
-				meta: {
-					icon: 'md-grid',
-					title: '权益金规则'
-				},
-				component: () =>
-					import('@/view/components/apply/leagueRights.vue')
-			},
-			{
-				path: 'apply_leagueSettlement',
-				name: 'apply_leagueSettlement',
-				meta: {
-					icon: 'md-grid',
-					title: '加盟商结算规则'
-				},
-				component: () =>
-					import('@/view/components/apply/leagueSettlement.vue')
-			}
-		]
-	},
-	// 应用设置的路由 end
-	// 系统设置的路由
-	{
-		path: '/system',
-		name: '系统设置',
-		meta: {
-			icon: 'logo-buffer',
-			title: '系统设置'
-		},
-		component: Main,
-		children: [{
-				path: 'system_business',
-				name: 'system_business',
-				meta: {
-					icon: 'md-trending-up',
-					title: '业务线设置'
-				},
-				component: () =>
-					import('@/view/components/system/business.vue')
-			},
-			{
-				path: 'system_organization',
-				name: 'system_organization',
-				meta: {
-					icon: 'ios-infinite',
-					title: '组织结构'
-				},
-				component: () =>
-					import('@/view/components/system/organization.vue')
-			},
-			{
-				path: 'system_position',
-				name: 'system_position',
-				meta: {
-					icon: 'md-git-branch',
-					title: '职位'
-				},
-				component: () =>
-					import('@/view/components/system/position.vue')
-			},
-			{
-				path: 'system_role',
-				name: 'system_role',
-				meta: {
-					icon: 'md-crop',
-					title: '系统角色'
-				},
-				component: () =>
-					import('@/view/components/system/role.vue')
-			},
-			{
-				path: 'system_PersonnelManagement',
-				name: 'system_PersonnelManagement',
-				meta: {
-					icon: 'md-grid',
-					title: '人员管理'
-				},
-				component: () =>
-					import('@/view/components/system/PersonnelManagement.vue')
-			},
-			{
-				path: 'system_parameter',
-				name: 'system_parameter',
-				meta: {
-					icon: 'md-crop',
-					title: '系统参数'
-				},
-				component: () =>
-					import('@/view/components/system/parameter.vue')
-			},
-			{
-				path: 'system_journal',
-				name: 'system_journal',
-				meta: {
-					icon: 'md-grid',
-					title: '系统日志'
-				},
-				component: () =>
-					import('@/view/components/system/journal.vue')
-			}
-		]
-	},
-	// 系统设置的路由 end
-	// 错误页面的路由
-	{
-		path: '/401',
-		name: 'error_401',
-		meta: {
-			hideInMenu: true
-		},
-		component: () =>
-			import('@/view/error-page/401.vue')
-	},
-	{
-		path: '/500',
-		name: 'error_500',
-		meta: {
-			hideInMenu: true
-		},
-		component: () =>
-			import('@/view/error-page/500.vue')
-	},
-	{
-		path: '*',
-		name: 'error_404',
-		meta: {
-			hideInMenu: true
-		},
-		component: () =>
-			import('@/view/error-page/404.vue')
-	}
-	// 错误页面的路由 end
+    ]
+  },
+  // 财务中心的路由 end
+  // 服务中心的路由
+  {
+    path: '/serviceCentre',
+    name: '服务中心',
+    meta: {
+      icon: 'logo-buffer',
+      title: '服务中心'
+    },
+    component: Main,
+    children: [{
+        path: 'serviceCentre',
+        name: 'serviceCentre',
+        meta: {
+          icon: 'md-trending-up',
+          title: '服务中心'
+        },
+        component: () =>
+          import('@/view/components/count-to/count-to.vue')
+      },
+      {
+        path: 'serviceCentre',
+        name: 'serviceCentre',
+        meta: {
+          icon: 'ios-infinite',
+          title: '更多'
+        },
+        component: () =>
+          import('@/view/components/drag-list/drag-list.vue')
+      }
+    ]
+  },
+  // 服务中心的路由 end
+  // 业务分析的路由
+  {
+    path: '/business',
+    name: '业务分析',
+    meta: {
+      icon: 'logo-buffer',
+      title: '业务分析'
+    },
+    component: Main,
+    children: [{
+        path: 'business_sale',
+        name: 'business_sale',
+        meta: {
+          icon: 'md-trending-up',
+          title: '销售'
+        },
+        component: () =>
+          import('@/view/components/count-to/count-to.vue')
+      },
+      {
+        path: 'business_marke',
+        name: 'business_marke',
+        meta: {
+          icon: 'ios-infinite',
+          title: '市场'
+        },
+        component: () =>
+          import('@/view/components/drag-list/drag-list.vue')
+      },
+      {
+        path: 'business_finance',
+        name: 'business_finance',
+        meta: {
+          icon: 'md-git-branch',
+          title: '财务'
+        },
+        component: () =>
+          import('@/view/components/tree-table/index.vue')
+      },
+      {
+        path: 'business_service',
+        name: 'business_service',
+        meta: {
+          icon: 'md-crop',
+          title: '服务'
+        },
+        component: () =>
+          import('@/view/components/cropper/cropper.vue')
+      },
+      {
+        path: 'business_member',
+        name: 'business_member',
+        meta: {
+          icon: 'md-grid',
+          title: '会员'
+        },
+        component: () =>
+          import('@/view/components/tables/tables.vue')
+      }
+    ]
+  },
+  // 业务分析的路由 end
+  // 应用设置的路由
+  {
+    path: '/apply',
+    name: '应用设置',
+    meta: {
+      icon: 'logo-buffer',
+      title: '应用设置'
+    },
+    component: Main,
+    children: [{
+        path: 'apply_data',
+        name: 'apply_data',
+        meta: {
+          icon: 'md-trending-up',
+          title: '基础数据字典'
+        },
+        component: () =>
+          import('@/view/components/apply/data.vue')
+      },
+      {
+        path: 'apply_business',
+        name: 'apply_business',
+        meta: {
+          icon: 'ios-infinite',
+          title: '业务品牌'
+        },
+        component: () =>
+          import('@/view/components/apply/business.vue')
+      },
+      {
+        path: 'apply_member',
+        name: 'apply_member',
+        meta: {
+          icon: 'md-git-branch',
+          title: '会员设置'
+        },
+        component: () =>
+          import('@/view/components/apply/member.vue')
+      },
+      {
+        path: 'apply_marke',
+        name: 'apply_marke',
+        meta: {
+          icon: 'md-crop',
+          title: '市场设置'
+        },
+        component: () =>
+          import('@/view/components/apply/marke.vue')
+      },
+      {
+        path: 'apply_league',
+        name: 'apply_league',
+        meta: {
+          icon: 'md-grid',
+          title: '加盟商业务设置'
+        },
+        component: () =>
+          import('@/view/components/apply/league.vue')
+      },
+      {
+        path: 'apply_partner',
+        name: 'apply_partner',
+        meta: {
+          icon: 'md-crop',
+          title: '教师合伙人业务设置'
+        },
+        component: () =>
+          import('@/view/components/apply/partner.vue')
+      },
+      {
+        path: 'apply_trade',
+        name: 'apply_trade',
+        meta: {
+          icon: 'md-grid',
+          title: '交易设置'
+        },
+        component: () =>
+          import('@/view/components/apply/trade.vue')
+      },
+      {
+        path: 'apply_publicDictionary',
+        name: 'apply_publicDictionary',
+        meta: {
+          icon: 'md-grid',
+          title: '公共字典'
+        },
+        component: () =>
+          import('@/view/components/apply/publicDictionary.vue')
+      },
+      {
+        path: 'apply_leagueRights',
+        name: 'apply_leagueRights',
+        meta: {
+          icon: 'md-grid',
+          title: '权益金规则'
+        },
+        component: () =>
+          import('@/view/components/apply/leagueRights.vue')
+      },
+      {
+        path: 'apply_leagueSettlement',
+        name: 'apply_leagueSettlement',
+        meta: {
+          icon: 'md-grid',
+          title: '加盟商结算规则'
+        },
+        component: () =>
+          import('@/view/components/apply/leagueSettlement.vue')
+      }
+    ]
+  },
+  // 应用设置的路由 end
+  // 系统设置的路由
+  {
+    path: '/system',
+    name: '系统设置',
+    meta: {
+      icon: 'logo-buffer',
+      title: '系统设置'
+    },
+    component: Main,
+    children: [{
+        path: 'system_business',
+        name: 'system_business',
+        meta: {
+          icon: 'md-trending-up',
+          title: '业务线设置'
+        },
+        component: () =>
+          import('@/view/components/system/business.vue')
+      },
+      {
+        path: 'system_organization',
+        name: 'system_organization',
+        meta: {
+          icon: 'ios-infinite',
+          title: '组织结构'
+        },
+        component: () =>
+          import('@/view/components/system/organization.vue')
+      },
+      {
+        path: 'system_position',
+        name: 'system_position',
+        meta: {
+          icon: 'md-git-branch',
+          title: '职位'
+        },
+        component: () =>
+          import('@/view/components/system/position.vue')
+      },
+      {
+        path: 'system_role',
+        name: 'system_role',
+        meta: {
+          icon: 'md-crop',
+          title: '系统角色'
+        },
+        component: () =>
+          import('@/view/components/system/role.vue')
+      },
+      {
+        path: 'system_PersonnelManagement',
+        name: 'system_PersonnelManagement',
+        meta: {
+          icon: 'md-grid',
+          title: '人员管理'
+        },
+        component: () =>
+          import('@/view/components/system/PersonnelManagement.vue')
+      },
+      {
+        path: 'system_parameter',
+        name: 'system_parameter',
+        meta: {
+          icon: 'md-crop',
+          title: '系统参数'
+        },
+        component: () =>
+          import('@/view/components/system/parameter.vue')
+      },
+      {
+        path: 'system_journal',
+        name: 'system_journal',
+        meta: {
+          icon: 'md-grid',
+          title: '系统日志'
+        },
+        component: () =>
+          import('@/view/components/system/journal.vue')
+      }
+    ]
+  },
+  // 系统设置的路由 end
+  // 错误页面的路由
+  {
+    path: '/401',
+    name: 'error_401',
+    meta: {
+      hideInMenu: true
+    },
+    component: () =>
+      import('@/view/error-page/401.vue')
+  },
+  {
+    path: '/500',
+    name: 'error_500',
+    meta: {
+      hideInMenu: true
+    },
+    component: () =>
+      import('@/view/error-page/500.vue')
+  },
+  {
+    path: '*',
+    name: 'error_404',
+    meta: {
+      hideInMenu: true
+    },
+    component: () =>
+      import('@/view/error-page/404.vue')
+  }
+  // 错误页面的路由 end
 
 ]
