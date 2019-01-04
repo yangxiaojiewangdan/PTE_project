@@ -1,4 +1,4 @@
-<style lang="less">
+<!--<style lang="less">
     @import "./common.less";
 </style>
 <template>
@@ -78,4 +78,4 @@ export default {
 
   }
 }
-</script>
+</script>-->

@@ -169,3 +169,36 @@ export const DataDictionary = params => {
     
   });
 };
+//获取学员档案
+export const CustomerData = data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/GetEntities",
+    method: "post",
+    data:data,
+  });
+};
+//添加学员接口
+export const CustomerCreate = data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/Create",
+    method: "post",
+    data:data,
+  });
+};
+//删除信息的接口
+export const CustomerDelete = data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/BatchDelete",
+    method: "post",
+    data:data,
+  });
+};
+//修改学员信息
+export const CustomerUp = data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/Update",
+    method: "post",
+    data:data,
+  });
+};
+
