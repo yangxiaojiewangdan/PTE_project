@@ -170,35 +170,60 @@ export const DataDictionary = params => {
   });
 };
 //获取学员档案
-export const CustomerData = data => {
+export const CustomerData = CustomerData => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/GetEntities",
+    method: "post",
+    data:CustomerData,
+  });
+};
+//添加学员接口
+export const CustomerCreate = CustomerFrom => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/Create",
+    method: "post",
+    data:CustomerFrom,
+  });
+};
+//删除信息的接口
+export const CustomerDelete = batchArr => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/BatchDelete",
+    method: "post",
+    data:batchArr,
+  });
+};
+//修改学员信息
+export const CustomerUp = upCustomerFrom => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/Update",
+    method: "post",
+    data:upCustomerFrom,
+  });
+};
+//学院查询接口
+export const CustomerQuery = data => {
   return axios.request({
     url: apiUrl + "/api/CustomerProfile/GetEntities",
     method: "post",
     data:data,
   });
 };
-//添加学员接口
-export const CustomerCreate = data => {
+//添加联系人信息(多对多的关系)
+export const CustomerContactCreate = AddCustomerFrom => {
   return axios.request({
-    url: apiUrl + "/api/CustomerProfile/Create",
+    url: apiUrl + "/api/CustomerContact/Create",
     method: "post",
-    data:data,
-  });
-};
-//删除信息的接口
-export const CustomerDelete = data => {
-  return axios.request({
-    url: apiUrl + "/api/CustomerProfile/BatchDelete",
-    method: "post",
-    data:data,
-  });
-};
-//修改学员信息
-export const CustomerUp = data => {
-  return axios.request({
-    url: apiUrl + "/api/CustomerProfile/Update",
-    method: "post",
-    data:data,
+    data:AddCustomerFrom,
   });
 };
 
+//三级联动
+export const GetProvince = params => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetProvince",
+    method: "get",
+    params,
+    
+  });
+};

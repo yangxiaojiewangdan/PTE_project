@@ -548,6 +548,7 @@
 						//循环主管姓名
 						this.data1.forEach(item => {
 							this.cityList1.push(item.Supervisor)
+							console.log(this.cityList1)
 						})
 					}).catch(err => {
 						console.log(err)
