@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
-
+import { gettoken } from "@/libs/util";
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -23,7 +23,7 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         "Content-Type":'application/json',
-        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ2NTc0MTg1LCJleHAiOjE1NDY2OTQxODUsImlhdCI6MTU0NjU3NDE4NX0.ftCAH7spo8GIA9RgnJ5vfOiZeQjJKSzz7uYoUmamvg8',
+        "user_token": gettoken(),
         "signature":"signature"
       }
     }

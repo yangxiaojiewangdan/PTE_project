@@ -81,14 +81,13 @@ export default {
           Password
         }).then(res => {
           const data = res.data.Data
-          console.log(res.data.Data.SessionToken)
           commit('settoken', data.SessionToken)
+          console.log(res.data)
           resolve()
           //将登陆信息保存在sessionStorage中
           sessionStorage.setItem('userInfo',JSON.stringify(res.data.Data))
-          let see = JSON.parse(sessionStorage.getItem('userInfo'))
-         
-          console.log( see.RoleName)
+          let ttoken  = JSON.parse(sessionStorage.getItem('userInfo'))
+          //console.log( ttoken.RoleName)
           
         }).catch(err => {
           reject(err)
