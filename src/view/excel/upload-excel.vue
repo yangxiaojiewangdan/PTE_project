@@ -122,10 +122,10 @@
 				</FormItem>
 
 				<FormItem label="出生日期" prop="BrithDate">
-					<DatePicker type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;"></DatePicker>
+					<DatePicker   @on-change="handleChange" type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
 				</FormItem>
 				<FormItem label="月龄" prop="BornMonth">
-					<Input v-model="CustomerFrom.BornMonth" placeholder="Enter something..." style="width: 200px;"></Input>
+					<Input v-model="CustomerFrom.BornMonth" placeholder="Enter something..." readonly style="width: 200px;"></Input>
 				</FormItem>
 				<FormItem label="会员类型" prop="MemberType">
 					<Select v-model="CustomerFrom.MemberType" style="width: 200px;">
@@ -276,7 +276,7 @@
 								<DatePicker type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;"></DatePicker>
 							</FormItem>
 							<FormItem label="月龄" prop="BornMonth">
-								<Input v-model="upCustomerFrom.BornMonth" placeholder="Enter something..." style="width: 200px;"></Input>
+								<Input v-model="upCustomerFrom.BornMonth" placeholder="Enter something..." readonly style="width: 200px;"></Input>
 							</FormItem>
 							<FormItem label="会员类型" prop="MemberType">
 								<Select v-model="upCustomerFrom.MemberType" style="width: 200px;">
@@ -308,7 +308,7 @@
 									<Option value="shenzhen">Sydney</Option>
 								</Select>
 							</FormItem>
-							<FormItem label="所在省" prop="ProviceCode">
+							<!--<FormItem label="所在省" prop="ProviceCode">
 								<Select v-model="upCustomerFrom.ProviceCode" @on-change="SelectProviceCode" style="width: 200px;">
 									<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 								</Select>
@@ -322,7 +322,7 @@
 								<Select v-model="upCustomerFrom.DistinctCode" style="width: 200px;">
 									<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 								</Select>
-							</FormItem>
+							</FormItem>-->
 							<FormItem label="所在小区" prop="VillageCode">
 								<Select v-model="upCustomerFrom.VillageCode" style="width: 200px;">
 									<Option value="beijing">New York</Option>
@@ -510,11 +510,20 @@
 <script>
 	import { CustomerData, DataDictionary, CustomerCreate, CustomerDelete, CustomerUp, CustomerQuery, CustomerContactCreate } from "@/api/data";
 	import { DistrictGetProvince, DistrictGetArea } from "@/api/api";
+	import { gettoken, getdate, getMonth, getDifference } from "@/libs/util";
 	export default {
 		inject: ['reload'],
 		name: 'CustomerProfile',
 		data() {
 			return {
+				//设置不可选日期
+				time: Date.now(),
+				options3: {
+					disabledDate: date => {
+						// this成功指向vue实例
+						return date && date.valueOf() > this.time
+					}
+				},
 				radioList: [],
 				province: [],
 				city: [],
@@ -760,9 +769,9 @@
 					ChannelCode: '',
 					MarketClass: '',
 					MarketCode: '',
-					ProviceCode: '',
-					CityCode: '',
-					DistinctCode: '',
+					//					ProviceCode: '',
+					//					CityCode: '',
+					//					DistinctCode: '',
 					VillageCode: '',
 					Address: '',
 					IdPhotoUrl: '',
@@ -797,21 +806,30 @@
 				},
 				//选中的数组id
 				batchArr: [],
-				 queryDistinctCode: "",
+				queryDistinctCode: "",
 			}
 		},
 		methods: {
+			handleChange(showData){
+				console.log(showData)
+				var time = new Date(showData)
+				var time2 = time.valueOf();
+				console.log(time2)
+				//getMonth(time2)
+				//this.BornMonth 
+				//console.log(this.BornMonth)
+			},
 			SelectProviceCode(Id) {
-				DistrictGetArea(Id).then(res=>{
+				DistrictGetArea(Id).then(res => {
 					this.city = res.data
-				}).catch(err =>{
+				}).catch(err => {
 					console.log(err)
 				})
 			},
-			SelectCityCode(Id){
-				DistrictGetArea(Id).then(res=>{
+			SelectCityCode(Id) {
+				DistrictGetArea(Id).then(res => {
 					this.county = res.data
-				}).catch(err =>{
+				}).catch(err => {
 					console.log(err)
 				})
 			},
@@ -1028,6 +1046,7 @@
 	#footer {
 		width: 100%;
 		height: 50px;
+		border-top: 1px solid #DCDCDC;
 		/*background: #ddd;*/
 		.btn {
 			float: right;
@@ -1041,6 +1060,7 @@
 	#footer2 {
 		width: 100%;
 		height: 50px;
+		border-top: 1px solid #DCDCDC;
 		/*background: #ddd;*/
 		position: fixed;
 		bottom: 0;
