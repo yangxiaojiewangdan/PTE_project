@@ -145,7 +145,7 @@
     <!-- 添加信息 弹出框-->
     <Modal v-model="AddDepartment" scrollable width="1300" title="添加加盟商信息" :mask-closable="false">
       <Form
-        ref="formValidate"
+        ref="formValidate" 
         :model="formValidate"
         :rules="ruleValidate"
         label-position="right"
@@ -270,9 +270,8 @@
                 @on-change="SelectProviceCode" style="width:200px">
                   <Option
                     v-for="item in ProviceCodeList"
-                    :value="item.Name"
+                    :value="item.Id"
                     :key="item.Code"
-                    :Id="item.Id"
                   >{{ item.Name }}</Option>
                 </Select>
               </FormItem>
@@ -283,9 +282,8 @@
                 @on-change="SelectCityCode" style="width:200px">
                   <Option
                     v-for="item in CityCodeList"
-                    :value="item.Name"
+                    :value="item.Id"
                     :key="item.Code"
-                    :Id="item.Id"
                   >{{ item.Name }}</Option>
                 </Select>
               </FormItem>
@@ -295,9 +293,8 @@
                 <Select v-model="formValidate.DistinctCode" style="width:200px">
                   <Option
                     v-for="item in DistinctCodeList"
-                    :value="item.Name"
+                    :value="item.Id"
                     :key="item.Code"
-                    :Id="item.Id"
                   >{{ item.Name }}</Option>
                 </Select>
               </FormItem>
@@ -702,25 +699,6 @@ export default {
           key: "FranchiserType",
           width: 120,
           sortable: true,
-          render: (h, params) => {
-            let texts = "";
-            if (params.row.FranchiserType == "14055825786425419") {
-              texts = "个人";
-            }
-            if (params.row.FranchiserType == "14055825786425420") {
-              texts = "一般法人";
-            }
-            if (params.row.FranchiserType == "14055825786425421") {
-              texts = "合伙经营";
-            }
-            return h(
-              "div",
-              {
-                props: {}
-              },
-              texts
-            );
-          }
         },
         {
           title: "负责人",
@@ -733,28 +711,6 @@ export default {
           key: "CertificateType",
           width: 110,
           sortable: true,
-          render: (h, params) => {
-            let texts = "";
-            if (params.row.CertificateType == "14055825786425415") {
-              texts = "营业执照";
-            }
-            if (params.row.CertificateType == "14055825786425416") {
-              texts = "身份证";
-            }
-            if (params.row.CertificateType == "14055825786425417") {
-              texts = "护照";
-            }
-            if (params.row.CertificateType == "14055825786425418") {
-              texts = "其它";
-            }
-            return h(
-              "div",
-              {
-                props: {}
-              },
-              texts
-            );
-          }
         },
         {
           title: "证件号",
@@ -773,25 +729,6 @@ export default {
           key: "LeageMode",
           width: 110,
           sortable: true,
-          render: (h, params) => {
-            let texts = "";
-            if (params.row.LeageMode == 0) {
-              texts = "单店加盟";
-            }
-            if (params.row.LeageMode == 1) {
-              texts = "区域合伙人";
-            }
-            if (params.row.LeageMode == 2) {
-              texts = "合作经营";
-            }
-            return h(
-              "div",
-              {
-                props: {}
-              },
-              texts
-            );
-          }
         },
         {
           title: "开始日期",
@@ -875,27 +812,26 @@ export default {
           width: 110,
           sortable: true,
           render: (h, params) => {
-            let texts = "";
-            if (params.row.Status == 0) {
-              texts = "待开业";
-            }
-            if (params.row.Status == 1) {
-              texts = "正常运营";
-            }
-            if (params.row.Status == 2) {
-              texts = "合约过期";
-            }
-            if (params.row.Status == 3) {
-              texts = this.Founder;
-            }
-            return h(
-              "div",
-              {
-                props: {}
-              },
-              texts
-            );
-          }
+							let texts = "";
+							if(params.row.Status == 0) {
+								texts = "待开业";
+              }
+              if(params.row.Status == 1) {
+								texts = "正常运营";
+              }
+              if(params.row.Status == 2) {
+								texts = "合约过期";
+              }
+              if(params.row.Status == 3) {
+								texts = "暂停业务";
+							}
+							return h(
+								"div", {
+									props: {}
+								},
+								texts
+							);
+						}
         },
         {
           title: "联系电话",
@@ -1079,10 +1015,13 @@ export default {
   },
   methods: {
     // 市数据
-    SelectProviceCode(Id) {
+    SelectProviceCode(value) {
       this.queryDistinctCode = "";
-      let ParentId = Id.value;
-      DistrictGetArea(ParentId)
+      let ParentIdvalue = value.value;
+      let ParentIdlabel = value.label;
+      console.log(ParentIdvalue)
+      console.log(ParentIdlabel)
+      DistrictGetArea(ParentIdvalue)
         .then(res => {
           this.CityCodeList = res.data;
         })
@@ -1097,7 +1036,7 @@ export default {
               {
                 FilterField: "ProviceCode",
                 Relational: "Equal",
-                FilterValue: ParentId
+                FilterValue: ParentIdlabel
               }
             ]
           }
@@ -1111,9 +1050,10 @@ export default {
       });
     },
     // 区县数据
-    SelectCityCode(Id) {
-      let ParentId2 = Id.value;
-      DistrictGetArea(ParentId2)
+    SelectCityCode(value) {
+      let ParentId2value = value.value;
+      let ParentId2label = value.label;
+      DistrictGetArea(ParentId2value)
         .then(res => {
           this.DistinctCodeList = res.data;
         })
@@ -1128,7 +1068,7 @@ export default {
               {
                 FilterField: "CityCode",
                 Relational: "Equal",
-                FilterValue: ParentId2
+                FilterValue: ParentId2label
               }
             ]
           }
@@ -1325,6 +1265,7 @@ export default {
     getLEAGE_MODE()
       .then(res => {
         this.LeageModeList = res.data;
+        console.log(this.LeageModeList)
       })
       .catch(err => {
         console.log(err);

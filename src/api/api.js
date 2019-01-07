@@ -26,9 +26,6 @@ export const DistrictGetArea = (ParentId) => {
     method: "get"
   });
 };
-
-
-
 // 结算规则  结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则  
 
 //获取结算规则信息渲染到表格
@@ -240,5 +237,30 @@ export const getSTORE_BUSINESS_TYPE = () => {
   return axios.request({
     url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=STORE_BUSINESS_TYPE&businessGroup=*",
     method: "get"
+  });
+};
+
+//获取门店管理    门店类型
+export const getSTORE_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=STORE_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+
+//获取门店管理    业务状态
+export const getSTORE_STATUS = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=STORE_STATUS&businessGroup=*",
+    method: "get"
+  });
+};
+
+//获取门店信息渲染到表格
+export const BusinessStoreGetEntities = BusinessStoreGetEntities => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/GetEntities",
+    data: BusinessStoreGetEntities,
+    method: "post"
   });
 };

@@ -1,9 +1,17 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
-
+import {
+  gettoken
+} from "@/libs/util"
 const addErrorLog = errorInfo => {
-  const { statusText, status, request: { responseURL } } = errorInfo
+  const {
+    statusText,
+    status,
+    request: {
+      responseURL
+    }
+  } = errorInfo
   let info = {
     type: 'ajax',
     code: status,
@@ -14,28 +22,28 @@ const addErrorLog = errorInfo => {
 }
 
 class HttpRequest {
-  constructor (baseUrl = baseURL) {
+  constructor(baseUrl = baseURL) {
     this.baseUrl = baseUrl
     this.queue = {}
   }
-  getInsideConfig () {
+  getInsideConfig() {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        "Content-Type":'application/json',
-        "user_token":'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkbWluIiwibmJmIjoxNTQ2NTc0MTg1LCJleHAiOjE1NDY2OTQxODUsImlhdCI6MTU0NjU3NDE4NX0.ftCAH7spo8GIA9RgnJ5vfOiZeQjJKSzz7uYoUmamvg8',
-        "signature":"signature"
+        "Content-Type": 'application/json',
+        "user_token": gettoken(),
+        "signature": "signature"
       }
     }
-    return config 
+    return config
   }
-  destroy (url) {
+  destroy(url) {
     delete this.queue[url]
     if (!Object.keys(this.queue).length) {
       // Spin.hide()
     }
   }
-  interceptors (instance, url) {
+  interceptors(instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
       // 添加全局的loading...
@@ -50,25 +58,39 @@ class HttpRequest {
     // 响应拦截
     instance.interceptors.response.use(res => {
       this.destroy(url)
-      const { data, status } = res
-      return { data, status }
+      const {
+        data,
+        status
+      } = res
+      return {
+        data,
+        status
+      }
     }, error => {
       this.destroy(url)
       let errorInfo = error.response
       if (!errorInfo) {
-        const { request: { statusText, status }, config } = JSON.parse(JSON.stringify(error))
+        const {
+          request: {
+            statusText,
+            status
+          },
+          config
+        } = JSON.parse(JSON.stringify(error))
         errorInfo = {
           statusText,
           status,
-          request: { responseURL: config.url }
+          request: {
+            responseURL: config.url
+          }
         }
       }
       addErrorLog(errorInfo)
       return Promise.reject(error)
     })
   }
-  request (options) {
-    
+  request(options) {
+
     const instance = axios.create()
     options = Object.assign(this.getInsideConfig(), options)
     this.interceptors(instance, options.url)
