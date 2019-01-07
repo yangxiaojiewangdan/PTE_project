@@ -15,16 +15,16 @@ const data = {
   })
 }
 //获取用户信息
-export const getUserInfo = (SessionToken) => {
-  return axios.request({
-    url: apiUrl+'/api/BusinessUser/GetEntity',
-    params: {
-      SessionToken,
-      keyId:'100'
-    },
-    method: 'get'
-  })
-}
+//export const getUserInfo = (SessionToken) => {
+//return axios.request({
+//  url: apiUrl+'/api/BusinessUser/GetEntity',
+//  params: {
+//    SessionToken,
+//    keyId:'100'
+//  },
+//  method: 'get'
+//})
+//}
 //退出登陆
 export const logout = (token) => {
   return axios.request({

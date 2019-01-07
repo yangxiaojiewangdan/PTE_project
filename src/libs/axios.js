@@ -1,9 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
-import {
-  gettoken
-} from "@/libs/util"
+import { gettoken } from "@/libs/util";
 const addErrorLog = errorInfo => {
   const {
     statusText,
@@ -30,9 +28,9 @@ class HttpRequest {
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        "Content-Type": 'application/json',
+        "Content-Type":'application/json',
         "user_token": gettoken(),
-        "signature": "signature"
+        "signature":"signature"
       }
     }
     return config
