@@ -108,12 +108,12 @@
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
 					</FormItem>
-					<Col span="18">
+					<Col span="12">
 					<FormItem label="课程描述" prop="Description">
 						<Input v-model="CourseForm.Description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width: 600px;"></Input>
 					</FormItem>
 					</Col>
-					<Col span="6">
+					<Col span="12">
 					<FormItem label="启用" prop="Enabled">
 						<i-switch v-model="CourseForm.Enabled" size="large">
 							<span slot="open">On</span>
@@ -125,14 +125,12 @@
 				<Row>
 					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加阶段信息</Divider>
 					<!--阶段信息表-->
-					<Table border :columns="stageHeader" :data="stage">
-						<template slot-scope="{ row }" slot="name">
-							<strong>{{ row.name }}</strong>
-						</template>
-						<template slot-scope="{ row, index }" slot="action">
-							<Button type="error" size="small" @click="remove(index)">删除</Button>
-						</template>
-					</Table>
+
+					<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete" />
+
+					<Button type="info" @click="AddRoyalty = true">
+              <Icon type="md-add"/>添加阶段信息
+            </Button>
 				</Row>
 			</Form>
 			<div slot="footer">
@@ -154,13 +152,73 @@
                     </button>
 			</div>
 		</Modal>
-		<!-- 添加信息 弹出框 end-->
+		<!-- 添加阶段信息-->
+		<Modal v-model="AddRoyalty" width="700" title="添加课程阶段信息" :mask-closable="false">
+			<Form ref="stageForm" :model="stageForm" :rules="ruleValidate" :label-width="86" inline>
+				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程阶段详情</Divider>
+					<FormItem label="课程Id" prop="CousreId">
+						<Input v-model="stageForm.CousreId" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="阶段名称" prop="PhaseName">
+						<Input v-model="stageForm.PhaseName" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="阶段描述" prop="Description">
+						<Input v-model="stageForm.Description" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="销课方式" prop="CountType">
+						<Select v-model="CourseForm.CountType" style="width:200px">
+							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>
+					</FormItem>
+					<FormItem label="课时数" prop="Periods">
+						<Input v-model="stageForm.Periods" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="课时长" prop="Duration">
+						<Input v-model="stageForm.Duration" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程适合年龄</Divider>
+					<FormItem label="适合最小月龄" prop="MinMonth">
+						<Input v-model="stageForm.MinMonth" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="适合最大月龄" prop="MaxMonth">
+						<Input v-model="stageForm.MaxMonth" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="适合最小年龄" prop="MinAge">
+						<Input v-model="stageForm.MinAge" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="适合最大年龄" prop="MaxAge">
+						<Input v-model="stageForm.MaxAge" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+			</Form>
+			<div slot="footer">
+				<div class="footer_left">
+					<div class="footer_left1">
+						<div><span>创建人:闫子健</span></div>
+						<div><span>更新人:闫子健</span></div>
+					</div>
+					<div class="footer_left2">
+						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
+						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+					</div>
+				</div>
+				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="stagehandleReset('stageForm');AddDepartment = false;">
+                        <span>取消</span>
+                    </button>
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="stagehandleSubmit('stageForm');">
+                        <span>保存</span>
+                    </button>
+			</div>
+		</Modal>
 	</div>
 </template>
 <script>
+	import Tables from "_c/tables";
 	import { CourseData, CourseCreate } from '@/api/data'
 	export default {
 		name: 'drag_list_page',
+		components: {
+			Tables
+		},
 		data() {
 			return {
 				button1: '',
@@ -169,6 +227,7 @@
 				queryvalue: "",
 				delModal: false,
 				AddDepartment: false,
+				AddRoyalty: false,
 				CourseData: [],
 				CourseData1: {
 					"Filters": {},
@@ -270,20 +329,21 @@
 						label: 'Sydney'
 					},
 				],
-				stage: [{
-					CousreId: '1',
-					PhaseName: '1',
-					Description: '1',
-					Periods: '1',
-					MinMonth: '1',
-					MaxMonth: '1',
-					MinAge: '1',
-					MaxAge: '1',
-					Duration: '1',
-					CountType:'1'
-					
-				}, ],
-				stageHeader: [{
+				dataRoyaltyCodeDetail: [{
+						CousreId: '1',
+						PhaseName: '1',
+						Description: '1',
+						Periods: '1',
+						MinMonth: '1',
+						MaxMonth: '1',
+						MinAge: '1',
+						MaxAge: '1',
+						Duration: '1',
+						CountType: '23123'
+					}
+
+				],
+				columnsRoyaltyCodeDetail: [{
 						title: "课程Id",
 						key: "CousreId",
 						editable: true
@@ -334,16 +394,29 @@
 					},
 					{
 						title: "操作",
-						slot: 'action',
-						width: 170,
-						align: 'center'
+						key: "handle",
+						width: 70,
+						options: ["delete"]
 					}
 				],
+				stageForm:{
+					CousreId:"",
+					PhaseName:'',
+					Description:'',
+					CountType:'',
+					Periods:'',
+					Duration:'',
+					MinMonth:'',
+					MaxMonth:'',
+					MinAge:'',
+					MaxAge:'',
+				},
+
 			}
 		},
 		methods: {
-			remove(index) {
-				this.stage.splice(index, 1);
+			handleDelete(params) {
+				console.log(params)
 			},
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
