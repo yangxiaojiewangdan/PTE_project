@@ -217,4 +217,20 @@ export const CustomerContactCreate = AddCustomerFrom => {
     data:AddCustomerFrom,
   });
 };
-
+//
+//获取学员档案
+export const CourseData = CourseData => {
+  return axios.request({
+    url: apiUrl + "/api/Course/GetEntities",
+    method: "post",
+    data:CourseData,
+  });
+};
+//添加课程
+export const CourseCreate = CourseFrom => {
+  return axios.request({
+    url: apiUrl + "/api/Course/Create",
+    method: "post",
+    data:CourseFrom,
+  });
+};

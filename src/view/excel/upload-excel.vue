@@ -94,39 +94,70 @@
 			<h2>确定删除此数据？</h2>
 		</Modal>
 		<!--添加弹框-->
-		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false">
+		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false" :styles="{top: '20px'}">
 			<Form ref="CustomerFrom" :model="CustomerFrom" :rules="ruleValidate" :label-width="80" inline>
-				<FormItem label="姓" prop="FirstName">
-					<Input v-model="CustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<FormItem label="名" prop="LastName">
-					<Input v-model="CustomerFrom.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<FormItem label="性别" prop="Gender">
-					<RadioGroup v-model="CustomerFrom.Gender" style="width: 200px;">
-						<Radio v-for="item in radioList" :label="item.Code">
-							<span>{{item.Description}}</span>
-						</Radio>
-					</RadioGroup>
-				</FormItem>
-				<FormItem label="昵称" prop="NickName">
-					<Input v-model="CustomerFrom.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<FormItem label="英文名" prop="EngName">
-					<Input v-model="CustomerFrom.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
+				<Row>
+					<Col span="20">
+					<!--<p class="lineTitle">基本信息</p>
+				<div class="lineTop"></div>-->
+					<Divider orientation="left" class='line'>基本信息</Divider>
+					<FormItem label="姓" prop="FirstName">
+						<Input v-model="CustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
+					</FormItem>
+					<FormItem label="名" prop="LastName">
+						<Input v-model="CustomerFrom.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
+					</FormItem>
+					<FormItem label="性别" prop="Gender">
+						<RadioGroup v-model="CustomerFrom.Gender" style="width: 200px;">
+							<Radio v-for="item in radioList" :label="item.Code">
+								<span>{{item.Description}}</span>
+							</Radio>
+						</RadioGroup>
+					</FormItem>
+					<Col span="20">
+					<FormItem label="昵称" prop="NickName">
+						<Input v-model="CustomerFrom.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
+					</FormItem>
+					<FormItem label="英文名" prop="EngName">
+						<Input v-model="CustomerFrom.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
+					</FormItem>
+					</Col>
+					<FormItem label="出生日期" prop="BrithDate">
+						<DatePicker @on-change="handleChange" type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
+					</FormItem>
+					<FormItem label="月龄" prop="BornMonth">
+						<Input v-model="CustomerFrom.BornMonth" placeholder="系统生成" readonly style="width: 200px;"></Input>
+					</FormItem>
+					</Col>
+					<Col span="4">
+					<FormItem label="">
+						<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 100px;">
+							<div style="padding: 5px">
+								<Icon type="ios-cloud-upload" size="50"></Icon>
+								<p>上传照片</p>
+							</div>
+						</Upload>
+					</FormItem>
+					<!--<FormItem label="普通照片">
+						<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+							<div style="padding: 5px">
+								<Icon type="ios-cloud-upload" size="50"></Icon>
+							</div>
+						</Upload>
+					</FormItem>-->
+					</Col>
+				</Row>
+
+				<!--客源信息-->
+				<!--<p class="lineTitle">基本信息</p>
+				<div class="lineTop"></div>-->
+				<Divider orientation="left" class='line'>客源信息</Divider>
 				<FormItem label="客户类型" prop="CustomerType">
 					<Select v-model="CustomerFrom.CustomerType" style="width: 200px;">
 						<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
 					</Select>
 				</FormItem>
 
-				<FormItem label="出生日期" prop="BrithDate">
-					<DatePicker   @on-change="handleChange" type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
-				</FormItem>
-				<FormItem label="月龄" prop="BornMonth">
-					<Input v-model="CustomerFrom.BornMonth" placeholder="Enter something..." readonly style="width: 200px;"></Input>
-				</FormItem>
 				<FormItem label="会员类型" prop="MemberType">
 					<Select v-model="CustomerFrom.MemberType" style="width: 200px;">
 						<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
@@ -157,6 +188,10 @@
 						<Option value="shenzhen">Sydney</Option>
 					</Select>
 				</FormItem>
+				<!--地址-->
+				<!--<p class="lineTitle">基本信息</p>
+				<div class="lineTop"></div>-->
+				<Divider orientation="left" class='line'>所在地址</Divider>
 				<FormItem label="所在省" prop="ProviceCode">
 					<Select v-model="CustomerFrom.ProviceCode" @on-change="SelectProviceCode" style="width:200px">
 						<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
@@ -182,6 +217,10 @@
 				<FormItem label="详细地址" prop="Address">
 					<Input v-model="CustomerFrom.Address" placeholder="Enter something..." style="width: 200px;"></Input>
 				</FormItem>
+				<!--联系人信息-->
+				<!--<p class="lineTitle">基本信息</p>
+				<div class="lineTop"></div>-->
+				<Divider orientation="left" class='line'>联系人信息</Divider>
 				<FormItem label="家长姓名" prop="ContactName">
 					<Input v-model="CustomerFrom.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
 				</FormItem>
@@ -191,9 +230,6 @@
 				<FormItem label="家长邮箱" prop="ContactEMail">
 					<Input v-model="CustomerFrom.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
 				</FormItem>
-				<FormItem label="业务部门ID" prop="BusinessUnitId">
-					<Input v-model="CustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
 				<FormItem label="业务部门" prop="BusinessUnit">
 					<Select v-model="CustomerFrom.BusinessUnit" style="width: 200px;">
 						<Option value="beijing">New York</Option>
@@ -201,15 +237,19 @@
 						<Option value="shenzhen">Sydney</Option>
 					</Select>
 				</FormItem>
-				<FormItem label="负责人ID" prop="OwnerId">
-					<Input v-model="CustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
 				<FormItem label="负责人" prop="BusinessUnit">
 					<Select v-model="CustomerFrom.BusinessUnit" style="width: 200px;">
 						<Option value="beijing">New York</Option>
 						<Option value="shanghai">London</Option>
 						<Option value="shenzhen">Sydney</Option>
 					</Select>
+				</FormItem>
+				<FormItem label="业务部门ID" prop="BusinessUnitId">
+					<Input v-model="CustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
+				</FormItem>
+
+				<FormItem label="负责人ID" prop="OwnerId">
+					<Input v-model="CustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
 				</FormItem>
 			</Form>
 			<div slot="footer">
@@ -240,13 +280,14 @@
 			</div>
 		</Modal>
 		<!--修改弹框-->
-		<Modal v-model="upDepartment" scrollable width="1100" title="查看学员明细及添加联系人" :mask-closable="false" footer-hide>
+		<Modal v-model="upDepartment" scrollable width="1100" title="查看学员明细及添加联系人" :mask-closable="false" footer-hide :styles="{top: '20px'}">
 			<!--table标签-->
 			<Tabs value="name1">
 				<TabPane label="查看学员明细" name="name1">
 					<Form ref="upCustomerFrom" :model="upCustomerFrom" :rules="ruleValidate" :label-width="80" inline>
 						<Row>
 							<Col span="20">
+							<Divider orientation="left" class='line'>基本信息</Divider>
 							<FormItem label="姓" prop="FirstName">
 								<Input v-model="upCustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
 							</FormItem>
@@ -260,126 +301,132 @@
 									</Radio>
 								</RadioGroup>
 							</FormItem>
+							<Col span="20">
 							<FormItem label="昵称" prop="NickName">
 								<Input v-model="upCustomerFrom.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
 							</FormItem>
 							<FormItem label="英文名" prop="EngName">
 								<Input v-model="upCustomerFrom.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
 							</FormItem>
-							<FormItem label="客户类型" prop="CustomerType">
-								<Select v-model="upCustomerFrom.CustomerType" style="width: 200px;">
-									<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
-								</Select>
-							</FormItem>
-
+							</Col span="4">
 							<FormItem label="出生日期" prop="BrithDate">
 								<DatePicker type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;"></DatePicker>
 							</FormItem>
 							<FormItem label="月龄" prop="BornMonth">
 								<Input v-model="upCustomerFrom.BornMonth" placeholder="Enter something..." readonly style="width: 200px;"></Input>
 							</FormItem>
-							<FormItem label="会员类型" prop="MemberType">
-								<Select v-model="upCustomerFrom.MemberType" style="width: 200px;">
-									<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
-
-								</Select>
-							</FormItem>
-							<FormItem label="会员号" prop="MemberNo">
-								<Input v-model="upCustomerFrom.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="来源渠道" prop="ChannelCode">
-								<Select v-model="upCustomerFrom.ChannelCode" style="width: 200px;">
-									<Option value="beijing">New York</Option>
-									<Option value="shanghai">London</Option>
-									<Option value="shenzhen">Sydney</Option>
-								</Select>
-							</FormItem>
-							<FormItem label="市场分类" prop="MarketClass">
-								<Select v-model="upCustomerFrom.MarketClass" style="width: 200px;">
-									<Option value="beijing">New York</Option>
-									<Option value="shanghai">London</Option>
-									<Option value="shenzhen">Sydney</Option>
-								</Select>
-							</FormItem>
-							<FormItem label="市场代码" prop="MarketCode">
-								<Select v-model="upCustomerFrom.MarketCode" style="width: 200px;">
-									<Option value="beijing">New York</Option>
-									<Option value="shanghai">London</Option>
-									<Option value="shenzhen">Sydney</Option>
-								</Select>
-							</FormItem>
-							<!--<FormItem label="所在省" prop="ProviceCode">
-								<Select v-model="upCustomerFrom.ProviceCode" @on-change="SelectProviceCode" style="width: 200px;">
-									<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
-								</Select>
-							</FormItem>
-							<FormItem label="所在市" prop="CityCode">
-								<Select v-model="upCustomerFrom.CityCode" @on-change="SelectCityCode" style="width: 200px;">
-									<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
-								</Select>
-							</FormItem>
-							<FormItem label="所在县区" prop="DistinctCode">
-								<Select v-model="upCustomerFrom.DistinctCode" style="width: 200px;">
-									<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
-								</Select>
-							</FormItem>-->
-							<FormItem label="所在小区" prop="VillageCode">
-								<Select v-model="upCustomerFrom.VillageCode" style="width: 200px;">
-									<Option value="beijing">New York</Option>
-									<Option value="shanghai">London</Option>
-									<Option value="shenzhen">Sydney</Option>
-								</Select>
-							</FormItem>
-							<FormItem label="详细地址" prop="Address">
-								<Input v-model="upCustomerFrom.Address" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="家长姓名" prop="ContactName">
-								<Input v-model="upCustomerFrom.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="家长手机" prop="ContactPhone">
-								<Input v-model="upCustomerFrom.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="家长邮箱" prop="ContactEMail">
-								<Input v-model="upCustomerFrom.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="业务部门ID" prop="BusinessUnitId">
-								<Input v-model="upCustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="业务部门" prop="BusinessUnit">
-								<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
-									<Option value="beijing">New York</Option>
-									<Option value="shanghai">London</Option>
-									<Option value="shenzhen">Sydney</Option>
-								</Select>
-							</FormItem>
-							<FormItem label="负责人ID" prop="OwnerId">
-								<Input v-model="upCustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="负责人" prop="BusinessUnit">
-								<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
-									<Option value="beijing">New York</Option>
-									<Option value="shanghai">London</Option>
-									<Option value="shenzhen">Sydney</Option>
-								</Select>
-							</FormItem>
 							</Col>
 							<Col span="4">
-							<FormItem label="大头像">
+							<FormItem label="">
+								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 100px;">
+									<div style="padding: 5px">
+										<Icon type="ios-cloud-upload" size="50"></Icon>
+										<p>上传照片</p>
+									</div>
+								</Upload>
+							</FormItem>
+							<!--<FormItem label="普通照片">
 								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
 									<div style="padding: 5px">
 										<Icon type="ios-cloud-upload" size="50"></Icon>
 									</div>
 								</Upload>
-							</FormItem>
-							<FormItem label="普通照片">
-								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
-									<div style="padding: 5px">
-										<Icon type="ios-cloud-upload" size="50"></Icon>
-									</div>
-								</Upload>
-							</FormItem>
+							</FormItem>-->
 							</Col>
 						</Row>
+						<Divider orientation="left" class='line'>客源信息</Divider>
+						<FormItem label="客户类型" prop="CustomerType">
+							<Select v-model="upCustomerFrom.CustomerType" style="width: 200px;">
+								<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
+							</Select>
+						</FormItem>
+
+						<FormItem label="会员类型" prop="MemberType">
+							<Select v-model="upCustomerFrom.MemberType" style="width: 200px;">
+								<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
+
+							</Select>
+						</FormItem>
+						<FormItem label="会员号" prop="MemberNo">
+							<Input v-model="upCustomerFrom.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+						<FormItem label="来源渠道" prop="ChannelCode">
+							<Select v-model="upCustomerFrom.ChannelCode" style="width: 200px;">
+								<Option value="beijing">New York</Option>
+								<Option value="shanghai">London</Option>
+								<Option value="shenzhen">Sydney</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="市场分类" prop="MarketClass">
+							<Select v-model="upCustomerFrom.MarketClass" style="width: 200px;">
+								<Option value="beijing">New York</Option>
+								<Option value="shanghai">London</Option>
+								<Option value="shenzhen">Sydney</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="市场代码" prop="MarketCode">
+							<Select v-model="upCustomerFrom.MarketCode" style="width: 200px;">
+								<Option value="beijing">New York</Option>
+								<Option value="shanghai">London</Option>
+								<Option value="shenzhen">Sydney</Option>
+							</Select>
+						</FormItem>
+						<Divider orientation="left" class='line'>详细地址</Divider>
+						<FormItem label="所在省" prop="ProviceCode">
+							<Select v-model="upCustomerFrom.ProviceCode" @on-change="SelectProviceCode" style="width: 200px;">
+								<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="所在市" prop="CityCode">
+							<Select v-model="upCustomerFrom.CityCode" @on-change="SelectCityCode" style="width: 200px;">
+								<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="所在县区" prop="DistinctCode">
+							<Select v-model="upCustomerFrom.DistinctCode" style="width: 200px;">
+								<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="所在小区" prop="VillageCode">
+							<Select v-model="upCustomerFrom.VillageCode" style="width: 200px;">
+								<Option value="beijing">New York</Option>
+								<Option value="shanghai">London</Option>
+								<Option value="shenzhen">Sydney</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="详细地址" prop="Address">
+							<Input v-model="upCustomerFrom.Address" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+						<Divider orientation="left" class='line'>联系人信息</Divider>
+						<FormItem label="家长姓名" prop="ContactName">
+							<Input v-model="upCustomerFrom.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+						<FormItem label="家长手机" prop="ContactPhone">
+							<Input v-model="upCustomerFrom.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+						<FormItem label="家长邮箱" prop="ContactEMail">
+							<Input v-model="upCustomerFrom.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+						<FormItem label="业务部门ID" prop="BusinessUnitId">
+							<Input v-model="upCustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+						<FormItem label="业务部门" prop="BusinessUnit">
+							<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
+								<Option value="beijing">New York</Option>
+								<Option value="shanghai">London</Option>
+								<Option value="shenzhen">Sydney</Option>
+							</Select>
+						</FormItem>
+						<FormItem label="负责人ID" prop="OwnerId">
+							<Input v-model="upCustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+						<FormItem label="负责人" prop="BusinessUnit">
+							<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
+								<Option value="beijing">New York</Option>
+								<Option value="shanghai">London</Option>
+								<Option value="shenzhen">Sydney</Option>
+							</Select>
+						</FormItem>
 					</Form>
 					<div id="footer">
 						<div class="footer_left">
@@ -415,6 +462,7 @@
 				<!--添加联系人信息-->
 				<TabPane label="添加联系人信息" name="name2">
 					<Form ref="AddCustomerFrom" :model="AddCustomerFrom" :rules="ruleValidate" :label-width="80" inline>
+						<Divider orientation="left" class='line'>基本信息</Divider>
 						<FormItem label="姓" prop="FirstName">
 							<Input v-model="AddCustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
@@ -429,6 +477,19 @@
 								<Option v-for="item in  relationship" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
 							</Select>
 						</FormItem>
+						<FormItem label="主要标识" prop="IsPrimary">
+							<i-switch v-model="AddCustomerFrom.IsPrimary">
+								<span slot="open">On</span>
+								<span slot="close">Off</span>
+							</i-switch>
+						</FormItem>
+						<FormItem label="启用" prop="Enabled">
+							<i-switch v-model="AddCustomerFrom.Enabled">
+								<span slot="open">On</span>
+								<span slot="close">Off</span>
+							</i-switch>
+						</FormItem>
+						<Divider orientation="left" class='line'>联系方式</Divider>
 						<FormItem label="手机号" prop="TelPhone">
 							<Input v-model="AddCustomerFrom.TelPhone" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
@@ -456,18 +517,7 @@
 								<span slot="close">Off</span>
 							</i-switch>
 						</FormItem>
-						<FormItem label="主要标识" prop="IsPrimary">
-							<i-switch v-model="AddCustomerFrom.IsPrimary">
-								<span slot="open">On</span>
-								<span slot="close">Off</span>
-							</i-switch>
-						</FormItem>
-						<FormItem label="启用" prop="Enabled">
-							<i-switch v-model="AddCustomerFrom.Enabled">
-								<span slot="open">On</span>
-								<span slot="close">Off</span>
-							</i-switch>
-						</FormItem>
+						<Divider orientation="left" class='line'>描述</Divider>
 						<FormItem label="部门描述" prop="Comments">
 							<Input v-model="AddCustomerFrom.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
 						</FormItem>
@@ -510,7 +560,6 @@
 <script>
 	import { CustomerData, DataDictionary, CustomerCreate, CustomerDelete, CustomerUp, CustomerQuery, CustomerContactCreate } from "@/api/data";
 	import { DistrictGetProvince, DistrictGetArea } from "@/api/api";
-	import { gettoken, getdate, getMonth, getDifference } from "@/libs/util";
 	export default {
 		inject: ['reload'],
 		name: 'CustomerProfile',
@@ -745,8 +794,6 @@
 					DistinctCode: '',
 					VillageCode: '',
 					Address: '',
-					IdPhotoUrl: '',
-					LifePhotoUrl: '',
 					ContactName: '',
 					ContactPhone: '',
 					ContactEMail: '',
@@ -769,9 +816,9 @@
 					ChannelCode: '',
 					MarketClass: '',
 					MarketCode: '',
-					//					ProviceCode: '',
-					//					CityCode: '',
-					//					DistinctCode: '',
+					ProviceCode: '',
+					CityCode: '',
+					DistinctCode: '',
 					VillageCode: '',
 					Address: '',
 					IdPhotoUrl: '',
@@ -800,6 +847,8 @@
 					ChannelCode: '',
 					Enabled: true,
 					Comments: '',
+					//学员的Id
+					CustomerId: '',
 				},
 				ruleValidate: {
 
@@ -807,18 +856,10 @@
 				//选中的数组id
 				batchArr: [],
 				queryDistinctCode: "",
+
 			}
 		},
 		methods: {
-			handleChange(showData){
-				console.log(showData)
-				var time = new Date(showData)
-				var time2 = time.valueOf();
-				console.log(time2)
-				//getMonth(time2)
-				//this.BornMonth 
-				//console.log(this.BornMonth)
-			},
 			SelectProviceCode(Id) {
 				DistrictGetArea(Id).then(res => {
 					this.city = res.data
@@ -864,6 +905,8 @@
 			dblclickUpData(index) {
 				this.upDepartment = true;
 				this.upCustomerFrom = index;
+				console.log(index)
+				this.AddCustomerFrom.CustomerId = index.Id
 			},
 			//点击修改
 			handleSubmitUp() {
@@ -883,6 +926,7 @@
 			allinformationData() {
 				CustomerData(this.CustomerData1).then(res => {
 					console.log(res)
+					this.RadioGroupStatus = '';
 					this.CustomerData = res.data;
 				}).catch(err => {
 					console.log(err)
@@ -892,12 +936,13 @@
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
 					if(valid) {
-						CustomerCreate(this.CustomerFrom).then(res => {
-							console.log(res)
+						CustomerCreate(this.CustomerFrom).then( res=>{
+							console.log(res.data)
 							this.$Message.success('添加成功!');
 							this.reload();
-						}).catch(err => {
+						}).catch( err=>{
 							console.log(err)
+							this.$Message.error('添加失败!');
 						})
 					} else {
 						this.$Message.error('失败!');
@@ -967,8 +1012,15 @@
 					console.log(err)
 				})
 			},
-		},
-		created() {
+			//计算月龄
+			handleChange(showData) {
+				let time = new Date(showData)
+				let targetTime = time.valueOf();
+				let currentTime = (new Date()).valueOf();
+				let differenceTime = currentTime - targetTime;
+				let age = Math.floor(differenceTime / (30 * 24 * 60 * 60 * 1000))
+				this.CustomerFrom.BornMonth = age;
+			},
 
 		},
 		mounted() {
@@ -1071,5 +1123,24 @@
 		.footer_left {
 			padding-top: 8px;
 		}
+	}
+	
+	.lineTitle {
+		font-size: 14px;
+		font-weight: 900;
+		color: #5555AA;
+	}
+	
+	.lineTop {
+		width: 80%;
+		height: 2px;
+		margin: 5px 0;
+		border-top: solid #E6E6E6 2px;
+	}
+	
+	.line {
+		color: #5555AA;
+		width: 80%;
+		font-weight: 900;
 	}
 </style>
