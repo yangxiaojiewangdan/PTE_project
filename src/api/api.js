@@ -26,6 +26,14 @@ export const DistrictGetArea = (ParentId) => {
     method: "get"
   });
 };
+
+//  根据数据主键(Id)查询单条数据
+export const DistrictGetEntity = (keyId) => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetEntity?keyId=" + keyId,
+    method: "get"
+  });
+};
 // 结算规则  结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则  
 
 //获取结算规则信息渲染到表格
@@ -239,7 +247,6 @@ export const getSTORE_BUSINESS_TYPE = () => {
     method: "get"
   });
 };
-
 //获取门店管理    门店类型
 export const getSTORE_TYPE = () => {
   return axios.request({
@@ -247,7 +254,6 @@ export const getSTORE_TYPE = () => {
     method: "get"
   });
 };
-
 //获取门店管理    业务状态
 export const getSTORE_STATUS = () => {
   return axios.request({
@@ -255,7 +261,6 @@ export const getSTORE_STATUS = () => {
     method: "get"
   });
 };
-
 //获取门店信息渲染到表格
 export const BusinessStoreGetEntities = BusinessStoreGetEntities => {
   return axios.request({
@@ -264,3 +269,81 @@ export const BusinessStoreGetEntities = BusinessStoreGetEntities => {
     method: "post"
   });
 };
+//添加门店信息
+export const BusinessStoreCreate = BusinessStoreCreate => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/Create",
+    data: BusinessStoreCreate,
+    method: "post"
+  });
+};
+//删除门店信息
+export const BusinessStoreBatchDelete = BusinessStoreBatchDelete => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/BatchDelete",
+    data: BusinessStoreBatchDelete,
+    method: "post"
+  });
+};
+//修改门店信息
+export const BusinessStoreUpdate = BusinessStoreUpdate => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/Update",
+    data: BusinessStoreUpdate,
+    method: "post"
+  });
+};
+
+// 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理
+//获取教室管理   教室类型
+export const getSTORE_ROOM_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=STORE_ROOM_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+
+//获取教室管理   教室当前状态
+export const getSTORE_ROOM_STATUS = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=STORE_ROOM_STATUS&businessGroup=*",
+    method: "get"
+  });
+};
+//获取教室信息渲染到表格
+export const ClassRoomGetEntities = ClassRoomGetEntities => {
+  return axios.request({
+    url: apiUrl + "/api/ClassRoom/GetEntities",
+    data: ClassRoomGetEntities,
+    method: "post"
+  });
+};
+
+//添加教室信息
+export const ClassRoomCreate = ClassRoomCreate => {
+  return axios.request({
+    url: apiUrl + "/api/ClassRoom/Create",
+    data: ClassRoomCreate,
+    method: "post"
+  });
+};
+
+//删除教室信息
+export const ClassRoomBatchDelete = ClassRoomBatchDelete => {
+  return axios.request({
+    url: apiUrl + "/api/ClassRoom/BatchDelete",
+    data: ClassRoomBatchDelete,
+    method: "post"
+  });
+};
+
+//修改教室信息
+export const ClassRoomUpdate = ClassRoomUpdate => {
+  return axios.request({
+    url: apiUrl + "/api/ClassRoom/Update",
+    data: ClassRoomUpdate,
+    method: "post"
+  });
+};
+
+
