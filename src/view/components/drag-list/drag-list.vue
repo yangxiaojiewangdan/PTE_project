@@ -70,7 +70,7 @@
 			<h2>确定删除此数据？</h2>
 		</Modal>
 		<!--添加信息弹框-->
-		<Modal v-model="AddDepartment" width="1400" title="添加课程信息" :mask-closable="false">
+		<Modal v-model="AddDepartment" width="1000" title="添加课程信息" :mask-closable="false">
 			<Form ref="CourseForm" :model="CourseForm" :rules="ruleValidate" :label-width="80" inline>
 				<Row>
 					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加课程信息</Divider>
@@ -108,12 +108,12 @@
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
 					</FormItem>
-					<Col span="12">
+					<Col span="18">
 					<FormItem label="课程描述" prop="Description">
 						<Input v-model="CourseForm.Description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width: 600px;"></Input>
 					</FormItem>
 					</Col>
-					<Col span="12">
+					<Col span="6">
 					<FormItem label="启用" prop="Enabled">
 						<i-switch v-model="CourseForm.Enabled" size="large">
 							<span slot="open">On</span>
@@ -156,39 +156,39 @@
 		<Modal v-model="AddRoyalty" width="700" title="添加课程阶段信息" :mask-closable="false">
 			<Form ref="stageForm" :model="stageForm" :rules="ruleValidate" :label-width="86" inline>
 				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程阶段详情</Divider>
-					<FormItem label="课程Id" prop="CousreId">
-						<Input v-model="stageForm.CousreId" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="阶段名称" prop="PhaseName">
-						<Input v-model="stageForm.PhaseName" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="阶段描述" prop="Description">
-						<Input v-model="stageForm.Description" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="销课方式" prop="CountType">
-						<Select v-model="CourseForm.CountType" style="width:200px">
-							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-						</Select>
-					</FormItem>
-					<FormItem label="课时数" prop="Periods">
-						<Input v-model="stageForm.Periods" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="课时长" prop="Duration">
-						<Input v-model="stageForm.Duration" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程适合年龄</Divider>
-					<FormItem label="适合最小月龄" prop="MinMonth">
-						<Input v-model="stageForm.MinMonth" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="适合最大月龄" prop="MaxMonth">
-						<Input v-model="stageForm.MaxMonth" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="适合最小年龄" prop="MinAge">
-						<Input v-model="stageForm.MinAge" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="适合最大年龄" prop="MaxAge">
-						<Input v-model="stageForm.MaxAge" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
+				<FormItem label="课程Id" prop="CousreId">
+					<Input v-model="stageForm.CousreId" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<FormItem label="阶段名称" prop="PhaseName">
+					<Input v-model="stageForm.PhaseName" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<FormItem label="阶段描述" prop="Description">
+					<Input v-model="stageForm.Description" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<FormItem label="销课方式" prop="CountType">
+					<Select v-model="CourseForm.CountType" style="width:200px">
+						<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+					</Select>
+				</FormItem>
+				<FormItem label="课时数" prop="Periods">
+					<Input v-model="stageForm.Periods" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<FormItem label="课时长" prop="Duration">
+					<Input v-model="stageForm.Duration" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程适合年龄</Divider>
+				<FormItem label="适合最小月龄" prop="MinMonth">
+					<Input v-model="stageForm.MinMonth" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<FormItem label="适合最大月龄" prop="MaxMonth">
+					<Input v-model="stageForm.MaxMonth" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<FormItem label="适合最小年龄" prop="MinAge">
+					<Input v-model="stageForm.MinAge" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
+				<FormItem label="适合最大年龄" prop="MaxAge">
+					<Input v-model="stageForm.MaxAge" placeholder="请输入" style="width:200px"></Input>
+				</FormItem>
 			</Form>
 			<div slot="footer">
 				<div class="footer_left">
@@ -329,67 +329,78 @@
 						label: 'Sydney'
 					},
 				],
-				dataRoyaltyCodeDetail: [{
-						CousreId: '1',
-						PhaseName: '1',
-						Description: '1',
-						Periods: '1',
-						MinMonth: '1',
-						MaxMonth: '1',
-						MinAge: '1',
-						MaxAge: '1',
-						Duration: '1',
-						CountType: '23123'
-					}
+				dataRoyaltyCodeDetail: [
+					//				{
+					//						CousreId: '1',
+					//						PhaseName: '1',
+					//						Description: '1',
+					//						Periods: '1',
+					//						MinMonth: '1',
+					//						MaxMonth: '1',
+					//						MinAge: '1',
+					//						MaxAge: '1',
+					//						Duration: '1',
+					//						CountType: '23123'
+					//					}
 
 				],
 				columnsRoyaltyCodeDetail: [{
 						title: "课程Id",
 						key: "CousreId",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "阶段名称",
 						key: "PhaseName",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "阶段描述",
 						key: "Description",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "销课方式",
 						key: "CountType",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "课时数",
 						key: "Periods",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "课时长",
 						key: "Duration",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "适合最小月龄",
 						key: "MinMonth",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "适合最大月龄",
 						key: "MaxMonth",
+						width: 150,
 						editable: true
 					},
 					{
 						title: "适合最小年龄",
 						key: "MinAge",
+						width: 150,
 						editable: true
 					}, {
 						title: "适合最大年龄",
 						key: "MaxAge",
+						width: 150,
 						editable: true
 					},
 					{
@@ -399,17 +410,17 @@
 						options: ["delete"]
 					}
 				],
-				stageForm:{
-					CousreId:"",
-					PhaseName:'',
-					Description:'',
-					CountType:'',
-					Periods:'',
-					Duration:'',
-					MinMonth:'',
-					MaxMonth:'',
-					MinAge:'',
-					MaxAge:'',
+				stageForm: {
+					CousreId: "",
+					PhaseName: '',
+					Description: '',
+					CountType: '',
+					Periods: '',
+					Duration: '',
+					MinMonth: '',
+					MaxMonth: '',
+					MinAge: '',
+					MaxAge: '',
 				},
 
 			}
@@ -420,13 +431,15 @@
 			},
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
+					//保存阶段信息
+					localStorage.setItem(
+						"dataRoyaltyCodeDetail",
+						JSON.stringify(this.dataRoyaltyCodeDetail)
+					);
 					if(valid) {
-						CourseCreate(this.CourseForm).then(res => {
-							console.log(res)
-							this.$Message.success('添加成功!');
-							this.reload();
-						}).catch(err => {
-							this.$Message.error('添加失败!');
+						CourseCreate(this.CourseForm).then( res=>{
+							console.log(res.data)
+						}).catch( err=>{
 							console.log(err)
 						})
 					} else {
@@ -437,6 +450,21 @@
 			handleReset(name) {
 				this.$refs[name].resetFields();
 				this.$Message.info('已取消添加联系人信息');
+			},
+			//保存阶段信息按钮
+			stagehandleSubmit(name) {
+				this.$refs[name].validate(valid => {
+					if(valid) {
+						this.dataRoyaltyCodeDetail.push(this.stageForm);
+						this.stageForm = {
+							brand_right: 0
+						};
+						this.AddRoyalty = false;
+					}
+				});
+			},
+			stagehandleReset() {
+
 			},
 			//查询全部
 			allinformationData() {

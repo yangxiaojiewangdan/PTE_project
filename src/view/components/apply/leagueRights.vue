@@ -827,7 +827,7 @@ export default {
     },
 
     // 添加加盟商权益金规则信息
-    handleSubmit(name, params) {
+    handleSubmit(name) {
       this.$refs[name].validate(valid => {
         localStorage.setItem(
           "dataRoyaltyCodeDetail",
