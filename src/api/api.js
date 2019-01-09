@@ -1,9 +1,31 @@
 import axios from "@/libs/api.request";
 //url变量
 export const apiUrl = "http://192.168.31.74:8081";
-
 // 地区信息获取 地区信息获取 地区信息获取 地区信息获取 地区信息获取 地区信息获取
-
+//获取学员档案
+export const CustomerData = CustomerData => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerProfile/GetEntities",
+    method: "post",
+    data: CustomerData,
+  });
+};
+//查询组织接口
+export const BusinessUnitGetEntities = BusinessUnitQuery => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessUnit/GetEntities",
+    data: BusinessUnitQuery,
+    method: "post"
+  });
+};
+//查询人员接口
+export const BusinessUserGetEntities = BusinessUserQuery => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessUser/GetEntities",
+    data: BusinessUserQuery,
+    method: "post"
+  });
+};
 //获取所有大区的数据
 export const DistrictGetRegion = () => {
   return axios.request({
@@ -11,7 +33,6 @@ export const DistrictGetRegion = () => {
     method: "get"
   });
 };
-
 //获取指定大区省份信息
 export const DistrictGetProvince = () => {
   return axios.request({
@@ -26,7 +47,6 @@ export const DistrictGetArea = (ParentId) => {
     method: "get"
   });
 };
-
 //  根据数据主键(Id)查询单条数据
 export const DistrictGetEntity = (keyId) => {
   return axios.request({
@@ -35,7 +55,6 @@ export const DistrictGetEntity = (keyId) => {
   });
 };
 // 结算规则  结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则   结算规则  
-
 //获取结算规则信息渲染到表格
 export const getSettlementCodeData = SettlementCodeData => {
   return axios.request({
@@ -44,7 +63,6 @@ export const getSettlementCodeData = SettlementCodeData => {
     method: "post"
   });
 };
-
 //添加结算规则接口
 export const SettlementCodeCreate = CreateSettlementCode => {
   return axios.request({
@@ -69,7 +87,6 @@ export const SettlementCodeUpdate = UpdateList => {
     method: "post"
   });
 };
-
 //获取结算规则信息    数据字典里的结算方式  SETTLE_TYPE
 export const getSettleType = () => {
   return axios.request({
@@ -77,8 +94,6 @@ export const getSettleType = () => {
     method: "get"
   });
 };
-
-
 //查重Code结算规则接口 
 export const SettlementCodeValidateUnique = (Code, BusinessGroup) => {
   return axios.request({
@@ -87,7 +102,6 @@ export const SettlementCodeValidateUnique = (Code, BusinessGroup) => {
   });
 };
 // 权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金  权益金
-
 //获取权益金规则信息渲染到表格
 export const RoyaltyCodeGetEntities = SettlementCodeData => {
   return axios.request({
@@ -96,7 +110,6 @@ export const RoyaltyCodeGetEntities = SettlementCodeData => {
     method: "post"
   });
 };
-
 //添加权益金规则接口
 export const RoyaltyCodeCreate = CreateSettlementCode => {
   return axios.request({
@@ -149,7 +162,6 @@ export const getROYALTY_BENCH_MARK = () => {
     method: "get"
   });
 };
-
 //添加权益金阶梯规则接口
 export const RoyaltyCodeAddOrUpdateLadder = AddOrUpdateLadderList => {
   return axios.request({
@@ -158,7 +170,6 @@ export const RoyaltyCodeAddOrUpdateLadder = AddOrUpdateLadderList => {
     method: "post"
   });
 };
-
 //删除权益金阶梯规则接口
 export const RoyaltyCodeBatchRemoveLadder = (royaltyId, detailId) => {
   return axios.request({
@@ -167,7 +178,6 @@ export const RoyaltyCodeBatchRemoveLadder = (royaltyId, detailId) => {
     method: "post"
   });
 };
-
 //查重Code权益金接口 
 export const RoyaltyCodeValidateUnique = (Code, BusinessGroup) => {
   return axios.request({
@@ -175,8 +185,6 @@ export const RoyaltyCodeValidateUnique = (Code, BusinessGroup) => {
     method: "get"
   });
 };
-
-
 // 加盟商基本信息 加盟商基本信息 加盟商基本信息 加盟商基本信息 加盟商基本信息
 //获取加盟商基本信息渲染到表格
 export const FranchiserProfileGetEntities = FranchiserProfileGetEntities => {
@@ -238,7 +246,6 @@ export const getLEAGE_MODE = () => {
     method: "get"
   });
 };
-
 // 门店管理  门店管理  门店管理  门店管理  门店管理  门店管理  门店管理  门店管理  门店管理
 //获取门店管理    业务类型
 export const getSTORE_BUSINESS_TYPE = () => {
@@ -293,7 +300,6 @@ export const BusinessStoreUpdate = BusinessStoreUpdate => {
     method: "post"
   });
 };
-
 // 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理 教室管理
 //获取教室管理   教室类型
 export const getSTORE_ROOM_TYPE = () => {
@@ -302,7 +308,6 @@ export const getSTORE_ROOM_TYPE = () => {
     method: "get"
   });
 };
-
 //获取教室管理   教室当前状态
 export const getSTORE_ROOM_STATUS = () => {
   return axios.request({
@@ -318,7 +323,6 @@ export const ClassRoomGetEntities = ClassRoomGetEntities => {
     method: "post"
   });
 };
-
 //添加教室信息
 export const ClassRoomCreate = ClassRoomCreate => {
   return axios.request({
@@ -327,7 +331,6 @@ export const ClassRoomCreate = ClassRoomCreate => {
     method: "post"
   });
 };
-
 //删除教室信息
 export const ClassRoomBatchDelete = ClassRoomBatchDelete => {
   return axios.request({
@@ -336,7 +339,6 @@ export const ClassRoomBatchDelete = ClassRoomBatchDelete => {
     method: "post"
   });
 };
-
 //修改教室信息
 export const ClassRoomUpdate = ClassRoomUpdate => {
   return axios.request({
@@ -345,5 +347,50 @@ export const ClassRoomUpdate = ClassRoomUpdate => {
     method: "post"
   });
 };
+// 订单管理 订单管理 订单管理 订单管理 订单管理 订单管理 订单管理 订单管理 订单管理 订单管理
+//获取订单管理    订单状态
+export const getORDER_STATUS = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=ORDER_STATUS&businessGroup=*",
+    method: "get"
+  });
+};
 
+//获取订单管理    订单类型
+export const getORDER_TYPE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=ORDER_TYPE&businessGroup=*",
+    method: "get"
+  });
+};
+//获取订单管理    折扣原因代码
+export const getDISCOUNT_REASON_CODE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=DISCOUNT_REASON_CODE&businessGroup=*",
+    method: "get"
+  });
+};
+//获取订单管理    支付状态 
+export const getORDER_PAYMENT_STATUS = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=ORDER_PAYMENT_STATUS&businessGroup=*",
+    method: "get"
+  });
+};
+//获取订单信息渲染到表格
+export const CustomerOrderGetEntities = CustomerOrderGetEntities => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/GetEntities",
+    data: CustomerOrderGetEntities,
+    method: "post"
+  });
+};
 
+//添加订单信息
+export const CustomerOrderPurchaseOrder = CustomerOrderPurchaseOrder => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/PurchaseOrder",
+    data: CustomerOrderPurchaseOrder,
+    method: "post"
+  });
+};

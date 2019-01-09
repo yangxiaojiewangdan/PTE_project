@@ -1483,7 +1483,6 @@ export default {
     getLEAGE_MODE()
       .then(res => {
         this.LeageModeList = res.data;
-        console.log(this.LeageModeList);
       })
       .catch(err => {
         console.log(err);
