@@ -339,7 +339,7 @@ export default [
           title: '线索管理'
         },
         component: () =>
-          import('@/view/update/update-table.vue')
+          import('@/view/components/sale/clue.vue')
       },
       {
         path: 'sale_customer',
@@ -349,7 +349,7 @@ export default [
           title: '客户管理'
         },
         component: () =>
-          import('@/view/update/update-paste.vue')
+          import('@/view/components/sale/customer.vue')
       },
       {
         path: 'sale_customerSea',
@@ -359,7 +359,7 @@ export default [
           title: '客户公海'
         },
         component: () =>
-          import('@/view/update/update-table.vue')
+          import('@/view/components/sale/customerSea.vue')
       },
       {
         path: 'sale_merchant',
@@ -369,7 +369,7 @@ export default [
           title: '商机管理'
         },
         component: () =>
-          import('@/view/update/update-paste.vue')
+          import('@/view/components/sale/merchant.vue')
       },
       {
         path: 'sale_order',
@@ -379,7 +379,7 @@ export default [
           title: '订单管理'
         },
         component: () =>
-          import('@/view/update/update-paste.vue')
+          import('@/view/components/sale/order.vue')
       }
     ]
   },
@@ -401,7 +401,7 @@ export default [
           title: '学员档案'
         },
         component: () =>
-          import('@/view/excel/upload-excel.vue')
+          import('@/view/components/member/studentFiles.vue')
       },
       {
         path: 'member_admAss',
@@ -411,7 +411,7 @@ export default [
           title: '入学评估'
         },
         component: () =>
-          import('@/view/excel/export-excel.vue')
+          import('@/view/components/member/admAss.vue')
       },
       {
         path: 'member_order',
@@ -421,7 +421,7 @@ export default [
           title: '订单管理'
         },
         component: () =>
-          import('@/view/excel/upload-excel.vue')
+          import('@/view/components/member/order.vue')
       },
       {
         path: 'member_attendanceClass',
@@ -431,7 +431,7 @@ export default [
           title: '考勤销课'
         },
         component: () =>
-          import('@/view/excel/export-excel.vue')
+          import('@/view/components/member/attendanceClass.vue')
       },
       {
         path: 'member_studentCourse',
@@ -441,7 +441,7 @@ export default [
           title: '学员课程'
         },
         component: () =>
-          import('@/view/excel/export-excel.vue')
+          import('@/view/components/member/studentCourse.vue')
       },
       {
         path: 'member_studentRetreat',
@@ -451,7 +451,7 @@ export default [
           title: '学员退课'
         },
         component: () =>
-          import('@/view/excel/upload-excel.vue')
+          import('@/view/components/member/studentRetreat.vue')
       },
       {
         path: 'member_studentRetreatHistory',
@@ -461,7 +461,7 @@ export default [
           title: '学员退课历史'
         },
         component: () =>
-          import('@/view/excel/export-excel.vue')
+          import('@/view/components/member/studentRetreatHistory.vue')
       }
     ]
   },
