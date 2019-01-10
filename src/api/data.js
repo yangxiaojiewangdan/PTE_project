@@ -234,3 +234,19 @@ export const CourseCreate = CourseFrom => {
     data:CourseFrom,
   });
 };
+//增加修改课程阶段
+export const CoursePhase = dataRoyaltyCodeDetail => {
+  return axios.request({
+    url: apiUrl + "/api/Course/AddOrUpdateCoursePhase",
+    method: "post",
+    data:dataRoyaltyCodeDetail,
+  });
+};
+//删除课程
+export const CourseDelete = BatchDeleteList => {
+  return axios.request({
+    url: apiUrl + "/api/Course/BatchDelete",
+    method: "post",
+    data:BatchDeleteList,
+  });
+};
