@@ -108,7 +108,7 @@
       </Col>
     </Row>
     <!-- 添加信息 弹出框-->
-    <Modal v-model="AddDepartment" scrollable width="1100" title="添加加盟商信息" :mask-closable="false">
+    <Modal v-model="AddDepartment" scrollable width="1100" title="添加订单信息" :mask-closable="false">
       <Form
         ref="formValidate"
         :model="formValidate"
@@ -358,12 +358,10 @@
     <!-- 选择客户 -->
     <Modal
         v-model="modal1"
-        title="Common Modal dialog box title"
+        title="查询客户"
         @on-ok="ok"
         @on-cancel="cancel">
-        <p>Content of dialog</p>
-        <p>Content of dialog</p>
-        <p>Content of dialog</p>
+       
     </Modal>
   </div>
 </template>
