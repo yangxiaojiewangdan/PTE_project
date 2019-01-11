@@ -250,3 +250,27 @@ export const CourseDelete = BatchDeleteList => {
     data:BatchDeleteList,
   });
 };
+//删除 课程阶段
+export const CourseRemove = (CourseId,PhaseId) => {
+  return axios.request({
+    url: apiUrl + "/api/Course/RemovePhase?CourseId=" + CourseId + '&PhaseId=' + PhaseId,
+    method: "post",
+    //data:CourseRemoveData,
+  });
+};
+//修改按钮
+export const CourseUpData = UpCourseForm => {
+  return axios.request({
+    url: apiUrl + "/api/Course/Update",
+    method: "post",
+    data:UpCourseForm,
+  });
+};
+//添加课包
+export const CoursePackageCreate = CourseFrom => {
+  return axios.request({
+    url: apiUrl + "/api/CoursePackage/Create",
+    method: "post",
+    data:CourseFrom,
+  });
+};
