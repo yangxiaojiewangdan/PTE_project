@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 选择客户 -->
-    <Modal width="600" v-model="modal1" title="查询客户" @on-ok="ok" @on-cancel="cancel">
+    <Modal width="600" v-model="modal1" title="查询客户" :styles="{top: '20px'}" >
       <Row>
         <Col span="20" offset="3">
           <Select
@@ -25,9 +25,25 @@
           <Button type="primary" class="tableTops" @click="querytableassembly">查询</Button>
         </Col>
         <Col span="24" style="margin-top:20px;" v-if="Table">
-          <Table height="300" ref="selection" @on-select="Choice" :columns="columns1" :data="data2"></Table>
+          <Table height="300" size="small" ref="selection" @on-select="Choice" :columns="columns1" :data="data2"></Table>
         </Col>
       </Row>
+      <div slot="footer">
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset();modal1 = false;"
+        >
+          <span>取消</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-primary ivu-btn-large"
+          @click="ok"
+        >
+          <span>确定</span>
+        </button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -109,12 +125,11 @@ export default {
   },
   methods: {
     ok() {
-      this.$Message.info("成功");
-     this.formValidate.ProfileId  = this.ProfileId
-     this.ProfileName  = this.ProfileName
-    },
-    cancel() {
-      this.$Message.info("取消");
+         this.$emit('childByValue', this.ProfileId)
+         this.$emit('childByValue2', this.ProfileName)
+        console.log(this.ProfileId)
+        console.log(this.ProfileName)
+        this.modal1 = false;
     },
     // 点击查询按钮查询信息
     querytableassembly() {

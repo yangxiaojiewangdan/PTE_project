@@ -370,6 +370,13 @@ export const getDISCOUNT_REASON_CODE = () => {
     method: "get"
   });
 };
+//获取订单管理    退课原因代码
+export const getCANCLE_REASON_CODE = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=CANCLE_REASON_CODE&businessGroup=*",
+    method: "get"
+  });
+};
 //获取订单管理    支付状态 
 export const getORDER_PAYMENT_STATUS = () => {
   return axios.request({
@@ -391,6 +398,14 @@ export const CustomerOrderPurchaseOrder = CustomerOrderPurchaseOrder => {
   return axios.request({
     url: apiUrl + "/api/CustomerOrder/PurchaseOrder",
     data: CustomerOrderPurchaseOrder,
+    method: "post"
+  });
+};
+//删除教室信息
+export const CustomerOrderBatchDelete = CustomerOrderBatchDelete => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/BatchDelete",
+    data: CustomerOrderBatchDelete,
     method: "post"
   });
 };

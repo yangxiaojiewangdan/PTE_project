@@ -54,6 +54,9 @@ import parentView from '@/components/parent-view'
         学员退课_________path: 'member_studentRetreat'
         学员退课历史_____path: 'member_studentRetreatHistory'
     #教务中心  /edAd
+        课包管理_________path: 'edAd_classpackage'
+          课包类型_______path: 'edAd_packageType'
+          课包___________path: 'edAd_package'
         课程管理_________path: 'edAd_course'
           课程类型_______path: 'edAd_courseType'
           课程___________path: 'edAd_curriculum'
@@ -475,7 +478,18 @@ export default [
       title: '教务中心'
     },
     component: Main,
-    children: [{
+    children: [
+      {
+        path: 'edAd_classpackage',
+        name: 'edAd_classpackage',
+        meta: {
+          icon: 'ios-infinite',
+          title: '课包管理'
+        },
+        component: () =>
+          import('@/view/components/edAd/classpackage.vue')
+      },
+      {
         path: 'edAd_course',
         name: 'edAd_course',
         meta: {
@@ -483,7 +497,7 @@ export default [
           title: '课程管理'
         },
         component: () =>
-          import('@/view/components/drag-list/drag-list.vue')
+          import('@/view/components/edAd/course.vue')
       },
       {
         path: 'edAd_courseCalendar',
@@ -493,7 +507,7 @@ export default [
           title: '课程日历'
         },
         component: () =>
-          import('@/view/components/tree-table/index.vue')
+          import('@/view/components/edAd/courseCalendar.vue')
       },
       {
         path: 'edAd_classroomCalendar',
@@ -503,7 +517,7 @@ export default [
           title: '教室日历'
         },
         component: () =>
-          import('@/view/components/cropper/cropper.vue')
+          import('@/view/components/edAd/classroomCalendar.vue')
       }
     ]
   },
