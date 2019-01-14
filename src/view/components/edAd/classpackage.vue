@@ -273,7 +273,7 @@
 </template>
 <script>
 	import Tables from "_c/tables";
-	import { CourseData, DataDictionary,CoursePackageCreate} from '@/api/data'
+	import { CourseData, DataDictionary,CoursePackageCreate,CoursePackageGet} from '@/api/data'
 	import { BusinessStoreGetEntities } from '@/api/api'
 	export default {
 		name: 'classPackage',
@@ -798,6 +798,14 @@
 			}
 		},
 		mounted() {
+			//获取课包
+			CoursePackageGet(this.getTableData).then(res=>{
+				console.log(res)
+				this.CoursePackageData = res.data
+				console.log(this.CoursePackageData)
+			}).catch(err=>{
+				console.log(err)
+			})
 			//获取课程接口
 			CourseData(this.getTableData).then(res => {
 				this.CourseData = res.data;

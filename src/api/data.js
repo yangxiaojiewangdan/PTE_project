@@ -274,3 +274,11 @@ export const CoursePackageCreate = CourseFrom => {
     data:CourseFrom,
   });
 };
+//获取课包
+export const CoursePackageGet = CourseFrom => {
+  return axios.request({
+    url: apiUrl + "/api/CoursePackage/GetEntities",
+    method: "post",
+    data:CourseFrom,
+  });
+};
