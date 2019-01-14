@@ -118,23 +118,23 @@
     <Modal
       v-model="AddDepartment"
       scrollable
-      width="1100"
+      width="1400"
       title="添加订单信息"
       :mask-closable="false"
-      :styles="{top: '50px'}"
     >
       <Form
         ref="formValidate"
         :model="formValidate"
         :rules="ruleValidate"
-        label-position="right"
-        :label-width="120"
+        label-position="right"  
+        :label-width="80"
       >
-        <Row>
+
+        <!-- <Row>
           <Col span="24">
-            <Col span="12">
+            <Col span="23">
               <FormItem label="所属门店" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" style="width:200px;">
                   <Option
                     v-for="item in StoreList"
                     :value="item.Id"
@@ -143,14 +143,26 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="8">
+            <Col span="10">
               <FormItem label="客户" prop="ProfileId">
-                <Input v-if="ProfileIdHide" v-model="formValidate.ProfileId" placeholder="请输入"></Input>
-                <Input v-model="ProfileName" placeholder="请输入"></Input>
+                <Input v-if="ProfileIdHide" v-model="formValidate.ProfileId" placeholder="请输入" ></Input>
+                <Input v-model="ProfileName" placeholder="请输入" style="width:200px;margin-right:10px;"></Input>
                 <Button type="primary" @click="Enquiringcustomers">选择客户</Button>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="11">
+              <FormItem label="课包" prop="PackageId">
+                <Input v-model="formValidate.PackageId" placeholder="请输入"></Input>
+                <Select v-model="formValidate.ProfileId">
+                  <Option
+                    v-for="item in PaymentStatusList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Description }}</Option>
+                </Select>
+              </FormItem>
+            </Col>.
+            <Col span="8">
               <FormItem label="订单类型" prop="OrderType">
                 <Select v-model="formValidate.OrderType">
                   <Option
@@ -161,7 +173,7 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="8">
               <FormItem label="订单状态" prop="OrderStatus">
                 <Select v-model="formValidate.OrderStatus">
                   <Option
@@ -172,7 +184,7 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="7">
               <FormItem label="支付状态" prop="PaymentStatus">
                 <Select v-model="formValidate.PaymentStatus">
                   <Option
@@ -183,7 +195,7 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="8">
               <FormItem label="来源渠道" prop="ChannelCode">
                 <Select v-model="formValidate.ChannelCode">
                   <Option
@@ -194,7 +206,7 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="8">
               <FormItem label="市场分类" prop="MarketClass">
                 <Select v-model="formValidate.MarketClass">
                   <Option
@@ -205,35 +217,11 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="7">
               <FormItem label="市场代码" prop="MarketCode">
                 <Select v-model="formValidate.MarketCode">
                   <Option
                     v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="课包" prop="PackageId">
-                <Input v-model="formValidate.PackageId" placeholder="请输入"></Input>
-
-                <!-- <Select v-model="formValidate.ProfileId">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>-->
-              </FormItem>
-            </Col>.
-            <Col span="12">
-              <FormItem label="折扣原因代码" prop="DiscountCode">
-                <Select v-model="formValidate.DiscountCode">
-                  <Option
-                    v-for="item in DiscountCodeList"
                     :value="item.Id"
                     :key="item.Code"
                   >{{ item.Description }}</Option>
@@ -251,7 +239,7 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="12">
+            <Col span="11">
               <FormItem label="负责人" prop="Owner">
                 <Select v-model="formValidate.Owner">
                   <Option
@@ -262,14 +250,20 @@
                 </Select>
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem label="原始售价" prop="OriginalPrice">
-                <Input v-model="formValidate.OriginalPrice" placeholder="请输入"></Input>
+            <Col span="12">
+              <FormItem label="折扣原因代码" prop="DiscountCode">
+                <Select v-model="formValidate.DiscountCode">
+                  <Option
+                    v-for="item in DiscountCodeList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Description }}</Option>
+                </Select>
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem label="数量" prop="Quantity">
-                <Input v-model="formValidate.Quantity" placeholder="请输入"></Input>
+             <Col span="11">
+              <FormItem label="折扣金额" prop="DiscountAmt">
+                <Input v-model="formValidate.DiscountAmt" placeholder="请输入"></Input>
               </FormItem>
             </Col>
             <Col span="8">
@@ -277,6 +271,18 @@
                 <Input v-model="formValidate.SalePrice" placeholder="请输入"></Input>
               </FormItem>
             </Col>
+            <Col span="8">
+              <FormItem label="原始售价" prop="OriginalPrice">
+                <Input v-model="formValidate.OriginalPrice" placeholder="请输入"></Input>
+              </FormItem>
+            </Col>
+
+            <Col span="7">
+              <FormItem label="数量" prop="Quantity">
+                <Input v-model="formValidate.Quantity" placeholder="请输入"></Input>
+              </FormItem>
+            </Col>
+            
             <Col span="8">
               <FormItem label="应收金额" prop="BalanceAmt">
                 <Input v-model="formValidate.BalanceAmt" placeholder="请输入"></Input>
@@ -287,16 +293,12 @@
                 <Input v-model="formValidate.DepositAmt" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="8">
+            <Col span="7">
               <FormItem label="订金支付时间" prop="DepositDate">
                 <Input v-model="formValidate.DepositDate" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem label="折扣金额" prop="DiscountAmt">
-                <Input v-model="formValidate.DiscountAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
+           
             <Col span="11">
               <FormItem label="开始日期" prop="StartDate">
                 <DatePicker type="date" v-model="formValidate.StartDate" placeholder="Select date"></DatePicker>
@@ -334,6 +336,253 @@
               </FormItem>
             </Col>
           </Col>
+        </Row> -->
+        <Row>
+          <Col span="18">
+            <Col span="8">
+              <FormItem label="所属门店" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" >
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="15">
+              <FormItem label="所属加盟商" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId"  disabled>
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem label="客户" prop="ProfileId">
+                <Input search placeholder="Enter something..." />
+                <!-- <Input v-if="ProfileIdHide" v-model="formValidate.ProfileId" placeholder="请输入" ></Input>
+                <Input v-model="ProfileName" placeholder="请输入" style="width:200px;margin-right:10px;"></Input>
+                <Button type="primary" @click="Enquiringcustomers">选择客户</Button> -->
+              </FormItem>
+            </Col>
+            <Col span="7">
+              <FormItem label="昵称" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+             <Col span="8">
+              <FormItem label="出生年月" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem label="课包" prop="PackageId">
+                <!-- <Input v-model="formValidate.PackageId" placeholder="请输入"></Input> -->
+                <Select v-model="formValidate.ProfileId" @on-change="aa" :label-in-value="true">
+                  <Option
+                    v-for="item in PaymentStatusList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Description }}</Option>
+                </Select>
+              </FormItem>
+            </Col>  
+            <Col span="5">
+              <FormItem label="课包类型" prop="PackageId">
+                <Select v-model="formValidate.ProfileId" disabled>
+                  <Option
+                    v-for="item in PaymentStatusList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Description }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="5">
+              <FormItem label="定价" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+            <Col span="5">
+              <FormItem label="总课时" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+             
+             <Col span="6">
+              <FormItem label="售价" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" ></Input>
+              </FormItem>
+            </Col>
+             <Col span="5">
+              <FormItem label="数量" prop="SalePrice">
+                <Input type="number" v-model="formValidate.SalePrice" placeholder="请输入" ></Input>
+              </FormItem>
+            </Col>
+             <Col span="6">
+              <FormItem label="赠送课时" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" ></Input>
+              </FormItem>
+            </Col>
+             <Col span="6">
+              <FormItem label="总金额" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+            
+            <Col span="7">
+              <FormItem label="有效期" prop="StartDate">
+                <DatePicker type="date" v-model="formValidate.StartDate" placeholder="Select date"></DatePicker>
+              </FormItem>
+            </Col>
+             <Col span="8">
+              <FormItem label="负责人" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" >
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem label="业务部门" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" disabled >
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="8">
+              <FormItem label="折扣原因" prop="OrderType" v-if="OrderType">
+                <Select v-model="formValidate.OrderType" >
+                  <Option
+                    v-for="item in OrderTypeList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Description }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="15">
+              <FormItem label="折扣备注" prop="OrderType" v-if="OrderType">
+                <Input  v-model="formValidate.SalePrice" placeholder="请输入" ></Input>
+              </FormItem>
+            </Col>
+             <Col span="23">
+                <FormItem label="备注" prop="Comments">
+                    <Input v-model="formValidate.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" ></Input>
+                </FormItem>
+            </Col>
+             <Col span="22" offset="1">
+
+             <Tabs value="name1">
+                <TabPane label="支付记录" name="name1">
+                  <Table :columns="columns1" :data="data1" size="small"></Table>
+                </TabPane>
+                <TabPane label="销课记录" name="name2">标签二的内容</TabPane>
+                <TabPane label="退课记录" name="name3">标签三的内容</TabPane>
+            </Tabs>
+            </Col>
+
+          </Col>
+          <Col span="6" style="border-left:1px solid #eee;">
+            <Col span="23">
+              <FormItem label="订单类型" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" >
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem label="来源渠道" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" >
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem label="市场分类" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" >
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem label="市场代码" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" >
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+           
+            <Col span="23">
+              <FormItem label="订单状态" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" disabled>
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+             <Col span="23">
+              <FormItem label="支付状态" prop="StoreId">
+                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" disabled>
+                  <Option
+                    v-for="item in StoreList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Code }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem label="已付金额" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+             <Col span="23">
+              <FormItem label="剩余金额 " prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+             <Col span="23">
+              <FormItem label="已用课时" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+             <Col span="23">
+              <FormItem label="剩余课时" prop="SalePrice">
+                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
+          </Col>
         </Row>
       </Form>
       <div slot="footer">
@@ -361,14 +610,35 @@
           class="ivu-btn ivu-btn-text ivu-btn-large"
           @click="handleReset('formValidate');AddDepartment = false;"
         >
-          <span>取消</span>
+          <span>删除</span>
         </button>
         <button
           type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="handleSubmit('formValidate');"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset('formValidate');AddDepartment = false;"
         >
-          <span>确定</span>
+          <span>支付</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset('formValidate');AddDepartment = false;"
+        >
+          <span>申请退课</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset('formValidate');AddDepartment = false;"
+        >
+          <span>保存</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset('formValidate');AddDepartment = false;"
+        >
+          <span>取消</span>
         </button>
       </div>
     </Modal>
@@ -510,7 +780,7 @@
                 <Input v-model="UpdateList.FixedPeriods" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="11">
+            <Col span="12">
               <FormItem label="原始售价" prop="OriginalPrice">
                 <Input v-model="UpdateList.OriginalPrice" placeholder="请输入"></Input>
               </FormItem>
@@ -520,22 +790,22 @@
                 <Input v-model="UpdateList.SalePrice" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="11">
+            <Col span="6">
               <FormItem label="应收金额" prop="BalanceAmt">
                 <Input v-model="UpdateList.BalanceAmt" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="11">
+            <Col span="6">
               <FormItem label="已经支付金额" prop="ChargeAmt">
                 <Input v-model="UpdateList.ChargeAmt" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="11">
+            <Col span="6">
               <FormItem label="订金金额" prop="DepositAmt">
                 <Input v-model="UpdateList.DepositAmt" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="11">
+            <Col span="5">
               <FormItem label="订金支付时间" prop="DepositDate">
                 <Input v-model="UpdateList.DepositDate" placeholder="请输入"></Input>
               </FormItem>
@@ -569,14 +839,7 @@
               </FormItem>
             </Col>
 
-            <Col span="24">
-              <FormItem label="固定期限" prop="IsFixedLimit">
-                <i-switch v-model="UpdateList.IsFixedLimit" size="large">
-                  <span slot="open">On</span>
-                  <span slot="close">Off</span>
-                </i-switch>
-              </FormItem>
-            </Col>
+           
             <Col span="8">
               <FormItem label="总课时" prop="TotalPeriod">
                 <Input v-model="UpdateList.TotalPeriod" placeholder="请输入"></Input>
@@ -592,7 +855,7 @@
                 <Input v-model="UpdateList.RemainPeriod" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="11">
+            <Col span="12">
               <FormItem label="折扣原因代码" prop="DiscountCode">
                 <Select v-model="UpdateList.DiscountCode">
                   <Option
@@ -608,7 +871,7 @@
                 <Input v-model="UpdateList.DiscountAmt" placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="11">
+            <Col span="12">
               <FormItem label="业务部门" prop="BusinessUnit">
                 <Select v-model="UpdateList.BusinessUnit">
                   <Option
@@ -628,6 +891,14 @@
                     :key="item.Code"
                   >{{ item.Account }}</Option>
                 </Select>
+              </FormItem>
+            </Col>
+            <Col span="24">
+              <FormItem label="固定期限" prop="IsFixedLimit">
+                <i-switch v-model="UpdateList.IsFixedLimit" size="large">
+                  <span slot="open">On</span>
+                  <span slot="close">Off</span>
+                </i-switch>
               </FormItem>
             </Col>
           </Col>
@@ -799,6 +1070,34 @@ export default {
   },
   data() {
     return {
+        OrderType:false,
+       columns1: [
+                    {
+                        title: '支付方式',
+                        key: 'name'
+                    },
+                    {
+                        title: '金额',
+                        key: 'age'
+                    },
+                    {
+                        title: '备注',
+                        key: 'address'
+                    }
+                ],
+                data1: [
+                    {
+                        name: '微信支付',
+                        age: 100,
+                        address: 'New York No. 1 Lake Park',
+                        date: '2016-10-03'
+                    }, {
+                        name: '微信支付',
+                        age: 100,
+                        address: 'New York No. 1 Lake Park',
+                        date: '2016-10-03'
+                    }
+                ],
       // 订单状态
       RadioOrderStatus: "",
       OrderStatusList: [],
@@ -1198,6 +1497,14 @@ export default {
     };
   },
   methods: {
+    aa(value){
+      console.log(value.value)
+      if(value.value == 0){
+          this.OrderType = true;
+      }else{
+        this.OrderType = false;
+      }
+    },
     childByValue: function(ProfileId) {
       this.formValidate.ProfileId = ProfileId;
     },
