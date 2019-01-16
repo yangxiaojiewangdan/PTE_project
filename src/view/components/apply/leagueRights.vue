@@ -518,19 +518,7 @@
 </template>
 <script>
 import Tables from "_c/tables";
-import {
-  RoyaltyCodeGetEntities,
-  RoyaltyCodeUpdate,
-  RoyaltyCodeCreate,
-  RoyaltyCodeBatchDelete,
-  getROYALTY_TYPE,
-  getROYALTY_FLAT_TYPE,
-  getOBVERSION_TYPE,
-  getROYALTY_BENCH_MARK,
-  RoyaltyCodeAddOrUpdateLadder,
-  RoyaltyCodeBatchRemoveLadder,
-  RoyaltyCodeValidateUnique
-} from "@/api/api";
+import { GetEntities,GetEntity,Create,Update,Delete,BatchDelete1,Copy,DataDictionaryGetEntities,ValidateUnique,DataDictionaryGetDataCatalog} from "@/api/api";
 export default {
   components: {
     Tables

@@ -77,10 +77,11 @@ export const Delete = (Interface, keyId) => {
     method: "post"
   });
 };
-//删除指定主键ID数据
+//批量删除数据
 export const BatchDelete = (Interface, keyId) => {
   return axios.request({
-    url: apiUrl + "/api/" + Interface + "/BatchDelete?keyId=" + keyId,
+    url: apiUrl + "/api/" + Interface + "/BatchDelete",
+    data: keyId,
     method: "post"
   });
 };
@@ -113,3 +114,11 @@ export const DataDictionaryGetEntities = (dataCategory) => {
     method: "get"
   });
 };
+// 获取数据字典分类结构
+export const DataDictionaryGetDataCatalog = () => {
+  return axios.request({
+    url: apiUrl + "/api/DataDictionary/GetDataCatalog",
+    method: "get"
+  });
+};
+

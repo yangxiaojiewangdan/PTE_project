@@ -452,11 +452,11 @@
                         IsAdministrtor:true,
                     },
                     ruleValidate: {
-                        // Code: [
-                        //     { required: true, message: '部门代码不能为空', trigger: 'blur' },
-                        //     { min: 8, max: 8, message: "长度必须是8位字符", trigger: "blur" },
-                        //     { pattern:/^[0-9a-zA-Z]*$/g,message: "必须是字母加数值", trigger: "blur" }
-                        // ],
+                        Code: [
+                            { required: true, message: '部门代码不能为空', trigger: 'blur' },
+                            { min: 8, max: 8, message: "长度必须是8位字符", trigger: "blur" },
+                            { pattern:/^[0-9a-zA-Z]*$/g,message: "必须是字母加数值", trigger: "blur" }
+                        ],
                         FirstName: [
                             { required: true, message: '姓不能为空', trigger: 'blur' },
                         ],
@@ -467,7 +467,7 @@
                             { required: true, message: '地址不能为空', trigger: 'blur' },
                         ],
                         Gender: [
-                            { required: true, message: '请选择性别', trigger: 'change' }
+                            { required: true, message: '请选择性别', trigger: ' ' }
                         ],
                         BrithDate: [
                             { required: true, message: '请选择出生日期', trigger: 'change' },
@@ -540,6 +540,7 @@
 		},
 		methods:{
 			handleSubmit (name) {
+                console.log(this.ruleValidate)
                     this.$refs[name].validate((valid) => {
                         if (valid) {
                             this.$Message.success('成功!');
