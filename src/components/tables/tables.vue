@@ -148,7 +148,7 @@ export default {
       edittingCellId: '',
       edittingText: '',
       searchValue: '',
-      searchKey: ''
+      searchKey: '',
     }
   },
   methods: {

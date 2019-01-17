@@ -14,8 +14,8 @@
           <!-- 表格操作按钮 -->
           <Col span="8">
             <div class="tableTop">
-              <Button @click="AddDepartment = true" type="success" class="tableTops">添加</Button>
-              <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+              <Button @click="AddList" type="success" class="tableTops">添加</Button>
+              <Button @click="deleteList" type="error" class="tableTops">删除</Button>
               <Select
                 v-model="querySelect"
                 :label-in-value="true"
@@ -36,7 +36,7 @@
                 class="tableTops"
               />
               <Checkbox :checked.sync="single" v-if="Checkboxif" class="tableTops">无效</Checkbox>
-              <Button type="primary" class="tableTops" >查询</Button>
+              <Button type="primary" class="tableTops">查询</Button>
             </div>
           </Col>
           <!-- 表格 -->
@@ -48,11 +48,14 @@
               stripe
               border
               ref="selection"
+              
               :columns="SettlementCodeTable"
               :data="SettlementCodeData"
-              @on-select="BatchDelete"
+              @on-select="OneselectionId"
               @on-row-dblclick="dblclickUpData"
-              @on-select-all="BatchDelete"
+              @on-select-all="allselectionId"
+              @on-select-all-cancel="allcancelselectionId"
+              @on-select-cancel="OnecancelselectionId"
             ></Table>
           </Col>
           <!-- 分页 -->
@@ -63,37 +66,29 @@
       </Col>
     </Row>
     <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
-      <h3>确定删除此数据？</h3>
+    <Modal v-model="delete1" title="提示" @on-ok="ok">
+      <h3>确定删除这条数据？</h3>
     </Modal>
     <!-- 添加信息 弹出框-->
-    <Modal
-      v-model="AddDepartment"
-      width="600"
-      height="600"
-      title="添加加盟商结算规则"
-      :mask-closable="false"
-      :styles="{top: '40px'}"
-    >
-      <Form
-        ref="formValidate"
-        :model="formValidate"
-        :rules="ruleValidate"
-        label-position="right"
-        :label-width="150"
-      >
+    <Modal v-model="AddDepartment" width="600" :mask-closable="false">
+      <p slot="header" style="text-align:left;line-height: 1;">
+        <span v-if="add">添加结算规则</span>
+        <span v-if="see">查看结算规则</span>
+      </p>
+
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate1" label-position="right" :label-width="150">
         <Row>
           <Col span="24">
             <FormItem label="所属业务群" prop="BusinessGroup">
-              <Select v-model="formValidate.BusinessGroup" style="width:300px">
-                <Option
-                  v-for="item in BusinessGroupList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
+              <Input
+                v-model="formValidate.BusinessGroup"
+                placeholder="请输入"
+                style="width:300px"
+                disabled
+              ></Input>
             </FormItem>
           </Col>
+          <Divider></Divider>
           <Col span="24">
             <FormItem label="结算规则代码" prop="Code">
               <Input v-model="formValidate.Code" placeholder="请输入" style="width:300px"></Input>
@@ -186,8 +181,8 @@
           <Col span="24">
             <FormItem label="启用" prop="Enabled">
               <i-switch v-model="formValidate.Enabled" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
+                <span slot="open">启用</span>
+                <span slot="close">禁用</span>
               </i-switch>
             </FormItem>
           </Col>
@@ -197,21 +192,31 @@
         <div class="footer_left">
           <div class="footer_left1">
             <div>
-              <span>创建人:闫子健</span>
+              <span>创建人:</span>
+              <span>{{ formValidate.CreateByName }}</span>
             </div>
             <div>
-              <span>更新人:闫子健</span>
+              <span>更新人:</span>
+              <span>{{ formValidate.UpdateByName }}</span>
             </div>
           </div>
           <div class="footer_left2">
             <div>
-              <span>创建时间:2018/12/13/ 13:00:00</span>
+              <span>创建时间:</span>
+              <span>{{ formValidate.CreateOn }}</span>
             </div>
             <div>
-              <span>更新时间:2018/12/13/ 13:00:00</span>
+              <span>更新时间:</span>
+              <span>{{ formValidate.UpdateOn }}</span>
             </div>
           </div>
         </div>
+        <Button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="delete1 = true;"
+          v-if="del"
+        >删除</Button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -228,15 +233,36 @@
         </button>
       </div>
     </Modal>
+    <ruleValidate v-on:ruleValidate="ruleValidate"></ruleValidate>
   </div>
 </template>
 <script>
-import { GetEntities,GetEntity,Create,Update,Delete,BatchDelete1,Copy,DataDictionaryGetEntities,ValidateUnique } from "@/api/api";
+import ruleValidate from "_c/ruleValidate";
+import {
+  GetEntities,
+  GetEntity,
+  Create,
+  Update,
+  Delete,
+  BatchDelete,
+  Copy,
+  DataDictionaryGetEntities,
+  ValidateUnique,
+  DataDictionaryGetDataCatalog
+} from "@/api/api";
 export default {
+  components: {
+    ruleValidate
+  },
   inject: ["reload"],
   data() {
     return {
-      Interface:"SettlementCode",
+      ruleValidate1: {},
+      // 接口
+      Interface: "SettlementCode",
+      add: "",
+      see: "",
+      del: "",
       // 查询
       querySelectList: [
         {
@@ -259,7 +285,7 @@ export default {
       single: false,
       // 表格
       SettlementCodeTable: [
-        { type: "selection", width: 50, align: "center", fixed: "left" },
+        { type: "selection", width: 50, align: "center" },
         {
           title: "所属业务群",
           key: "BusinessGroup",
@@ -307,7 +333,7 @@ export default {
       SettlementCodeData: [],
       // 添加信息 弹出框
       // 所属业务群
-      BusinessGroupList: [{ value: "0", label: "比特易早教" }],
+      BusinessGroupList: "",
       // 结算方式下拉框循环数据
       SettleTypeList: [],
       // 可结算起始天下拉框循环数据
@@ -414,36 +440,34 @@ export default {
         AllowSun: true,
         ExcludeHoliday: true,
         SortKey: "",
-        Enabled: true
-      },
-     
-      // 表单验证
-      ruleValidate: {
-        // BusinessGroup: [
-        //   { required: true, message: "请选择所属业务群", trigger: "change" }
-        // ],
-        // Code: [
-        //   { required: true, message: "请输入结算规则代码", trigger: "blur" },
-        //   {
-        //     pattern: /^[0-9a-zA-Z]*$/g,
-        //     message: "结算规则代码必须是字母加数值",
-        //     trigger: "blur"
-        //   }
-        // ],
-        // Description: [
-        //   { required: true, message: "请输入结算规则描述", trigger: "blur" }
-        // ],
-        // SettleType: [
-        //   { required: true, message: "请选择结算方式", trigger: "blur" }
-        // ]
+        Enabld: true
       },
       // 删除信息弹出框
       delete1: false,
       BatchDeleteList: [],
-      delete: []
+      delete: [],
+      delete2: []
     };
   },
   methods: {
+    ruleValidate: function(ruleValidate) {
+      this.ruleValidate1 = ruleValidate;
+    },
+    AddList() {
+      this.AddDepartment = true;
+      this.formValidate = { brand_right: 0 };
+      let see = JSON.parse(sessionStorage.getItem("userInfo"));
+      this.formValidate.CreateByName = see.AccountName;
+      this.formValidate.BusinessGroup = see.BusinessUnit;
+      this.add = true;
+      this.del = false;
+      this.see = false;
+      this.ToDay = true;
+      this.FromDay = true;
+      this.ExcludeHoliday = true;
+      this.PeriodOfT = true;
+      this.Allow = false;
+    },
     // 结算方式下拉框选择事件
     setOption(value, type) {
       if (value.value == "0" || value.value == "2") {
@@ -483,40 +507,42 @@ export default {
     // 添加/查看修改加盟商结算规则信息
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
-        console.log("aaa")
-        if (valid && this.formValidate.Id == undefined) {
-          let Code = this.formValidate.Code;
-          let BusinessGroup = this.formValidate.BusinessGroup;
-          ValidateUnique(this.Interface, Code, BusinessGroup).then(res => {
-            if (res.data == true) {
-              Create(this.Interface, this.formValidate)
-                .then(res => {
-                  this.$Message.success("成功!");
-                  this.AddDepartment = false;
-                  this.reload();
-                  this.formValidate = { brand_right: 0 };
-                })
-                .catch(err => {
-                  console.log(err);
-                  this.reload();
-                  this.formValidate = { brand_right: 0 };
-                });
-            } else {
-              this.$Message.success("Code重复,请更改Code");
-            }
-          });
-        };
-        if(this.formValidate.Id){
-          Update(this.Interface, this.formValidate)
-        .then(res => {
-          this.$Message.success("修改成功!");
-          this.reload();
-        })
-        .catch(err => {
-          console.log(err);
-        });
+        if (valid) {
+          if (this.formValidate.Id == undefined) {
+            let Code = this.formValidate.Code;
+            let BusinessGroup = this.formValidate.BusinessGroup;
+            ValidateUnique(this.Interface, Code, BusinessGroup).then(res => {
+              if (res.data == true) {
+                Create(this.Interface, this.formValidate)
+                  .then(res => {
+                    this.$Message.success("成功!");
+                    this.AddDepartment = false;
+                    this.reload();
+                    this.formValidate = { brand_right: 0 };
+                  })
+                  .catch(err => {
+                    console.log(err);
+                    this.reload();
+                    this.formValidate = { brand_right: 0 };
+                  });
+              } else {
+                this.$Message.success("Code重复,请更改Code");
+              }
+            });
+          }
+          if (this.formValidate.Id) {
+            Update(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("修改成功!");
+                this.reload();
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        } else {
+          this.$Message.error("信息填写有误!");
         }
-        
       });
     },
     handleReset(name) {
@@ -525,10 +551,62 @@ export default {
     },
     // 删除数据接口
     deleteList() {
-      if (this.BatchDeleteList.length == 0) {
+      if (this.delete2.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
-        Delete(this.Interface, this.delete)
+        this.delete1 = true;
+      }
+    },
+    OneselectionId(selection,row) {
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete2.push(this.BatchDeleteList[i].Id);
+      }
+      function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+          if (temp.indexOf(array[i]) == -1) {
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      }
+      this.delete2 = uniq(this.delete2);
+    },
+    OnecancelselectionId(selection,row) {
+      function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+          if(arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
+      }
+      removeByValue(this.delete2,row.Id);
+    },
+    allselectionId(selection) {
+      console.log(this.delete2);
+       for (var i = 0; i < selection.length; i++) {
+        this.delete2.push(selection[i].Id);
+      }
+    },
+    allcancelselectionId(selection) {
+         this.delete2 = selection
+    },
+    ok() {
+      // console.log(this.delete2);
+      if (this.formValidate.Id == undefined) {
+        BatchDelete(this.Interface, this.delete2)
+          .then(res => {
+            this.$Message.success("删除成功!");
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error("删除失败!");
+            console.log(err);
+          });
+      } else {
+        Delete(this.Interface, this.formValidate.Id)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
@@ -539,17 +617,14 @@ export default {
           });
       }
     },
-    BatchDelete(selection) {
-      console.log(selection);
-      this.BatchDeleteList = selection;
-      for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete.push(this.BatchDeleteList[i].Id);
-      }
-    },
     //详情修改页面
     dblclickUpData(index) {
       this.AddDepartment = true;
+      this.add = false;
+      this.see = true;
       this.formValidate = index;
+      this.del = true;
+
       console.log(index);
       if (index.SettleType == "0" || index.SettleType == "2") {
         this.ToDay = false;
@@ -576,22 +651,15 @@ export default {
         this.PeriodOfT = true;
         this.Allow = true;
       }
-    },
- 
+    }
   },
   mounted() {
+    // 结算规则
+    this.SettleTypeList = JSON.parse(localStorage.SETTLE_TYPE);
     // 人员表格
     GetEntities(this.Interface, this.getTableData)
       .then(res => {
         this.SettlementCodeData = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    // 结算方式
-    DataDictionaryGetEntities("SETTLE_TYPE")
-      .then(res => {
-        this.SettleTypeList = res.data;
       })
       .catch(err => {
         console.log(err);

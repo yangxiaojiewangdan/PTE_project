@@ -77,10 +77,11 @@ export const Delete = (Interface, keyId) => {
     method: "post"
   });
 };
-//删除指定主键ID数据
+//批量删除数据
 export const BatchDelete = (Interface, keyId) => {
   return axios.request({
-    url: apiUrl + "/api/" + Interface + "/BatchDelete?keyId=" + keyId,
+    url: apiUrl + "/api/" + Interface + "/BatchDelete",
+    data: keyId,
     method: "post"
   });
 };
@@ -94,7 +95,7 @@ export const Copy = (Interface, keyId) => {
 // 获取组织树结构
 export const GetBusinessUnit = Interface => {
   return axios.request({
-    url: apiUrl + "/api/" + Interface + "/GetBusinessUnit",
+    url: apiUrl + "/api/" + Interface + "/GetBusinessUnit?businessGroup=*",
     method: "get"
   });
 };
@@ -113,28 +114,68 @@ export const DataDictionaryGetEntities = (dataCategory) => {
     method: "get"
   });
 };
-//未分配权限
-export const leftRole = params => {
+// 获取数据字典分类结构
+export const DataDictionaryGetDataCatalog = () => {
   return axios.request({
-    url: apiUrl + "/api/BusinessRole/GetUnAssignedPermission",
-    method: "get",
-    params,
+    url: apiUrl + "/api/DataDictionary/GetDataCatalog",
+    method: "get"
   });
+};
+
+
+//未分配权限
+export const GetUnAssignedPermission = (Interface,roleId) => {
+	return axios.request({
+		url: apiUrl + "/api/" + Interface + "/GetUnAssignedPermission?roleId=" + roleId,
+		method: "get",
+	});
 };
 //已分配权限
-export const rightRole = params => {
-  return axios.request({
-    url: apiUrl + "/api/BusinessRole/GetAssignedPermission",
-    method: "get",
-    params,
-    
-  });
+export const GetAssignedPermission = (Interface,roleId) => {
+	return axios.request({
+		url: apiUrl + "/api/" + Interface + "/GetAssignedPermission?roleId=" + roleId,
+		method: "get",
+	});
 };
 //增加删减权限接口
-export const branchRole = roleData => {
-  return axios.request({
-    url: apiUrl + "/api/BusinessRole/AssignedPermission",
-    method: "post",
-    data: roleData,
-  });
+export const AssignedPermission =  (Interface, Data) => {
+	return axios.request({
+		url: apiUrl + "/api/" + Interface + "/AssignedPermission",
+		method: "post",
+		data: Data,
+	});
 };
+
+//增加修改课程阶段
+export const AddOrUpdateCoursePhase = (Interface, Data) => {
+	return axios.request({
+		url: apiUrl + "/api/" + Interface + "/AddOrUpdateCoursePhase",
+		method: "post",
+		data: Data,
+	});
+};
+
+//删除 课程阶段
+export const CourseRemove = (CourseId, PhaseId) => {
+	return axios.request({
+		url: apiUrl + "/api/Course/RemovePhase?CourseId=" + CourseId + '&PhaseId=' + PhaseId,
+		method: "post",
+		//data:CourseRemoveData,
+	});
+};
+//添加课包明细接口
+export const AddOrUpdateCourse = (Interface, Data) => {
+	return axios.request({
+		url: apiUrl + "/api/" + Interface + "/AddOrUpdateCourse",
+		data: Data,
+		method: "post"
+	});
+};
+//添加课包价格接口
+export const AddOrUpdatePrice = (Interface, Data) => {
+	return axios.request({
+		url: apiUrl + "/api/" + Interface + "/AddOrUpdatePrice",
+		data: Data,
+		method: "post"
+	});
+}
