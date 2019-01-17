@@ -71,7 +71,7 @@
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button type="success" class="tableTops" @click="AddDepartment = true">添加</Button>
+				<Button type="success" class="tableTops" @click="AddDepartment = true;add=true;see=false;">添加</Button>
 				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -95,204 +95,24 @@
 		</Modal>
 		<!--添加弹框-->
 		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false" :styles="{top: '20px'}">
-			<Form ref="CustomerFrom" :model="CustomerFrom" :rules="ruleValidate" :label-width="80" inline>
-				<Row>
-					<Col span="20">
-					<!--<p class="lineTitle">基本信息</p>
-				<div class="lineTop"></div>-->
-					<Divider orientation="left" class='line'>基本信息</Divider>
-					<FormItem label="姓" prop="FirstName">
-						<Input v-model="CustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
-					</FormItem>
-					<FormItem label="名" prop="LastName">
-						<Input v-model="CustomerFrom.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
-					</FormItem>
-					<FormItem label="性别" prop="Gender">
-						<RadioGroup v-model="CustomerFrom.Gender" style="width: 200px;">
-							<Radio v-for="item in radioList" :label="item.Code">
-								<span>{{item.Description}}</span>
-							</Radio>
-						</RadioGroup>
-					</FormItem>
-					<Col span="20">
-					<FormItem label="昵称" prop="NickName">
-						<Input v-model="CustomerFrom.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
-					</FormItem>
-					<FormItem label="英文名" prop="EngName">
-						<Input v-model="CustomerFrom.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
-					</FormItem>
-					</Col>
-					<FormItem label="出生日期" prop="BrithDate">
-						<DatePicker @on-change="handleChange" type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
-					</FormItem>
-					</Col>
-					<Col span="4">
-					<FormItem label="">
-						<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 100px;">
-							<div style="padding: 5px">
-								<Icon type="ios-cloud-upload" size="50"></Icon>
-								<p>上传照片</p>
-							</div>
-						</Upload>
-					</FormItem>
-					<!--<FormItem label="普通照片">
-						<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
-							<div style="padding: 5px">
-								<Icon type="ios-cloud-upload" size="50"></Icon>
-							</div>
-						</Upload>
-					</FormItem>-->
-					</Col>
-				</Row>
-
-				<!--客源信息-->
-				<!--<p class="lineTitle">基本信息</p>
-				<div class="lineTop"></div>-->
-				<Divider orientation="left" class='line'>客源信息</Divider>
-				<FormItem label="客户类型" prop="CustomerType">
-					<Select v-model="CustomerFrom.CustomerType" style="width: 200px;">
-						<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
-					</Select>
-				</FormItem>
-
-				<FormItem label="会员类型" prop="MemberType">
-					<Select v-model="CustomerFrom.MemberType" style="width: 200px;">
-						<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
-
-					</Select>
-				</FormItem>
-				<FormItem label="会员号" prop="MemberNo">
-					<Input v-model="CustomerFrom.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<FormItem label="来源渠道" prop="ChannelCode">
-					<Select v-model="CustomerFrom.ChannelCode" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="市场分类" prop="MarketClass">
-					<Select v-model="CustomerFrom.MarketClass" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="市场代码" prop="MarketCode">
-					<Select v-model="CustomerFrom.MarketCode" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
-					</Select>
-				</FormItem>
-				<!--地址-->
-				<!--<p class="lineTitle">基本信息</p>
-				<div class="lineTop"></div>-->
-				<Divider orientation="left" class='line'>所在地址</Divider>
-				<FormItem label="所在省" prop="ProviceCode">
-					<Select v-model="CustomerFrom.ProviceCode" @on-change="SelectProviceCode" style="width:200px">
-						<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="所在市" prop="CityCode">
-					<Select v-model="CustomerFrom.CityCode" @on-change="SelectCityCode" style="width:200px">
-						<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name}}</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="所在县区" prop="DistinctCode">
-					<Select v-model="CustomerFrom.DistinctCode" style="width:200px">
-						<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="所在小区" prop="VillageCode">
-					<Select v-model="CustomerFrom.VillageCode" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="详细地址" prop="Address">
-					<Input v-model="CustomerFrom.Address" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<!--联系人信息-->
-				<!--<p class="lineTitle">基本信息</p>
-				<div class="lineTop"></div>-->
-				<Divider orientation="left" class='line'>联系人信息</Divider>
-				<FormItem label="家长姓名" prop="ContactName">
-					<Input v-model="CustomerFrom.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<FormItem label="家长手机" prop="ContactPhone">
-					<Input v-model="CustomerFrom.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<FormItem label="家长邮箱" prop="ContactEMail">
-					<Input v-model="CustomerFrom.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-				<FormItem label="业务部门" prop="BusinessUnit">
-					<Select v-model="CustomerFrom.BusinessUnit" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="负责人" prop="BusinessUnit">
-					<Select v-model="CustomerFrom.BusinessUnit" style="width: 200px;">
-						<Option value="beijing">New York</Option>
-						<Option value="shanghai">London</Option>
-						<Option value="shenzhen">Sydney</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="业务部门ID" prop="BusinessUnitId">
-					<Input v-model="CustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-
-				<FormItem label="负责人ID" prop="OwnerId">
-					<Input v-model="CustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
-				</FormItem>
-			</Form>
-			<div slot="footer">
-				<div class="footer_left">
-					<div class="footer_left1">
-						<div>
-							<span>创建人:闫子健</span>
-						</div>
-						<div>
-							<span>更新人:闫子健</span>
-						</div>
-					</div>
-					<div class="footer_left2">
-						<div>
-							<span>创建时间:2018/12/13/ 13:00:00</span>
-						</div>
-						<div>
-							<span>更新时间:2018/12/13/ 13:00:00</span>
-						</div>
-					</div>
-				</div>
-				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('CustomerFrom');AddDepartment = false;">
-          <span>取消</span>
-        </button>
-				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('CustomerFrom');">
-          <span>确定</span>
-        </button>
-			</div>
-		</Modal>
-		<!--修改弹框-->
-		<Modal v-model="upDepartment" scrollable width="1100" title="查看学员明细及添加联系人" :mask-closable="false" footer-hide :styles="{top: '20px'}">
-			<!--table标签-->
-			<Tabs value="name1">
-				<TabPane label="查看学员明细" name="name1">
-					<Form ref="upCustomerFrom" :model="upCustomerFrom" :rules="ruleValidate" :label-width="80" inline>
+			<p slot="header" style="text-align: left; line-height: 1;">
+				<span v-if="add">添加学员</span>
+				<span v-if="see">修改学员</span>
+			</p>
+			<Tabs value="name1" @on-click="tabsPage">
+				<!--添加学员-->
+				<TabPane label="添加学员" name="name1">
+					<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
 						<Row>
 							<Col span="20">
-							<Divider orientation="left" class='line'>基本信息</Divider>
 							<FormItem label="姓" prop="FirstName">
-								<Input v-model="upCustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
+								<Input v-model="formValidate.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
 							</FormItem>
 							<FormItem label="名" prop="LastName">
-								<Input v-model="upCustomerFrom.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
+								<Input v-model="formValidate.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
 							</FormItem>
 							<FormItem label="性别" prop="Gender">
-								<RadioGroup v-model="upCustomerFrom.Gender" style="width: 200px;">
+								<RadioGroup v-model="formValidate.Gender" style="width: 200px;">
 									<Radio v-for="item in radioList" :label="item.Code">
 										<span>{{item.Description}}</span>
 									</Radio>
@@ -300,17 +120,14 @@
 							</FormItem>
 							<Col span="20">
 							<FormItem label="昵称" prop="NickName">
-								<Input v-model="upCustomerFrom.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
+								<Input v-model="formValidate.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
 							</FormItem>
 							<FormItem label="英文名" prop="EngName">
-								<Input v-model="upCustomerFrom.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
+								<Input v-model="formValidate.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
 							</FormItem>
-							</Col span="4">
+							</Col>
 							<FormItem label="出生日期" prop="BrithDate">
-								<DatePicker type="date" placeholder="Select date" v-model="CustomerFrom.BrithDate" style="width: 200px;"></DatePicker>
-							</FormItem>
-							<FormItem label="月龄" prop="BornMonth">
-								<Input v-model="upCustomerFrom.BornMonth" readonly placeholder="Enter something..." readonly style="width: 200px;"></Input>
+								<DatePicker @on-change="handleChange" type="date" placeholder="Select date" v-model="formValidate.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
 							</FormItem>
 							</Col>
 							<Col span="4">
@@ -323,141 +140,122 @@
 								</Upload>
 							</FormItem>
 							<!--<FormItem label="普通照片">
-								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
-									<div style="padding: 5px">
-										<Icon type="ios-cloud-upload" size="50"></Icon>
-									</div>
-								</Upload>
-							</FormItem>-->
+						<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+							<div style="padding: 5px">
+								<Icon type="ios-cloud-upload" size="50"></Icon>
+							</div>
+						</Upload>
+					</FormItem>-->
 							</Col>
 						</Row>
+
+						<!--客源信息-->
+						<!--<p class="lineTitle">基本信息</p>
+				<div class="lineTop"></div>-->
 						<Divider orientation="left" class='line'>客源信息</Divider>
 						<FormItem label="客户类型" prop="CustomerType">
-							<Select v-model="upCustomerFrom.CustomerType" style="width: 200px;">
+							<Select v-model="formValidate.CustomerType" style="width: 200px;">
 								<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
 							</Select>
 						</FormItem>
 
 						<FormItem label="会员类型" prop="MemberType">
-							<Select v-model="upCustomerFrom.MemberType" style="width: 200px;">
+							<Select v-model="formValidate.MemberType" style="width: 200px;">
 								<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
 
 							</Select>
 						</FormItem>
 						<FormItem label="会员号" prop="MemberNo">
-							<Input v-model="upCustomerFrom.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
+							<Input v-model="formValidate.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 						<FormItem label="来源渠道" prop="ChannelCode">
-							<Select v-model="upCustomerFrom.ChannelCode" style="width: 200px;">
+							<Select v-model="formValidate.ChannelCode" style="width: 200px;">
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
 						<FormItem label="市场分类" prop="MarketClass">
-							<Select v-model="upCustomerFrom.MarketClass" style="width: 200px;">
+							<Select v-model="formValidate.MarketClass" style="width: 200px;">
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
 						<FormItem label="市场代码" prop="MarketCode">
-							<Select v-model="upCustomerFrom.MarketCode" style="width: 200px;">
+							<Select v-model="formValidate.MarketCode" style="width: 200px;">
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
-						<Divider orientation="left" class='line'>详细地址</Divider>
+						<!--地址-->
+						<!--<p class="lineTitle">基本信息</p>
+				<div class="lineTop"></div>-->
+						<Divider orientation="left" class='line'>所在地址</Divider>
 						<FormItem label="所在省" prop="ProviceCode">
-							<Select v-model="upCustomerFrom.ProviceCode" @on-change="SelectProviceCode" style="width: 200px;">
+							<Select v-model="formValidate.ProviceCode" @on-change="SelectProviceCode" style="width:200px">
 								<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 							</Select>
 						</FormItem>
 						<FormItem label="所在市" prop="CityCode">
-							<Select v-model="upCustomerFrom.CityCode" @on-change="SelectCityCode" style="width: 200px;">
-								<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+							<Select v-model="formValidate.CityCode" @on-change="SelectCityCode" style="width:200px">
+								<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name}}</Option>
 							</Select>
 						</FormItem>
 						<FormItem label="所在县区" prop="DistinctCode">
-							<Select v-model="upCustomerFrom.DistinctCode" style="width: 200px;">
+							<Select v-model="formValidate.DistinctCode" style="width:200px">
 								<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 							</Select>
 						</FormItem>
 						<FormItem label="所在小区" prop="VillageCode">
-							<Select v-model="upCustomerFrom.VillageCode" style="width: 200px;">
+							<Select v-model="formValidate.VillageCode" style="width: 200px;">
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
 						<FormItem label="详细地址" prop="Address">
-							<Input v-model="upCustomerFrom.Address" placeholder="Enter something..." style="width: 200px;"></Input>
+							<Input v-model="formValidate.Address" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
+						<!--联系人信息-->
+						<!--<p class="lineTitle">基本信息</p>
+				<div class="lineTop"></div>-->
 						<Divider orientation="left" class='line'>联系人信息</Divider>
 						<FormItem label="家长姓名" prop="ContactName">
-							<Input v-model="upCustomerFrom.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
+							<Input v-model="formValidate.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 						<FormItem label="家长手机" prop="ContactPhone">
-							<Input v-model="upCustomerFrom.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
+							<Input v-model="formValidate.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 						<FormItem label="家长邮箱" prop="ContactEMail">
-							<Input v-model="upCustomerFrom.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="业务部门ID" prop="BusinessUnitId">
-							<Input v-model="upCustomerFrom.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
+							<Input v-model="formValidate.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 						<FormItem label="业务部门" prop="BusinessUnit">
-							<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
+							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
-						</FormItem>
-						<FormItem label="负责人ID" prop="OwnerId">
-							<Input v-model="upCustomerFrom.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 						<FormItem label="负责人" prop="BusinessUnit">
-							<Select v-model="upCustomerFrom.BusinessUnit" style="width: 200px;">
+							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
+						<FormItem label="业务部门ID" prop="BusinessUnitId">
+							<Input v-model="formValidate.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
+
+						<FormItem label="负责人ID" prop="OwnerId">
+							<Input v-model="formValidate.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
+						</FormItem>
 					</Form>
-					<div id="footer">
-						<div class="footer_left">
-							<div class="footer_left1">
-								<div>
-									<span>创建人:闫子健</span>
-								</div>
-								<div>
-									<span>更新人:闫子健</span>
-								</div>
-							</div>
-							<div class="footer_left2">
-								<div>
-									<span>创建时间:2018/12/13/ 13:00:00</span>
-								</div>
-								<div>
-									<span>更新时间:2018/12/13/ 13:00:00</span>
-								</div>
-							</div>
-						</div>
-						<div class="btn">
-							<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleResetUp('upCustomerFrom');upDepartment = false;">
-          <span>取消</span>
-        </button>
-							<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmitUp('upCustomerFrom');">
-          <span>修改</span>
-        </button>
-						</div>
-
-					</div>
-
 				</TabPane>
-				<!--添加联系人信息-->
-				<TabPane label="添加联系人信息" name="name2">
+				<!--添加联系人-->
+				<TabPane label="添加联系人" name="name2">
 					<Form ref="AddCustomerFrom" :model="AddCustomerFrom" :rules="ruleValidate" :label-width="80" inline>
 						<Divider orientation="left" class='line'>基本信息</Divider>
 						<FormItem label="姓" prop="FirstName">
@@ -519,49 +317,50 @@
 							<Input v-model="AddCustomerFrom.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
 						</FormItem>
 					</Form>
-					<div id="footer2">
-						<div class="footer_left">
-							<div class="footer_left1">
-								<div>
-									<span>创建人:闫子健</span>
-								</div>
-								<div>
-									<span>更新人:闫子健</span>
-								</div>
-							</div>
-							<div class="footer_left2">
-								<div>
-									<span>创建时间:2018/12/13/ 13:00:00</span>
-								</div>
-								<div>
-									<span>更新时间:2018/12/13/ 13:00:00</span>
-								</div>
-							</div>
-						</div>
-						<div class="btn">
-							<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleResetAdd('AddCustomerFrom');upDepartment = false;">
-          <span>取消</span>
-        </button>
-							<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmitAdd('AddCustomerFrom');">
-          <span>添加</span>
-        </button>
-						</div>
-
-					</div>
-
 				</TabPane>
 			</Tabs>
+
+			<div slot="footer">
+				<div class="footer_left">
+					<div class="footer_left1">
+						<div>
+							<span>创建人:闫子健</span>
+						</div>
+						<div>
+							<span>更新人:闫子健</span>
+						</div>
+					</div>
+					<div class="footer_left2">
+						<div>
+							<span>创建时间:2018/12/13/ 13:00:00</span>
+						</div>
+						<div>
+							<span>更新时间:2018/12/13/ 13:00:00</span>
+						</div>
+					</div>
+				</div>
+				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset;AddDepartment = false;">
+          <span>取消</span>
+        </button>
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit()">
+          <span>确定</span>
+        </button>
+			</div>
 		</Modal>
 	</div>
 </template>
 <script>
-	import { CustomerData, DataDictionary, CustomerCreate, CustomerDelete, CustomerUp, CustomerQuery, CustomerContactCreate } from "@/api/data";
+	//	import { CustomerData, DataDictionary, CustomerCreate, CustomerDelete, CustomerUp, CustomerQuery, CustomerContactCreate } from "@/api/data";
 	import { DistrictGetProvince, DistrictGetArea } from "@/api/api";
+	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities } from '@/api/api'
 	export default {
 		inject: ['reload'],
 		name: 'CustomerProfile',
 		data() {
 			return {
+				add: "",
+				see: "",
+				Interface: "CustomerProfile",
 				//设置不可选日期
 				time: Date.now(),
 				options3: {
@@ -770,9 +569,8 @@
 					},
 				],
 				AddDepartment: false,
-				upDepartment: false,
 				delModal: false,
-				CustomerFrom: {
+				formValidate: {
 					FirstName: '',
 					LastName: '',
 					NickName: '',
@@ -791,35 +589,6 @@
 					DistinctCode: '',
 					VillageCode: '',
 					Address: '',
-					ContactName: '',
-					ContactPhone: '',
-					ContactEMail: '',
-					BusinessUnitId: '',
-					BusinessUnit: '',
-					OwnerId: '',
-					BusinessUnit: '',
-				},
-				upCustomerFrom: {
-					FirstName: '',
-					LastName: '',
-					NickName: '',
-					EngName: '',
-					CustomerType: '',
-					Gender: '',
-					BrithDate: '',
-					BornMonth: '',
-					MemberType: '',
-					MemberNo: '',
-					ChannelCode: '',
-					MarketClass: '',
-					MarketCode: '',
-					ProviceCode: '',
-					CityCode: '',
-					DistinctCode: '',
-					VillageCode: '',
-					Address: '',
-					IdPhotoUrl: '',
-					LifePhotoUrl: '',
 					ContactName: '',
 					ContactPhone: '',
 					ContactEMail: '',
@@ -853,10 +622,14 @@
 				//选中的数组id
 				batchArr: [],
 				queryDistinctCode: "",
-
+				aaa: 'name1',
 			}
 		},
 		methods: {
+			tabsPage(name) {
+				this.aaa = name;
+			},
+
 			SelectProviceCode(Id) {
 				DistrictGetArea(Id).then(res => {
 					this.city = res.data
@@ -887,7 +660,7 @@
 			},
 			//确定删除
 			ok() {
-				CustomerDelete(this.batchArr).then(res => {
+				BatchDelete(this.Interface, this.batchArr).then(res => {
 					this.$Message.success('删除成功!')
 					this.reload();
 				}).catch(err => {
@@ -900,28 +673,19 @@
 			},
 			//修改赋值
 			dblclickUpData(index) {
-				this.upDepartment = true;
-				this.upCustomerFrom = index;
+				this.add = false;
+				this.see = true;
+				this.AddDepartment = true;
+				this.formValidate = index;
 				console.log(index)
 				this.AddCustomerFrom.CustomerId = index.Id
-			},
-			//点击修改
-			handleSubmitUp() {
-				CustomerUp(this.upCustomerFrom).then(res => {
-					this.$Message.success("修改成功!");
-					this.reload();
-					console.log(res)
-				}).catch(err => {
-					console.log(err)
-					this.$Message.error("修改失败!");
-				})
 			},
 			handleResetUp() {
 				this.$Message.info('已取消添加部门');
 			},
 			// 点击全部查询全部数据
 			allinformationData() {
-				CustomerData(this.CustomerData1).then(res => {
+				GetEntities(this.Interface, this.CustomerData1).then(res => {
 					console.log(res)
 					this.RadioGroupStatus = '';
 					this.CustomerData = res.data;
@@ -930,42 +694,50 @@
 				});
 			},
 			//添加学员
-			handleSubmit(name) {
-				this.$refs[name].validate((valid) => {
-					if(valid) {
-						CustomerCreate(this.CustomerFrom).then( res=>{
-							console.log(res.data)
-							this.$Message.success('添加成功!');
-							this.reload();
-						}).catch( err=>{
-							console.log(err)
-							this.$Message.error('添加失败!');
-						})
-					} else {
-						this.$Message.error('失败!');
-					}
-				})
+			handleSubmit() {
+				if(this.aaa == "name1") {
+					this.$refs.formValidate.validate((valid) => {
+						if(valid && this.formValidate.Id == undefined) {
+							Create(this.Interface, this.formValidate).then(res => {
+								console.log(res.data)
+								this.$Message.success('添加成功,可以为他添加几个联系人哦!');
+								this.reload();
+							}).catch(err => {
+								console.log(err)
+								this.$Message.error('添加失败!');
+							})
+						} else {
+							Update(this.Interface, this.formValidate).then(res => {
+								this.$Message.success("修改成功!");
+								this.reload();
+								console.log(res)
+							}).catch(err => {
+								console.log(err)
+								this.$Message.error("修改失败!");
+							})
+						}
+					})
+				} else if(this.aaa == "name2") {
+					this.$refs.AddCustomerFrom.validate((valid) => {
+						if(valid) {
+							Create(this.Interface, this.AddCustomerFrom).then(res => {
+								console.log(res)
+								this.$Message.success('添加联系人成功!');
+								this.reload();
+							}).catch(err => {
+								this.$Message.error('添加失败!');
+								console.log(err)
+							})
+						} else {
+							this.$Message.error('失败!');
+						}
+					})
+				}
+
 			},
 			handleReset(name) {
 				this.$refs[name].resetFields();
 				this.$Message.info('已取消添加部门');
-			},
-			//添加联系人信息
-			handleSubmitAdd(name) {
-				this.$refs[name].validate((valid) => {
-					if(valid) {
-						CustomerContactCreate(this.AddCustomerFrom).then(res => {
-							console.log(res)
-							this.$Message.success('添加成功!');
-							this.reload();
-						}).catch(err => {
-							this.$Message.error('添加失败!');
-							console.log(err)
-						})
-					} else {
-						this.$Message.error('失败!');
-					}
-				})
 			},
 			handleResetAdd(name) {
 				this.$refs[name].resetFields();
@@ -974,7 +746,7 @@
 			//客户类型查询
 			queryCustomerDate(data) {
 				console.log(data)
-				CustomerQuery({
+				GetEntities(this.Interface, {
 					"Filters": [{
 						"Relational": 'Or',
 						"Conditions": [{
@@ -993,7 +765,7 @@
 			//会员类型
 			queryMemberDate(data) {
 				console.log(data)
-				CustomerQuery({
+				GetEntities(this.Interface, {
 					"Filters": [{
 						"Relational": 'Or',
 						"Conditions": [{
@@ -1011,18 +783,18 @@
 			},
 			//计算月龄
 			handleChange(showData) {
-				let time = new Date(showData)
-				let targetTime = time.valueOf();
-				let currentTime = (new Date()).valueOf();
-				let differenceTime = currentTime - targetTime;
-				let age = Math.floor(differenceTime / (30 * 24 * 60 * 60 * 1000))
-				this.CustomerFrom.BornMonth = age;
+				//				let time = new Date(showData)
+				//				let targetTime = time.valueOf();
+				//				let currentTime = (new Date()).valueOf();
+				//				let differenceTime = currentTime - targetTime;
+				//				let age = Math.floor(differenceTime / (30 * 24 * 60 * 60 * 1000))
+				//				this.CustomerFrom.BornMonth = age;
 			},
 
 		},
 		mounted() {
 			//获取表格数据
-			CustomerData(this.CustomerData1).then(res => {
+			GetEntities(this.Interface, this.CustomerData1).then(res => {
 				this.CustomerData = res.data;
 				console.log(res.data)
 				//				this.CustomerData.forEach(item => {
@@ -1039,50 +811,39 @@
 				console.log(err)
 			});
 			//性别
-			DataDictionary({
-				dataCategory: "GENDER_TYPE",
-				businessGroup: '*'
-			}).then(res => {
+			DataDictionaryGetEntities("GENDER_TYPE").then(res => {
 				this.radioList = res.data
 			}).catch(err => {
 				console.log(err)
 			});
 			//客户类型
-			DataDictionary({
-				dataCategory: "CUSTOMER_TYPE",
-				businessGroup: '*'
-			}).then(res => {
+			DataDictionaryGetEntities("CUSTOMER_TYPE").then(res => {
 				this.customerTypeData = res.data
 				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
 			//会员类型
-			DataDictionary({
-				dataCategory: "MEMBERSHIP_TYPE",
-				businessGroup: '*'
-			}).then(res => {
+			DataDictionaryGetEntities("MEMBERSHIP_TYPE").then(res => {
 				this.MemberTypeData = res.data
 				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
 			//关系、
-			DataDictionary({
-				dataCategory: "CUSTOMER_RELATION_TYPE",
-				businessGroup: '*'
-			}).then(res => {
+			DataDictionaryGetEntities("CUSTOMER_RELATION_TYPE").then(res => {
 				this.relationship = res.data
 				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
-			DistrictGetProvince().then(res => {
-				console.log(res.data)
-				this.province = res.data;
-			}).catch(err => {
-				console.log(err)
-			})
+
+			//			DistrictGetProvince().then(res => {
+			//				console.log(res.data)
+			//				this.province = res.data;
+			//			}).catch(err => {
+			//				console.log(err)
+			//			})
 
 		}
 	}

@@ -94,7 +94,7 @@ export const Copy = (Interface, keyId) => {
 // 获取组织树结构
 export const GetBusinessUnit = Interface => {
   return axios.request({
-    url: apiUrl + "/api/" + Interface + "/GetBusinessUnit?businessGroup=*",
+    url: apiUrl + "/api/" + Interface + "/GetBusinessUnit",
     method: "get"
   });
 };
@@ -111,5 +111,30 @@ export const DataDictionaryGetEntities = (dataCategory) => {
   return axios.request({
     url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=" + dataCategory + "&BusinessGroup=*",
     method: "get"
+  });
+};
+//未分配权限
+export const leftRole = params => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/GetUnAssignedPermission",
+    method: "get",
+    params,
+  });
+};
+//已分配权限
+export const rightRole = params => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/GetAssignedPermission",
+    method: "get",
+    params,
+    
+  });
+};
+//增加删减权限接口
+export const branchRole = roleData => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessRole/AssignedPermission",
+    method: "post",
+    data: roleData,
   });
 };

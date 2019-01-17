@@ -216,17 +216,8 @@
 </template>
 <script>
 	import treeTransfer from 'el-tree-transfer'
-	import {
-		getBusinessRolesData,
-		addBusinessRole,
-		deleteBusinessRole,
-		leftRole,
-		rightRole,
-		branchRole,
-		upBusinessRole,
-		queryBusinessRole,
-		DataDictionary,
-	} from '@/api/data'
+	import { GetEntities,GetEntity,Create,Update,Delete,BatchDelete,Copy,GetBusinessUnit,ValidateUnique,DataDictionaryGetEntities,leftRole,rightRole,branchRole} from '@/api/api'
+	import { GetAssignedPermission,GetUnAssignedPermission,AssignedPermission} from '@/api/data'
 	export default {
 		inject: ['reload'],
 		name: 'role',
@@ -234,7 +225,9 @@
 			treeTransfer
 		},
 		data() {
+			
 			return {
+				Interface:'BusinessRole',
 				model1: '',
 				loading: true,
 				value: '',
@@ -435,18 +428,16 @@
 				this.formRoleValidate = index;
 				this.roleId = index.Id;
 				//未分配的权限接口
-				leftRole({
-					roleId: this.roleId
-				}).then(res => {
+				GetUnAssignedPermission(this.Interface,
+					this.roleId
+				).then(res => {
 					this.fromData = res.data;
 				}).catch(err => {
 					console.log(err)
 				});
 				//已分配的权限接口
-				rightRole({
-					roleId: this.roleId
-				}).then(res => {
-					this.toData = res.data
+				GetAssignedPermission(this.Interface,this.roleId).then(res => {
+					this.toData = res.data	
 					console.log(this.toData)
 				}).catch(err => {
 					console.log(err)
@@ -463,7 +454,7 @@
 					})
 				})
 				//调用增删权限的接口
-				branchRole({
+				AssignedPermission(this.Interface,{
 					RoleId: this.roleId,
 					PermissionItemCollection: this.toDataRole
 				}).then(res => {
@@ -482,7 +473,7 @@
 					})
 				})
 				//调用增删权限的接口
-				branchRole({
+				AssignedPermission(this.Interface,{
 					RoleId: this.roleId,
 					PermissionItemCollection: this.tofromDataRole
 				}).then(res => {
@@ -503,7 +494,7 @@
 			},
 			// 删除信息 弹出框函数
 			ok() {
-				deleteBusinessRole(this.delBusinessRoleArrs).then(res => {
+				BatchDelete(this.Interface,this.delBusinessRoleArrs).then(res => {
 					this.$Message.success('删除成功!')
 					this.reload();
 				}).catch(err => {
@@ -527,7 +518,7 @@
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
 					if(valid) {
-						addBusinessRole(this.formValidate).then(res => {
+						Create(this.Interface,this.formValidate).then(res => {
 							console.log(res)
 							this.$Message.success('成功!');
 						}).catch(err => {
@@ -549,7 +540,7 @@
 				this.$refs[name].validate((valid) => {
 					if(valid) {
 						//修改信息的接口
-						upBusinessRole(this.formRoleValidate).then(res => {
+						Updata(this.Interface,this.formRoleValidate).then(res => {
 							this.$Message.success('修改成功!')
 						}).catch(err => {
 							console.log(err)
@@ -569,17 +560,14 @@
 		},
 		mounted() {
 			//获取data信息
-			getBusinessRolesData(this.BusinessRolesData).then(res => {
+			GetEntities(this.Interface,this.BusinessRolesData).then(res => {
 				this.data1 = res.data;
 				this.loading = false;
 			}).catch(err => {
 				console.log(err)
 			});
 			//获取数据字典
-			DataDictionary({
-				dataCategory: "DATA_PERMISSION_LEVEL",
-				businessGroup: '*'
-			}).then(res => {
+			DataDictionaryGetEntities("DATA_PERMISSION_LEVEL").then(res => {
 				this.radioList = res.data
 			}).catch(err => {
 				console.log(err)

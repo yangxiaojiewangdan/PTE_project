@@ -273,8 +273,9 @@
 </template>
 <script>
 	import Tables from "_c/tables";
-	import { CourseData, DataDictionary,CoursePackageCreate,CoursePackageGet} from '@/api/data'
-	import { BusinessStoreGetEntities } from '@/api/api'
+	import { AddOrUpdateCourse, AddOrUpdatePrice } from '@/api/data'
+	//	import { BusinessStoreGetEntities } from '@/api/api'
+	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities } from '@/api/api'
 	export default {
 		name: 'classPackage',
 		components: {
@@ -283,6 +284,7 @@
 		inject: ["reload"],
 		data() {
 			return {
+				Interface: 'CoursePackage',
 				//课程数组
 				CourseData: [],
 				//课包类型
@@ -304,12 +306,13 @@
 				querySelect: "",
 				querySelectList: '',
 				queryvalue: '',
-				qixian:false,
-				keshi:false,
+				qixian: false,
+				keshi: false,
 				AddDepartment: false,
 				delModal: false,
 				AddDetail: false,
 				AddPrise: false,
+				//添加弹框表单表头
 				CoursePackage: [{
 						type: "selection",
 						width: 45
@@ -337,6 +340,20 @@
 						key: "PackageType",
 						sortable: true,
 						width: 110,
+						render: (h, params) => {
+							let texts = "";
+							if(params.row.PackageType == 0) {
+								texts = "课时包";
+							} else if(params.row.PackageType == 1) {
+								texts = "固定期限";
+							}
+							return h(
+								"div", {
+									props: {}
+								},
+								texts
+							);
+						},
 					},
 					{
 						title: "课包代码",
@@ -560,6 +577,7 @@
 
 					},
 				],
+				//表格数组
 				CoursePackageData: [],
 				//表单
 				CousreFrom: {
@@ -689,19 +707,25 @@
 					LimitPrice: '',
 					AllowDiscount: '',
 				},
+				//课包Id
+				packageId: '',
+				packageDetail: [],
+				packagePrise: [],
+				//勾选中的数组的Id
+				BatchDeleteList: [],
 			}
 		},
 		methods: {
-			 setOption(value, type) {
-			 	console.log(value)
-			 	if (value === 0 ) {
-			        this.keshi = true;
-			        this.qixian = false;
-			      }else if(value === 1){
-			      	this.keshi = false;
-			      	this.qixian = true;
-			      }
-			 },
+			//判断课包类型
+			setOption(value, type) {
+				if(value === 0) {
+					this.keshi = true;
+					this.qixian = false;
+				} else if(value === 1) {
+					this.keshi = false;
+					this.qixian = true;
+				}
+			},
 			//查询全部
 			allinformationData() {
 
@@ -709,23 +733,50 @@
 			queryData() {
 
 			},
+			//删除数组
 			deleteList() {
-
+				if(this.BatchDeleteList.length == 0) {
+					this.$Message.info("请先选中删除的数据");
+				} else {
+					this.delModal = true;
+				}
 			},
-			BatchDelete() {
+			BatchDelete(selection) {
+				for(var i = 0; i < selection.length; i++) {
+					this.BatchDeleteList.push(selection[i].Id);
+				};
 
+				function uniq(array) {
+					var temp = []; //一个新的临时数组
+					for(var i = 0; i < array.length; i++) {
+						if(temp.indexOf(array[i]) == -1) {
+							temp.push(array[i]);
+						}
+					}
+					return temp;
+				};
+				console.log(uniq(this.BatchDeleteList))
 			},
 			CancelBatchDelete() {
 
 			},
-			dblclickUpData() {
-
+			dblclickUpData(index) {
+				console.log(index)
 			},
+
+			//确定删除
 			ok() {
-
+				BatchDelete(this.Interface, this.BatchDeleteList).then(res => {
+					console.log(res)
+					this.reload();
+				}).catch(err => {
+					console.log(err)
+				})
 			},
+			//取消删除
 			cancel() {
-
+				this.$refs[name].resetFields();
+				this.$Message.info('已取消');
 			},
 			handleDeleteDetail() {
 
@@ -775,7 +826,7 @@
 			},
 			handleSubmit(name) {
 				this.$refs[name].validate(valid => {
-					if(valid) {
+					if(valid && this.CousreFrom.Id == undefined) {
 						//存课包明细信息
 						localStorage.setItem(
 							"DetailedPackage",
@@ -787,34 +838,69 @@
 							JSON.stringify(this.PricePackage)
 						);
 						//接口发送上边的data
-						CoursePackageCreate(this.CousreFrom).then( res=>{
+						Create(this.Interface, this.CousreFrom).then(res => {
 							console.log(res.data)
-						}).catch(err=>{
+							//拿课包的Id和明细价格
+							this.packageId = res.data.Data.Id
+							this.packageDetail = JSON.parse(
+								localStorage.DetailedPackage
+							);
+							this.packagePrise = JSON.parse(
+								localStorage.PricePackage
+							);
+							if(res.data.ErrCode === '0') {
+								AddOrUpdateCourse(this.Interface, {
+									PackageId: this.packageId,
+									CourseCollection: this.packageDetail
+								}).then(res => {
+									console.log(res)
+								}).catch(err => {
+									console.log(err)
+								})
+								AddOrUpdatePrice(this.Interface, {
+									PackageId: this.packageId,
+									PriceCollection: this.packagePrise
+								}).then(res => {
+									console.log(res)
+								}).catch(err => {
+									console.log(err)
+								})
+							}
+						}).catch(err => {
 							console.log(err)
 						})
 
+					} else {
+						//						//更新
+						//						Update(this.Interface,this.CousreFrom).then(res=>{
+						//							console.log(res)
+						//						}).catch(err=>{
+						//							console.log(err)
+						//						})
 					}
 				})
-			}
+			},
+			//删除
+
 		},
 		mounted() {
 			//获取课包
-			CoursePackageGet(this.getTableData).then(res=>{
+			GetEntities(this.Interface, this.getTableData).then(res => {
 				console.log(res)
 				this.CoursePackageData = res.data
 				console.log(this.CoursePackageData)
-			}).catch(err=>{
+			}).catch(err => {
 				console.log(err)
 			})
 			//获取课程接口
-			CourseData(this.getTableData).then(res => {
+			GetEntities(this.Interface, this.getTableData).then(res => {
 				this.CourseData = res.data;
 				console.log(this.CourseData)
 			}).catch(err => {
 				console.log(err)
 			})
 			//门店Id
-			BusinessStoreGetEntities(this.getTableData).then(res => {
+			GetEntities(this.Interface, this.getTableData).then(res => {
 				console.log(res)
 				this.store = res.data
 				console.log(this.store)
@@ -822,10 +908,7 @@
 				console.log(err)
 			})
 			//课包类型
-			DataDictionary({
-				dataCategory: "PACKAGE_TYPE",
-				businessGroup: '*'
-			}).then(res => {
+			DataDictionaryGetEntities("PACKAGE_TYPE").then(res => {
 				this.ClassPackage = res.data;
 				console.log(this.ClassPackage)
 			}).catch(err => {

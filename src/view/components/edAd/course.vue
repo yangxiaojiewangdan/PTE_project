@@ -68,23 +68,47 @@
 			<h2>确定删除此数据？</h2>
 		</Modal>
 		<!--添加信息弹框-->
-		<Modal v-model="AddDepartment" width="1000" title="添加课程信息" :mask-closable="false">
-			<Form ref="CourseForm" :model="CourseForm" :rules="ruleValidate" :label-width="85" inline>
+		<Modal v-model="AddDepartment" width="800" title="添加课程信息" :mask-closable="false" :styles="{top: '20px'}">
+			<Form ref="CourseForm" :model="CourseForm" :rules="ruleValidate" :label-width="90" inline>
 				<Row>
-					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加课程信息</Divider>
-					<FormItem label="课程代码" prop="Code">
-						<Input v-model="CourseForm.Code" placeholder="请输入" style="width:200px"></Input>
+					<Col span="24">
+					<FormItem label="所属业务群" prop="BusinessGroup">
+						<!--<Select v-model="CourseForm.BusinessGroup" style="width:200px" disabled>
+							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>-->
+						<Input v-model="CourseForm.BusinessGroup" placeholder="请输入" disabled style="width:200px"></Input>
 					</FormItem>
 
-					<FormItem label="课程名称" prop="CousreName">
-						<Input v-model="CourseForm.CousreName" placeholder="请输入" style="width:200px"></Input>
+					<FormItem label="业务类型" prop="BusinessType">
+						<Select v-model="CourseForm.BusinessType" style="width:200px">
+							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="24">
+					<FormItem label="上级代码" prop="ParentId">
+						<!--<Select v-model="CourseForm.ParentId" style="width:200px">
+							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>-->
+						<Input v-model="CourseForm.ParentId" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					<FormItem label="课程类型" prop="CourseType">
 						<Select v-model="CourseForm.CourseType" style="width:200px">
 							<Option v-for="item in radioList" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
-
+					</Col>
+					<Col span="24">
+					<FormItem label="课程代码" prop="Code">
+						<Input v-model="CourseForm.Code" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					</Col>
+					<Col span="24">
+					<FormItem label="课程名称" prop="CousreName">
+						<Input v-model="CourseForm.CousreName" placeholder="请输入" style="width:500px"></Input>
+					</FormItem>
+					</Col>
+					<Col span="24">
 					<FormItem label="课时数" prop="Periods">
 						<Input v-model="CourseForm.Periods" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
@@ -93,27 +117,13 @@
 							<Option v-for="item in Destruction" :value="item.Id">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
-					<FormItem label="上级代码" prop="ParentId">
-						<Input v-model="CourseForm.ParentId" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="所属业务群" prop="BusinessGroup">
-						<!--<Select v-model="CourseForm.BusinessGroup" style="width:200px">
-							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-						</Select>-->
-						<Input v-model="CourseForm.BusinessGroup" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-
-					<FormItem label="业务类型" prop="BusinessType">
-						<Select v-model="CourseForm.BusinessType" style="width:200px">
-							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-						</Select>
-					</FormItem>
-					<Col span="18">
+					</Col>
+					<Col span="24">
 					<FormItem label="课程描述" prop="Description">
-						<Input v-model="CourseForm.Description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width: 600px;"></Input>
+						<Input v-model="CourseForm.Description" type="textarea" :autosize="{minRows: 3,maxRows: 5}" placeholder="请输入" style="width: 500px;"></Input>
 					</FormItem>
 					</Col>
-					<Col span="6">
+					<Col span="24">
 					<FormItem label="启用" prop="Enabled">
 						<i-switch v-model="CourseForm.Enabled" size="large">
 							<span slot="open">On</span>
@@ -123,12 +133,12 @@
 					</Col>
 				</Row>
 				<Row>
-					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加阶段信息</Divider>
-					<!--阶段信息表-->
+					<div class="line">
+						课程阶段明细
+					</div>
+					<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete" border stripe height="200" />
 
-					<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete" border stripe />
-
-					<Button type="info" @click="AddRoyalty = true">
+					<Button type="info" @click="AddRoyalty = true" class="addMessage">
               <Icon type="md-add"/>添加阶段信息
             </Button>
 				</Row>
@@ -155,40 +165,43 @@
 		<!-- 添加阶段信息-->
 		<Modal v-model="AddRoyalty" width="700" title="添加课程阶段信息" :mask-closable="false">
 			<Form ref="stageForm" :model="stageForm" :rules="ruleValidate" :label-width="85" inline>
-				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程阶段详情</Divider>
-				<FormItem label="课程Id" prop="CousreId">
-					<Input v-model="stageForm.CousreId" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="阶段名称" prop="PhaseName">
-					<Input v-model="stageForm.PhaseName" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="阶段描述" prop="Description">
-					<Input v-model="stageForm.Description" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="销课划课方式" prop="CountType">
-					<Select v-model="CourseForm.CountType" style="width:200px">
-						<Option v-for="item in Destruction" :value="item.Id">{{ item.Description}}</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="课时数" prop="Periods">
-					<Input v-model="stageForm.Periods" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="课时长" prop="Duration">
-					<Input v-model="stageForm.Duration" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程适合年龄</Divider>
-				<FormItem label="适合最小月龄" prop="MinMonth">
-					<Input v-model="stageForm.MinMonth" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="适合最大月龄" prop="MaxMonth">
-					<Input v-model="stageForm.MaxMonth" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="适合最小年龄" prop="MinAge">
-					<Input v-model="stageForm.MinAge" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="适合最大年龄" prop="MaxAge">
-					<Input v-model="stageForm.MaxAge" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
+				<Row>
+					<FormItem label="课程Id" prop="CousreId">
+						<Input v-model="stageForm.CousreId" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="阶段名称" prop="PhaseName">
+						<Input v-model="stageForm.PhaseName" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="课时数" prop="Periods">
+						<Input v-model="stageForm.Periods" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="课时长" prop="Duration">
+						<Input v-model="stageForm.Duration" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<Col span="24">
+					<FormItem label="销课划课方式" prop="CountType">
+						<Select v-model="CourseForm.CountType" style="width:200px">
+							<Option v-for="item in Destruction" :value="item.Id">{{ item.Description}}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<FormItem label="阶段描述" prop="Description">
+						<Input v-model="stageForm.Description" type="textarea" :autosize="{minRows: 3,maxRows: 5}" placeholder="请输入" style="width:500px"></Input>
+					</FormItem>
+
+					<FormItem label="适合最小月龄" prop="MinMonth">
+						<Input v-model="stageForm.MinMonth" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="适合最大月龄" prop="MaxMonth">
+						<Input v-model="stageForm.MaxMonth" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="适合最小年龄" prop="MinAge">
+						<Input v-model="stageForm.MinAge" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem label="适合最大年龄" prop="MaxAge">
+						<Input v-model="stageForm.MaxAge" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+				</Row>
 			</Form>
 			<div slot="footer">
 				<div class="footer_left">
@@ -206,148 +219,12 @@
                     </button>
 			</div>
 		</Modal>
-		<!--修改弹框-->
-		<Modal v-model="UpDepartment" width="1000" title="修改课程信息" :mask-closable="false">
-			<Form ref="UpCourseForm" :model="UpCourseForm" :rules="ruleValidate" :label-width="85" inline>
-				<Row>
-					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">修改课程信息</Divider>
-					<FormItem label="课程代码" prop="Code">
-						<Input v-model="UpCourseForm.Code" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-
-					<FormItem label="课程名称" prop="CousreName">
-						<Input v-model="UpCourseForm.CousreName" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="课程类型" prop="CourseType">
-						<Select v-model="UpCourseForm.CourseType" style="width:200px">
-							<Option v-for="item in radioList" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
-						</Select>
-					</FormItem>
-
-					<FormItem label="课时数" prop="Periods">
-						<Input v-model="UpCourseForm.Periods" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="销课划课方式" prop="CountType">
-						<Select v-model="UpCourseForm.CountType" style="width:200px">
-							<Option v-for="item in Destruction" :value="item.Id">{{ item.Description }}</Option>
-						</Select>
-					</FormItem>
-					<FormItem label="上级代码" prop="ParentId">
-						<Input v-model="UpCourseForm.ParentId" placeholder="请输入" style="width:200px"></Input>
-					</FormItem>
-					<FormItem label="所属业务群" prop="BusinessGroup">
-						<Select v-model="UpCourseForm.BusinessGroup" style="width:200px">
-							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-						</Select>
-					</FormItem>
-
-					<FormItem label="业务类型" prop="BusinessType">
-						<Select v-model="UpCourseForm.BusinessType" style="width:200px">
-							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-						</Select>
-					</FormItem>
-					<Col span="18">
-					<FormItem label="课程描述" prop="Description">
-						<Input v-model="UpCourseForm.Description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width: 600px;"></Input>
-					</FormItem>
-					</Col>
-					<Col span="6">
-					<FormItem label="启用" prop="Enabled">
-						<i-switch v-model="UpCourseForm.Enabled" size="large">
-							<span slot="open">On</span>
-							<span slot="close">Off</span>
-						</i-switch>
-					</FormItem>
-					</Col>
-				</Row>
-				<Row>
-					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">阶段信息</Divider>
-					<!--阶段信息表-->
-
-					<tables disabled-hover search-place="top" ref="tables" size="small" border stripe v-model="seedataRoyaltyCodeDetail" :columns="seecolumnsRoyaltyCodeDetail" @on-delete="handleDelete" />
-					<Button type="info" @click="UpRoyalty = true">
-              <Icon type="md-add"/>添加阶段信息
-           </Button>
-				</Row>
-			</Form>
-			<div slot="footer">
-				<div class="footer_left">
-					<div class="footer_left1">
-						<div><span>创建人:闫子健</span></div>
-						<div><span>更新人:闫子健</span></div>
-					</div>
-					<div class="footer_left2">
-						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
-						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
-					</div>
-				</div>
-				<!--<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="UphandleReset('UpCourseForm');AddDepartment = false;">
-                        <span>取消</span>
-                    </button>-->
-				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="UphandleSubmit('UpCourseForm');">
-                        <span>修改</span>
-                    </button>
-			</div>
-		</Modal>
-		<!--修改信息-->
-		<Modal v-model="UpRoyalty" width="700" title="添加课程阶段信息" :mask-closable="false">
-			<Form ref="UpstageForm" :model="UpstageForm" :rules="ruleValidate" :label-width="85" inline>
-				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程阶段详情</Divider>
-				<FormItem label="课程Id" prop="CousreId">
-					<Input v-model="UpstageForm.CousreId" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="阶段名称" prop="PhaseName">
-					<Input v-model="UpstageForm.PhaseName" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="阶段描述" prop="Description">
-					<Input v-model="UpstageForm.Description" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="销课划课方式" prop="CountType">
-					<Select v-model="CourseForm.CountType" style="width:200px">
-						<Option v-for="item in Destruction" :value="item.Id">{{ item.Description }}</Option>
-					</Select>
-				</FormItem>
-				<FormItem label="课时数" prop="Periods">
-					<Input v-model="UpstageForm.Periods" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="课时长" prop="Duration">
-					<Input v-model="UpstageForm.Duration" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课程适合年龄</Divider>
-				<FormItem label="适合最小月龄" prop="MinMonth">
-					<Input v-model="UpstageForm.MinMonth" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="适合最大月龄" prop="MaxMonth">
-					<Input v-model="UpstageForm.MaxMonth" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="适合最小年龄" prop="MinAge">
-					<Input v-model="UpstageForm.MinAge" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-				<FormItem label="适合最大年龄" prop="MaxAge">
-					<Input v-model="UpstageForm.MaxAge" placeholder="请输入" style="width:200px"></Input>
-				</FormItem>
-			</Form>
-			<div slot="footer">
-				<div class="footer_left">
-					<div class="footer_left1">
-						<div><span>创建人:闫子健</span></div>
-						<div><span>更新人:闫子健</span></div>
-					</div>
-					<div class="footer_left2">
-						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
-						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
-					</div>
-				</div>
-				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="UpstagehandleSubmit('UpstageForm');">
-                        <span>保存</span>
-                    </button>
-			</div>
-		</Modal>
 	</div>
 </template>
 <script>
 	import Tables from "_c/tables";
-	import { CourseData, CourseCreate, CoursePhase, DataDictionary, CourseDelete, CourseRemove, CourseUpData } from '@/api/data'
+	import {CourseRemove,AddOrUpdateCoursePhase} from '@/api/data'
+	import { GetEntities,GetEntity,Create,Update,Delete,BatchDelete,Copy,GetBusinessUnit,ValidateUnique,DataDictionaryGetEntities} from '@/api/api'
 	export default {
 		name: 'drag_list_page',
 		components: {
@@ -356,6 +233,7 @@
 		inject: ["reload"],
 		data() {
 			return {
+				Interface:"Course",
 				button1: '',
 				querySelect: '',
 				querySelectList: '',
@@ -408,6 +286,20 @@
 					{
 						title: "课程类型",
 						key: "CourseType",
+						render: (h, params) => {
+							let texts = "";
+							if(params.row.CourseType == 0) {
+								texts = "核心主课";
+							} else if(params.row.CourseType == 1) {
+								texts = "辅课";
+							}
+							return h(
+								"div", {
+									props: {}
+								},
+								texts
+							);
+						},
 
 						sortable: true
 					},
@@ -455,20 +347,10 @@
 						sortable: true
 					},
 				],
-				ruleValidate: {},
-				CourseForm: {
-					ParentId: "",
-					BusinessGroup: '*',
-					BusinessType: '',
-					Code: '',
-					CousreName: '',
-					Description: '',
-					CourseType: '',
-					Periods: '',
-					CountType: '',
-					Enabled: true,
+				ruleValidate: {
+					
 				},
-				UpCourseForm: {
+				CourseForm: {
 					ParentId: "",
 					BusinessGroup: '',
 					BusinessType: '',
@@ -494,74 +376,7 @@
 					},
 				],
 				dataRoyaltyCodeDetail: [],
-				seedataRoyaltyCodeDetail: [],
 				columnsRoyaltyCodeDetail: [{
-						title: "课程Id",
-						key: "CousreId",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "阶段名称",
-						key: "PhaseName",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "阶段描述",
-						key: "Description",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "销课方式",
-						key: "CountType",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "课时数",
-						key: "Periods",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "课时长",
-						key: "Duration",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "适合最小月龄",
-						key: "MinMonth",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "适合最大月龄",
-						key: "MaxMonth",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "适合最小年龄",
-						key: "MinAge",
-						width: 150,
-						editable: true
-					}, {
-						title: "适合最大年龄",
-						key: "MaxAge",
-						width: 150,
-						editable: true
-					},
-					{
-						title: "操作",
-						key: "handle",
-						width: 70,
-						options: ["delete"]
-					}
-				],
-				seecolumnsRoyaltyCodeDetail: [{
 						title: "课程Id",
 						key: "CousreId",
 						width: 150,
@@ -639,18 +454,6 @@
 					MinAge: '',
 					MaxAge: '',
 				},
-				UpstageForm: {
-					CousreId: "",
-					PhaseName: '',
-					Description: '',
-					CountType: '',
-					Periods: '',
-					Duration: '',
-					MinMonth: '',
-					MaxMonth: '',
-					MinAge: '',
-					MaxAge: '',
-				},
 				//多选选中的ID
 				BatchDeleteList: [],
 				aaa: [],
@@ -664,6 +467,7 @@
 				for(var i = 0; i < selection.length; i++) {
 					this.BatchDeleteList.push(selection[i].Id);
 				}
+
 				function uniq(array) {
 					var temp = []; //一个新的临时数组
 					for(var i = 0; i < array.length; i++) {
@@ -679,201 +483,214 @@
 			//			//取消勾选的数据
 			CancelBatchDelete(selection) {
 				//console.log(selection)
-//				for(var i = 0; i < selection.length; i++) {
-//					this.aaa = selection[i].Id;
-//				}
-//				console.log(this.aaa)
-//			
-		},
-		wowowo(selection) {
-							//console.log(selection)
-			//				console.log(selection.Id)
-			//				selection.forEach(item => {
-			//					console.log(item.Id)
-			//					this.BatchDeleteList.push(item.Id)
-			//				})
-			//console.log(this.BatchDeleteList)
+				//				for(var i = 0; i < selection.length; i++) {
+				//					this.aaa = selection[i].Id;
+				//				}
+				//				console.log(this.aaa)
+				//			
+			},
+			wowowo(selection) {
+				//console.log(selection)
+				//				console.log(selection.Id)
+				//				selection.forEach(item => {
+				//					console.log(item.Id)
+				//					this.BatchDeleteList.push(item.Id)
+				//				})
+				//console.log(this.BatchDeleteList)
 
-		},
-		//添加课程并添加阶段
-		handleSubmit(name) {
-			this.$refs[name].validate((valid) => {
-				//保存阶段信息
-				localStorage.setItem(
-					"dataRoyaltyCodeDetail",
-					JSON.stringify(this.dataRoyaltyCodeDetail)
-				);
-				if(valid) {
-					CourseCreate(this.CourseForm).then(res => {
-						console.log(res.data);
-						let Id = res.data.Data.Id;
-						let DetailCollection = JSON.parse(
-							localStorage.dataRoyaltyCodeDetail
+			},
+			//添加课程并添加阶段
+			handleSubmit(name) {
+				this.$refs[name].validate((valid) => {
+					if(valid && this.CourseForm.Id == undefined) {
+						//保存阶段信息
+						localStorage.setItem(
+							"dataRoyaltyCodeDetail",
+							JSON.stringify(this.dataRoyaltyCodeDetail)
 						);
-						if(res.data.ErrCode === '0') {
-							CoursePhase({
-								CourseId: Id,
-								CoursePhaseCollection: DetailCollection
-							}).then(res => {
-								console.log(res.data)
-								this.$Message.success('添加成功!');
-								localStorage.removeItem("dataRoyaltyCodeDetail");
-								this.CourseForm = {
-									brand_right: 0
-								};
-								this.reload();
-							}).catch(err => {
-								console.log(err)
-							})
-						}
-					}).catch(err => {
-						console.log(err)
-					})
-				} else {
-					this.$Message.error('失败!');
-				}
-			})
-		},
-		//取消添加
-		handleReset(name) {
-			this.$refs[name].resetFields();
-			this.$Message.info('已取消添加课程信息');
-		},
-		//保存阶段信息按钮
-		stagehandleSubmit(name) {
-			this.$refs[name].validate(valid => {
-				if(valid) {
-					this.dataRoyaltyCodeDetail.push(this.stageForm);
-					this.stageForm = {
-						brand_right: 0
-					};
-					this.AddRoyalty = false;
-				}
-			});
-		},
-		UpstagehandleSubmit(name) {
-			this.$refs[name].validate(valid => {
-				if(valid) {
-					this.seedataRoyaltyCodeDetail.push(this.UpstageForm);
-					this.UpstageForm = {
-						brand_right: 0
-					};
-					this.UpRoyalty = false;
-					//存添加的阶段信息
-					localStorage.setItem(
-						"dataRoyaltyCodeDetail",
-						JSON.stringify(this.seedataRoyaltyCodeDetail)
-					);
-					let DetailCollection = JSON.parse(localStorage.dataRoyaltyCodeDetail);
-					CoursePhase({
-						CourseId: this.CourseId,
-						CoursePhaseCollection: DetailCollection
-					}).then(res => {
-						console.log(res.data);
-						this.$Message.success("成功!");
-						this.UpstageForm = {
+						Create(this.Interface,this.CourseForm).then(res => { 
+							console.log(res.data);
+							let Id = res.data.Data.Id;
+							let DetailCollection = JSON.parse(
+								localStorage.dataRoyaltyCodeDetail
+							);
+							if(res.data.ErrCode === '0') {
+								AddOrUpdateCoursePhase(this.Interface,{
+									CourseId: Id,
+									CoursePhaseCollection: DetailCollection
+								}).then(res => {
+									console.log(res.data)
+									this.$Message.success('添加成功!');
+									localStorage.removeItem("dataRoyaltyCodeDetail");
+									this.CourseForm = {
+										brand_right: 0
+									};
+									this.reload();
+								}).catch(err => {
+									console.log(err)
+								})
+							}
+						}).catch(err => {
+							console.log(err)
+						})
+					} else {
+						AddOrUpdateCoursePhase(this.Interface, this.CourseForm).then(res => {
+							console.log(res.data);
+//							if(res.data.ErrCode === '0'){
+//								//调用接口
+//								CoursePhase().then(res=>{
+//									console.log(res)
+//								}).catch(err=>{
+//									console.log(err)
+//								})
+//							}
+							this.$Message.success('修改成功!');
+						}).catch(err => {
+							console.log(err)
+							this.$Message.error('失败!');
+						})
+					}
+				})
+			},
+			//取消添加
+			handleReset(name) {
+				this.$refs[name].resetFields();
+				this.$Message.info('已取消添加课程信息');
+			},
+			//保存阶段信息按钮
+			stagehandleSubmit(name) {
+				this.$refs[name].validate(valid => {
+					if(valid) {
+						this.dataRoyaltyCodeDetail.push(this.stageForm);
+						this.stageForm = {
 							brand_right: 0
 						};
-					}).catch(err => {
-						console.log(err)
-					})
-
+						this.AddRoyalty = false;
+					}
+				});
+			},
+			//			UpstagehandleSubmit(name) {
+			//				this.$refs[name].validate(valid => {
+			//					if(valid) {
+			//						this.seedataRoyaltyCodeDetail.push(this.UpstageForm);
+			//						this.UpstageForm = {
+			//							brand_right: 0
+			//						};
+			//						this.UpRoyalty = false;
+			//						//存添加的阶段信息
+			//						localStorage.setItem(
+			//							"dataRoyaltyCodeDetail",
+			//							JSON.stringify(this.seedataRoyaltyCodeDetail)
+			//						);
+			//						let DetailCollection = JSON.parse(localStorage.dataRoyaltyCodeDetail);
+			//						CoursePhase({
+			//							CourseId: this.CourseId,
+			//							CoursePhaseCollection: DetailCollection
+			//						}).then(res => {
+			//							console.log(res.data);
+			//							this.$Message.success("成功!");
+			//							this.UpstageForm = {
+			//								brand_right: 0
+			//							};
+			//						}).catch(err => {
+			//							console.log(err)
+			//						})
+			//
+			//					}
+			//				});
+			//			},
+			//删除课程阶段
+			handleDelete(params) {
+				console.log(params);
+				let CourseId = params.row.CourseId;
+				let PhaseId = params.row.Id;
+				CourseRemove(CourseId, PhaseId).then(res => {
+					this.$Message.success('删除成功!');
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			//删除数据
+			deleteList() {
+				if(this.BatchDeleteList.length == 0) {
+					this.$Message.info("请先选中删除的数据");
+				} else {
+					this.delModal = true;
 				}
-			});
+			},
+			//确定删除
+			ok() {
+				BatchDelete(this.Interface,this.BatchDeleteList).then(res => {
+					console.log(res)
+					this.reload();
+				}).catch(err => {
+					console.log(err)
+				})
+			},
+			//取消删除
+			cancel() {
+				this.$refs[name].resetFields();
+				this.$Message.info('已取消');
+			},
+			//双击表格得到整条数据赋值操作
+			dblclickUpData(index) {
+				console.log(index)
+				this.CourseId = index.Id;
+				console.log(this.CourseId)
+				this.AddDepartment = true;
+				this.CourseForm = index;
+				this.dataRoyaltyCodeDetail = index.CoursePhaseCollection;
+			},
+			//查询全部
+			allinformationData() {
+				GetEntities(this.Interface,this.CourseData1).then(res => {
+					this.CourseData = res.data;
+				}).catch(err => {
+					console.log(err)
+				})
+			},
 		},
-		//删除课程阶段
-		handleDelete(params) {
-			console.log(params);
-			let CourseId = params.row.CourseId;
-			let PhaseId = params.row.Id;
-			CourseRemove(CourseId, PhaseId).then(res => {
-				this.$Message.success('删除成功!');
-			}).catch(err => {
-				console.log(err)
-			})
-		},
-		//删除数据
-		deleteList() {
-			if(this.BatchDeleteList.length == 0) {
-				this.$Message.info("请先选中删除的数据");
-			} else {
-				this.delModal = true;
-			}
-		},
-		//确定删除
-		ok() {
-			CourseDelete(this.BatchDeleteList).then(res => {
-				console.log(res)
-				this.reload();
-			}).catch(err => {
-				console.log(err)
-			})
-		},
-		//取消删除
-		cancel() {
-			this.$refs[name].resetFields();
-			this.$Message.info('已取消');
-		},
-		//双击表格得到整条数据赋值操作
-		dblclickUpData(index) {
-			this.CourseId = index.Id;
-			this.UpDepartment = true;
-			this.UpCourseForm = index;
-			this.seedataRoyaltyCodeDetail = index.CoursePhaseCollection;
-		},
-		//修改课程
-		UphandleSubmit(name) {
-			this.$refs[name].validate((valid) => {
-				if(valid) {
-					CourseUpData(this.UpCourseForm).then(res => {
-						this.$Message.success('修改成功!');
-						this.reload();
-					}).catch(err => {
-						console.log(err)
-					})
-				}
-			})
-
-		},
-		//查询全部
-		allinformationData() {
-			CourseData(this.CourseData1).then(res => {
+		mounted() {
+			//获取信息接口
+			GetEntities(this.Interface,this.CourseData1).then(res => {
 				this.CourseData = res.data;
 			}).catch(err => {
 				console.log(err)
 			})
-		},
-	},
-	mounted() {
-		//获取信息接口
-		CourseData(this.CourseData1).then(res => {
-			this.CourseData = res.data;
-		}).catch(err => {
-			console.log(err)
-		})
-		//课程类型
-		DataDictionary({
-			dataCategory: "COURSE_TYPE",
-			businessGroup: '*'
-		}).then(res => {
-			this.radioList = res.data
-		}).catch(err => {
-			console.log(err)
-		});
-		//销课划课方式
-		DataDictionary({
-			dataCategory: "COUNT_TYPE",
-			businessGroup: '*'
-		}).then(res => {
-			this.Destruction = res.data
-		}).catch(err => {
-			console.log(err)
-		});
-	}
+			//课程类型
+			DataDictionaryGetEntities("COURSE_TYPE").then(res => {
+				this.radioList = res.data
+			}).catch(err => {
+				console.log(err)
+			});
+			//销课划课方式
+			DataDictionaryGetEntities("COUNT_TYPE").then(res => {
+				this.Destruction = res.data
+			}).catch(err => {
+				console.log(err)
+			});
+			//sessionStorage里取业务群
+			let see = JSON.parse(sessionStorage.getItem('userInfo'))
+			this.CourseForm.BusinessGroup = see.BusinessUnit
+		}
 	}
 </script>
 <style lang="less" scoped>
 	.Col {
 		margin-top: 16px;
+	}
+	
+	.line {
+		font-size: 16px;
+		font-weight: 600;
+		color: #000;
+		width: 100%;
+		height: 30px;
+		border-bottom: 2px solid #999;
+		margin-bottom: 10px;
+	}
+	
+	.addMessage {
+		/*margin-left: 48%;*/
 	}
 </style>
