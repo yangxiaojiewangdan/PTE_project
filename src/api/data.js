@@ -58,3 +58,24 @@ export const AddOrUpdatePrice = (Interface, Data) => {
 		method: "post"
 	});
 }
+
+//新增的 1/17
+
+
+
+//删除课包明细
+export const RemoveCourse = (PackageId, CourseId) => {
+	return axios.request({
+		url: apiUrl + "/api/CoursePackage/RemoveCourse?PackageId=" + PackageId + '&CourseId=' + CourseId,
+		method: "post",
+		//data:CourseRemoveData,
+	});
+};
+//删除 课包价格
+export const RemovePrice = (PackageId, PriceId) => {
+	return axios.request({
+		url: apiUrl + "/api/CoursePackage/RemovePrice?PackageId=" + PackageId + '&PriceId=' + PriceId,
+		method: "post",
+		//data:CourseRemoveData,
+	});
+};
