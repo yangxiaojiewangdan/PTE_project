@@ -132,7 +132,7 @@
 							</Col>
 							<Col span="4">
 							<FormItem label="">
-								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 100px;">
+								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 50px;">
 									<div style="padding: 5px">
 										<Icon type="ios-cloud-upload" size="50"></Icon>
 										<p>上传照片</p>
@@ -232,26 +232,26 @@
 							<Input v-model="formValidate.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 						<FormItem label="业务部门" prop="BusinessUnit">
-							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
+							<Select v-model="formValidate.BusinessUnit" style="width: 200px;" disabled>
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
-						<FormItem label="负责人" prop="BusinessUnit">
-							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
+						<FormItem label="负责人" prop="Owner">
+							<Select v-model="formValidate.Owner" style="width: 200px;" disabled>
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
-						<FormItem label="业务部门ID" prop="BusinessUnitId">
+						<!--<FormItem label="业务部门ID" prop="BusinessUnitId">
 							<Input v-model="formValidate.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 
 						<FormItem label="负责人ID" prop="OwnerId">
 							<Input v-model="formValidate.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
+						</FormItem>-->
 					</Form>
 				</TabPane>
 				<!--添加联系人-->
@@ -844,6 +844,10 @@
 			//			}).catch(err => {
 			//				console.log(err)
 			//			})
+			let userInfo = sessionStorage.getItem('userInfo');
+			let array = JSON.parse(userInfo);
+			console.log(array)
+			this.formValidate.BusinessGroup = array.BusinessUnit
 
 		}
 	}

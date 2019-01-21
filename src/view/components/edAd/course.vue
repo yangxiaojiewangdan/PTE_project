@@ -45,7 +45,7 @@
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button type="success" class="tableTops" @click="AddDepartment = true">添加</Button>
+				<Button type="success" class="tableTops" @click="Add">添加</Button>
 				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -121,9 +121,9 @@
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<FormItem label="启用" prop="Enabled">
+					<FormItem label="" prop="Enabled">
 						<i-switch v-model="CourseForm.Enabled" size="large">
-							<span slot="open">On</span>
+							<span slot="open">启用</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
@@ -133,7 +133,7 @@
 					<div class="line">
 						课程阶段明细
 					</div>
-					<tables disabled-hover search-place="top" ref="tables" size="small" v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete" border stripe height="200" @on-row-dblclick="dblclickUpDetail"/>
+					<tables disabled-hover search-place="top" ref="tables" size="small" v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete" border stripe height="200" @on-row-dblclick="dblclickUpDetail" />
 
 					<Button type="info" @click="AddRoyalty = true" class="addMessage">
               <Icon type="md-add"/>添加阶段信息
@@ -373,7 +373,7 @@
 					Periods: '',
 					CountType: '',
 					Enabled: true,
-					Id:"",
+					Id: "",
 				},
 				cityList: [{
 						value: 'New York',
@@ -483,11 +483,24 @@
 				//课程Id
 				CourseId: '',
 				AddCourseDetail: [],
-				CourseDetailId:'',
-				UpDetail:[],
+				CourseDetailId: '',
+				UpDetail: [],
 			}
 		},
 		methods: {
+			Add() {
+				
+				//sessionStorage里取业务群
+				let userInfo = sessionStorage.getItem('userInfo');
+				let array = JSON.parse(userInfo);
+				this.CourseForm.BusinessGroup = array.BusinessUnit
+				//上级代码
+				this.CourseForm.ParentId = array.SupervisorId
+				this.CourseForm = {}
+				this.dataRoyaltyCodeDetail = []
+				this.AddDepartment = true;
+
+			},
 			//勾选中的那条数的Id
 			BatchDelete(selection, row) {
 				for(var i = 0; i < selection.length; i++) {
@@ -599,13 +612,13 @@
 						this.AddRoyalty = false;
 					} else {
 						this.UpDetail.push(this.stageForm)
-						AddOrUpdateCoursePhase(this.Interface,{
-							CourseId:this.CourseDetailId,
-							CoursePhaseCollection:this.UpDetail
-						}).then(res =>{
+						AddOrUpdateCoursePhase(this.Interface, {
+							CourseId: this.CourseDetailId,
+							CoursePhaseCollection: this.UpDetail
+						}).then(res => {
 							console.log(res.data)
 							this.$Message.success('修改成功!');
-						}).then(err=>{
+						}).then(err => {
 							console.log(err)
 						});
 					}
@@ -663,11 +676,11 @@
 				this.dataRoyaltyCodeDetail = index.CoursePhaseCollection;
 				this.AddDepartment = true;
 			},
-			dblclickUpDetail(index){
+			dblclickUpDetail(index) {
 				console.log(index)
-				this.CourseDetailId = index.CourseId 
+				this.CourseDetailId = index.CourseId
 				this.stageForm = index;
-				this.AddRoyalty = true; 
+				this.AddRoyalty = true;
 			},
 			//查询全部
 			allinformationData() {
