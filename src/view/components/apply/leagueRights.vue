@@ -231,165 +231,6 @@
         </button>
       </div>
     </Modal>
-    <!-- 修改信息 弹出框-->
-    <Modal v-model="upDepartment" scrollable width="1000" title="修改加盟商权益金规则" :mask-closable="false">
-      <Form
-        ref="UpdateList"
-        :model="UpdateList"
-        :rules="ruleValidate"
-        label-position="right"
-        :label-width="160"
-      >
-        <Row>
-          <Col span="24">
-            <FormItem label="所属业务群" prop="BusinessGroup">
-              <Select v-model="UpdateList.BusinessGroup" style="width:300px">
-                <Option
-                  v-for="item in BusinessGroupList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="权益金规则代码" prop="Code">
-              <Input v-model="UpdateList.Code" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="权益金规则描述" prop="Description">
-              <Input
-                v-model="UpdateList.Description"
-                type="textarea"
-                :autosize="{minRows: 2,maxRows: 5}"
-                placeholder="请输入"
-                style="width:784px"
-              ></Input>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="权益金方式" prop="RoyaltyType">
-              <Select
-                v-model="UpdateList.RoyaltyType"
-                :label-in-value="true"
-                @on-change="v=>{setOption(v,'type')}"
-                style="width:300px"
-              >
-                <Option
-                  v-for="item in RoyaltyTypeList"
-                  :value="item.Id"
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="权益金固定值类型" prop="FlatType">
-              <Select v-model="UpdateList.FlatType" style="width:300px">
-                <Option
-                  v-for="item in FlatTypeList"
-                  :value="item.Id"
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="天数不足月或年折算方式" prop="ObversionType">
-              <Select v-model="UpdateList.ObversionType" style="width:300px">
-                <Option
-                  v-for="item in ObversionTypeList"
-                  :value="item.Id"
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="权益金计算基准" prop="RoyaltyBenchMark">
-              <Select v-model="UpdateList.RoyaltyBenchMark" style="width:300px">
-                <Option
-                  v-for="item in RoyaltyBenchMarkList"
-                  :value="item.Id"
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="固定值或比例" prop="FlatOrPecent">
-              <Input v-model="UpdateList.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="排序码" prop="SortKey">
-              <Input v-model="UpdateList.SortKey" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="启用" prop="Enabled">
-              <i-switch v-model="UpdateList.Enabled" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
-              </i-switch>
-            </FormItem>
-          </Col>
-          <!-- 阶梯表格 -->
-          <Col span="24" v-if="RoyaltyCodeDetail">
-            <Card>
-              <tables
-                disabled-hover
-                search-place="top"
-                ref="tables"
-                size="small"
-                @on-row-click="dblclickUpDatajt"
-                v-model="SeedataRoyaltyCodeDetail"
-                :columns="SeecolumnsRoyaltyCodeDetail"
-                @on-delete="handleDelete"
-              />
-            </Card>
-            <Button type="info" @click="SeeAddRoyalty = true">
-              <Icon type="md-add"/>添加阶梯
-            </Button>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:闫子健</span>
-            </div>
-            <div>
-              <span>更新人:闫子健</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:2018/12/13/ 13:00:00</span>
-            </div>
-            <div>
-              <span>更新时间:2018/12/13/ 13:00:00</span>
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('UpdateList');upDepartment = false;"
-        >
-          <span>取消</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="UpdateSubmit('UpdateList');"
-        >
-          <span>修改</span>
-        </button>
-      </div>
-    </Modal>
     <!-- 添加阶梯明细页面 -->
     <Modal v-model="AddRoyalty" scrollable width="600" title="添加自定义明细" :mask-closable="false">
       <Form
@@ -825,9 +666,9 @@ export default {
         if (valid) {
           let Code = this.formValidate.Code;
           let BusinessGroup = this.formValidate.BusinessGroup;
-          RoyaltyCodeValidateUnique(Code, BusinessGroup).then(res => {
+          ValidateUnique(this.Interface, Code, BusinessGroup).then(res => {
             if (res.data == true) {
-              RoyaltyCodeCreate(this.formValidate)
+              Create(this.Interface, this.formValidate)
                 .then(res => {
                   if (res.data.Data.RoyaltyType == "2") {
                     let royaltyId = res.data.Data.Id;
@@ -931,8 +772,8 @@ export default {
     },
     //详情修改页面
     dblclickUpData(index) {
-      this.upDepartment = true;
-      this.UpdateList = index;
+      this.AddDepartment = true;
+      this.formValidate = index;
       localStorage.setItem("BId", index.Id);
       if (index.RoyaltyType == "2") {
         this.RoyaltyCodeDetail = true;
@@ -948,7 +789,7 @@ export default {
     },
     //点击修改按钮
     UpdateSubmit() {
-      RoyaltyCodeUpdate(this.UpdateList)
+      Update(this.Interface,this.formValidate)
         .then(res => {
           this.$Message.success("修改成功!");
           this.reload();
@@ -960,7 +801,7 @@ export default {
     // 点击查询按钮查询信息
     querytable() {
       console.log(this.querySelect)
-      RoyaltyCodeGetEntities({
+      GetEntities(this.Interface,{
         Filters: [
           {
             Relational: "Or", //And 与 | Or 或
@@ -1002,37 +843,13 @@ export default {
         console.log(err);
       });
     // 权益金方式
-    getROYALTY_TYPE()
-      .then(res => {
-        this.RoyaltyTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.RoyaltyTypeList = JSON.parse(localStorage.ROYALTY_TYPE);
     // 权益金固定值类型
-    getROYALTY_FLAT_TYPE()
-      .then(res => {
-        this.FlatTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.FlatTypeList = JSON.parse(localStorage.ROYALTY_FLAT_TYPE);
     // 天数不足月或年折算方式
-    getOBVERSION_TYPE()
-      .then(res => {
-        this.ObversionTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.ObversionTypeList = JSON.parse(localStorage.OBVERSION_TYPE);
     // 权益金计算基准
-    getROYALTY_BENCH_MARK()
-      .then(res => {
-        this.RoyaltyBenchMarkList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.RoyaltyBenchMarkList = JSON.parse(localStorage.ROYALTY_BENCH_MARK);
   }
 };
 </script>

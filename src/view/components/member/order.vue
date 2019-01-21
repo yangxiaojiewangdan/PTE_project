@@ -187,7 +187,7 @@
             </Col>
             <Col span="5">
               <FormItem label="定价" prop="OriginalPrice">
-                <Input v-model="formValidate.OriginalPrice" placeholder="请输入" disabled></Input>
+                <Input type="text" v-model="formValidate.OriginalPrice" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="5">
@@ -199,8 +199,10 @@
             <Col span="6">
               <FormItem label="售价" prop="SalePrice">
                 <Input
+                  :disabled="isdisabledFn"
                   v-model="formValidate.SalePrice"
                   @on-change="SalePricechange"
+                  @on-blur="SalePriceblur"
                   placeholder="请输入"
                 ></Input>
               </FormItem>
@@ -584,6 +586,7 @@ export default {
   data() {
     return {
       q:"",
+      isdisabledFn:false,
       Interface: "CustomerOrder",
       ifDiscountCode: false,
       del: "",
@@ -597,11 +600,11 @@ export default {
       columns1: [
         {
           title: "支付方式",
-          key: "PaymentCode "
+          key: "PaymentCode"
         },
         {
           title: "支付账号",
-          key: "PaymentAccount  "
+          key: "PaymentAccount"
         },
         {
           title: "支付金额",
@@ -880,6 +883,7 @@ export default {
     };
   },
   methods: {
+ 
     // 查询条件
     queryquerychange(value){
       console.log(value)
@@ -965,48 +969,60 @@ export default {
     },
     // 选择开始日期带出结束日期
     StartDatechange(date) {
-      //date为格式化后的日期字符yyyy-MM-dd,num为增加的月份
-      var monthnum = parseInt(this.FixedPeriodsnum);
       var year = parseInt(date.substring(0, 4));
-      var month = parseInt(date.substring(5, 7));
-      var day = parseInt(date.substring(8, 10));
-      if (month + monthnum > 12) {
-        var newyear = year + 1;
-        var newmonth = month + monthnum - 12;
-        var newday = day;
-      } else if (month + monthnum > 12 * 2) {
-        var newyear = year + 2;
-        var newmonth = month + monthnum - 12 * 2;
-        var newday = day;
-      } else if (month + monthnum > 12 * 3) {
-        var newyear = year + 3;
-        var newmonth = month + monthnum - 12 * 3;
-        var newday = day;
-      } else if (month + monthnum > 12 * 4) {
-        var newyear = year + 4;
-        var newmonth = month + monthnum - 12 * 4;
-        var newday = day;
-      } else if (month + monthnum > 12 * 5) {
-        var newyear = year + 5;
-        var newmonth = month + monthnum - 12 * 5;
-        var newday = day;
-      } else if (month + monthnum > 12 * 6) {
-        var newyear = year + 6;
-        var newmonth = month + monthnum - 12 * 6;
-        var newday = day;
-      } else {
-        var newyear = year;
-        var newmonth = month + monthnum;
-        var newday = day;
-      }
-      this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
+        var month = parseInt(date.substring(5, 7));
+        var day = parseInt(date.substring(8, 10));
+        if(this.formValidate.PackageTypeDesc == "固定期限"){
+          var monthnum = parseInt(this.FixedPeriodsnum);
+          if (month + monthnum > 12) {
+            var newyear = year + 1;
+            var newmonth = month + monthnum - 12;
+            var newday = day;
+          } else if (month + monthnum > 12 * 2) {
+            var newyear = year + 2;
+            var newmonth = month + monthnum - 12 * 2;
+            var newday = day;
+          } else if (month + monthnum > 12 * 3) {
+            var newyear = year + 3;
+            var newmonth = month + monthnum - 12 * 3;
+            var newday = day;
+          } else if (month + monthnum > 12 * 4) {
+            var newyear = year + 4;
+            var newmonth = month + monthnum - 12 * 4;
+            var newday = day;
+          } else if (month + monthnum > 12 * 5) {
+            var newyear = year + 5;
+            var newmonth = month + monthnum - 12 * 5;
+            var newday = day;
+          } else if (month + monthnum > 12 * 6) {
+            var newyear = year + 6;
+            var newmonth = month + monthnum - 12 * 6;
+            var newday = day;
+          } else {
+            var newyear = year;
+            var newmonth = month + monthnum;
+            var newday = day;
+          }
+          this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
+        }else{
+          var newyear = year + 2;
+          this.formValidate.EndDate = newyear + "-" + month + "-" + day;
+        }
     },
     // 售价x数量=总金额
     SalePricechange() {
       this.formValidate.BalanceAmt =
         this.formValidate.SalePrice * this.formValidate.Quantity;
-      // this.formValidate.ChargeAmt =
-      //   this.formValidate.OriginalPrice * this.formValidate.Quantity;
+     if(this.formValidate.SalePrice !== this.formValidate.OriginalPrice){
+         this.ifDiscountCode = true;
+     }else{
+       this.ifDiscountCode = false;
+     }
+    },
+    SalePriceblur(){
+      if(this.formValidate.SalePrice < 100){
+       this.$Message.warning('课包最低售价为100');
+     }
     },
     // 选择课包带出数据
     PackageIdchange(value) {
@@ -1025,12 +1041,86 @@ export default {
         ]
       })
         .then(res => {
-          console.log(res.data);
+                  
+          function formatNumber(num, precision, separator) {
+              var parts;
+              // 判断是否为数字
+              if (!isNaN(parseFloat(num)) && isFinite(num)) {
+                  // 把类似 .5, 5. 之类的数据转化成0.5, 5, 为数据精度处理做准, 至于为什么
+                  // 不在判断中直接写 if (!isNaN(num = parseFloat(num)) && isFinite(num))
+                  // 是因为parseFloat有一个奇怪的精度问题, 比如 parseFloat(12312312.1234567119)
+                  // 的值变成了 12312312.123456713
+                  num = Number(num);
+                  // 处理小数点位数
+                  num = (typeof precision !== 'undefined' ? num.toFixed(precision) : num).toString();
+                  // 分离数字的小数部分和整数部分
+                  parts = num.split('.');
+                  // 整数部分加[separator]分隔, 借用一个著名的正则表达式
+                  parts[0] = parts[0].toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + (separator || ','));
+          
+                  return parts.join('.');
+              }
+              return NaN;
+          }
+          this.formValidate.StartDate = new Date();
           this.formValidate.PackageTypeDesc = res.data[0].PackageTypeDesc;
-          this.formValidate.OriginalPrice = res.data[0].SellPrice;
+          this.formValidate.OriginalPrice = formatNumber(res.data[0].SellPrice);
+          this.formValidate.SalePrice  = res.data[0].SellPrice;
           this.formValidate.TotalPeriod = res.data[0].TotalPeriods;
-          // this.formValidate.RemainPeriod = res.data[0].TotalPeriods;
           this.FixedPeriodsnum = res.data[0].FixedPeriods;
+          // 当课包允许折扣售价课更改反之不可更改
+          if(res.data[0].AllowDiscount == false){
+             this.isdisabledFn = true;
+          }else if(res.data[0].AllowDiscount == true){
+              this.isdisabledFn = false;
+          }
+          if(this.formValidate.StartDate == ""){
+            this.formValidate.EndDate == ""
+          }else if(this.formValidate.StartDate){
+            let date = this.formValidate.StartDate.toLocaleDateString();
+            var year = parseInt(date.substring(0, 4));
+            var month = parseInt(date.substring(5, 7));
+            var day = parseInt(date.substring(8, 10));
+            if(this.formValidate.PackageTypeDesc == "固定期限"){
+              var monthnum = parseInt(this.FixedPeriodsnum);
+              if (month + monthnum > 12) {
+                var newyear = year + 1;
+                var newmonth = month + monthnum - 12;
+                var newday = day;
+              } else if (month + monthnum > 12 * 2) {
+                var newyear = year + 2;
+                var newmonth = month + monthnum - 12 * 2;
+                var newday = day;
+              } else if (month + monthnum > 12 * 3) {
+                var newyear = year + 3;
+                var newmonth = month + monthnum - 12 * 3;
+                var newday = day;
+              } else if (month + monthnum > 12 * 4) {
+                var newyear = year + 4;
+                var newmonth = month + monthnum - 12 * 4;
+                var newday = day;
+              } else if (month + monthnum > 12 * 5) {
+                var newyear = year + 5;
+                var newmonth = month + monthnum - 12 * 5;
+                var newday = day;
+              } else if (month + monthnum > 12 * 6) {
+                var newyear = year + 6;
+                var newmonth = month + monthnum - 12 * 6;
+                var newday = day;
+              } else {
+                var newyear = year;
+                var newmonth = month + monthnum;
+                var newday = day;
+              }
+              this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
+            }else{
+              var newyear = year + 2;
+              var newday = day + 20;
+              this.formValidate.EndDate = newyear + "-" + month + "-" + newday;
+            }
+              
+          }
+          
         })
         .catch(err => {
           console.log(err);
@@ -1099,7 +1189,6 @@ export default {
       this.add = false;
       this.see = true;
       this.formValidate = index;
-      console.log(index);
       this.formValidate.TotalPeriod = this.formValidate.RemainPeriod;
     },
     // 删除接口

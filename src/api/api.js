@@ -2,34 +2,34 @@ import axios from "@/libs/api.request";
 //url变量
 export const apiUrl = "http://192.168.31.74:8081";
 
-// //获取所有大区的数据
-// export const DistrictGetRegion = () => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetRegion",
-//     method: "get"
-//   });
-// };
-// //获取指定大区省份信息
-// export const DistrictGetProvince = () => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetProvince",
-//     method: "get"
-//   });
-// };
-// //获取指定大区省份信息
-// export const DistrictGetArea = (ParentId) => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetArea?ParentId=" + ParentId,
-//     method: "get"
-//   });
-// };
-// //  根据数据主键(Id)查询单条数据
-// export const DistrictGetEntity = (keyId) => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetEntity?keyId=" + keyId,
-//     method: "get"
-//   });
-// };
+//获取所有大区的数据 
+export const DistrictGetRegion = () => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetRegion",
+    method: "get"
+  });
+};
+//获取指定大区省份信息
+export const DistrictGetProvince = () => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetProvince",
+    method: "get"
+  });
+};
+//获取指定大区省份信息
+export const DistrictGetArea = (ParentId) => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetArea?ParentId=" + ParentId,
+    method: "get"
+  });
+};
+//  根据数据主键(Id)查询单条数据
+export const DistrictGetEntity = (keyId) => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetEntity?keyId=" + keyId,
+    method: "get"
+  });
+};
 
 
 
@@ -218,4 +218,11 @@ export const CustomerOrderCancelOrderRequest = Data => {
     method: "post"
   });
 }
->>>>>>> 9ae1d6d10e9e0d12470d6a5d0ae05bd3e5dd1689
+//添加权益金的阶梯
+export const RoyaltyCodeAddOrUpdateLadder = Data => {
+  return axios.request({
+    url: apiUrl + "/api/RoyaltyCode/AddOrUpdateLadder",
+    data: Data,
+    method: "post"
+  });
+}

@@ -75,11 +75,6 @@ export default {
           align: "center"
         },
         {
-          title: "姓",
-          key: "FirstName",
-          width: 80
-        },
-        {
           title: "名",
           key: "LastName",
           width: 80

@@ -621,7 +621,6 @@ export default {
       this.see = true;
       this.formValidate = index;
       this.del = true;
-
       console.log(index);
       if (index.SettleType == "0" || index.SettleType == "2") {
         this.ToDay = false;
