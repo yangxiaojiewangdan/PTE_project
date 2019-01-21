@@ -124,7 +124,6 @@ export const DataDictionaryGetDataCatalog = () => {
 
 
 //未分配权限
-<<<<<<< HEAD
 export const GetUnAssignedPermission = (Interface, roleId) => {
   return axios.request({
     url: apiUrl + "/api/" + Interface + "/GetUnAssignedPermission?roleId=" + roleId,
@@ -145,50 +144,18 @@ export const AssignedPermission = (Interface, Data) => {
     method: "post",
     data: Data,
   });
-=======
-export const GetUnAssignedPermission = (Interface,roleId) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/GetUnAssignedPermission?roleId=" + roleId,
-		method: "get",
-	});
-};
-//已分配权限
-export const GetAssignedPermission = (Interface,roleId) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/GetAssignedPermission?roleId=" + roleId,
-		method: "get",
-	});
-};
-//增加删减权限接口
-export const AssignedPermission =  (Interface, Data) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AssignedPermission",
-		method: "post",
-		data: Data,
-	});
->>>>>>> 28a667aa72697525f1cc1c129d12a2c04632695e
 };
 
 //增加修改课程阶段
 export const AddOrUpdateCoursePhase = (Interface, Data) => {
-<<<<<<< HEAD
   return axios.request({
     url: apiUrl + "/api/" + Interface + "/AddOrUpdateCoursePhase",
     method: "post",
     data: Data,
   });
-=======
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AddOrUpdateCoursePhase",
-		method: "post",
-		data: Data,
-	});
->>>>>>> 28a667aa72697525f1cc1c129d12a2c04632695e
 };
-
 //删除 课程阶段
 export const CourseRemove = (CourseId, PhaseId) => {
-<<<<<<< HEAD
   return axios.request({
     url: apiUrl + "/api/Course/RemovePhase?CourseId=" + CourseId + '&PhaseId=' + PhaseId,
     method: "post",
@@ -243,28 +210,11 @@ export const CustomerOrderPaymentOrder = Data => {
     method: "post"
   });
 }
-
-=======
-	return axios.request({
-		url: apiUrl + "/api/Course/RemovePhase?CourseId=" + CourseId + '&PhaseId=' + PhaseId,
-		method: "post",
-		//data:CourseRemoveData,
-	});
-};
-//添加课包明细接口
-export const AddOrUpdateCourse = (Interface, Data) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AddOrUpdateCourse",
-		data: Data,
-		method: "post"
-	});
-};
-//添加课包价格接口
-export const AddOrUpdatePrice = (Interface, Data) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AddOrUpdatePrice",
-		data: Data,
-		method: "post"
-	});
+//取消订单
+export const CustomerOrderCancelOrderRequest = Data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/CancelOrderRequest",
+    data: Data,
+    method: "post"
+  });
 }
->>>>>>> 28a667aa72697525f1cc1c129d12a2c04632695e

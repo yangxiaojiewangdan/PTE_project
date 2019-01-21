@@ -78,11 +78,9 @@
 						</Select>-->
 						<Input v-model="CourseForm.BusinessGroup" placeholder="请输入" disabled style="width:200px"></Input>
 					</FormItem>
-
-<<<<<<< HEAD
 					<FormItem label="课程名称" prop="CourseName">
 						<Input v-model="CourseForm.CourseName" placeholder="请输入" style="width:200px"></Input>
-=======
+
 					<FormItem label="业务类型" prop="BusinessType">
 						<Select v-model="CourseForm.BusinessType" style="width:200px">
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -92,7 +90,6 @@
 					<Col span="24">
 					<FormItem label="上级代码" prop="ParentId">
 						<Input v-model="CourseForm.ParentId" placeholder="请输入" disabled style="width:200px"></Input>
->>>>>>> 28a667aa72697525f1cc1c129d12a2c04632695e
 					</FormItem>
 					<FormItem label="课程类型" prop="CourseType">
 						<Select v-model="CourseForm.CourseType" style="width:200px">
@@ -171,15 +168,12 @@
 					<FormItem label="阶段名称" prop="PhaseName">
 						<Input v-model="stageForm.PhaseName" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
-<<<<<<< HEAD
-
 					<FormItem label="课程名称" prop="CourseName">
-						<Input v-model="UpCourseForm.CourseName" placeholder="请输入" style="width:200px"></Input>
-=======
+						<Input v-model="stageForm.CourseName" placeholder="请输入" style="width:200px"></Input>
+
 					<Col span="24">
 					<FormItem label="课时数" prop="Periods">
 						<Input v-model="stageForm.Periods" placeholder="请输入" style="width:200px"></Input>
->>>>>>> 28a667aa72697525f1cc1c129d12a2c04632695e
 					</FormItem>
 					<FormItem label="课时长" prop="Duration">
 						<Input v-model="stageForm.Duration" placeholder="请输入" style="width:200px"></Input>
@@ -370,24 +364,8 @@
 						sortable: true
 					},
 				],
-<<<<<<< HEAD
-				ruleValidate: {},
-				CourseForm: {
-					ParentId: "",
-					BusinessGroup: '*',
-					BusinessType: '',
-					Code: '',
-					CourseName: '',
-					Description: '',
-					CourseType: '',
-					Periods: '',
-					CountType: '',
-					Enabled: true,
-=======
-				ruleValidate: {
 
->>>>>>> 28a667aa72697525f1cc1c129d12a2c04632695e
-				},
+				ruleValidate: {},
 				CourseForm: {
 					ParentId: "",
 					BusinessGroup: '',
@@ -728,49 +706,13 @@
 			//课程类型
 			DataDictionaryGetEntities("COURSE_TYPE").then(res => {
 				this.radioList = res.data
-			}).catch(err => {
+			}).catch(err =>{
 				console.log(err)
-<<<<<<< HEAD
 			})
-		},
-		//取消删除
-		cancel() {
-			this.$refs[name].resetFields();
-			this.$Message.info('已取消');
-		},
-		//双击表格得到整条数据赋值操作
-		dblclickUpData(index) {
-			console.log(index);
-			this.CourseId = index.Id;
-			this.UpDepartment = true;
-			this.UpCourseForm = index;
-			this.seedataRoyaltyCodeDetail = index.CoursePhaseCollection;
-		},
-		//修改课程
-		UphandleSubmit(name) {
-			this.$refs[name].validate((valid) => {
-				if(valid) {
-					CourseUpData(this.UpCourseForm).then(res => {
-						this.$Message.success('修改成功!');
-						this.reload();
-					}).catch(err => {
-						console.log(err)
-					})
-				}
-			})
-
-		},
-		//查询全部
-		allinformationData() {
-			CourseData(this.CourseData1).then(res => {
-				this.CourseData = res.data;
-=======
-			});
 			//销课划课方式
 			DataDictionaryGetEntities("COUNT_TYPE").then(res => {
 				this.Destruction = res.data
 				console.log(res.data)
->>>>>>> 28a667aa72697525f1cc1c129d12a2c04632695e
 			}).catch(err => {
 				console.log(err)
 			});
@@ -781,8 +723,8 @@
 			this.CourseForm.BusinessGroup = array.BusinessUnit
 			//上级代码
 			this.CourseForm.ParentId = array.SupervisorId
-		}
 	}
+}
 </script>
 <style lang="less" scoped>
 	.Col {
