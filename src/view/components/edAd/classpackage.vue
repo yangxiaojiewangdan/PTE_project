@@ -57,8 +57,9 @@
 		<Modal v-model="AddDepartment" width="1000" title="添加课包信息" :mask-closable="false" :styles="{top: '20px'}">
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="85" inline>
 				<Row>
-<!--					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加课包信息</Divider>
--->					<!--基本信息-->
+					<!--					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加课包信息</Divider>
+-->
+					<!--基本信息-->
 					<FormItem label="所属业务群" prop="BusinessGroup">
 						<Input v-model="formValidate.BusinessGroup" placeholder="请输入" style="width:200px" disabled></Input>
 					</FormItem>
@@ -152,11 +153,11 @@
             </Button>
 				</Row>
 				<!--课包价格实体-->
-<!--				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课包价格实体</Divider>-->	
-					<div class="line">
-						课包价格实体
-					</div>
-			<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="PricePackage" :columns="colPricePackage" @on-delete="handleDeletePrise" border stripe height="200" @on-row-dblclick="dblclickUpPrise" />
+				<!--				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课包价格实体</Divider>-->
+				<div class="line">
+					课包价格实体
+				</div>
+				<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="PricePackage" :columns="colPricePackage" @on-delete="handleDeletePrise" border stripe height="200" @on-row-dblclick="dblclickUpPrise" />
 				<Button type="info" @click="AddPrise = true">
               <Icon type="md-add"/>添加课包价格实体
             </Button>
@@ -164,12 +165,24 @@
 			<div slot="footer">
 				<div class="footer_left">
 					<div class="footer_left1">
-						<div><span>创建人:闫子健</span></div>
-						<div><span>更新人:闫子健</span></div>
+						<div>
+							<span>创建人:</span>
+							<span>{{ formValidate.CreateByName }}</span>
+						</div>
+						<div>
+							<span>更新人:</span>
+							<span>{{ formValidate.UpdateByName }}</span>
+						</div>
 					</div>
 					<div class="footer_left2">
-						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
-						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+						<div>
+							<span>创建时间:</span>
+							<span>{{ formValidate.CreateOn }}</span>
+						</div>
+						<div>
+							<span>更新时间:</span>
+							<span>{{ formValidate.UpdateOn }}</span>
+						</div>
 					</div>
 				</div>
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
@@ -234,7 +247,7 @@
 						<Input v-model="CousrePriseFrom.SellPrice" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					<FormItem label="最低售价" prop="LimitPrice">
-						<Input v-model="CousrePriseFrom.LimitPrice" placeholder="请输入" style="width:200px"></Input>
+						<Input v-model="CousrePriseFrom.LimitPrice" placeholder="请输入" style="width:200px" ></Input>
 					</FormItem>
 					<FormItem label="可折扣" prop="AllowDiscount">
 						<i-switch v-model="CousrePriseFrom.AllowDiscount" size="large">
@@ -1059,6 +1072,7 @@
 	.Col {
 		margin-top: 16px;
 	}
+	
 	.line {
 		font-size: 16px;
 		font-weight: 600;
