@@ -13,7 +13,7 @@
           <Row>
             <Col span="15" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:46px;">加盟商：</h3>
-              <Select v-model="SelectFranchiser" style="width:200px;margin-left:20px;">
+              <Select v-model="SelectFranchiser" @on-change="queryquerychange" style="width:200px;margin-left:20px;">
                 <Option
                   v-for="item in FranchiserList"
                   :value="item.Code"
@@ -25,11 +25,11 @@
           <Row>
             <Col span="15" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:60px;">门店：</h3>
-              <Select v-model="SelectStore" style="width:200px;margin-left:20px;">
+              <Select v-model="SelectStore" @on-change="queryquerychange" style="width:200px;margin-left:20px;">
                 <Option
                   v-for="item in StoreList"
-                  :value="item.Code"
-                  :key="item.Code"
+                  :value="item.Id"
+                  :key="item.Id"
                 >{{ item.Code }}</Option>
               </Select>
             </Col>
@@ -215,8 +215,8 @@
               </FormItem>
             </Col>
             <Col span="6">
-              <FormItem label="赠送课时" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入"></Input>
+              <FormItem label="赠送课时" prop="q">
+                <Input v-model="q" placeholder="请输入"></Input>
               </FormItem>
             </Col>
             <Col span="6">
@@ -289,7 +289,7 @@
             <Col span="22" offset="1">
               <Tabs value="name1">
                 <TabPane label="支付记录" name="name1">
-                  <Table :columns="columns1" :data="data1" size="small"></Table>
+                  <Table ref="selection" :columns="columns1" :data="data1" size="small"></Table>
                 </TabPane>
                 <TabPane label="销课记录" name="name2">标签二的内容</TabPane>
                 <TabPane label="退课记录" name="name3">标签三的内容</TabPane>
@@ -472,43 +472,23 @@
             </Col>
             <Col span="23">
               <FormItem label="取消课时" prop="CancellationPeriod">
-                <Input v-model="formRetirefromclass.CancellationPeriod" placeholder="请输入"></Input>
+                <Input v-model="formRetirefromclass.CancellationPeriod" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
               <FormItem label="取消金额" prop="CancellationAmt">
-                <Input v-model="formRetirefromclass.CancellationAmt" placeholder="请输入"></Input>
+                <Input v-model="formRetirefromclass.CancellationAmt" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
               <FormItem label="取消日期" prop="CancellationDate">
-                <Input v-model="formRetirefromclass.CancellationDate" placeholder="请输入"></Input>
+                <Input v-model="formRetirefromclass.CancellationDate" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
           </Col>
         </Row>
       </Form>
       <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:</span>
-              <span>{{ Founder }}</span>
-            </div>
-            <div>
-              <span>更新人:</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:</span>
-            </div>
-            <div>
-              <span>更新时间:</span>
-            </div>
-          </div>
-        </div>
-
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -593,7 +573,8 @@ import {
   CustomerOrderDeleteOrder,
   CustomerOrderBatchDeleteOrder,
   CustomerOrderUpdateOrder,
-  CustomerOrderPaymentOrder
+  CustomerOrderPaymentOrder,
+  CustomerOrderCancelOrderRequest
 } from "@/api/api";
 export default {
   inject: ["reload"],
@@ -602,6 +583,7 @@ export default {
   },
   data() {
     return {
+      q:"",
       Interface: "CustomerOrder",
       ifDiscountCode: false,
       del: "",
@@ -612,36 +594,26 @@ export default {
 
       // 课包信息
       PackageIdList: "",
-
       columns1: [
         {
           title: "支付方式",
-          key: "name"
+          key: "PaymentCode "
         },
         {
-          title: "金额",
-          key: "age"
+          title: "支付账号",
+          key: "PaymentAccount  "
         },
         {
-          title: "备注",
-          key: "address"
+          title: "支付金额",
+          key: "NetAmt"
+        },
+        {
+          title: "支付时间",
+          key: "TrxDate"
         }
       ],
-      data1: [
-        {
-          name: "微信支付",
-          age: 100,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03"
-        },
-        {
-          name: "微信支付",
-          age: 100,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03"
-        }
-      ],
-      PaymentCodeList:[],
+      data1: [],
+      PaymentCodeList: [],
       formPaymentOrder: {
         PaymentCode: "",
         PaymentAccount: "",
@@ -682,8 +654,18 @@ export default {
         { title: "名", key: "LastName", width: 110, sortable: true },
         { title: "昵称", key: "NickName", width: 120, sortable: true },
         { title: "订单类型", key: "OrderType", width: 110, sortable: true },
-        { title: "订单状态", key: "OrderStatus", width: 110, sortable: true },
-        { title: "支付状态", key: "PaymentStatus", width: 110, sortable: true },
+        {
+          title: "订单状态",
+          key: "OrderStatusDesc",
+          width: 110,
+          sortable: true
+        },
+        {
+          title: "支付状态",
+          key: "PaymentStatusDesc",
+          width: 110,
+          sortable: true
+        },
         { title: "来源渠道", key: "ChannelCode", width: 110, sortable: true },
         { title: "市场分类", key: "MarketClass", width: 110, sortable: true },
         { title: "市场代码", width: 110, sortable: true, key: "MarketCode" },
@@ -691,7 +673,12 @@ export default {
         { title: "门店名称", key: "Store", width: 110, sortable: true },
         { title: "课包代码", key: "PackageCode", width: 110, sortable: true },
         { title: "课包名称", key: "PackageName", width: 110, sortable: true },
-        { title: "课包类型", key: "PackageType", width: 110, sortable: true },
+        {
+          title: "课包类型",
+          key: "PackageTypeDesc",
+          width: 110,
+          sortable: true
+        },
         { title: "期限", key: "FixedPeriods", width: 110, sortable: true },
         { title: "原始售价", key: "OriginalPrice", width: 110, sortable: true },
         { title: "数量", key: "Quantity", width: 80, sortable: true },
@@ -893,6 +880,50 @@ export default {
     };
   },
   methods: {
+    // 查询条件
+    queryquerychange(value){
+      console.log(value)
+      GetEntities(this.Interface,{
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: "Franchiser", //字段名
+                Relational: "Contain",
+                FilterValue: value //字段名里面的值
+              },
+              {
+                FilterField: "StoreId", //字段名
+                Relational: "Equal",
+                FilterValue: value //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          this.informationData = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 取消订单
+    RetirefromclassSubmit() {
+      CustomerOrderCancelOrderRequest({
+        OrderId: this.formValidate.Id,
+        CancellationCode: this.formRetirefromclass.CancellationCode,
+        CancellationReason: this.formRetirefromclass.CancellationReason
+      })
+        .then(res => {
+          this.$Message.success("成功!");
+          this.reload();
+        })
+        .catch(err => {
+          this.$Message.success("失败!");
+        });
+    },
     // 订单支付
     PaymentOrderSubmit() {
       CustomerOrderPaymentOrder({
@@ -901,6 +932,8 @@ export default {
         PaymentAmt: this.formPaymentOrder.PaymentAmt
       })
         .then(res => {
+          this.data1 = res.data.Data; 
+          console.log(this.data1)
           this.$Message.success("成功!");
           this.reload();
         })
@@ -971,9 +1004,9 @@ export default {
     // 售价x数量=总金额
     SalePricechange() {
       this.formValidate.BalanceAmt =
-        this.formValidate.OriginalPrice * this.formValidate.Quantity;
-      this.formValidate.ChargeAmt =
-        this.formValidate.OriginalPrice * this.formValidate.Quantity;
+        this.formValidate.SalePrice * this.formValidate.Quantity;
+      // this.formValidate.ChargeAmt =
+      //   this.formValidate.OriginalPrice * this.formValidate.Quantity;
     },
     // 选择课包带出数据
     PackageIdchange(value) {
@@ -994,7 +1027,7 @@ export default {
         .then(res => {
           console.log(res.data);
           this.formValidate.PackageTypeDesc = res.data[0].PackageTypeDesc;
-          this.formValidate.SellPrice = res.data[0].SellPrice;
+          this.formValidate.OriginalPrice = res.data[0].SellPrice;
           this.formValidate.TotalPeriod = res.data[0].TotalPeriods;
           // this.formValidate.RemainPeriod = res.data[0].TotalPeriods;
           this.FixedPeriodsnum = res.data[0].FixedPeriods;
@@ -1015,21 +1048,20 @@ export default {
     },
     // 添加/修改信息
     handleSubmit(name) {
-      
       this.$refs[name].validate(valid => {
         if (valid) {
-          if (this.formValidate.Id == undefined) { 
-              CustomerOrderPurchaseOrder(this.formValidate)
-                .then(res => {
-                  this.$Message.success("成功!");
-                  this.AddDepartment = false;
-                  this.reload();
-                  this.formValidate = { brand_right: 0 };
-                })
-                .catch(err => {
-                  this.$Message.error("失败!");
-                  console.log(err);
-                });
+          if (this.formValidate.Id == undefined) {
+            CustomerOrderPurchaseOrder(this.formValidate)
+              .then(res => {
+                this.$Message.success("成功!");
+                this.AddDepartment = false;
+                this.reload();
+                this.formValidate = { brand_right: 0 };
+              })
+              .catch(err => {
+                this.$Message.error("失败!");
+                console.log(err);
+              });
           }
           if (this.formValidate.Id) {
             CustomerOrderUpdateOrder({
@@ -1068,6 +1100,7 @@ export default {
       this.see = true;
       this.formValidate = index;
       console.log(index);
+      this.formValidate.TotalPeriod = this.formValidate.RemainPeriod;
     },
     // 删除接口
     deleteList() {

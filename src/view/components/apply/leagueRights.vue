@@ -526,6 +526,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      Interface:"RoyaltyCode",
       // 查询
       querySelectList: [
         {
@@ -993,7 +994,7 @@ export default {
   },
   mounted() {
     // 表格数据
-    RoyaltyCodeGetEntities(this.getTableData)
+    GetEntities(this.Interface,this.getTableData)
       .then(res => {
         this.SettlementCodeData = res.data;
       })

@@ -132,7 +132,7 @@ export default {
     // 点击查询按钮查询信息
     querytableassembly() {
       if (this.querySelectassembly == "Name") {
-        GetEntities({
+        GetEntities(this.Interface,{
           Filters: [
             {
               Relational: "Or", //And 与 | Or 或
@@ -164,7 +164,7 @@ export default {
           });
       }
       if (this.querySelectassembly == "ContactPhone") {
-        GetEntities({
+        GetEntities(this.Interface,{
           Filters: [
             {
               Relational: "And", //And 与 | Or 或
