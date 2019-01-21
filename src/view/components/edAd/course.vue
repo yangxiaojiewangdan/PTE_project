@@ -76,8 +76,8 @@
 						<Input v-model="CourseForm.Code" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 
-					<FormItem label="课程名称" prop="CousreName">
-						<Input v-model="CourseForm.CousreName" placeholder="请输入" style="width:200px"></Input>
+					<FormItem label="课程名称" prop="CourseName">
+						<Input v-model="CourseForm.CourseName" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					<FormItem label="课程类型" prop="CourseType">
 						<Select v-model="CourseForm.CourseType" style="width:200px">
@@ -215,8 +215,8 @@
 						<Input v-model="UpCourseForm.Code" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 
-					<FormItem label="课程名称" prop="CousreName">
-						<Input v-model="UpCourseForm.CousreName" placeholder="请输入" style="width:200px"></Input>
+					<FormItem label="课程名称" prop="CourseName">
+						<Input v-model="UpCourseForm.CourseName" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					<FormItem label="课程类型" prop="CourseType">
 						<Select v-model="UpCourseForm.CourseType" style="width:200px">
@@ -395,7 +395,7 @@
 					},
 					{
 						title: "课程名称",
-						key: "CousreName",
+						key: "CourseName",
 
 						sortable: true
 					},
@@ -461,7 +461,7 @@
 					BusinessGroup: '*',
 					BusinessType: '',
 					Code: '',
-					CousreName: '',
+					CourseName: '',
 					Description: '',
 					CourseType: '',
 					Periods: '',
@@ -473,7 +473,7 @@
 					BusinessGroup: '',
 					BusinessType: '',
 					Code: '',
-					CousreName: '',
+					CourseName: '',
 					Description: '',
 					CourseType: '',
 					Periods: '',
@@ -816,6 +816,7 @@
 		},
 		//双击表格得到整条数据赋值操作
 		dblclickUpData(index) {
+			console.log(index);
 			this.CourseId = index.Id;
 			this.UpDepartment = true;
 			this.UpCourseForm = index;
