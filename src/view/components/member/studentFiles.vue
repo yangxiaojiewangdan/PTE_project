@@ -71,7 +71,7 @@
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button type="success" class="tableTops" @click="AddDepartment = true;add=true;see=false;">添加</Button>
+				<Button type="success" class="tableTops" @click="Add">添加</Button>
 				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -596,6 +596,7 @@
 					BusinessUnit: '',
 					OwnerId: '',
 					BusinessUnit: '',
+					Id:'',
 				},
 				AddCustomerFrom: {
 					FirstName: '',
@@ -626,6 +627,12 @@
 			}
 		},
 		methods: {
+			Add(){
+				this.AddDepartment  = true;
+				this.add=true;
+				this.see=false;
+				this.formValidate = {};
+			},
 			tabsPage(name) {
 				this.aaa = name;
 			},
@@ -671,6 +678,9 @@
 			cancel() {
 				this.$Message.info('已取消');
 			},
+			AddDepartment(){
+				
+			},
 			//修改赋值
 			dblclickUpData(index) {
 				this.add = false;
@@ -697,7 +707,7 @@
 			handleSubmit() {
 				if(this.aaa == "name1") {
 					this.$refs.formValidate.validate((valid) => {
-						if(valid && this.formValidate.Id == undefined) {
+						if(valid && this.formValidate.Id == undefined || this.formValidate.Id == "") {
 							Create(this.Interface, this.formValidate).then(res => {
 								console.log(res.data)
 								this.$Message.success('添加成功,可以为他添加几个联系人哦!');
@@ -847,7 +857,8 @@
 			let userInfo = sessionStorage.getItem('userInfo');
 			let array = JSON.parse(userInfo);
 			console.log(array)
-			this.formValidate.BusinessGroup = array.BusinessUnit
+			this.formValidate.Owner = array.LastName
+			this.formValidate.BusinessUnit = array.BusinessUnit
 
 		}
 	}
