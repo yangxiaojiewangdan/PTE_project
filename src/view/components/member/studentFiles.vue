@@ -71,7 +71,7 @@
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button type="success" class="tableTops" @click="AddDepartment = true;add=true;see=false;">添加</Button>
+				<Button type="success" class="tableTops" @click="Add">添加</Button>
 				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -132,7 +132,7 @@
 							</Col>
 							<Col span="4">
 							<FormItem label="">
-								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 100px;">
+								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 50px;">
 									<div style="padding: 5px">
 										<Icon type="ios-cloud-upload" size="50"></Icon>
 										<p>上传照片</p>
@@ -232,26 +232,26 @@
 							<Input v-model="formValidate.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 						<FormItem label="业务部门" prop="BusinessUnit">
-							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
+							<Select v-model="formValidate.BusinessUnit" style="width: 200px;" disabled>
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
-						<FormItem label="负责人" prop="BusinessUnit">
-							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
+						<FormItem label="负责人" prop="Owner">
+							<Select v-model="formValidate.Owner" style="width: 200px;" disabled>
 								<Option value="beijing">New York</Option>
 								<Option value="shanghai">London</Option>
 								<Option value="shenzhen">Sydney</Option>
 							</Select>
 						</FormItem>
-						<FormItem label="业务部门ID" prop="BusinessUnitId">
+						<!--<FormItem label="业务部门ID" prop="BusinessUnitId">
 							<Input v-model="formValidate.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
 						</FormItem>
 
 						<FormItem label="负责人ID" prop="OwnerId">
 							<Input v-model="formValidate.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
+						</FormItem>-->
 					</Form>
 				</TabPane>
 				<!--添加联系人-->
@@ -596,6 +596,7 @@
 					BusinessUnit: '',
 					OwnerId: '',
 					BusinessUnit: '',
+					Id:'',
 				},
 				AddCustomerFrom: {
 					FirstName: '',
@@ -626,6 +627,12 @@
 			}
 		},
 		methods: {
+			Add(){
+				this.AddDepartment  = true;
+				this.add=true;
+				this.see=false;
+				this.formValidate = {};
+			},
 			tabsPage(name) {
 				this.aaa = name;
 			},
@@ -671,6 +678,9 @@
 			cancel() {
 				this.$Message.info('已取消');
 			},
+			AddDepartment(){
+				
+			},
 			//修改赋值
 			dblclickUpData(index) {
 				this.add = false;
@@ -697,7 +707,7 @@
 			handleSubmit() {
 				if(this.aaa == "name1") {
 					this.$refs.formValidate.validate((valid) => {
-						if(valid && this.formValidate.Id == undefined) {
+						if(valid && this.formValidate.Id == undefined || this.formValidate.Id == "") {
 							Create(this.Interface, this.formValidate).then(res => {
 								console.log(res.data)
 								this.$Message.success('添加成功,可以为他添加几个联系人哦!');
@@ -844,6 +854,11 @@
 			//			}).catch(err => {
 			//				console.log(err)
 			//			})
+			let userInfo = sessionStorage.getItem('userInfo');
+			let array = JSON.parse(userInfo);
+			console.log(array)
+			this.formValidate.Owner = array.LastName
+			this.formValidate.BusinessUnit = array.BusinessUnit
 
 		}
 	}
