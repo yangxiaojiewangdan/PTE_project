@@ -17,6 +17,7 @@
             >{{ item.label }}</Option>
           </Select>
           <Input
+          
             v-model="queryvalueassembly"
             placeholder="请输入查询内容"
             style="width: 200px"
@@ -24,8 +25,8 @@
           />
           <Button type="primary" class="tableTops" @click="querytableassembly">查询</Button>
         </Col>
-        <Col span="24" style="margin-top:20px;" v-if="Table">
-          <Table height="300" size="small" ref="selection" @on-select="Choice" :columns="columns1" :data="data2"></Table>
+        <Col span="24" style="margin-top:20px;" >
+          <Table height="300" size="small" ref="selection" @on-selection-change="Choice" :columns="columns1" :data="data2"></Table>
         </Col>
       </Row>
       <div slot="footer">
@@ -48,11 +49,12 @@
   </div>
 </template>
 <script>
-import { CustomerData } from "@/api/api";
+import { GetEntities } from "@/api/api";
 export default {
   inject: ["reload"],
   data() {
     return {
+      Interface:"CustomerProfile",
       modal1: true,
       querySelectassembly: "",
       queryvalueassembly: "",
@@ -71,11 +73,6 @@ export default {
           type: "selection",
           width: 50,
           align: "center"
-        },
-        {
-          title: "姓",
-          key: "FirstName",
-          width: 80
         },
         {
           title: "名",
@@ -117,25 +114,20 @@ export default {
       ],
       data2: [],
       Customername: [],
-      Customer: [],
+      childByValue: [],
       ProfileName: "",
       ProfileId: "",
-      Table: false
     };
   },
   methods: {
     ok() {
-         this.$emit('childByValue', this.ProfileId)
-         this.$emit('childByValue2', this.ProfileName)
-        console.log(this.ProfileId)
-        console.log(this.ProfileName)
-        this.modal1 = false;
+         this.$emit('childByValue', this.childByValue)
+          this.modal1 = false;
     },
     // 点击查询按钮查询信息
     querytableassembly() {
-      this.Table = true;
       if (this.querySelectassembly == "Name") {
-        CustomerData({
+        GetEntities(this.Interface,{
           Filters: [
             {
               Relational: "Or", //And 与 | Or 或
@@ -167,7 +159,7 @@ export default {
           });
       }
       if (this.querySelectassembly == "ContactPhone") {
-        CustomerData({
+        GetEntities(this.Interface,{
           Filters: [
             {
               Relational: "And", //And 与 | Or 或
@@ -190,17 +182,11 @@ export default {
       }
     },
     Choice(selection) {
-      this.Customer = selection;
-      for (var i = 0; i < this.Customer.length; i++) {
-        this.Customername.push(this.Customer[i].Id);
-        this.ProfileName =
-          this.Customer[i].FirstName + this.Customer[i].LastName;
-        this.ProfileId = this.Customer[i].Id;
-      }
+      this.childByValue = selection;
     }
   },
   mounted() {
-    CustomerData({
+    GetEntities(this.Interface,{
       Filters: {}
     })
       .then(res => {
@@ -212,6 +198,3 @@ export default {
   }
 };
 </script>
-
-
-

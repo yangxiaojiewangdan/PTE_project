@@ -57,7 +57,8 @@
 		<Modal v-model="AddDepartment" width="1000" title="添加课包信息" :mask-closable="false" :styles="{top: '20px'}">
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="85" inline>
 				<Row>
-					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加课包信息</Divider>
+					<!--					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加课包信息</Divider>
+-->
 					<!--基本信息-->
 					<FormItem label="所属业务群" prop="BusinessGroup">
 						<Input v-model="formValidate.BusinessGroup" placeholder="请输入" style="width:200px" disabled></Input>
@@ -131,9 +132,9 @@
 					<FormItem label="" prop="IsExclusive" style="width:200px ;">
 						<Checkbox v-model="formValidate.IsExclusive" style="width: 100px;">门店专属课包</Checkbox>
 					</FormItem>
-					<FormItem label="启用" prop="Enabled">
+					<FormItem label="" prop="Enabled">
 						<i-switch v-model="formValidate.Enabled" size="large">
-							<span slot="open">On</span>
+							<span slot="open">启用</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
@@ -142,14 +143,20 @@
 				</Row>
 				<Row>
 					<!--课包明细实体-->
-					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课包明细实体</Divider>
+					<!--<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课包明细实体</Divider>-->
+					<div class="line">
+						课包明细实体
+					</div>
 					<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="DetailedPackage" :columns="colDetailedPackage" @on-delete="handleDeleteDetail" border stripe height="200" @on-row-dblclick="dblclickUpDetail" />
 					<Button type="info" @click="AddDetail = true">
               <Icon type="md-add"/>添加课包明细实体
             </Button>
 				</Row>
 				<!--课包价格实体-->
-				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课包价格实体</Divider>
+				<!--				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课包价格实体</Divider>-->
+				<div class="line">
+					课包价格实体
+				</div>
 				<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="PricePackage" :columns="colPricePackage" @on-delete="handleDeletePrise" border stripe height="200" @on-row-dblclick="dblclickUpPrise" />
 				<Button type="info" @click="AddPrise = true">
               <Icon type="md-add"/>添加课包价格实体
@@ -240,7 +247,7 @@
 						<Input v-model="CousrePriseFrom.SellPrice" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					<FormItem label="最低售价" prop="LimitPrice">
-						<Input v-model="CousrePriseFrom.LimitPrice" placeholder="请输入" style="width:200px"></Input>
+						<Input v-model="CousrePriseFrom.LimitPrice" placeholder="请输入" style="width:200px" ></Input>
 					</FormItem>
 					<FormItem label="可折扣" prop="AllowDiscount">
 						<i-switch v-model="CousrePriseFrom.AllowDiscount" size="large">
@@ -1078,5 +1085,16 @@
 <style lang="less" scoped>
 	.Col {
 		margin-top: 16px;
+	}
+	
+	.line {
+		font-size: 16px;
+		font-weight: 600;
+		color: #000;
+		width: 100%;
+		height: 30px;
+		border-bottom: 2px solid #999;
+		margin-bottom: 10px;
+		margin-top: 10px;
 	}
 </style>

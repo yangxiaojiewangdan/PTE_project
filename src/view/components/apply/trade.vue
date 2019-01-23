@@ -48,11 +48,10 @@
               stripe
               border
               ref="selection"
-              
               :columns="SettlementCodeTable"
               :data="SettlementCodeData"
-              @on-select="OneselectionId"
               @on-row-dblclick="dblclickUpData"
+              @on-select="OneselectionId"
               @on-select-all="allselectionId"
               @on-select-all-cancel="allcancelselectionId"
               @on-select-cancel="OnecancelselectionId"
@@ -446,7 +445,6 @@ export default {
       delete1: false,
       BatchDeleteList: [],
       delete: [],
-      delete2: []
     };
   },
   methods: {
@@ -551,7 +549,7 @@ export default {
     },
     // 删除数据接口
     deleteList() {
-      if (this.delete2.length == 0) {
+      if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
         this.delete1 = true;
@@ -560,7 +558,7 @@ export default {
     OneselectionId(selection,row) {
       this.BatchDeleteList = selection;
       for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete2.push(this.BatchDeleteList[i].Id);
+        this.delete.push(this.BatchDeleteList[i].Id);
       }
       function uniq(array) {
         var temp = []; //一个新的临时数组
@@ -571,7 +569,7 @@ export default {
         }
         return temp;
       }
-      this.delete2 = uniq(this.delete2);
+      this.delete = uniq(this.delete);
     },
     OnecancelselectionId(selection,row) {
       function removeByValue(arr, val) {
@@ -582,21 +580,20 @@ export default {
           }
         }
       }
-      removeByValue(this.delete2,row.Id);
+      removeByValue(this.delete,row.Id);
     },
     allselectionId(selection) {
-      console.log(this.delete2);
+      console.log(this.delete);
        for (var i = 0; i < selection.length; i++) {
-        this.delete2.push(selection[i].Id);
+        this.delete.push(selection[i].Id);
       }
     },
     allcancelselectionId(selection) {
-         this.delete2 = selection
+         this.delete = selection
     },
     ok() {
-      // console.log(this.delete2);
       if (this.formValidate.Id == undefined) {
-        BatchDelete(this.Interface, this.delete2)
+        BatchDelete(this.Interface, this.delete)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
@@ -624,7 +621,6 @@ export default {
       this.see = true;
       this.formValidate = index;
       this.del = true;
-
       console.log(index);
       if (index.SettleType == "0" || index.SettleType == "2") {
         this.ToDay = false;

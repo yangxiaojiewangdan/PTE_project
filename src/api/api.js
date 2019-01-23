@@ -2,34 +2,34 @@ import axios from "@/libs/api.request";
 //url变量
 export const apiUrl = "http://192.168.31.74:8081";
 
-// //获取所有大区的数据
-// export const DistrictGetRegion = () => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetRegion",
-//     method: "get"
-//   });
-// };
-// //获取指定大区省份信息
-// export const DistrictGetProvince = () => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetProvince",
-//     method: "get"
-//   });
-// };
-// //获取指定大区省份信息
-// export const DistrictGetArea = (ParentId) => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetArea?ParentId=" + ParentId,
-//     method: "get"
-//   });
-// };
-// //  根据数据主键(Id)查询单条数据
-// export const DistrictGetEntity = (keyId) => {
-//   return axios.request({
-//     url: apiUrl + "/api/District/GetEntity?keyId=" + keyId,
-//     method: "get"
-//   });
-// };
+//获取所有大区的数据 
+export const DistrictGetRegion = () => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetRegion",
+    method: "get"
+  });
+};
+//获取指定大区省份信息
+export const DistrictGetProvince = () => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetProvince",
+    method: "get"
+  });
+};
+//获取指定大区省份信息
+export const DistrictGetArea = (ParentId) => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetArea?ParentId=" + ParentId,
+    method: "get"
+  });
+};
+//  根据数据主键(Id)查询单条数据
+export const DistrictGetEntity = (keyId) => {
+  return axios.request({
+    url: apiUrl + "/api/District/GetEntity?keyId=" + keyId,
+    method: "get"
+  });
+};
 
 
 
@@ -124,58 +124,105 @@ export const DataDictionaryGetDataCatalog = () => {
 
 
 //未分配权限
-export const GetUnAssignedPermission = (Interface,roleId) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/GetUnAssignedPermission?roleId=" + roleId,
-		method: "get",
-	});
+export const GetUnAssignedPermission = (Interface, roleId) => {
+  return axios.request({
+    url: apiUrl + "/api/" + Interface + "/GetUnAssignedPermission?roleId=" + roleId,
+    method: "get",
+  });
 };
 //已分配权限
-export const GetAssignedPermission = (Interface,roleId) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/GetAssignedPermission?roleId=" + roleId,
-		method: "get",
-	});
+export const GetAssignedPermission = (Interface, roleId) => {
+  return axios.request({
+    url: apiUrl + "/api/" + Interface + "/GetAssignedPermission?roleId=" + roleId,
+    method: "get",
+  });
 };
 //增加删减权限接口
-export const AssignedPermission =  (Interface, Data) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AssignedPermission",
-		method: "post",
-		data: Data,
-	});
+export const AssignedPermission = (Interface, Data) => {
+  return axios.request({
+    url: apiUrl + "/api/" + Interface + "/AssignedPermission",
+    method: "post",
+    data: Data,
+  });
 };
 
 //增加修改课程阶段
 export const AddOrUpdateCoursePhase = (Interface, Data) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AddOrUpdateCoursePhase",
-		method: "post",
-		data: Data,
-	});
+  return axios.request({
+    url: apiUrl + "/api/" + Interface + "/AddOrUpdateCoursePhase",
+    method: "post",
+    data: Data,
+  });
 };
-
 //删除 课程阶段
 export const CourseRemove = (CourseId, PhaseId) => {
-	return axios.request({
-		url: apiUrl + "/api/Course/RemovePhase?CourseId=" + CourseId + '&PhaseId=' + PhaseId,
-		method: "post",
-		//data:CourseRemoveData,
-	});
+  return axios.request({
+    url: apiUrl + "/api/Course/RemovePhase?CourseId=" + CourseId + '&PhaseId=' + PhaseId,
+    method: "post",
+    //data:CourseRemoveData,
+  });
 };
 //添加课包明细接口
 export const AddOrUpdateCourse = (Interface, Data) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AddOrUpdateCourse",
-		data: Data,
-		method: "post"
-	});
+  return axios.request({
+    url: apiUrl + "/api/" + Interface + "/AddOrUpdateCourse",
+    data: Data,
+    method: "post"
+  });
 };
 //添加课包价格接口
 export const AddOrUpdatePrice = (Interface, Data) => {
-	return axios.request({
-		url: apiUrl + "/api/" + Interface + "/AddOrUpdatePrice",
-		data: Data,
-		method: "post"
-	});
+  return axios.request({
+    url: apiUrl + "/api/" + Interface + "/AddOrUpdatePrice",
+    data: Data,
+    method: "post"
+  });
+}
+//添加订单
+export const CustomerOrderPurchaseOrder = Data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/PurchaseOrder",
+    data: Data,
+    method: "post"
+  });
+}
+//删除订单
+export const CustomerOrderBatchDeleteOrder = Data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/BatchDeleteOrder",
+    data: Data,
+    method: "post"
+  });
+}
+//修改订单
+export const CustomerOrderUpdateOrder = Data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/UpdateOrder",
+    data: Data,
+    method: "post"
+  });
+}
+//订单支付
+export const CustomerOrderPaymentOrder = Data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/PaymentOrder",
+    data: Data,
+    method: "post"
+  });
+}
+//取消订单
+export const CustomerOrderCancelOrderRequest = Data => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/CancelOrderRequest",
+    data: Data,
+    method: "post"
+  });
+}
+//添加权益金的阶梯
+export const RoyaltyCodeAddOrUpdateLadder = Data => {
+  return axios.request({
+    url: apiUrl + "/api/RoyaltyCode/AddOrUpdateLadder",
+    data: Data,
+    method: "post"
+  });
 }

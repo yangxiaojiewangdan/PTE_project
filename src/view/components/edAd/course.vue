@@ -79,6 +79,7 @@
 						<Input v-model="CourseForm.BusinessGroup" placeholder="请输入" disabled style="width:200px"></Input>
 					</FormItem>
 
+
 					<FormItem label="业务类型" prop="BusinessType">
 						<Select v-model="CourseForm.BusinessType" style="width:200px">
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -372,7 +373,6 @@
 					},
 				],
 				ruleValidate: {
-
 				},
 				CourseForm: {
 					ParentId: "",

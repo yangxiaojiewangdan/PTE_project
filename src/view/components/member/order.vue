@@ -13,11 +13,11 @@
           <Row>
             <Col span="15" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:46px;">加盟商：</h3>
-              <Select v-model="SelectFranchiser" style="width:200px;margin-left:20px;">
+              <Select v-model="SelectFranchiser" @on-change="queryquerychange" style="width:200px;margin-left:20px;">
                 <Option
                   v-for="item in FranchiserList"
                   :value="item.Code"
-                  :key="item.Code"
+                  :key="item.Id"
                 >{{ item.Code }}</Option>
               </Select>
             </Col>
@@ -25,11 +25,11 @@
           <Row>
             <Col span="15" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:60px;">门店：</h3>
-              <Select v-model="SelectStore" style="width:200px;margin-left:20px;">
+              <Select v-model="SelectStore" @on-change="queryquerychange" style="width:200px;margin-left:20px;">
                 <Option
                   v-for="item in StoreList"
-                  :value="item.Code"
-                  :key="item.Code"
+                  :value="item.Id"
+                  :key="item.Id"
                 >{{ item.Code }}</Option>
               </Select>
             </Col>
@@ -68,7 +68,7 @@
       <Col span="8">
         <div class="tableTop">
           <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -97,9 +97,11 @@
           ref="selection"
           :columns="informationTable"
           :data="informationData"
-          @on-select="BatchDelete"
           @on-row-dblclick="dblclickUpData"
-          @on-select-all="BatchDelete"
+          @on-select="OneselectionId"
+          @on-select-all="allselectionId"
+          @on-select-all-cancel="allcancelselectionId"
+          @on-select-cancel="OnecancelselectionId"
         ></Table>
         <!-- 表格 end-->
       </Col>
@@ -109,13 +111,13 @@
         <!-- 分页 end-->
       </Col>
     </Row>
-    <Enquiringcustomers
-      v-if="Enquiringcustomers1"
-      v-on:childByValue="childByValue"
-      v-on:childByValue2="childByValue2"
-    ></Enquiringcustomers>
+    <Enquiringcustomers v-if="Enquiringcustomers1" v-on:childByValue="childByValue"></Enquiringcustomers>
     <!-- 添加信息 弹出框-->
-    <Modal v-model="AddDepartment" scrollable width="1400" title="添加订单信息" :mask-closable="false">
+    <Modal v-model="AddDepartment" scrollable width="1300" :mask-closable="false">
+      <p slot="header" style="text-align:left;line-height: 1;">
+        <span v-if="add">添加订单</span>
+        <span v-if="see">查看订单详情</span>
+      </p>
       <Form
         ref="formValidate"
         :model="formValidate"
@@ -123,213 +125,6 @@
         label-position="right"
         :label-width="80"
       >
-        <!-- <Row>
-          <Col span="24">
-            <Col span="23">
-              <FormItem label="所属门店" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" style="width:200px;">
-                  <Option
-                    v-for="item in StoreList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Code }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="10">
-              <FormItem label="客户" prop="ProfileId">
-                <Input v-if="ProfileIdHide" v-model="formValidate.ProfileId" placeholder="请输入" ></Input>
-                <Input v-model="ProfileName" placeholder="请输入" style="width:200px;margin-right:10px;"></Input>
-                <Button type="primary" @click="Enquiringcustomers">选择客户</Button>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="课包" prop="PackageId">
-                <Input v-model="formValidate.PackageId" placeholder="请输入"></Input>
-                <Select v-model="formValidate.ProfileId">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>.
-            <Col span="8">
-              <FormItem label="订单类型" prop="OrderType">
-                <Select v-model="formValidate.OrderType">
-                  <Option
-                    v-for="item in OrderTypeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="订单状态" prop="OrderStatus">
-                <Select v-model="formValidate.OrderStatus">
-                  <Option
-                    v-for="item in OrderStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="支付状态" prop="PaymentStatus">
-                <Select v-model="formValidate.PaymentStatus">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="来源渠道" prop="ChannelCode">
-                <Select v-model="formValidate.ChannelCode">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="市场分类" prop="MarketClass">
-                <Select v-model="formValidate.MarketClass">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="市场代码" prop="MarketCode">
-                <Select v-model="formValidate.MarketCode">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="业务部门" prop="BusinessUnit">
-                <Select v-model="formValidate.BusinessUnit">
-                  <Option
-                    v-for="item in BusinessUnitList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="负责人" prop="Owner">
-                <Select v-model="formValidate.Owner">
-                  <Option
-                    v-for="item in OwnerList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Account }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="折扣原因代码" prop="DiscountCode">
-                <Select v-model="formValidate.DiscountCode">
-                  <Option
-                    v-for="item in DiscountCodeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-             <Col span="11">
-              <FormItem label="折扣金额" prop="DiscountAmt">
-                <Input v-model="formValidate.DiscountAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="售价" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="原始售价" prop="OriginalPrice">
-                <Input v-model="formValidate.OriginalPrice" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-
-            <Col span="7">
-              <FormItem label="数量" prop="Quantity">
-                <Input v-model="formValidate.Quantity" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            
-            <Col span="8">
-              <FormItem label="应收金额" prop="BalanceAmt">
-                <Input v-model="formValidate.BalanceAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="订金金额" prop="DepositAmt">
-                <Input v-model="formValidate.DepositAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="订金支付时间" prop="DepositDate">
-                <Input v-model="formValidate.DepositDate" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-           
-            <Col span="11">
-              <FormItem label="开始日期" prop="StartDate">
-                <DatePicker type="date" v-model="formValidate.StartDate" placeholder="Select date"></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="结束日期" prop="EndDate">
-                <DatePicker type="date" v-model="formValidate.EndDate" placeholder="Select date"></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="实际开始日期" prop="ActualStartDate">
-                <DatePicker
-                  type="date"
-                  v-model="formValidate.ActualStartDate"
-                  placeholder="Select date"
-                ></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="实际结束日期" prop="ActualEndDate">
-                <DatePicker
-                  type="date"
-                  v-model="formValidate.ActualEndDate"
-                  placeholder="Select date"
-                ></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="24">
-              <FormItem label="固定期限" prop="IsFixedLimit">
-                <i-switch v-model="formValidate.IsFixedLimit" size="large">
-                  <span slot="open">On</span>
-                  <span slot="close">Off</span>
-                </i-switch>
-              </FormItem>
-            </Col>
-          </Col>
-        </Row>-->
         <Row>
           <Col span="18">
             <Col span="8">
@@ -344,39 +139,41 @@
               </FormItem>
             </Col>
             <Col span="15">
-              <FormItem label="所属加盟商" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" disabled>
-                  <Option
-                    v-for="item in StoreList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Code }}</Option>
-                </Select>
+              <FormItem label="所属加盟商" prop="Franchiser">
+                <Input v-model="formValidate.Franchiser" placeholder="选择门店将加盟商带出" disabled></Input>
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem label="客户" prop="ProfileId">
                 <Input v-if="ProfileIdHide" v-model="formValidate.ProfileId" placeholder="请输入"></Input>
-                <Input v-model="ProfileName" placeholder="请输入"></Input>
-                <Button type="primary" @click="Enquiringcustomers">选择客户</Button>
+                <Input
+                  v-model="formValidate.LastName"
+                  readonly
+                  @on-search="Enquiringcustomers"
+                  search
+                  placeholder="请点击搜索选择客户"
+                ></Input>
               </FormItem>
             </Col>
             <Col span="7">
-              <FormItem label="昵称" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="昵称" prop="NickName">
+                <Input v-model="formValidate.NickName" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="8">
-              <FormItem label="出生年月" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="出生年月" prop="BrithDate">
+                <Input v-model="formValidate.BrithDate" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="8">
               <FormItem label="课包" prop="PackageId">
-                <!-- <Input v-model="formValidate.PackageId" placeholder="请输入"></Input> -->
-                <Select v-model="formValidate.ProfileId" @on-change="aa" :label-in-value="true">
+                <Select
+                  v-model="formValidate.PackageId"
+                  @on-change="PackageIdchange"
+                  :label-in-value="true"
+                >
                   <Option
-                    v-for="item in PaymentStatusList"
+                    v-for="item in PackageIdList"
                     :value="item.Id"
                     :key="item.Code"
                   >{{ item.Description }}</Option>
@@ -384,80 +181,92 @@
               </FormItem>
             </Col>
             <Col span="5">
-              <FormItem label="课包类型" prop="PackageId">
-                <Select v-model="formValidate.ProfileId" disabled>
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
+              <FormItem label="课包类型" prop="PackageTypeDesc">
+                <Input v-model="formValidate.PackageTypeDesc" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="5">
-              <FormItem label="定价" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="定价" prop="OriginalPrice">
+                <Input type="text" v-model="formValidate.OriginalPrice" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="5">
-              <FormItem label="总课时" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="总课时" prop="TotalPeriod">
+                <Input v-model="formValidate.TotalPeriod" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
 
             <Col span="6">
               <FormItem label="售价" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入"></Input>
+                <Input
+                  :disabled="isdisabledFn"
+                  v-model="formValidate.SalePrice"
+                  @on-change="SalePricechange"
+                  @on-blur="SalePriceblur"
+                  placeholder="请输入"
+                ></Input>
               </FormItem>
             </Col>
             <Col span="5">
-              <FormItem label="数量" prop="SalePrice">
-                <Input type="number" v-model="formValidate.SalePrice" placeholder="请输入"></Input>
+              <FormItem label="数量" prop="Quantity">
+                <InputNumber
+                  v-model="formValidate.Quantity"
+                  @on-change="SalePricechange"
+                  placeholder="请输入"
+                ></InputNumber>
               </FormItem>
             </Col>
             <Col span="6">
-              <FormItem label="赠送课时" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入"></Input>
+              <FormItem label="赠送课时" prop="q">
+                <Input v-model="q" placeholder="请输入"></Input>
               </FormItem>
             </Col>
             <Col span="6">
-              <FormItem label="总金额" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="总金额" prop="BalanceAmt">
+                <Input v-model="formValidate.BalanceAmt" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
-
-            <Col span="7">
-              <FormItem label="有效期" prop="StartDate">
-                <DatePicker type="date" v-model="formValidate.StartDate" placeholder="Select date"></DatePicker>
+            <Col span="6">
+              <FormItem label="开始日期" prop="StartDate">
+                <DatePicker
+                  type="date"
+                  v-model="formValidate.StartDate"
+                  @on-change="StartDatechange"
+                  placeholder="Select date"
+                ></DatePicker>
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem label="负责人" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId">
+            <Col span="6">
+              <FormItem label="结束日期" prop="EndDate">
+                <DatePicker
+                  type="date"
+                  readonly
+                  v-model="formValidate.EndDate"
+                  placeholder="Select date"
+                ></DatePicker>
+              </FormItem>
+            </Col>
+            <Col span="5">
+              <FormItem label="负责人" prop="OwnerId">
+                <Select v-model="formValidate.OwnerId" @on-change="OwnerIdchange" placeholder="请输入">
                   <Option
-                    v-for="item in StoreList"
+                    v-for="item in OwnerList"
                     :value="item.Id"
                     :key="item.Code"
-                  >{{ item.Code }}</Option>
+                  >{{ item.Account }}</Option>
                 </Select>
               </FormItem>
             </Col>
-            <Col span="8">
-              <FormItem label="业务部门" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" disabled>
-                  <Option
-                    v-for="item in StoreList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Code }}</Option>
-                </Select>
+            <Col span="6">
+              <FormItem label="业务部门" prop="BusinessUnit">
+                <Input v-model="formValidate.BusinessUnit" disabled placeholder="请输入"></Input>
               </FormItem>
             </Col>
             <Col span="8">
-              <FormItem label="折扣原因" prop="OrderType" v-if="OrderType">
-                <Select v-model="formValidate.OrderType">
+              <FormItem label="折扣原因" prop="DiscountCode" v-if="ifDiscountCode">
+                <Select v-model="formValidate.DiscountCode">
                   <Option
-                    v-for="item in OrderTypeList"
+                    v-for="item in DiscountCodeList"
                     :value="item.Id"
                     :key="item.Code"
                   >{{ item.Description }}</Option>
@@ -465,8 +274,8 @@
               </FormItem>
             </Col>
             <Col span="15">
-              <FormItem label="折扣备注" prop="OrderType" v-if="OrderType">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入"></Input>
+              <FormItem label="折扣备注" prop="DiscountReason" v-if="ifDiscountCode">
+                <Input v-model="formValidate.DiscountReason" placeholder="请输入"></Input>
               </FormItem>
             </Col>
             <Col span="23">
@@ -482,7 +291,7 @@
             <Col span="22" offset="1">
               <Tabs value="name1">
                 <TabPane label="支付记录" name="name1">
-                  <Table :columns="columns1" :data="data1" size="small"></Table>
+                  <Table ref="selection" :columns="columns1" :data="data1" size="small"></Table>
                 </TabPane>
                 <TabPane label="销课记录" name="name2">标签二的内容</TabPane>
                 <TabPane label="退课记录" name="name3">标签三的内容</TabPane>
@@ -491,8 +300,19 @@
           </Col>
           <Col span="6" style="border-left:1px solid #eee;">
             <Col span="23">
-              <FormItem label="订单类型" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId">
+              <FormItem label="订单类型" prop="OrderType">
+                <Select v-model="formValidate.OrderType">
+                  <Option
+                    v-for="item in OrderTypeList"
+                    :value="item.Id"
+                    :key="item.Code"
+                  >{{ item.Description }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem label="来源渠道" prop="ChannelCode">
+                <Select v-model="formValidate.ChannelCode">
                   <Option
                     v-for="item in StoreList"
                     :value="item.Id"
@@ -502,8 +322,8 @@
               </FormItem>
             </Col>
             <Col span="23">
-              <FormItem label="来源渠道" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId">
+              <FormItem label="市场分类" prop="MarketClass">
+                <Select v-model="formValidate.MarketClass">
                   <Option
                     v-for="item in StoreList"
                     :value="item.Id"
@@ -513,19 +333,8 @@
               </FormItem>
             </Col>
             <Col span="23">
-              <FormItem label="市场分类" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId">
-                  <Option
-                    v-for="item in StoreList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Code }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="23">
-              <FormItem label="市场代码" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId">
+              <FormItem label="市场代码" prop="MarketCode">
+                <Select v-model="formValidate.MarketCode">
                   <Option
                     v-for="item in StoreList"
                     :value="item.Id"
@@ -536,45 +345,33 @@
             </Col>
 
             <Col span="23">
-              <FormItem label="订单状态" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" disabled>
-                  <Option
-                    v-for="item in StoreList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Code }}</Option>
-                </Select>
+              <FormItem label="订单状态" prop="OrderStatusDesc">
+                <Input v-model="formValidate.OrderStatusDesc" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
-              <FormItem label="支付状态" prop="StoreId">
-                <Select v-model="formValidate.StoreId" @on-change="SelectStoreId" disabled>
-                  <Option
-                    v-for="item in StoreList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Code }}</Option>
-                </Select>
+              <FormItem label="支付状态" prop="PaymentStatusDesc">
+                <Input v-model="formValidate.PaymentStatusDesc" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
-              <FormItem label="已付金额" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="已付金额" prop="ChargeAmt">
+                <Input v-model="formValidate.ChargeAmt" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
-              <FormItem label="剩余金额 " prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="剩余金额 " prop="BalanceAmt">
+                <Input v-model="formValidate.BalanceAmt" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
-              <FormItem label="已用课时" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="已用课时" prop="UsedPeriod">
+                <Input v-model="formValidate.UsedPeriod" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
-              <FormItem label="剩余课时" prop="SalePrice">
-                <Input v-model="formValidate.SalePrice" placeholder="请输入" disabled></Input>
+              <FormItem label="剩余课时" prop="RemainPeriod">
+                <Input v-model="formValidate.RemainPeriod" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
           </Col>
@@ -585,48 +382,54 @@
           <div class="footer_left1">
             <div>
               <span>创建人:</span>
-              <span>{{ Founder }}</span>
+              <span>{{ formValidate.CreateByName }}</span>
             </div>
             <div>
               <span>更新人:</span>
+              <span>{{ formValidate.UpdateByName }}</span>
             </div>
           </div>
           <div class="footer_left2">
             <div>
               <span>创建时间:</span>
+              <span>{{ formValidate.CreateOn }}</span>
             </div>
             <div>
               <span>更新时间:</span>
+              <span>{{ formValidate.UpdateOn }}</span>
             </div>
           </div>
         </div>
-        <button
+        <Button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('formValidate');AddDepartment = false;"
+          @click="delete1 = true;"
+          v-if="del"
         >
           <span>删除</span>
-        </button>
+        </Button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('formValidate');AddDepartment = false;"
+          @click="PaymentOrder = true;"
+          v-if="del"
         >
           <span>支付</span>
         </button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('formValidate');AddDepartment = false;"
+          @click="Retirefromclass = true;"
+          v-if="del"
         >
           <span>申请退课</span>
         </button>
         <button
           type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('formValidate');AddDepartment = false;"
+          class="ivu-btn ivu-btn-primary ivu-btn-large"
+          @click="handleSubmit('formValidate');"
         >
-          <span>保存</span>
+          <span>确定</span>
         </button>
         <button
           type="button"
@@ -638,333 +441,18 @@
       </div>
     </Modal>
     <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
+    <Modal v-model="delete1" title="提示" @on-ok="ok">
       <h3>确定删除此数据？</h3>
     </Modal>
-    <!-- 修改信息 弹出框-->
-    <Modal
-      v-model="upDepartment"
-      scrollable
-      width="1400"
-      title="查看订单信息"
-      :mask-closable="false"
-      :styles="{top: '20px'}"
-    >
-      <Form
-        ref="UpdateList"
-        :model="UpdateList"
-        :rules="ruleValidate"
-        label-position="right"
-        :label-width="120"
-      >
-        <Row>
-          <Col span="24">
-            <Col span="23">
-              <FormItem label="订单号" prop="OrderNo">
-                <Input v-model="UpdateList.OrderNo" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="姓" prop="FirstName">
-                <Input v-model="UpdateList.FirstName" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="名" prop="LastName">
-                <Input v-model="UpdateList.LastName" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="昵称" prop="NickName">
-                <Input v-model="UpdateList.NickName" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="订单类型" prop="OrderType">
-                <Select v-model="UpdateList.OrderType">
-                  <Option
-                    v-for="item in OrderTypeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="订单状态" prop="OrderStatus">
-                <Select v-model="UpdateList.OrderStatus">
-                  <Option
-                    v-for="item in OrderStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="支付状态 " prop="PaymentStatus">
-                <Select v-model="UpdateList.PaymentStatus">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="来源渠道 " prop="ChannelCode">
-                <Select v-model="UpdateList.ChannelCode">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="市场分类 " prop="MarketClass">
-                <Select v-model="UpdateList.MarketClass">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="市场代码" prop="MarketCode">
-                <Select v-model="UpdateList.MarketCode">
-                  <Option
-                    v-for="item in PaymentStatusList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="加盟商" prop="Franchiser">
-                <Input v-model="UpdateList.Franchiser" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="门店名称" prop="Store">
-                <Input v-model="UpdateList.Store" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="课包代码" prop="PackageCode">
-                <Input v-model="UpdateList.PackageCode" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="课包名称" prop="PackageName">
-                <Input v-model="UpdateList.PackageName" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="课包类型" prop="PackageType">
-                <Input v-model="UpdateList.PackageType" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="5">
-              <FormItem label="期限" prop="FixedPeriods">
-                <Input v-model="UpdateList.FixedPeriods" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="原始售价" prop="OriginalPrice">
-                <Input v-model="UpdateList.OriginalPrice" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="售价" prop="SalePrice">
-                <Input v-model="UpdateList.SalePrice" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="应收金额" prop="BalanceAmt">
-                <Input v-model="UpdateList.BalanceAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="已经支付金额" prop="ChargeAmt">
-                <Input v-model="UpdateList.ChargeAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="订金金额" prop="DepositAmt">
-                <Input v-model="UpdateList.DepositAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="5">
-              <FormItem label="订金支付时间" prop="DepositDate">
-                <Input v-model="UpdateList.DepositDate" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="开始日期" prop="StartDate">
-                <DatePicker type="date" v-model="UpdateList.StartDate" placeholder="Select date"></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="结束日期" prop="EndDate">
-                <DatePicker type="date" v-model="UpdateList.EndDate" placeholder="Select date"></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="实际开始日期" prop="ActualStartDate">
-                <DatePicker
-                  type="date"
-                  v-model="UpdateList.ActualStartDate"
-                  placeholder="Select date"
-                ></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="5">
-              <FormItem label="实际结束日期" prop="ActualEndDate">
-                <DatePicker
-                  type="date"
-                  v-model="UpdateList.ActualEndDate"
-                  placeholder="Select date"
-                ></DatePicker>
-              </FormItem>
-            </Col>
 
-            <Col span="8">
-              <FormItem label="总课时" prop="TotalPeriod">
-                <Input v-model="UpdateList.TotalPeriod" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="已销课时" prop="UsedPeriod">
-                <Input v-model="UpdateList.UsedPeriod" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="剩余课时" prop="RemainPeriod">
-                <Input v-model="UpdateList.RemainPeriod" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="折扣原因代码" prop="DiscountCode">
-                <Select v-model="UpdateList.DiscountCode">
-                  <Option
-                    v-for="item in DiscountCodeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="折扣金额" prop="DiscountAmt">
-                <Input v-model="UpdateList.DiscountAmt" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="业务部门" prop="BusinessUnit">
-                <Select v-model="UpdateList.BusinessUnit">
-                  <Option
-                    v-for="item in BusinessUnitList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="负责人" prop="Owner">
-                <Select v-model="UpdateList.Owner">
-                  <Option
-                    v-for="item in OwnerList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Account }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="24">
-              <FormItem label="固定期限" prop="IsFixedLimit">
-                <i-switch v-model="UpdateList.IsFixedLimit" size="large">
-                  <span slot="open">On</span>
-                  <span slot="close">Off</span>
-                </i-switch>
-              </FormItem>
-            </Col>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:</span>
-              <span>{{ UpdateList.CreateByName }}</span>
-            </div>
-            <div>
-              <span>更新人:</span>
-              <span>{{ UpdateList.UpdateByName }}</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:</span>
-              <span>{{ UpdateList.CreateOn }}</span>
-            </div>
-            <div>
-              <span>更新时间:</span>
-              <span>{{ UpdateList.UpdateOn }}</span>
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-error ivu-btn-large"
-          @click="Retirefromclass = true"
-        >
-          <span>退课申请</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-success ivu-btn-large"
-          style="margin-right:30px;"
-        >
-          <span>开票</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('UpdateList');upDepartment = false;"
-        >
-          <span>取消</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="UpdateSubmit('UpdateList');"
-        >
-          <span>修改</span>
-        </button>
-      </div>
-    </Modal>
     <!-- 退课申请 弹出框-->
-    <Modal
-      v-model="Retirefromclass"
-      scrollable
-      title="退课申请"
-      :mask-closable="false"
-      :styles="{top: '20px'}"
-    >
+    <Modal v-model="Retirefromclass" scrollable title="退课申请" :mask-closable="false">
       <Form
-        ref="formValidate"
+        ref="Retirefromclass"
         :model="formRetirefromclass"
         :rules="ruleRetirefromclass"
         label-position="right"
-        :label-width="120"
+        :label-width="90"
       >
         <Row>
           <Col span="24">
@@ -986,42 +474,23 @@
             </Col>
             <Col span="23">
               <FormItem label="取消课时" prop="CancellationPeriod">
-                <Input v-model="formRetirefromclass.CancellationPeriod" placeholder="请输入"></Input>
+                <Input v-model="formRetirefromclass.CancellationPeriod" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
               <FormItem label="取消金额" prop="CancellationAmt">
-                <Input v-model="formRetirefromclass.CancellationAmt" placeholder="请输入"></Input>
+                <Input v-model="formRetirefromclass.CancellationAmt" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="23">
               <FormItem label="取消日期" prop="CancellationDate">
-                <Input v-model="formRetirefromclass.CancellationDate" placeholder="请输入"></Input>
+                <Input v-model="formRetirefromclass.CancellationDate" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
           </Col>
         </Row>
       </Form>
       <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:</span>
-              <span>{{ Founder }}</span>
-            </div>
-            <div>
-              <span>更新人:</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:</span>
-            </div>
-            <div>
-              <span>更新时间:</span>
-            </div>
-          </div>
-        </div>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -1038,6 +507,58 @@
         </button>
       </div>
     </Modal>
+    <!-- 支付 弹出框-->
+    <Modal v-model="PaymentOrder" scrollable title="支付订单" :mask-closable="false">
+      <Form
+        ref="formValidate"
+        :model="formPaymentOrder"
+        :rules="rulePaymentOrder"
+        label-position="right"
+        :label-width="80"
+      >
+        <Row>
+          <Col span="24">
+            <Col span="23">
+              <FormItem label="支付方式" prop="PaymentCode">
+                <Select v-model="formPaymentOrder.PaymentCode">
+                  <Option
+                    v-for="item in PaymentCodeList"
+                    :value="item.Code"
+                    :key="item.Code"
+                  >{{ item.Description }}</Option>
+                </Select>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem label="支付账号" prop="PaymentAccount">
+                <Input v-model="formPaymentOrder.PaymentAccount" placeholder="请输入"></Input>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem label="支付金额" prop="PaymentAmt">
+                <Input v-model="formPaymentOrder.PaymentAmt" placeholder="请输入"></Input>
+              </FormItem>
+            </Col>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="handleReset('formPaymentOrder');PaymentOrder = false;"
+        >
+          <span>取消</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-primary ivu-btn-large"
+          @click="PaymentOrderSubmit('formPaymentOrder');"
+        >
+          <span>确定</span>
+        </button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -1045,14 +566,17 @@ import Enquiringcustomers from "_c/Enquiringcustomers";
 import {
   GetEntities,
   GetEntity,
-  Create,
   Update,
-  Delete,
-  BatchDelete1,
   Copy,
   DataDictionaryGetEntities,
   ValidateUnique,
-  DataDictionaryGetDataCatalog
+  DataDictionaryGetDataCatalog,
+  CustomerOrderPurchaseOrder,
+  CustomerOrderDeleteOrder,
+  CustomerOrderBatchDeleteOrder,
+  CustomerOrderUpdateOrder,
+  CustomerOrderPaymentOrder,
+  CustomerOrderCancelOrderRequest
 } from "@/api/api";
 export default {
   inject: ["reload"],
@@ -1061,40 +585,43 @@ export default {
   },
   data() {
     return {
+      q:"",
+      isdisabledFn:false,
       Interface: "CustomerOrder",
-      OrderType: false,
+      ifDiscountCode: false,
+      del: "",
+      add: "",
+      see: "",
+      RadioOrderStatus: "",
+      OrderStatusList: [],
+
+      // 课包信息
+      PackageIdList: "",
       columns1: [
         {
           title: "支付方式",
-          key: "name"
+          key: "PaymentCode"
         },
         {
-          title: "金额",
-          key: "age"
+          title: "支付账号",
+          key: "PaymentAccount"
         },
         {
-          title: "备注",
-          key: "address"
+          title: "支付金额",
+          key: "NetAmt"
+        },
+        {
+          title: "支付时间",
+          key: "TrxDate"
         }
       ],
-      data1: [
-        {
-          name: "微信支付",
-          age: 100,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03"
-        },
-        {
-          name: "微信支付",
-          age: 100,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03"
-        }
-      ],
-      // 订单状态
-      RadioOrderStatus: "",
-      OrderStatusList: [],
-      //   支付状态
+      data1: [],
+      PaymentCodeList: [],
+      formPaymentOrder: {
+        PaymentCode: "",
+        PaymentAccount: "",
+        PaymentAmt: ""
+      },
       PaymentStatusList: [],
       //   加盟商
       SelectFranchiser: "",
@@ -1126,150 +653,50 @@ export default {
       informationTable: [
         { type: "selection", width: 45 },
         { title: "订单号", key: "OrderNo", width: 120, sortable: true },
-        {
-          title: "姓",
-          key: "FirstName",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "名",
-          key: "LastName",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "昵称",
-          key: "NickName",
-          width: 120,
-          sortable: true
-        },
-        {
-          title: "订单类型",
-          key: "OrderType",
-          width: 110,
-          sortable: true
-        },
+        { title: "姓", key: "FirstName", width: 110, sortable: true },
+        { title: "名", key: "LastName", width: 110, sortable: true },
+        { title: "昵称", key: "NickName", width: 120, sortable: true },
+        { title: "订单类型", key: "OrderType", width: 110, sortable: true },
         {
           title: "订单状态",
-          key: "OrderStatus",
+          key: "OrderStatusDesc",
           width: 110,
           sortable: true
         },
         {
           title: "支付状态",
-          key: "PaymentStatus",
+          key: "PaymentStatusDesc",
           width: 110,
           sortable: true
         },
-        {
-          title: "来源渠道",
-          key: "ChannelCode",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "市场分类",
-          key: "MarketClass",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "市场代码",
-          width: 110,
-          sortable: true,
-          key: "MarketCode"
-        },
-        {
-          title: "加盟商",
-          width: 110,
-          sortable: true,
-          key: "Franchiser"
-        },
-        {
-          title: "门店名称",
-          key: "Store",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "课包代码",
-          key: "PackageCode",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "课包名称",
-          key: "PackageName",
-          width: 110,
-          sortable: true
-        },
+        { title: "来源渠道", key: "ChannelCode", width: 110, sortable: true },
+        { title: "市场分类", key: "MarketClass", width: 110, sortable: true },
+        { title: "市场代码", width: 110, sortable: true, key: "MarketCode" },
+        { title: "加盟商", width: 110, sortable: true, key: "Franchiser" },
+        { title: "门店名称", key: "Store", width: 110, sortable: true },
+        { title: "课包代码", key: "PackageCode", width: 110, sortable: true },
+        { title: "课包名称", key: "PackageName", width: 110, sortable: true },
         {
           title: "课包类型",
-          key: "PackageType",
+          key: "PackageTypeDesc",
           width: 110,
           sortable: true
         },
-        {
-          title: "期限",
-          key: "FixedPeriods",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "原始售价",
-          key: "OriginalPrice",
-          width: 110,
-          sortable: true
-        },
-        {
-          title: "数量",
-          key: "Quantity",
-          width: 80,
-          sortable: true
-        },
-        {
-          title: "售价",
-          key: "SalePrice",
-          width: 120,
-          sortable: true
-        },
-        {
-          title: "应收金额",
-          key: "BalanceAmt",
-          width: 120,
-          sortable: true
-        },
-        {
-          title: "已经支付金额",
-          key: "ChargeAmt",
-          width: 150,
-          sortable: true
-        },
-        {
-          title: "订金金额",
-          width: 110,
-          sortable: true,
-          key: "DepositAmt"
-        },
+        { title: "期限", key: "FixedPeriods", width: 110, sortable: true },
+        { title: "原始售价", key: "OriginalPrice", width: 110, sortable: true },
+        { title: "数量", key: "Quantity", width: 80, sortable: true },
+        { title: "售价", key: "SalePrice", width: 120, sortable: true },
+        { title: "应收金额", key: "BalanceAmt", width: 120, sortable: true },
+        { title: "已经支付金额", key: "ChargeAmt", width: 150, sortable: true },
+        { title: "订金金额", width: 110, sortable: true, key: "DepositAmt" },
         {
           title: "订金支付时间",
           width: 150,
           sortable: true,
           key: "DepositDate"
         },
-        {
-          title: "开始日期",
-          width: 110,
-          sortable: true,
-          key: "StartDate"
-        },
-        {
-          title: "结束日期",
-          width: 110,
-          sortable: true,
-          key: "EndDate"
-        },
+        { title: "开始日期", width: 110, sortable: true, key: "StartDate" },
+        { title: "结束日期", width: 110, sortable: true, key: "EndDate" },
         {
           title: "实际开始日期",
           width: 150,
@@ -1282,30 +709,10 @@ export default {
           sortable: true,
           key: "ActualEndDate"
         },
-        {
-          title: "固定期限",
-          width: 110,
-          sortable: true,
-          key: "IsFixedLimit"
-        },
-        {
-          title: "总课时",
-          width: 110,
-          sortable: true,
-          key: "TotalPeriod"
-        },
-        {
-          title: "已销课时",
-          width: 110,
-          sortable: true,
-          key: "UsedPeriod"
-        },
-        {
-          title: "剩余课时",
-          width: 110,
-          sortable: true,
-          key: "RemainPeriod"
-        },
+        { title: "固定期限", width: 110, sortable: true, key: "IsFixedLimit" },
+        { title: "总课时", width: 110, sortable: true, key: "TotalPeriod" },
+        { title: "已销课时", width: 110, sortable: true, key: "UsedPeriod" },
+        { title: "剩余课时", width: 110, sortable: true, key: "RemainPeriod" },
         {
           title: "折扣原因代码",
           width: 150,
@@ -1318,24 +725,9 @@ export default {
           sortable: true,
           key: "DiscountReason"
         },
-        {
-          title: "折扣金额",
-          width: 110,
-          sortable: true,
-          key: "DiscountAmt"
-        },
-        {
-          title: "业务部门",
-          width: 110,
-          sortable: true,
-          key: "BusinessUnit"
-        },
-        {
-          title: "负责人",
-          width: 110,
-          sortable: true,
-          key: "Owner"
-        },
+        { title: "折扣金额", width: 110, sortable: true, key: "DiscountAmt" },
+        { title: "业务部门", width: 110, sortable: true, key: "BusinessUnit" },
+        { title: "负责人", width: 110, sortable: true, key: "Owner" },
         {
           title: "退课原因代码",
           width: 150,
@@ -1366,30 +758,15 @@ export default {
           sortable: true,
           key: "CancellationDate"
         },
-        {
-          title: "开票标识",
-          width: 110,
-          sortable: true,
-          key: "IsOpenInvoice"
-        },
-        {
-          title: "发票号",
-          width: 110,
-          sortable: true,
-          key: "InvoiceNo"
-        },
+        { title: "开票标识", width: 110, sortable: true, key: "IsOpenInvoice" },
+        { title: "发票号", width: 110, sortable: true, key: "InvoiceNo" },
         {
           title: "开票日期",
           width: 110,
           sortable: true,
           key: "OpenInvoiceDate"
         },
-        {
-          title: "创建人",
-          key: "CreateByName",
-          width: 100,
-          sortable: true
-        },
+        { title: "创建人", key: "CreateByName", width: 100, sortable: true },
         {
           title: "创建时间",
           ellipsis: true,
@@ -1422,34 +799,49 @@ export default {
       AddDepartment: false,
       upDepartment: false,
       Retirefromclass: false,
+      PaymentOrder: false,
       // 添加信息表单
       formValidate: {
+        OrderId: "",
+        StoreId: "",
+        // 加盟商的信息
+        Franchiser: "",
         ProfileId: "",
+        // 客户名称
+        LastName: "",
+        // 客户昵称
+        NickName: "",
+        // 客户出生日期
+        BrithDate: "",
+        PackageId: "",
+        // 课包类型
+        PackageTypeDesc: "",
+        // 课包售价
+        SellPrice: "",
+        // 课包总课时
+        TotalPeriod: "",
+        OriginalPrice: "",
+        Quantity: 1,
+        // 总金额
+        BalanceAmt: "",
+        StartDate: "",
+        // 结束日期
+        EndDate: "",
+        OwnerId: "",
+        BusinessUnit: "",
+        DiscountCode: "",
+        DiscountReason: "",
+        Comments: "",
         OrderType: "",
-        OrderStatus: "",
-        PaymentStatus: "",
         ChannelCode: "",
         MarketClass: "",
         MarketCode: "",
-        StoreId: "",
-        PackageId: "14075954154606592",
-        OriginalPrice: "",
-        Quantity: "",
-        SalePrice: "",
-        BalanceAmt: "",
+        OrderStatusDesc: "",
+        PaymentStatusDesc: "",
+        ChargeAmt: "0",
         ChargeAmt: "",
-        DepositAmt: "",
-        DepositDate: "",
-        StartDate: "",
-        EndDate: "",
-        ActualStartDate: "",
-        ActualEndDate: "",
-        IsFixedLimit: true,
-        DiscountCode: "",
-        DiscountReason: "",
-        DiscountAmt: "",
-        BusinessUnit: "",
-        Owner: ""
+        UsedPeriod: "0",
+        RemainPeriod: ""
       },
       // 退课申请
       formRetirefromclass: {
@@ -1462,6 +854,7 @@ export default {
       // 表单验证
       ruleValidate: {},
       ruleRetirefromclass: {},
+      rulePaymentOrder: {},
       // 创建人
       Founder: "",
       UpdatePerson: "",
@@ -1473,12 +866,9 @@ export default {
       OrderTypeList: [],
       //   折扣原因代码
       DiscountCodeList: [],
-      //   业务部门
-      BusinessUnitList: [],
       //   负责人
       OwnerList: [],
-      // 客户名称
-      ProfileName: "",
+
       // 客户Id   默认隐藏
       ProfileIdHide: false,
       // 选择客户组件  默认隐藏
@@ -1487,128 +877,440 @@ export default {
       delete1: false,
       BatchDeleteList: [],
       delete: [],
-      CancellationCodeList: []
+      CancellationCodeList: [],
+      // 期限时间
+      FixedPeriodsnum: ""
     };
   },
   methods: {
-    aa(value) {
-      console.log(value.value);
-      if (value.value == 0) {
-        this.OrderType = true;
-      } else {
-        this.OrderType = false;
-      }
+ 
+    // 查询条件
+    queryquerychange(value){
+      console.log(value)
+      GetEntities(this.Interface,{
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: "Franchiser", //字段名
+                Relational: "Contain",
+                FilterValue: value //字段名里面的值
+              },
+              {
+                FilterField: "StoreId", //字段名
+                Relational: "Equal",
+                FilterValue: value //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          this.informationData = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    childByValue: function(ProfileId) {
-      this.formValidate.ProfileId = ProfileId;
+    // 取消订单
+    RetirefromclassSubmit() {
+      CustomerOrderCancelOrderRequest({
+        OrderId: this.formValidate.Id,
+        CancellationCode: this.formRetirefromclass.CancellationCode,
+        CancellationReason: this.formRetirefromclass.CancellationReason
+      })
+        .then(res => {
+          this.$Message.success("成功!");
+          this.reload();
+        })
+        .catch(err => {
+          this.$Message.success("失败!");
+        });
     },
-    childByValue2: function(ProfileName) {
-      this.ProfileName = ProfileName;
+    // 订单支付
+    PaymentOrderSubmit() {
+      CustomerOrderPaymentOrder({
+        OrderId: this.formValidate.Id,
+        PaymentCode: this.formPaymentOrder.PaymentCode,
+        PaymentAmt: this.formPaymentOrder.PaymentAmt
+      })
+        .then(res => {
+          this.data1 = res.data.Data; 
+          console.log(this.data1)
+          this.$Message.success("成功!");
+          this.reload();
+        })
+        .catch(err => {
+          this.$Message.success("失败!");
+        });
+    },
+    OwnerIdchange(value) {
+      GetEntities("BusinessUser", {
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: "AccountId", //字段名
+                Relational: "Equal",
+                FilterValue: value //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          this.formValidate.BusinessUnit = res.data[0].BusinessUnit;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 选择开始日期带出结束日期
+    StartDatechange(date) {
+      var year = parseInt(date.substring(0, 4));
+        var month = parseInt(date.substring(5, 7));
+        var day = parseInt(date.substring(8, 10));
+        if(this.formValidate.PackageTypeDesc == "固定期限"){
+          var monthnum = parseInt(this.FixedPeriodsnum);
+          if (month + monthnum > 12) {
+            var newyear = year + 1;
+            var newmonth = month + monthnum - 12;
+            var newday = day;
+          } else if (month + monthnum > 12 * 2) {
+            var newyear = year + 2;
+            var newmonth = month + monthnum - 12 * 2;
+            var newday = day;
+          } else if (month + monthnum > 12 * 3) {
+            var newyear = year + 3;
+            var newmonth = month + monthnum - 12 * 3;
+            var newday = day;
+          } else if (month + monthnum > 12 * 4) {
+            var newyear = year + 4;
+            var newmonth = month + monthnum - 12 * 4;
+            var newday = day;
+          } else if (month + monthnum > 12 * 5) {
+            var newyear = year + 5;
+            var newmonth = month + monthnum - 12 * 5;
+            var newday = day;
+          } else if (month + monthnum > 12 * 6) {
+            var newyear = year + 6;
+            var newmonth = month + monthnum - 12 * 6;
+            var newday = day;
+          } else {
+            var newyear = year;
+            var newmonth = month + monthnum;
+            var newday = day;
+          }
+          this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
+        }else{
+          var newyear = year + 2;
+          this.formValidate.EndDate = newyear + "-" + month + "-" + day;
+        }
+    },
+    // 售价x数量=总金额
+    SalePricechange() {
+      this.formValidate.BalanceAmt =
+        this.formValidate.SalePrice * this.formValidate.Quantity;
+     if(this.formValidate.SalePrice !== this.formValidate.OriginalPrice){
+         this.ifDiscountCode = true;
+     }else{
+       this.ifDiscountCode = false;
+     }
+    },
+    SalePriceblur(){
+      if(this.formValidate.SalePrice < 100){
+       this.$Message.warning('课包最低售价为100');
+     }
+    },
+    // 选择课包带出数据
+    PackageIdchange(value) {
+      GetEntities("CoursePackage", {
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: "Id", //字段名
+                Relational: "Equal",
+                FilterValue: value.value //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+                  
+          function formatNumber(num, precision, separator) {
+              var parts;
+              // 判断是否为数字
+              if (!isNaN(parseFloat(num)) && isFinite(num)) {
+                  // 把类似 .5, 5. 之类的数据转化成0.5, 5, 为数据精度处理做准, 至于为什么
+                  // 不在判断中直接写 if (!isNaN(num = parseFloat(num)) && isFinite(num))
+                  // 是因为parseFloat有一个奇怪的精度问题, 比如 parseFloat(12312312.1234567119)
+                  // 的值变成了 12312312.123456713
+                  num = Number(num);
+                  // 处理小数点位数
+                  num = (typeof precision !== 'undefined' ? num.toFixed(precision) : num).toString();
+                  // 分离数字的小数部分和整数部分
+                  parts = num.split('.');
+                  // 整数部分加[separator]分隔, 借用一个著名的正则表达式
+                  parts[0] = parts[0].toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + (separator || ','));
+          
+                  return parts.join('.');
+              }
+              return NaN;
+          }
+          this.formValidate.StartDate = new Date();
+          this.formValidate.PackageTypeDesc = res.data[0].PackageTypeDesc;
+          this.formValidate.OriginalPrice = formatNumber(res.data[0].SellPrice);
+          this.formValidate.SalePrice  = res.data[0].SellPrice;
+          this.formValidate.TotalPeriod = res.data[0].TotalPeriods;
+          this.FixedPeriodsnum = res.data[0].FixedPeriods;
+          // 当课包允许折扣售价课更改反之不可更改
+          if(res.data[0].AllowDiscount == false){
+             this.isdisabledFn = true;
+          }else if(res.data[0].AllowDiscount == true){
+              this.isdisabledFn = false;
+          }
+          if(this.formValidate.StartDate == ""){
+            this.formValidate.EndDate == ""
+          }else if(this.formValidate.StartDate){
+            let date = this.formValidate.StartDate.toLocaleDateString();
+            var year = parseInt(date.substring(0, 4));
+            var month = parseInt(date.substring(5, 7));
+            var day = parseInt(date.substring(8, 10));
+            if(this.formValidate.PackageTypeDesc == "固定期限"){
+              var monthnum = parseInt(this.FixedPeriodsnum);
+              if (month + monthnum > 12) {
+                var newyear = year + 1;
+                var newmonth = month + monthnum - 12;
+                var newday = day;
+              } else if (month + monthnum > 12 * 2) {
+                var newyear = year + 2;
+                var newmonth = month + monthnum - 12 * 2;
+                var newday = day;
+              } else if (month + monthnum > 12 * 3) {
+                var newyear = year + 3;
+                var newmonth = month + monthnum - 12 * 3;
+                var newday = day;
+              } else if (month + monthnum > 12 * 4) {
+                var newyear = year + 4;
+                var newmonth = month + monthnum - 12 * 4;
+                var newday = day;
+              } else if (month + monthnum > 12 * 5) {
+                var newyear = year + 5;
+                var newmonth = month + monthnum - 12 * 5;
+                var newday = day;
+              } else if (month + monthnum > 12 * 6) {
+                var newyear = year + 6;
+                var newmonth = month + monthnum - 12 * 6;
+                var newday = day;
+              } else {
+                var newyear = year;
+                var newmonth = month + monthnum;
+                var newday = day;
+              }
+              this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
+            }else{
+              var newyear = year + 2;
+              var newday = day + 20;
+              this.formValidate.EndDate = newyear + "-" + month + "-" + newday;
+            }
+              
+          }
+          
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    childByValue: function(childByValue) {
+      this.formValidate.LastName =
+        childByValue[0].FirstName + childByValue[0].LastName;
+      this.formValidate.ProfileId = childByValue[0].Id;
+      this.formValidate.NickName = childByValue[0].NickName;
+      this.formValidate.BrithDate = childByValue[0].BrithDate;
     },
     Enquiringcustomers() {
       this.Enquiringcustomers1 = !this.Enquiringcustomers1;
     },
-    // 添加加盟商信息
-    handleSubmit() {
-      CustomerOrderPurchaseOrder(this.formValidate)
-        .then(res => {
-          this.$Message.success("成功!");
-          this.AddDepartment = false;
-          this.reload();
-          this.formValidate = { brand_right: 0 };
-        })
-        .catch(err => {
-          this.$Message.error("失败!");
-          console.log(err);
-        });
+    // 添加/修改信息
+    handleSubmit(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          if (this.formValidate.Id == undefined) {
+            CustomerOrderPurchaseOrder(this.formValidate)
+              .then(res => {
+                this.$Message.success("成功!");
+                this.AddDepartment = false;
+                this.reload();
+                this.formValidate = { brand_right: 0 };
+              })
+              .catch(err => {
+                this.$Message.error("失败!");
+                console.log(err);
+              });
+          }
+          if (this.formValidate.Id) {
+            CustomerOrderUpdateOrder({
+              OrderId: this.formValidate.Id,
+              OwnerId: this.formValidate.OwnerId,
+              StartDate: this.formValidate.StartDate,
+              EndDate: this.formValidate.EndDate
+            })
+              .then(res => {
+                this.$Message.success("修改成功!");
+                this.reload();
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+        } else {
+          this.$Message.error("信息填写有误!");
+        }
+      });
     },
-    // 创建人
     AddDepartment1() {
       this.AddDepartment = true;
+      this.add = true;
+      this.del = false;
+      this.see = false;
       let see = JSON.parse(sessionStorage.getItem("userInfo"));
-      this.Founder = see.AccountName;
+      this.formValidate.CreateByName = see.AccountName;
+      this.formValidate.BusinessGroup = see.BusinessUnit;
     },
-    //详情修改页面
+    //双击表格
     dblclickUpData(index) {
-      this.upDepartment = true;
-      this.UpdateList = index;
-      console.log(index);
+      this.AddDepartment = true;
+      this.del = true;
+      this.add = false;
+      this.see = true;
+      this.formValidate = index;
+      this.formValidate.TotalPeriod = this.formValidate.RemainPeriod;
     },
-    // 删除数据接口
+    // 删除接口
     deleteList() {
-      if (this.BatchDeleteList.length == 0) {
+      if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
-        CustomerOrderBatchDelete(this.delete)
+        this.delete1 = true;
+      }
+    },
+    OneselectionId(selection, row) {
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete.push(this.BatchDeleteList[i].Id);
+      }
+      function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+          if (temp.indexOf(array[i]) == -1) {
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      }
+      this.delete = uniq(this.delete);
+      // console.log(selection)
+      // for (var i = 0; i < selection.length; i++) {
+      //   console.log(selection[i].OrderStatusDesc)
+      //   console.log(selection[i].PaymentStatusDesc)
+      // }
+    },
+    OnecancelselectionId(selection, row) {
+      function removeByValue(arr, val) {
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
+      }
+      removeByValue(this.delete, row.Id);
+    },
+    allselectionId(selection) {
+      console.log(this.delete);
+      for (var i = 0; i < selection.length; i++) {
+        this.delete.push(selection[i].Id);
+      }
+    },
+    allcancelselectionId(selection) {
+      this.delete = selection;
+    },
+    ok() {
+      if (this.formValidate.Id == undefined) {
+        CustomerOrderBatchDeleteOrder(this.delete)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
           })
           .catch(err => {
             this.$Message.error("删除失败!");
-            console.log(err);
           });
-      }
-    },
-    BatchDelete(selection) {
-      this.BatchDeleteList = selection;
-      for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete.push(this.BatchDeleteList[i].Id);
-        console.log(this.BatchDeleteList[i].Id);
+      } else {
+        if (
+          this.formValidate.OrderStatusDesc == "未开始" &&
+          this.formValidate.PaymentStatusDesc == "未支付"
+        ) {
+          CustomerOrderDeleteOrder(this.formValidate.Id)
+            .then(res => {
+              this.$Message.success("删除成功!");
+              this.reload();
+            })
+            .catch(err => {
+              this.$Message.error("删除失败!");
+            });
+        } else {
+          this.$Message.error("订单正在进行中,不能删除");
+        }
       }
     },
     // 订单所属门店   获取到id
     SelectStoreId(value) {
-      console.log(value);
+      GetEntities("BusinessStore", {
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: "Id", //字段名
+                Relational: "Equal",
+                FilterValue: value //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          console.log(res.data);
+          this.formValidate.Franchiser = res.data[0].Franchiser;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     // 取消
     handleReset(name) {
-      this.formValidate = { brand_right: 0 };
       this.$refs[name].resetFields();
       this.$Message.info("已取消");
     }
   },
   mounted() {
+    this.formValidate.OwnerId = JSON.parse(sessionStorage.userInfo).AccountId;
+    this.formValidate.BusinessUnit = JSON.parse(
+      sessionStorage.userInfo
+    ).BusinessUnit;
     //   订单状态
-    DataDictionaryGetDataCatalog("ORDER_STATUS")
-      .then(res => {
-        this.OrderStatusList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    //   折扣原因代码
-    DataDictionaryGetDataCatalog("DISCOUNT_REASON_CODE")
-      .then(res => {
-        this.DiscountCodeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    // 退课原因代码
-    DataDictionaryGetDataCatalog("CANCLE_REASON_CODE")
-      .then(res => {
-        this.CancellationCodeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.OrderStatusList = JSON.parse(localStorage.ORDER_STATUS);
     //   订单类型
-    DataDictionaryGetDataCatalog("ORDER_TYPE")
-      .then(res => {
-        this.OrderTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    //   支付状态
-    DataDictionaryGetDataCatalog("ORDER_PAYMENT_STATUS")
-      .then(res => {
-        this.PaymentStatusList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.OrderTypeList = JSON.parse(localStorage.ORDER_TYPE);
+    //   折扣原因代码
+    this.DiscountCodeList = JSON.parse(localStorage.DISCOUNT_REASON_CODE);
+    // 退课原因代码
+    this.CancellationCodeList = JSON.parse(localStorage.CANCLE_REASON_CODE);
     // 加盟商
     GetEntities("FranchiserProfile", this.getTableData)
       .then(res => {
@@ -1621,19 +1323,11 @@ export default {
     GetEntities("BusinessStore", this.getTableData)
       .then(res => {
         this.StoreList = res.data;
-        console.log(res.data);
       })
       .catch(err => {
         console.log(err);
       });
-    //   组织部门
-    GetEntities("BusinessUnit", this.getTableData)
-      .then(res => {
-        this.BusinessUnitList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+
     //   负责人
     GetEntities("BusinessUser", this.getTableData)
       .then(res => {
@@ -1650,10 +1344,26 @@ export default {
       .catch(err => {
         console.log(err);
       });
+    // 课包
+    GetEntities("CoursePackage", this.getTableData)
+      .then(res => {
+        this.PackageIdList = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
     //   表格数据
     GetEntities(this.Interface, this.getTableData)
       .then(res => {
         this.informationData = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    //   支付代码
+    GetEntities("PaymentCode", this.getTableData)
+      .then(res => {
+        this.PaymentCodeList = res.data;
       })
       .catch(err => {
         console.log(err);

@@ -75,7 +75,7 @@
             </Col>
           </Row>
           <Row>
-            <Col span="10" class="queryquerytop">
+            <Col span="16" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:32px;">业务状态：</h3>
               <Button @click="allinformationData" type="text" class="tableTops">全部</Button>
               <RadioGroup v-model="RadioGroupStatus" type="button" @on-change="queryData">
@@ -775,11 +775,9 @@ import {
   Create,
   Update,
   Delete,
-  BatchDelete1,
+  BatchDelete,
   Copy,
-  DataDictionaryGetEntities,
-  ValidateUnique,
-  DataDictionaryGetDataCatalog
+  DistrictGetProvince,
 } from "@/api/api";
 export default {
   inject: ["reload"],
@@ -1453,7 +1451,7 @@ export default {
   mounted() {
     this.uploadList = this.$refs.upload.fileList;
     // 表格数据
-    GetEntities(this.getTableData)
+    GetEntities("FranchiserProfile",this.getTableData)
       .then(res => {
         this.informationData = res.data;
       })
@@ -1461,40 +1459,17 @@ export default {
         console.log(err);
       });
     // 业务状态
-    DataDictionaryGetDataCatalog("FRANCHISER_STATUS")
-      .then(res => {
-        this.StatusList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.StatusList = JSON.parse(localStorage.FRANCHISER_STATUS);
     // 加盟商类型
-    DataDictionaryGetDataCatalog("FRANCHISER_TYPE")
-      .then(res => {
-        this.FranchiserTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.FranchiserTypeList = JSON.parse(localStorage.FRANCHISER_TYPE);
     // 证件类型
-    DataDictionaryGetDataCatalog("CERTIFICATE_TYPE")
-      .then(res => {
-        this.CertificateTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.CertificateTypeList = JSON.parse(localStorage.CERTIFICATE_TYPE);
     // 加盟方式
-    DataDictionaryGetDataCatalog("LEAGE_MODE")
-      .then(res => {
-        this.LeageModeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.LeageModeList = JSON.parse(localStorage.LEAGE_MODE);
      //获取指定大区省份信息
     DistrictGetProvince()
       .then(res => {
+        console.log(res.data)
         this.ProviceCodeList = res.data;
       })
       .catch(err => {

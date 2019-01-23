@@ -1,202 +1,80 @@
+<style>
+    .ivu-table .demo-table-info-row td[disabled]{
+        background: #2db7f5;
+        color: #fff;
+    }
+    .ivu-table .demo-table-error-row td{
+        background: hsl(24, 100%, 50%);
+        color: #fff;
+    }
+</style>
 <template>
-  <div>
-    <!-- 选择客户 -->
-    <Modal width="600" v-model="modal1" title="查询客户" @on-ok="ok" @on-cancel="cancel">
-      <Row>
-        <Col span="20" offset="3">
-          <Select
-            v-model="querySelectassembly"
-            :label-in-value="true"
-            style="width:150px"
-            placeholder="请选择要查询的字段"
-          >
-            <Option
-              v-for="item in querySelectListassembly"
-              :value="item.value"
-              :key="item.value"
-            >{{ item.label }}</Option>
-          </Select>
-          <Input
-            v-model="queryvalueassembly"
-            placeholder="请输入查询内容"
-            style="width: 200px"
-            class="tableTops"
-          />
-          <Button type="primary" class="tableTops" @click="querytableassembly">查询</Button>
-        </Col>
-        <Col span="24" style="margin-top:20px;" v-if="Table">
-          <Table height="300" ref="selection" @on-select="Choice" :columns="columns1" :data="data2"></Table>
-        </Col>
-      </Row>
-    </Modal>
-  </div>
+<div>
+    <Table :row-class-name="rowClassName" :columns="columns1" :data="data1"></Table>
+</div>
+    
 </template>
 <script>
-import { CustomerData } from "@/api/api";
-export default {
-  inject: ["reload"],
-  data() {
-    return {
-      modal1: true,
-      querySelectassembly: "",
-      queryvalueassembly: "",
-      querySelectListassembly: [
-        {
-          value: "Name",
-          label: "名称"
-        },
-        {
-          value: "ContactPhone",
-          label: "父母电话"
-        }
-      ],
-      columns1: [
-        {
-          type: "selection",
-          width: 50,
-          align: "center"
-        },
-        {
-          title: "姓",
-          key: "FirstName",
-          width: 80
-        },
-        {
-          title: "名",
-          key: "LastName",
-          width: 80
-        },
-        {
-          title: "家长手机",
-          key: "ContactPhone"
-        },
-        {
-          title: "负责人",
-          key: "Owner"
-        },
-        {
-          title: "创建时间",
-          ellipsis: true,
-          key: "CreateOn",
-          render: (h, params) => {
-            return h(
-              "Tooltip",
-              {
-                props: { placement: "left" }
-              },
-              [
-                params.row.CreateOn,
-                h(
-                  "span",
-                  {
-                    slot: "content",
-                    style: { whiteSpace: "normal", wordBreak: "break-all" }
-                  },
-                  params.row.CreateOn
-                )
-              ]
-            );
-          }
-        }
-      ],
-      data2: [],
-      Customername: [],
-      Customer: [],
-      ProfileName: "",
-      ProfileId: "",
-      Table: false
-    };
-  },
-  methods: {
-    ok() {
-      this.$Message.info("成功");
-     this.formValidate.ProfileId  = this.ProfileId
-     this.ProfileName  = this.ProfileName
-    },
-    cancel() {
-      this.$Message.info("取消");
-    },
-    // 点击查询按钮查询信息
-    querytableassembly() {
-      this.Table = true;
-      if (this.querySelectassembly == "Name") {
-        CustomerData({
-          Filters: [
-            {
-              Relational: "Or", //And 与 | Or 或
-              Conditions: [
-                {
-                  FilterField: "FirstName", //字段名
-                  Relational: "Contain",
-                  FilterValue: this.queryvalueassembly //字段名里面的值
-                }
-              ]
-            },
-            {
-              Relational: "Or", //And 与 | Or 或
-              Conditions: [
-                {
-                  FilterField: "LastName", //字段名
-                  Relational: "Contain",
-                  FilterValue: this.queryvalueassembly //字段名里面的值
-                }
-              ]
+    export default {
+        data () {
+            return {
+                columns1: [
+                   {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        title: 'Name',
+                        key: 'name'
+                    },
+                    {
+                        title: 'Age',
+                        key: 'age'
+                    },
+                    {
+                        title: 'Address',
+                        key: 'address'
+                    }
+                ],
+                data1: [
+                    {
+                        name: 'John Brown',
+                        age: 18,
+                        address: 'New York No. 1 Lake Park',
+                        date: '2016-10-03'
+                    },
+                    {
+                        name: 'Jim Green',
+                        age: 24,
+                        address: 'London No. 1 Lake Park',
+                        date: '2016-10-01'
+                    },
+                    {
+                        name: 'Joe Black',
+                        age: 30,
+                        address: 'Sydney No. 1 Lake Park',
+                        date: '2016-10-02'
+                    },
+                    {
+                        name: 'Jon Snow',
+                        age: 26,
+                        address: 'Ottawa No. 2 Lake Park',
+                        date: '2016-10-04'
+                    }
+                ],
             }
-          ]
-        })
-          .then(res => {
-            this.data2 = res.data;
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
-      if (this.querySelectassembly == "ContactPhone") {
-        CustomerData({
-          Filters: [
-            {
-              Relational: "And", //And 与 | Or 或
-              Conditions: [
-                {
-                  FilterField: "ContactPhone", //字段名
-                  Relational: "Contain",
-                  FilterValue: this.queryvalueassembly //字段名里面的值
+        },
+        methods: {
+            rowClassName (row, index) {
+                if (index === 1) {
+                  
+                    return 'demo-table-info-row';
+                } else if (index === 3) {
+                    return 'demo-table-error-row';
                 }
-              ]
+                return '';
             }
-          ]
-        })
-          .then(res => {
-            this.data2 = res.data;
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
-    },
-    Choice(selection) {
-      this.Customer = selection;
-      for (var i = 0; i < this.Customer.length; i++) {
-        this.Customername.push(this.Customer[i].Id);
-        this.ProfileName =
-          this.Customer[i].FirstName + this.Customer[i].LastName;
-        this.ProfileId = this.Customer[i].Id;
-      }
+        }
     }
-  },
-  mounted() {
-    CustomerData({
-      Filters: {}
-    })
-      .then(res => {
-        this.data2 = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-};
 </script>
-
-
-
