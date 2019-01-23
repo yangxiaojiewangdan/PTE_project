@@ -94,231 +94,211 @@
 			<h2>确定删除此数据？</h2>
 		</Modal>
 		<!--添加弹框-->
-		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false" :styles="{top: '20px'}">
+		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false" :styles="{top: '40px'}" >
 			<p slot="header" style="text-align: left; line-height: 1;">
-				<span v-if="add">添加学员</span>
+				<span v-if="add">基本信息</span>
 				<span v-if="see">修改学员</span>
 			</p>
-			<Tabs value="name1" @on-click="tabsPage">
-				<!--添加学员-->
-				<TabPane label="添加学员" name="name1">
-					<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
-						<Row>
-							<Col span="20">
-							<FormItem label="姓" prop="FirstName">
-								<Input v-model="formValidate.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="名" prop="LastName">
-								<Input v-model="formValidate.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="性别" prop="Gender">
-								<RadioGroup v-model="formValidate.Gender" style="width: 200px;">
-									<Radio v-for="item in radioList" :label="item.Code">
-										<span>{{item.Description}}</span>
-									</Radio>
-								</RadioGroup>
-							</FormItem>
-							<Col span="20">
-							<FormItem label="昵称" prop="NickName">
-								<Input v-model="formValidate.NickName" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							<FormItem label="英文名" prop="EngName">
-								<Input v-model="formValidate.EngName" placeholder="Enter something..." style="width: 200px;"></Input>
-							</FormItem>
-							</Col>
-							<FormItem label="出生日期" prop="BrithDate">
-								<DatePicker @on-change="handleChange" type="date" placeholder="Select date" v-model="formValidate.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
-							</FormItem>
-							</Col>
-							<Col span="4">
+			<Row>
+				<Col span="16">
+				<Tabs value="name1" @on-click="tabsPage">
+					<!--添加学员-->
+					<TabPane label="基本信息" name="name1" style="height:730px;overflow-y:auto;overflow-x:hidden;">
+						<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
+							<Row>
+								<Col span="24">
+								<FormItem label="姓名" prop="LastName">
+									<Input v-model="formValidate.LastName" placeholder="请输入" style="width: 200px;"></Input>
+								</FormItem>
+								<FormItem label="性别" prop="Gender">
+									<RadioGroup v-model="formValidate.Gender" style="width: 200px;">
+										<Radio v-for="item in radioList" :label="item.Code">
+											<span>{{item.Description}}</span>
+										</Radio>
+									</RadioGroup>
+								</FormItem>
+
+								<FormItem label="昵称" prop="NickName">
+									<Input v-model="formValidate.NickName" placeholder="请输入" style="width: 200px;"></Input>
+								</FormItem>
+								<FormItem label="英文名" prop="EngName">
+									<Input v-model="formValidate.EngName" placeholder="请输入" style="width: 200px;"></Input>
+								</FormItem>
+
+								<FormItem label="出生日期" prop="BrithDate">
+									<DatePicker @on-change="handleChange;formValidate.BrithDate=$event"  format="yyyy-MM-dd" type="date" placeholder="Select date" v-model="formValidate.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
+								</FormItem>
+
+								<!--<Col span="4">
 							<FormItem label="">
-								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/" style="width: 100px;margin-left: -300px; margin-top: 100px;">
+								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
 									<div style="padding: 5px">
 										<Icon type="ios-cloud-upload" size="50"></Icon>
 										<p>上传照片</p>
 									</div>
 								</Upload>
 							</FormItem>
-							<!--<FormItem label="普通照片">
-						<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
-							<div style="padding: 5px">
-								<Icon type="ios-cloud-upload" size="50"></Icon>
-							</div>
-						</Upload>
-					</FormItem>-->
-							</Col>
-						</Row>
+							<FormItem label="普通照片">
+								<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+									<div style="padding: 5px">
+										<Icon type="ios-cloud-upload" size="50"></Icon>
+									</div>
+								</Upload>
+							</FormItem>
+							</Col>-->
 
-						<!--客源信息-->
-						<!--<p class="lineTitle">基本信息</p>
+								<FormItem label="家长姓名" prop="ContactName">
+									<Input v-model="formValidate.ContactName" placeholder="请输入" style="width: 200px;"></Input>
+								</FormItem>
+								<FormItem label="家长手机" prop="ContactPhone">
+									<Input v-model="formValidate.ContactPhone" placeholder="请输入" style="width: 200px;"></Input>
+								</FormItem>
+								<FormItem label="家长邮箱" prop="ContactEMail">
+									<Input v-model="formValidate.ContactEMail" placeholder="请输入" style="width: 200px;"></Input>
+								</FormItem>
+								<!--客源信息-->
+								<!--<p class="lineTitle">基本信息</p>
 				<div class="lineTop"></div>-->
-						<Divider orientation="left" class='line'>客源信息</Divider>
-						<FormItem label="客户类型" prop="CustomerType">
-							<Select v-model="formValidate.CustomerType" style="width: 200px;">
-								<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
-							</Select>
-						</FormItem>
+								<Divider orientation="left" class='line'></Divider>
+								<FormItem label="客户类型" prop="CustomerType">
+									<Select v-model="formValidate.CustomerType" style="width: 200px;">
+										<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
+									</Select>
+								</FormItem>
 
-						<FormItem label="会员类型" prop="MemberType">
-							<Select v-model="formValidate.MemberType" style="width: 200px;">
-								<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
+								<FormItem label="会员类型" prop="MemberType">
+									<Select v-model="formValidate.MemberType" style="width: 200px;">
+										<Option v-for="item in MemberTypeData" :value="item.Code">{{item.Description}}</Option>
 
-							</Select>
-						</FormItem>
-						<FormItem label="会员号" prop="MemberNo">
-							<Input v-model="formValidate.MemberNo" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="来源渠道" prop="ChannelCode">
-							<Select v-model="formValidate.ChannelCode" style="width: 200px;">
-								<Option value="beijing">New York</Option>
-								<Option value="shanghai">London</Option>
-								<Option value="shenzhen">Sydney</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="市场分类" prop="MarketClass">
-							<Select v-model="formValidate.MarketClass" style="width: 200px;">
-								<Option value="beijing">New York</Option>
-								<Option value="shanghai">London</Option>
-								<Option value="shenzhen">Sydney</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="市场代码" prop="MarketCode">
-							<Select v-model="formValidate.MarketCode" style="width: 200px;">
-								<Option value="beijing">New York</Option>
-								<Option value="shanghai">London</Option>
-								<Option value="shenzhen">Sydney</Option>
-							</Select>
-						</FormItem>
-						<!--地址-->
-						<!--<p class="lineTitle">基本信息</p>
+									</Select>
+								</FormItem>
+								<FormItem label="会员号" prop="MemberNo">
+									<Input v-model="formValidate.MemberNo" placeholder="请输入" style="width: 200px;"></Input>
+								</FormItem>
+								<FormItem label="来源渠道" prop="ChannelCode">
+									<Select v-model="formValidate.ChannelCode" style="width: 200px;">
+										<Option value="beijing">New York</Option>
+										<Option value="shanghai">London</Option>
+										<Option value="shenzhen">Sydney</Option>
+									</Select>
+								</FormItem>
+								<FormItem label="市场分类" prop="MarketClass">
+									<Select v-model="formValidate.MarketClass" style="width: 200px;">
+										<Option value="beijing">New York</Option>
+										<Option value="shanghai">London</Option>
+										<Option value="shenzhen">Sydney</Option>
+									</Select>
+								</FormItem>
+								<FormItem label="市场代码" prop="MarketCode">
+									<Select v-model="formValidate.MarketCode" style="width: 200px;">
+										<Option value="beijing">New York</Option>
+										<Option value="shanghai">London</Option>
+										<Option value="shenzhen">Sydney</Option>
+									</Select>
+								</FormItem>
+								<!--地址-->
+								<!--<p class="lineTitle">基本信息</p>
 				<div class="lineTop"></div>-->
-						<Divider orientation="left" class='line'>所在地址</Divider>
-						<FormItem label="所在省" prop="ProviceCode">
-							<Select v-model="formValidate.ProviceCode" @on-change="SelectProviceCode" style="width:200px">
-								<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="所在市" prop="CityCode">
-							<Select v-model="formValidate.CityCode" @on-change="SelectCityCode" style="width:200px">
-								<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name}}</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="所在县区" prop="DistinctCode">
-							<Select v-model="formValidate.DistinctCode" style="width:200px">
-								<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="所在小区" prop="VillageCode">
-							<Select v-model="formValidate.VillageCode" style="width: 200px;">
-								<Option value="beijing">New York</Option>
-								<Option value="shanghai">London</Option>
-								<Option value="shenzhen">Sydney</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="详细地址" prop="Address">
-							<Input v-model="formValidate.Address" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<!--联系人信息-->
-						<!--<p class="lineTitle">基本信息</p>
-				<div class="lineTop"></div>-->
-						<Divider orientation="left" class='line'>联系人信息</Divider>
-						<FormItem label="家长姓名" prop="ContactName">
-							<Input v-model="formValidate.ContactName" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="家长手机" prop="ContactPhone">
-							<Input v-model="formValidate.ContactPhone" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="家长邮箱" prop="ContactEMail">
-							<Input v-model="formValidate.ContactEMail" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="业务部门" prop="BusinessUnit">
-							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
-								<Option value="beijing">New York</Option>
-								<Option value="shanghai">London</Option>
-								<Option value="shenzhen">Sydney</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="负责人" prop="BusinessUnit">
-							<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
-								<Option value="beijing">New York</Option>
-								<Option value="shanghai">London</Option>
-								<Option value="shenzhen">Sydney</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="业务部门ID" prop="BusinessUnitId">
-							<Input v-model="formValidate.BusinessUnitId" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
+								<Divider orientation="left" class='line'></Divider>
+								<FormItem label="所在省" prop="ProviceCode">
+									<Select v-model="formValidate.ProviceCode" @on-change="SelectProviceCode" style="width:200px">
+										<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+									</Select>
+								</FormItem>
+								<FormItem label="所在市" prop="CityCode">
+									<Select v-model="formValidate.CityCode" @on-change="SelectCityCode" style="width:200px">
+										<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name}}</Option>
+									</Select>
+								</FormItem>
+								<FormItem label="所在县区" prop="DistinctCode">
+									<Select v-model="formValidate.DistinctCode" style="width:200px">
+										<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+									</Select>
+								</FormItem>
+								<FormItem label="所在小区" prop="VillageCode">
+									<Select v-model="formValidate.VillageCode" style="width: 200px;">
+										<Option value="beijing">New York</Option>
+										<Option value="shanghai">London</Option>
+										<Option value="shenzhen">Sydney</Option>
+									</Select>
+								</FormItem>
+								<FormItem label="详细地址" prop="Address">
+									<Input v-model="formValidate.Address" placeholder="请输入" style="width: 490px;"></Input>
+								</FormItem>
+								<FormItem label="业务部门" prop="BusinessUnit">
+									<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
+										<Option value="beijing">New York</Option>
+										<Option value="shanghai">London</Option>
+										<Option value="shenzhen">Sydney</Option>
+									</Select>
+								</FormItem>
+								<FormItem label="负责人" prop="BusinessUnit">
+									<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
+										<Option value="beijing">New York</Option>
+										<Option value="shanghai">London</Option>
+										<Option value="shenzhen">Sydney</Option>
+									</Select>
+								</FormItem>
+								</Col>
+							</Row>
+						</Form>
+					</TabPane>
+					<!--添加联系人-->
+					<TabPane label="联系人" name="name2" style="height:730px;overflow-y:auto;overflow-x:hidden;">
+						<ul class="lianxiren">
+							<li>
+								<p class="addOrUp">
+									<Row>
+										<Col span="12" push="18">
+										<Icon type="ios-create" size="22"/>
+										</Col>
+										<Col span="12" push="9">
+										<Icon type="ios-settings" size='22'/>
+										</Col>
+									</Row>
+								</p>
+								<Row class="eee">
+									<Col span="24" push="2">
+									<div class="ContactsTep">
+										<span>电话：</span>
+										<span>13593453487</span>
+									</div>
+									<div class="ContactsName">
+										<span>姓名：</span>
+										<span>小明</span>
+									</div>
+									<div class="ContactsDear">
+										<span>关系：</span>
+										<span>爸爸</span>
+									</div>
+									<div class="ContactsEMail">
+										<span>邮箱：</span>
+										<span>1149265110@qq.com</span>
+									</div>
+									<div class="ContactsWeChat">
+										<span>微信：</span>
+										<span>1149265110</span>
+									</div>
+									<div class="ContactsQQ">
+										<span>QQ：</span>
+										<span>1149265110</span>
+									</div>
+									<div class="ContactsCareer">
+										<span>职业：</span>
+										<span>销售</span>
+									</div>
+									</Col>
+								</Row>
+							</li>
+						</ul>
 
-						<FormItem label="负责人ID" prop="OwnerId">
-							<Input v-model="formValidate.OwnerId" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-					</Form>
-				</TabPane>
-				<!--添加联系人-->
-				<TabPane label="添加联系人" name="name2">
-					<Form ref="AddCustomerFrom" :model="AddCustomerFrom" :rules="ruleValidate" :label-width="80" inline>
-						<Divider orientation="left" class='line'>基本信息</Divider>
-						<FormItem label="姓" prop="FirstName">
-							<Input v-model="AddCustomerFrom.FirstName" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="名" prop="LastName">
-							<Input v-model="AddCustomerFrom.LastName" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="全名" prop="FullName">
-							<Input v-model="AddCustomerFrom.FullName" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="关系" prop="RelationType">
-							<Select v-model="AddCustomerFrom.RelationType" style="width:200px">
-								<Option v-for="item in  relationship" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
-							</Select>
-						</FormItem>
-						<FormItem label="主要标识" prop="IsPrimary">
-							<i-switch v-model="AddCustomerFrom.IsPrimary">
-								<span slot="open">On</span>
-								<span slot="close">Off</span>
-							</i-switch>
-						</FormItem>
-						<FormItem label="启用" prop="Enabled">
-							<i-switch v-model="AddCustomerFrom.Enabled">
-								<span slot="open">On</span>
-								<span slot="close">Off</span>
-							</i-switch>
-						</FormItem>
-						<Divider orientation="left" class='line'>联系方式</Divider>
-						<FormItem label="手机号" prop="TelPhone">
-							<Input v-model="AddCustomerFrom.TelPhone" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="微信号" prop="WeChat">
-							<Input v-model="AddCustomerFrom.WeChat" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="QQ号" prop="QQ">
-							<Input v-model="AddCustomerFrom.QQ" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="邮箱" prop="EMail">
-							<Input v-model="AddCustomerFrom.EMail" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="职业" prop="Career">
-							<Input v-model="AddCustomerFrom.Career" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="登陆密码" prop="Password">
-							<Input v-model="AddCustomerFrom.Password" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="渠道代码" prop="ChannelCode">
-							<Input v-model="AddCustomerFrom.ChannelCode" placeholder="Enter something..." style="width: 200px;"></Input>
-						</FormItem>
-						<FormItem label="自主注册" prop="IsSelfRegister">
-							<i-switch v-model="AddCustomerFrom.IsSelfRegister">
-								<span slot="open">On</span>
-								<span slot="close">Off</span>
-							</i-switch>
-						</FormItem>
-						<Divider orientation="left" class='line'>描述</Divider>
-						<FormItem label="部门描述" prop="Comments">
-							<Input v-model="AddCustomerFrom.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
-						</FormItem>
-					</Form>
-				</TabPane>
-			</Tabs>
+					</TabPane>
+				</Tabs>
+				</Col>
+				<Col span="8">
+					动态信息
+				</Col>
+			</Row>
 
 			<div slot="footer">
 				<div class="footer_left">
@@ -358,6 +338,7 @@
 		name: 'CustomerProfile',
 		data() {
 			return {
+				value3:'',
 				add: "",
 				see: "",
 				Interface: "CustomerProfile",
@@ -900,5 +881,34 @@
 		color: #5555AA;
 		width: 80%;
 		font-weight: 900;
+	}
+	
+	.lianxiren {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-flow: wrap;
+		li {
+			list-style: none;
+			width: 30%;
+			height: 250px;
+			margin: 0px 14px;
+			background: ;
+			border: 1px solid #DDD;
+			.addOrUp {
+				display: block;
+				width: 100%;
+				height: 30px;
+				background: #ddd;
+			}
+			.eee {
+				div {
+					margin-top: 8px;
+					span {
+						font-size: 14px;
+					}
+				}
+			}
+		}
 	}
 </style>

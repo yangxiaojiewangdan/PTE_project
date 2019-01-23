@@ -143,12 +143,24 @@
 			<div slot="footer">
 				<div class="footer_left">
 					<div class="footer_left1">
-						<div><span>创建人:闫子健</span></div>
-						<div><span>更新人:闫子健</span></div>
+						<div>
+							<span>创建人:</span>
+							<span>{{ CourseForm.CreateByName }}</span>
+						</div>
+						<div>
+							<span>更新人:</span>
+							<span>{{ CourseForm.UpdateByName }}</span>
+						</div>
 					</div>
 					<div class="footer_left2">
-						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
-						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+						<div>
+							<span>创建时间:</span>
+							<span>{{ CourseForm.CreateOn }}</span>
+						</div>
+						<div>
+							<span>更新时间:</span>
+							<span>{{ CourseForm.UpdateOn }}</span>
+						</div>
 					</div>
 				</div>
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('CourseForm');AddDepartment = false;">

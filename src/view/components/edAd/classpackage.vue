@@ -10,7 +10,7 @@
 			<Col span="24" class="querycriteria" style="height: 120px;">
 			<Col span="24" class="Col">
 			<h3 class="queryquery">开始/结束日期：</h3>
-			<DatePicker v-model="StartEndDate" type="daterange" @on-change="queryData" placeholder="Select date and time(Excluding seconds)" style="width: 300px;margin-left:20px;"></DatePicker>
+			<DatePicker v-model="StartEndDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="Select date and time(Excluding seconds)" style="width: 300px;margin-left:20px;"></DatePicker>
 			</Col>
 			<Col span="24" class="Col">
 			<h3 class="queryquery" style="padding-left:32px;">课包类型：</h3>
@@ -103,10 +103,10 @@
 						<Input v-model="formValidate.SellPrice" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					<FormItem label="销售开始日期" prop="BeginSellDate">
-						<DatePicker v-model="formValidate.BeginSellDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+						<DatePicker v-model="formValidate.BeginSellDate" @on-change="formValidate.BeginSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
 					<FormItem label="销售结束日期" prop="EndSellDate">
-						<DatePicker v-model="formValidate.EndSellDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+						<DatePicker v-model="formValidate.EndSellDate" @on-change="formValidate.EndSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
 					<!--单选-->
 					<Col span="24">
@@ -158,12 +158,24 @@
 			<div slot="footer">
 				<div class="footer_left">
 					<div class="footer_left1">
-						<div><span>创建人:闫子健</span></div>
-						<div><span>更新人:闫子健</span></div>
+						<div>
+							<span>创建人:</span>
+							<span>{{ formValidate.CreateByName }}</span>
+						</div>
+						<div>
+							<span>更新人:</span>
+							<span>{{ formValidate.UpdateByName }}</span>
+						</div>
 					</div>
 					<div class="footer_left2">
-						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
-						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+						<div>
+							<span>创建时间:</span>
+							<span>{{ formValidate.CreateOn }}</span>
+						</div>
+						<div>
+							<span>更新时间:</span>
+							<span>{{ formValidate.UpdateOn }}</span>
+						</div>
 					</div>
 				</div>
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
@@ -219,10 +231,10 @@
 					</FormItem>
 					</Col>
 					<FormItem label="销售开始日期" prop="BeginSellDate">
-						<DatePicker v-model="CousrePriseFrom.BeginSellDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+						<DatePicker v-model="CousrePriseFrom.BeginSellDate" @on-change="CousrePriseFrom.BeginSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
 					<FormItem label="销售结束日期" prop="EndSellDate">
-						<DatePicker v-model="CousrePriseFrom.EndSellDate" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+						<DatePicker v-model="CousrePriseFrom.EndSellDate" @on-change="CousrePriseFrom.EndSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
 					<FormItem label="售价" prop="SellPrice">
 						<Input v-model="CousrePriseFrom.SellPrice" placeholder="请输入" style="width:200px"></Input>
@@ -704,6 +716,7 @@
 				PackagePriseID: '',
 				PackageDetailID: '',
 				UpPackageDetail: [],
+				UpPackagePrise: [],
 			}
 		},
 		methods: {
@@ -979,7 +992,7 @@
 			//保存价格
 			PrisehandleSubmit(name) {
 				this.$refs[name].validate(valid => {
-					if(valid) {
+					if(valid && this.CousrePriseFrom.Id == undefined || this.CousrePriseFrom.Id == "") {
 						this.PricePackage.push(this.CousrePriseFrom)
 						this.AddPackagePrice.push(this.CousrePriseFrom)
 						this.CousrePriseFrom = {
@@ -997,6 +1010,19 @@
 							console.log(err)
 						});
 						this.AddPrise = false;
+					} else {
+						//修改明细
+						this.UpPackagePrise.push(this.CousrePriseFrom)
+						AddOrUpdateCourse(this.Interface, {
+							PackageId: this.PackageDetailID,
+							//单独修改的一条
+							CourseCollection: this.UpPackagePrise
+						}).then(res => {
+							console.log(res.data)
+
+						}).catch(err => {
+							console.log(err)
+						});
 					}
 				})
 			},

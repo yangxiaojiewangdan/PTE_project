@@ -79,3 +79,11 @@ export const RemovePrice = (PackageId, PriceId) => {
 		//data:CourseRemoveData,
 	});
 };
+//修改密码的接口
+export const ModifyPassword = (userId, szNewPassword,szConfirmPassword) => {
+	return axios.request({
+		url: apiUrl + "/api/BusinessUser/ModifyPassword?userId=" + userId + '&szNewPassword=' + szNewPassword  + '&szConfirmPassword=' + szConfirmPassword,
+		method: "post",
+		//data:CourseRemoveData,
+	});
+};

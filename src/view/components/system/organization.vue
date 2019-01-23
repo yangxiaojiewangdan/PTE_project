@@ -24,7 +24,7 @@
 			<!-- 表格上面的功能 -->
 			<Col span="24">
 			<div class="organization">
-				<Button @click="AddDepartment = true;add=true;see=false;" type="success" class="organization_tableTop">添加</Button>
+				<Button @click="Add" type="success" class="organization_tableTop">添加</Button>
 				<Button @click="deleteList" type="error" class="organization_tableTop">删除</Button>
 				<Select v-model="formSend.label" style="width:100px">
 					<Option v-for="item in department" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -37,7 +37,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="selectionId" @on-row-dblclick="upDataBusinessUnit" :loading=loading>
+			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" @on-row-dblclick="upDataBusinessUnit" :loading=loading>
 			</Table>
 			<!-- 表格 end-->
 			</Col>
@@ -62,10 +62,18 @@
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
 				<Row>
 					<Col span="24">
-					<FormItem label="上级部门" prop="ParentId">
-						<Select v-model="formValidate.ParentId" disabled style="width:460px" placeholder="请选择">
+					<FormItem label="所属业务群" prop="BusinessGroup">
+						<Select v-model="formValidate.BusinessGroup" style="width:460px" placeholder="请选择">
 							<Option v-for="item in ParentId" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
+					</FormItem>
+					</Col>
+					<Col span="24" v-if="is">
+					<FormItem label="上级部门" prop="ParentId">
+						<!--<Select v-model="formValidate.ParentId"  style="width:460px" placeholder="请选择">
+							<Option v-for="item in ParentId" :value="item.value" :key="item.value">{{ item.label }}</Option>
+						</Select>-->
+						<Input v-model="formValidate.ParentId" placeholder="请输入" style="width:460px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="24">
@@ -79,27 +87,28 @@
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<FormItem label="部门描述" prop="LongDescription">
-						<Input v-model="formValidate.LongDescription" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
-					</FormItem>
-					</Col>
-					<Col span="24">
 					<FormItem label="主管姓名" prop="Supervisor">
 						<Select v-model="formValidate.Supervisor" style="width:460px" placeholder="请选择">
-							<Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
+							<Option v-for="item in cityList1" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
 					<Col span="24">
+					<FormItem label="部门描述" prop="LongDescription">
+						<Input v-model="formValidate.LongDescription" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
+					</FormItem>
+					</Col>
+
+					<Col span="24">
 					<Col span="15">
 					<FormItem label="排序码" prop="SortKey">
-						<Input type="number" v-model="formValidate.SortKey" placeholder="请输入" style="width:200px"></Input>
+						<Input type="text" v-model="formValidate.SortKey" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="9">
-					<FormItem label="启用" prop="Enabled">
-						<i-switch v-model="formValidate.Enabled" size="large" :true-value="Number(1)" :false-value="Number(0)">
-							<span slot="open">On</span>
+					<FormItem label="" prop="Enabled">
+						<i-switch v-model="formValidate.Enabled" size="large" >
+							<span slot="open">启用</span>
 							<span slot="close">Off</span>
 						</i-switch>
 					</FormItem>
@@ -110,12 +119,24 @@
 			<div slot="footer">
 				<div class="footer_left">
 					<div class="footer_left1">
-						<div><span>创建人:闫子健</span></div>
-						<div><span>更新人:闫子健</span></div>
+						<div>
+							<span>创建人:</span>
+							<span>{{ formValidate.CreateByName }}</span>
+						</div>
+						<div>
+							<span>更新人:</span>
+							<span>{{ formValidate.UpdateByName }}</span>
+						</div>
 					</div>
 					<div class="footer_left2">
-						<div><span>创建时间:2018/12/13/ 13:00:00</span></div>
-						<div><span>更新时间:2018/12/13/ 13:00:00</span></div>
+						<div>
+							<span>创建时间:</span>
+							<span>{{ formValidate.CreateOn }}</span>
+						</div>
+						<div>
+							<span>更新时间:</span>
+							<span>{{ formValidate.UpdateOn }}</span>
+						</div>
 					</div>
 				</div>
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
@@ -132,10 +153,12 @@
 <script>
 	//import { getTreeList, getBusinessUnitData, addBusinessUnit, deleteBusinessUnit, BusinessUnitGetEntities, upBusinessUnit } from '@/api/data'
 	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities } from '@/api/api'
+
 	export default {
 		inject: ['reload'],
 		data() {
 			return {
+				is: false,
 				add: "",
 				see: "",
 				Interface: "BusinessUnit",
@@ -238,24 +261,17 @@
 
 				],
 				ParentId: [{
-						value: 'New York',
-						label: '招商部'
-					},
-					{
-						value: 'London',
-						label: '运营部'
-					},
-					{
-						value: 'Sydney',
-						label: '技术部'
+						value: "*",
+						label: "*"
 					}
+
 				],
 				data1: [],
 				BusinessUnitData: {
 					"Filters": {},
 				},
 				treePid: '',
-				delBusinessUnitList: [],
+				BatchDeleteList: [],
 				delBusinessUnitArrs: [],
 				// 表格 end      
 				// 删除信息弹出框
@@ -283,11 +299,13 @@
 				Supervisor: '',
 				AddDepartment: false,
 				formValidate: {
-					ParentId: '',
-					Enabled: 1,
+					BusinessGroup: '',
+					ParentId: "-1",
+					Enabled: true,
 					Code: '',
 					Description: '',
 					Supervisor: '',
+					Id: '',
 				},
 				ruleValidate: {}
 
@@ -295,6 +313,14 @@
 			}
 		},
 		methods: {
+			Add() {
+				this.AddDepartment = true;
+				this.add = true;
+				this.see = false;
+				this.formValidate = {};
+				this.formValidate.ParentId = "-1";
+
+			},
 			selectChange(selectedList) {
 				console.log(selectedList);
 
@@ -327,15 +353,53 @@
 
 			},
 			deleteList() {
-				if(this.delBusinessUnitList.length == 0) {
-					this.$Message.info('请先选中删除的数据');
+				if(this.BatchDeleteList.length == 0) {
+					this.$Message.info("请先选中删除的数据");
 				} else {
 					this.delModal = true;
 				}
 			},
+			BatchDelete(selection, row) {
+				for(var i = 0; i < selection.length; i++) {
+					this.BatchDeleteList.push(selection[i].Id);
+				};
+
+				function uniq(array) {
+					var temp = []; //一个新的临时数组
+					for(var i = 0; i < array.length; i++) {
+						if(temp.indexOf(array[i]) == -1) {
+							temp.push(array[i]);
+						}
+					}
+					return temp;
+				};
+				this.BatchDeleteList = uniq(this.BatchDeleteList)
+			},
+			//取消勾选的某一项
+			CancelBatchDelete(selection, row) {
+				function removeByValue(arr, val) {  
+					for(var i = 0; i < arr.length; i++) {    
+						if(arr[i] == val) {      
+							arr.splice(i, 1);      
+							break;    
+						}  
+					}
+				}
+				removeByValue(this.BatchDeleteList, row.Id);
+			},
+			//全选
+			allselectionId(selection) {
+				for(var i = 0; i < selection.length; i++) {
+					this.BatchDeleteList.push(selection[i].Id);
+				}
+			},
+			//取消全选
+			allcancelselectionId(selection) {
+				this.BatchDeleteList = selection
+			},
 			// 删除信息 弹出框函数
 			ok() {
-				BatchDelete(this.Interface, this.delBusinessUnitArrs).then(res => {
+				BatchDelete(this.Interface, this.BatchDeleteList).then(res => {
 					this.$Message.success('删除成功!')
 					this.reload();
 				}).catch(err => {
@@ -347,11 +411,10 @@
 			cancel() {
 				this.$Message.info('已取消');
 			},
-			// 删除信息 弹出框函数 end
 			// 添加信息 弹出框函数
-			handleSubmit(name) {	
+			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
-					if(valid && this.formValidate.Id == undefined) {
+					if(valid && this.formValidate.Id == undefined || this.formValidate.Id == "") {
 						Create(this.Interface, this.formValidate).then(res => {
 							this.treeList = res.data
 							this.$Message.success('成功!');
@@ -421,6 +484,7 @@
 			//获取树形结构
 			GetBusinessUnit(this.Interface).then(res => {
 				this.treeList = res.data
+				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
@@ -428,11 +492,20 @@
 			GetEntities(this.Interface, this.BusinessUnitData).then(res => {
 				this.data1 = res.data
 				this.loading = false;
-				//循环主管姓名
-				this.data1.forEach(item => {
-					this.cityList1.push(item.Supervisor)
-					console.log(this.cityList1)
-				})
+				console.log(res.data)
+			}).catch(err => {
+				console.log(err)
+			})
+			//获取业务群
+			GetEntities("BusinessGroup", this.BusinessUnitData).then(res => {
+				console.log(res.data)
+			}).catch(err => {
+				console.log(err)
+			})
+			//主管姓名
+			GetEntities("BusinessUser", this.BusinessUnitData).then(res => {
+				console.log(res.data)
+				this.cityList1 = res.data
 			}).catch(err => {
 				console.log(err)
 			})

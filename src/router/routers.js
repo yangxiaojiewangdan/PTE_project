@@ -407,6 +407,16 @@ export default [
           import('@/view/components/member/studentFiles.vue')
       },
       {
+        path: 'member_Contacts',
+        name: 'member_Contacts',
+        meta: {
+          icon: 'md-download',
+          title: '联系人'
+        },
+        component: () =>
+          import('@/view/components/member/Contacts.vue')
+      },
+      {
         path: 'member_admAss',
         name: 'member_admAss',
         meta: {
