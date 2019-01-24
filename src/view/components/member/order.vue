@@ -1214,11 +1214,6 @@ export default {
         return temp;
       }
       this.delete = uniq(this.delete);
-      // console.log(selection)
-      // for (var i = 0; i < selection.length; i++) {
-      //   console.log(selection[i].OrderStatusDesc)
-      //   console.log(selection[i].PaymentStatusDesc)
-      // }
     },
     OnecancelselectionId(selection, row) {
       function removeByValue(arr, val) {

@@ -247,7 +247,7 @@ import {
   Copy,
   DataDictionaryGetEntities,
   ValidateUnique,
-  DataDictionaryGetDataCatalog
+  DataDictionaryGetDataCatalog,
 } from "@/api/api";
 export default {
   components: {
@@ -545,7 +545,7 @@ export default {
     },
     handleReset(name) {
       this.$refs[name].resetFields();
-      this.$Message.info("已取消添加结算规则");
+      // this.$Message.info("已取消添加结算规则");
     },
     // 删除数据接口
     deleteList() {
@@ -651,7 +651,7 @@ export default {
   },
   mounted() {
     // 结算规则
-    this.SettleTypeList = JSON.parse(localStorage.SETTLE_TYPE);
+    this.SettleTypeList = JSON.parse(localStorage.FRANCHISER_STATUS);
     // 人员表格
     GetEntities(this.Interface, this.getTableData)
       .then(res => {

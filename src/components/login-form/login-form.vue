@@ -299,6 +299,20 @@ export default {
       .catch(err => {
         console.log(err);
       });
+    DataDictionaryGetEntities("FRANCHISER_STATUS")
+      .then(res => {
+        localStorage.setItem("FRANCHISER_STATUS", JSON.stringify(res.data));
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    DataDictionaryGetEntities("STORE_STATUS")
+      .then(res => {
+        localStorage.setItem("STORE_STATUS", JSON.stringify(res.data));
+      })
+      .catch(err => {
+        console.log(err);
+      });
     DataDictionaryGetEntities("DATA_PERMISSION_LEVEL")
       .then(res => {
         localStorage.setItem("DATA_PERMISSION_LEVEL", JSON.stringify(res.data));
@@ -308,6 +322,7 @@ export default {
       });
         }
       });
+    
      
     }
   }

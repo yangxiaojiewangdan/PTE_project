@@ -25,13 +25,6 @@
           <Row>
             <Col span="18" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:32px;">所在地址：</h3>
-              <!-- <Select v-model="queryRegionCode" style="width:200px;margin-right:20px;" placeholder="所在大区">
-                <Option
-                  v-for="item in RegionCodeList"
-                  :value="item.Id"
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>-->
               <Select
                 v-model="queryProviceCode"
                 style="width:200px;margin-left:20px;"
@@ -97,7 +90,7 @@
       <Col span="8">
         <div class="tableTop">
           <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -126,9 +119,11 @@
           ref="selection"
           :columns="informationTable"
           :data="informationData"
-          @on-select="BatchDelete"
           @on-row-dblclick="dblclickUpData"
-          @on-select-all="BatchDelete"
+          @on-select="OneselectionId"
+          @on-select-all="allselectionId"
+          @on-select-all-cancel="allcancelselectionId"
+          @on-select-cancel="OnecancelselectionId"
         ></Table>
         <!-- 表格 end-->
       </Col>
@@ -143,325 +138,21 @@
       v-model="AddDepartment"
       scrollable
       width="1100"
-      title="添加加盟商信息"
       :mask-closable="false"
       :styles="{top: '20px'}"
     >
-      <Form
-        ref="formValidate"
-        :model="formValidate"
-        :rules="ruleValidate"
-        label-position="right"
-        :label-width="120"
-      >
-        <Row>
-          <Col span="24">
-            <Col span="24">
-              <Col span="18">
-                <Col span="24">
-                  <FormItem label="加盟商代码" prop="Code">
-                    <Input v-model="formValidate.Code" placeholder="请输入" style="width:650px"></Input>
-                  </FormItem>
-                </Col>
-                <Col span="14">
-                  <FormItem label="客户名称" prop="Name">
-                    <Input v-model="formValidate.Name" placeholder="请输入" style="width:350px"></Input>
-                  </FormItem>
-                </Col>
-                <Col span="10">
-                  <FormItem label="客户简称" prop="ShortName">
-                    <Input v-model="formValidate.ShortName" placeholder="请输入" style="width:180px"></Input>
-                  </FormItem>
-                </Col>
-                <Col span="11">
-                  <FormItem label="所属业务群" prop="BusinessGroup">
-                    <Select v-model="formValidate.BusinessGroup">
-                      <Option
-                        v-for="item in BusinessGroupList"
-                        :value="item.value"
-                        :key="item.value"
-                      >{{ item.label }}</Option>
-                    </Select>
-                  </FormItem>
-                </Col>
-                <Col span="12">
-                  <FormItem label="业务类型" prop="BusinessType">
-                    <Select v-model="formValidate.BusinessType">
-                      <Option
-                        v-for="item in BusinessTypeList"
-                        :value="item.Description"
-                        :key="item.Code"
-                      >{{ item.Description }}</Option>
-                    </Select>
-                  </FormItem>
-                </Col>
-
-                <Col span="11">
-                  <FormItem label="加盟商类型" prop="FranchiserType">
-                    <Select v-model="formValidate.FranchiserType">
-                      <Option
-                        v-for="item in FranchiserTypeList"
-                        :value="item.Description"
-                        :key="item.Code"
-                      >{{ item.Description }}</Option>
-                    </Select>
-                  </FormItem>
-                </Col>
-                <Col span="12">
-                  <FormItem label="加盟方式" prop="LeageMode">
-                    <Select v-model="formValidate.LeageMode">
-                      <Option
-                        v-for="item in LeageModeList"
-                        :value="item.Description"
-                        :key="item.Code"
-                      >{{ item.Description }}</Option>
-                    </Select>
-                  </FormItem>
-                </Col>
-              </Col>
-              <Col span="6">
-                <div>上传证件</div>
-                <div class="demo-upload-list" v-for="item in uploadList">
-                  <template v-if="item.status === 'finished'">
-                    <img :src="item.url">
-                    <div class="demo-upload-list-cover">
-                      <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                      <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                  </template>
-                </div>
-                <Upload
-                  ref="upload"
-                  :show-upload-list="false"
-                  :default-file-list="defaultList"
-                  :on-success="handleSuccess"
-                  :format="['jpg','jpeg','png']"
-                  :max-size="2048"
-                  :on-format-error="handleFormatError"
-                  :on-exceeded-size="handleMaxSize"
-                  :before-upload="handleBeforeUpload"
-                  multiple
-                  type="drag"
-                  action="//jsonplaceholder.typicode.com/posts/"
-                  style="display: inline-block;width:58px;"
-                >
-                  <div style="width: 58px;height:58px;line-height: 58px;">
-                    <Icon type="ios-camera" size="20"></Icon>
-                  </div>
-                </Upload>
-                <Modal title="View Image" v-model="visible">
-                  <img
-                    :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'"
-                    v-if="visible"
-                    style="width: 100%"
-                  >
-                </Modal>
-              </Col>
-            </Col>
-            <Col span="24">
-              <Col span="23">
-                <FormItem label="描述" prop="Description">
-                  <Input
-                    v-model="formValidate.Description"
-                    type="textarea"
-                    :autosize="{minRows: 2,maxRows: 5}"
-                    placeholder="请输入"
-                  ></Input>
-                </FormItem>
-              </Col>
-            </Col>
-            <Col span="11">
-              <FormItem label="开始日期" prop="FromDate">
-                <DatePicker
-                  type="date"
-                  v-model="formValidate.FromDate"
-                  placeholder="Select date"
-                  style="width: 368px"
-                ></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="结束日期" prop="ToDate">
-                <DatePicker
-                  type="date"
-                  v-model="formValidate.ToDate"
-                  placeholder="Select date"
-                  style="width: 413px"
-                ></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="证件类型" prop="CertificateType">
-                <Select v-model="formValidate.CertificateType">
-                  <Option
-                    v-for="item in CertificateTypeList"
-                    :value="item.Description"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="证件号" prop="CertificateNo">
-                <Input v-model="formValidate.CertificateNo" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="负责人" prop="LegalOwner">
-                <Input v-model="formValidate.LegalOwner" placeholder="请输入" style="width:192px"></Input>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="省" prop="ProviceCode">
-                <Select
-                  v-model="formValidate.ProviceCode"
-                  :label-in-value="true"
-                  @on-change="SelectProviceCode"
-                >
-                  <Option
-                    v-for="item in ProviceCodeList"
-                    :value="item.Name"
-                    :key="item.Code"
-                  >{{ item.Name }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="市" prop="CityCode">
-                <Select
-                  v-model="formValidate.CityCode"
-                  :label-in-value="true"
-                  @on-change="SelectCityCode"
-                >
-                  <Option
-                    v-for="item in CityCodeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Name }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="6">
-              <FormItem label="区县" prop="DistinctCode">
-                <Select v-model="formValidate.DistinctCode" @on-change="SelectDistinctCode">
-                  <Option
-                    v-for="item in DistinctCodeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Name }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="5">
-              <FormItem label="邮编" prop="PostalCode">
-                <Input v-model="formValidate.PostalCode" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="23">
-              <FormItem label="地址" prop="Address">
-                <Input v-model="formValidate.Address" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-
-            <Col span="11">
-              <FormItem label="联系电话" prop="TelPhone">
-                <Input v-model="formValidate.TelPhone" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="传真" prop="Fax">
-                <Input v-model="formValidate.Fax" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="联系人姓名" prop="ContactName">
-                <Input v-model="formValidate.ContactName" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="联系人电话" prop="ContactTel">
-                <Input v-model="formValidate.ContactTel" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="联系人手机" prop="ContactPhone">
-                <Input v-model="formValidate.ContactPhone" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="联系人邮箱" prop="ContactEMail">
-                <Input v-model="formValidate.ContactEMail" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="24">
-              <FormItem label="业务状态" prop="Status">
-                <RadioGroup v-model="formValidate.Status">
-                  <Radio v-for="item in StatusList" :label="item.Code">
-                    <span>{{item.Description}}</span>
-                  </Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:</span>
-              <span>{{ Founder }}</span>
-            </div>
-            <div>
-              <span>更新人:</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:</span>
-            </div>
-            <div>
-              <span>更新时间:</span>
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('formValidate');AddDepartment = false;"
-        >
-          <span>取消</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="handleSubmit('formValidate');"
-        >
-          <span>确定</span>
-        </button>
-      </div>
-    </Modal>
-    <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
-      <h3>确定删除此数据？</h3>
-    </Modal>
-    <!-- 修改信息 弹出框-->
-    <Modal
-      v-model="upDepartment"
-      scrollable
-      width="1100"
-      title="查看加盟商信息"
-      :mask-closable="false"
-      :styles="{top: '20px'}"
-    >
-      <Tabs @on-click="upTabs">
-        <TabPane label="加盟商档案">
+      <p slot="header" style="text-align:left;line-height: 1;">
+        <span v-if="add">添加加盟商信息</span>
+        <span v-if="see">查看加盟商信息</span>
+      </p>
+      <p slot="close" style="margin-right:10px;line-height: 3;" @click="close('formValidate')">
+        <Icon type="md-close" size="20" color="gray"/>
+      </p>
+      <Tabs>
+        <TabPane label="加盟商信息" name="name1">
           <Form
-            ref="UpdateList"
-            :model="UpdateList"
+            ref="formValidate"
+            :model="formValidate"
             :rules="ruleValidate"
             label-position="right"
             :label-width="120"
@@ -472,22 +163,26 @@
                   <Col span="18">
                     <Col span="24">
                       <FormItem label="加盟商代码" prop="Code">
-                        <Input v-model="UpdateList.Code" placeholder="请输入" style="width:650px"></Input>
+                        <Input v-model="formValidate.Code" placeholder="请输入" style="width:650px"></Input>
                       </FormItem>
                     </Col>
                     <Col span="14">
                       <FormItem label="客户名称" prop="Name">
-                        <Input v-model="UpdateList.Name" placeholder="请输入" style="width:350px"></Input>
+                        <Input v-model="formValidate.Name" placeholder="请输入" style="width:350px"></Input>
                       </FormItem>
                     </Col>
                     <Col span="10">
                       <FormItem label="客户简称" prop="ShortName">
-                        <Input v-model="UpdateList.ShortName" placeholder="请输入" style="width:180px"></Input>
+                        <Input
+                          v-model="formValidate.ShortName"
+                          placeholder="请输入"
+                          style="width:180px"
+                        ></Input>
                       </FormItem>
                     </Col>
                     <Col span="11">
                       <FormItem label="所属业务群" prop="BusinessGroup">
-                        <Select v-model="UpdateList.BusinessGroup">
+                        <Select v-model="formValidate.BusinessGroup">
                           <Option
                             v-for="item in BusinessGroupList"
                             :value="item.value"
@@ -498,7 +193,7 @@
                     </Col>
                     <Col span="12">
                       <FormItem label="业务类型" prop="BusinessType">
-                        <Select v-model="UpdateList.BusinessType">
+                        <Select v-model="formValidate.BusinessType">
                           <Option
                             v-for="item in BusinessTypeList"
                             :value="item.Description"
@@ -510,7 +205,7 @@
 
                     <Col span="11">
                       <FormItem label="加盟商类型" prop="FranchiserType">
-                        <Select v-model="UpdateList.FranchiserType">
+                        <Select v-model="formValidate.FranchiserType">
                           <Option
                             v-for="item in FranchiserTypeList"
                             :value="item.Description"
@@ -521,7 +216,7 @@
                     </Col>
                     <Col span="12">
                       <FormItem label="加盟方式" prop="LeageMode">
-                        <Select v-model="UpdateList.LeageMode">
+                        <Select v-model="formValidate.LeageMode">
                           <Option
                             v-for="item in LeageModeList"
                             :value="item.Description"
@@ -575,9 +270,9 @@
                 </Col>
                 <Col span="24">
                   <Col span="23">
-                    <FormItem label="描述" prop="Description">
+                    <FormItem label="描述" prop="LongDescription">
                       <Input
-                        v-model="UpdateList.Description"
+                        v-model="formValidate.LongDescription"
                         type="textarea"
                         :autosize="{minRows: 2,maxRows: 5}"
                         placeholder="请输入"
@@ -589,7 +284,7 @@
                   <FormItem label="开始日期" prop="FromDate">
                     <DatePicker
                       type="date"
-                      v-model="UpdateList.FromDate"
+                      v-model="formValidate.FromDate"
                       placeholder="Select date"
                       style="width: 368px"
                     ></DatePicker>
@@ -599,7 +294,7 @@
                   <FormItem label="结束日期" prop="ToDate">
                     <DatePicker
                       type="date"
-                      v-model="UpdateList.ToDate"
+                      v-model="formValidate.ToDate"
                       placeholder="Select date"
                       style="width: 413px"
                     ></DatePicker>
@@ -607,7 +302,7 @@
                 </Col>
                 <Col span="8">
                   <FormItem label="证件类型" prop="CertificateType">
-                    <Select v-model="UpdateList.CertificateType">
+                    <Select v-model="formValidate.CertificateType">
                       <Option
                         v-for="item in CertificateTypeList"
                         :value="item.Description"
@@ -618,24 +313,24 @@
                 </Col>
                 <Col span="8">
                   <FormItem label="证件号" prop="CertificateNo">
-                    <Input v-model="UpdateList.CertificateNo" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.CertificateNo" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="8">
                   <FormItem label="负责人" prop="LegalOwner">
-                    <Input v-model="UpdateList.LegalOwner" placeholder="请输入" style="width:192px"></Input>
+                    <Input v-model="formValidate.LegalOwner" placeholder="请输入" style="width:192px"></Input>
                   </FormItem>
                 </Col>
                 <Col span="6">
                   <FormItem label="省" prop="ProviceCode">
                     <Select
-                      v-model="UpdateList.ProviceCode"
+                      v-model="formValidate.ProviceCode"
                       :label-in-value="true"
                       @on-change="SelectProviceCode"
                     >
                       <Option
                         v-for="item in ProviceCodeList"
-                        :value="item.Id"
+                        :value="item.Name"
                         :key="item.Code"
                       >{{ item.Name }}</Option>
                     </Select>
@@ -644,7 +339,7 @@
                 <Col span="6">
                   <FormItem label="市" prop="CityCode">
                     <Select
-                      v-model="UpdateList.CityCode"
+                      v-model="formValidate.CityCode"
                       :label-in-value="true"
                       @on-change="SelectCityCode"
                     >
@@ -658,7 +353,7 @@
                 </Col>
                 <Col span="6">
                   <FormItem label="区县" prop="DistinctCode">
-                    <Select v-model="UpdateList.DistinctCode" @on-change="SelectDistinctCode">
+                    <Select v-model="formValidate.DistinctCode" @on-change="SelectDistinctCode">
                       <Option
                         v-for="item in DistinctCodeList"
                         :value="item.Id"
@@ -669,48 +364,48 @@
                 </Col>
                 <Col span="5">
                   <FormItem label="邮编" prop="PostalCode">
-                    <Input v-model="UpdateList.PostalCode" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.PostalCode" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="23">
                   <FormItem label="地址" prop="Address">
-                    <Input v-model="UpdateList.Address" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.Address" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
 
                 <Col span="11">
                   <FormItem label="联系电话" prop="TelPhone">
-                    <Input v-model="UpdateList.TelPhone" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.TelPhone" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="12">
                   <FormItem label="传真" prop="Fax">
-                    <Input v-model="UpdateList.Fax" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.Fax" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="11">
                   <FormItem label="联系人姓名" prop="ContactName">
-                    <Input v-model="UpdateList.ContactName" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.ContactName" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="12">
                   <FormItem label="联系人电话" prop="ContactTel">
-                    <Input v-model="UpdateList.ContactTel" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.ContactTel" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="11">
                   <FormItem label="联系人手机" prop="ContactPhone">
-                    <Input v-model="UpdateList.ContactPhone" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.ContactPhone" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="12">
                   <FormItem label="联系人邮箱" prop="ContactEMail">
-                    <Input v-model="UpdateList.ContactEMail" placeholder="请输入"></Input>
+                    <Input v-model="formValidate.ContactEMail" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
                 <Col span="24">
-                  <FormItem label="业务状态" prop="ContactEMail">
-                    <RadioGroup v-model="UpdateList.Status">
+                  <FormItem label="业务状态" prop="Status">
+                    <RadioGroup v-model="formValidate.Status">
                       <Radio v-for="item in StatusList" :label="item.Code">
                         <span>{{item.Description}}</span>
                       </Radio>
@@ -721,50 +416,170 @@
             </Row>
           </Form>
         </TabPane>
-        <TabPane label="门店信息"></TabPane>
-        <TabPane label="合约信息">标签三的内容</TabPane>
-        <TabPane label="经营业绩">标签三的内容</TabPane>
-        <TabPane label="财务结算">标签三的内容</TabPane>
+        <TabPane label="门店信息" name="name2" v-if="TabBusinessStores">
+          <Row style="position:absolute;width:1065px; height:750px; overflow:auto">
+            <Col
+              span="10"
+              offset="1"
+              v-for="(item, index) in BusinessStoresList"
+              :key="index"
+              style="margin-bottom:10px;"
+            >
+              <Card>
+                <p slot="title">{{ item.Description }}</p>
+                <Button
+                  slot="extra"
+                  size="small"
+                  type="text"
+                  @click="say(index,$event)"
+                >{{ EditSave }}</Button>
+                <Form
+                  ref="FormBusinessStores"
+                  :model="FormBusinessStores"
+                  label-position="right"
+                  :label-width="80"
+                >
+                  <Row>
+                    <Col span="24">
+                      <Col span="22">
+                        <FormItem label="门店类型:" prop="StoreType" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.StoreType"></Input>
+                          <p v-if="BusinessStoresP">{{ item.StoreType }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="业务状态:" prop="Status" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.Status"></Input>
+                          <p v-if="BusinessStoresP">{{ item.Status }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="开业日期:" prop="OpenOn" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.OpenOn"></Input>
+                          <p v-if="BusinessStoresP">{{ item.OpenOn }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="地址:" prop="OpenOn" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.OpenOn"></Input>
+                          <p
+                            v-if="BusinessStoresP"
+                          >{{ item.ProviceCode +"-"+ item.CityCode +"-"+ item.Address}}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="邮编:" prop="PostalCode" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.PostalCode"></Input>
+                          <p v-if="BusinessStoresP">{{ item.PostalCode }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="经纬度:" prop="Latitude" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.Latitude"></Input>
+                          <p v-if="BusinessStoresP">{{ item.Longitude +"-"+ item.Latitude }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="联系电话:" prop="TelPhone" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.TelPhone"></Input>
+                          <p v-if="BusinessStoresP">{{ item.TelPhone }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="传真:" prop="Fax" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.Fax"></Input>
+                          <p v-if="BusinessStoresP">{{ item.Fax }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="联系人姓名:" prop="ContactName" class="margin_bottom">
+                          <Input
+                            v-if="BusinessStoresInput"
+                            v-model="FormBusinessStores.ContactName"
+                          ></Input>
+                          <p v-if="BusinessStoresP">{{ item.ContactName }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="联系人电话:" prop="ContactTel" class="margin_bottom">
+                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.ContactTel"></Input>
+                          <p v-if="BusinessStoresP">{{ item.ContactTel }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="联系人手机:" prop="ContactPhone" class="margin_bottom">
+                          <Input
+                            v-if="BusinessStoresInput"
+                            v-model="FormBusinessStores.ContactPhone"
+                          ></Input>
+                          <p v-if="BusinessStoresP">{{ item.ContactPhone }}</p>
+                        </FormItem>
+                      </Col>
+                      <Col span="22">
+                        <FormItem label="联系人邮箱:" prop="ContactEMail" class="margin_bottom">
+                          <Input
+                            v-if="BusinessStoresInput"
+                            v-model="FormBusinessStores.ContactEMail"
+                          ></Input>
+                          <p v-if="BusinessStoresP">{{ item.ContactEMail }}</p>
+                        </FormItem>
+                      </Col>
+                    </Col>
+                  </Row>
+                </Form>
+              </Card>
+            </Col>
+          </Row>
+        </TabPane>
       </Tabs>
-
       <div slot="footer">
         <div class="footer_left">
           <div class="footer_left1">
             <div>
               <span>创建人:</span>
-              <span>{{ UpdateList.CreateByName }}</span>
+              <span>{{ formValidate.CreateByName }}</span>
             </div>
             <div>
               <span>更新人:</span>
-              <span>{{ UpdateList.UpdateByName }}</span>
+              <span>{{ formValidate.UpdateByName }}</span>
             </div>
           </div>
           <div class="footer_left2">
             <div>
               <span>创建时间:</span>
-              <span>{{ UpdateList.CreateOn }}</span>
+              <span>{{ formValidate.CreateOn }}</span>
             </div>
             <div>
               <span>更新时间:</span>
-              <span>{{ UpdateList.UpdateOn }}</span>
+              <span>{{ formValidate.UpdateOn }}</span>
             </div>
           </div>
         </div>
+        <Button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="delete1 = true;"
+          v-if="del"
+        >删除</Button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('UpdateList');upDepartment = false;"
+          @click="handleReset('formValidate');AddDepartment = false;"
         >
           <span>取消</span>
         </button>
         <button
           type="button"
           class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="UpdateSubmit('UpdateList');"
+          @click="handleSubmit('formValidate');"
         >
-          <span>修改</span>
+          <span>确定</span>
         </button>
       </div>
+    </Modal>
+    <!-- 删除信息弹出框 -->
+    <Modal v-model="delete1" title="提示" @on-ok="ok">
+      <h3>确定删除此数据？</h3>
     </Modal>
   </div>
 </template>
@@ -778,18 +593,24 @@ import {
   BatchDelete,
   Copy,
   DistrictGetProvince,
+  DistrictGetArea,
+  DistrictGetEntity
 } from "@/api/api";
 export default {
   inject: ["reload"],
   data() {
     return {
-      Interface:"FranchiserProfile",
-      // 所在地址
-      // queryRegionCode:"",
+      EditSave: "编辑",
+      BusinessStoresInput: false,
+      BusinessStoresP: true,
+      // 接口
+      Interface: "FranchiserProfile",
+      // 查看时显示门店 添加时隐藏
+      TabBusinessStores: true,
+      // 地址
       queryProviceCode: "",
       queryCityCode: "",
       queryDistinctCode: "",
-      // RegionCodeList:[],
       ProviceCodeList: [],
       CityCodeList: [],
       DistinctCodeList: [],
@@ -1030,6 +851,10 @@ export default {
           }
         }
       ],
+      // 弹框标题信息
+      add: "",
+      see: "",
+      del: "",
       // 创建人
       Founder: "",
       UpdatePerson: "",
@@ -1068,7 +893,7 @@ export default {
           label: "证件号"
         }
       ],
-      StartEndDate:"",
+      StartEndDate: "",
       queryvalue: "",
       querySelect: "",
       RadioGroupStatus: "",
@@ -1105,8 +930,20 @@ export default {
         ContactPhone: "",
         ContactEMail: ""
       },
-      // 修改信息表单
-      UpdateList: {},
+      // 门店信息
+      FormBusinessStores: {
+        StoreType: "",
+        Status: "",
+        OpenOn: "",
+        PostalCode: "",
+        Latitude: "",
+        TelPhone: "",
+        Fax: "",
+        ContactName: "",
+        ContactTel: "",
+        ContactPhone: "",
+        ContactEMail: ""
+      },
       // 所属业务群
       BusinessGroupList: [
         {
@@ -1114,6 +951,7 @@ export default {
           label: "比特易早教"
         }
       ],
+      BusinessStoresList: [],
       // 删除信息弹出框
       delete1: false,
       BatchDeleteList: [],
@@ -1145,6 +983,27 @@ export default {
     };
   },
   methods: {
+    say(index, e) {
+      // e.target 是你当前点击的元素
+      // e.currentTarget 是你绑定事件的元素
+      console.log(e.target);
+      console.log(e.currentTarget);
+      console.log(this.BusinessStoresList[index]);
+      if (this.BusinessStoresList[index]) {
+        if (this.EditSave == "编辑") {
+          this.EditSave = "保存";
+          this.BusinessStoresInput = true;
+          this.BusinessStoresP = false;
+        } else if (this.EditSave == "保存") {
+          this.EditSave = "编辑";
+          this.BusinessStoresInput = false;
+          this.BusinessStoresP = true;
+        }
+      }
+    },
+    close(name) {
+      this.$refs[name].resetFields();
+    },
     //选择省获取 市数据
     SelectProviceCode(value) {
       this.queryDistinctCode = "";
@@ -1157,7 +1016,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      FranchiserProfileGetEntities({
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And",
@@ -1188,7 +1047,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      FranchiserProfileGetEntities({
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And",
@@ -1209,28 +1068,33 @@ export default {
           console.log(err);
         });
     },
-    SelectDistinctCode(value){
-      let keyId = value
+    SelectDistinctCode(value) {
+      let keyId = value;
       DistrictGetEntity(keyId)
-      .then(res => {
+        .then(res => {
           // 获取到区县的邮编放到添加的邮编输入框中
-          this.formValidate.PostalCode = res.data.PostalCode
+          this.formValidate.PostalCode = res.data.PostalCode;
         })
         .catch(err => {
           console.log(err);
         });
     },
-    // 创建人
+    // 添加
     AddDepartment1() {
+      this.TabBusinessStores = false;
       this.AddDepartment = true;
       let see = JSON.parse(sessionStorage.getItem("userInfo"));
-      this.Founder = see.AccountName;
+      this.formValidate.CreateByName = see.AccountName;
+      this.formValidate.BusinessGroup = see.BusinessUnit;
+      this.add = true;
+      this.see = false;
+      this.del = false;
     },
     // 点击全部查询全部数据
     allinformationData() {
       let FromDate = this.StartEndDate[0];
       let ToDate = this.StartEndDate[1];
-      FranchiserProfileGetEntities({
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And",
@@ -1254,9 +1118,9 @@ export default {
                 FilterField: "ToDate",
                 Relational: "LessEqualThan",
                 FilterValue: ToDate
-              },
+              }
             ]
-          },
+          }
         ]
       })
         .then(res => {
@@ -1268,26 +1132,100 @@ export default {
         });
     },
 
-    // 添加加盟商信息
-    handleSubmit() {
-      FranchiserProfileCreate(this.formValidate)
-        .then(res => {
-          this.$Message.success("成功!");
-          this.AddDepartment = false;
-          this.reload();
-          this.formValidate = { brand_right: 0 };
-        })
-        .catch(err => {
-          this.$Message.error("失败!");
-          console.log(err);
-        });
+    // 添加/修改加盟商信息
+    handleSubmit(name) {
+      // 验证表单
+      this.$refs[name].validate(valid => {
+        // 验证表单成功后调用
+        if (valid) {
+          // 当进入的是添加弹框就调用添加接口
+          if (this.add == true) {
+            // 添加加盟商信息接口
+            Create(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("添加成功!");
+                this.AddDepartment = false;
+                this.$refs[name].resetFields();
+                this.reload();
+              })
+              .catch(err => {
+                this.$Message.error("添加失败!");
+              });
+            // 当进入的是查看弹框就调用修改接口
+          } else if (this.see == true) {
+            this.TabBusinessStores = true;
+            //点击修改按钮
+            Update(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("修改成功!");
+                this.AddDepartment = false;
+                this.$refs[name].resetFields();
+                this.reload();
+              })
+              .catch(err => {
+                this.$Message.error("修改失败!");
+              });
+          }
+        }
+      });
     },
     // 删除数据接口
     deleteList() {
-      if (this.BatchDeleteList.length == 0) {
+      if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
-        FranchiserProfileBatchDelete(this.delete)
+        this.delete1 = true;
+      }
+    },
+    OneselectionId(selection, row) {
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete.push(this.BatchDeleteList[i].Id);
+      }
+      function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+          if (temp.indexOf(array[i]) == -1) {
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      }
+      this.delete = uniq(this.delete);
+    },
+    OnecancelselectionId(selection, row) {
+      function removeByValue(arr, val) {
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
+      }
+      removeByValue(this.delete, row.Id);
+    },
+    allselectionId(selection) {
+      console.log(this.delete);
+      for (var i = 0; i < selection.length; i++) {
+        this.delete.push(selection[i].Id);
+      }
+    },
+    allcancelselectionId(selection) {
+      this.delete = selection;
+    },
+    ok() {
+      if (this.see == false && this.add == false) {
+        BatchDelete(this.Interface, this.delete)
+          .then(res => {
+            this.$Message.success("删除成功!");
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error("删除失败!");
+            console.log(err);
+          });
+      } else if (this.see == true) {
+        Delete(this.Interface, this.formValidate.Id)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
@@ -1298,47 +1236,20 @@ export default {
           });
       }
     },
-    BatchDelete(selection) {
-      this.BatchDeleteList = selection;
-      for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete.push(this.BatchDeleteList[i].Id);
-        console.log(this.BatchDeleteList[i].Id);
-      }
-    },
     //详情修改页面
     dblclickUpData(index) {
-      this.upDepartment = true;
-      this.UpdateList = index;
       console.log(index);
+      this.TabBusinessStores = true;
+      this.AddDepartment = true;
+      this.formValidate = index;
+      this.add = false;
+      this.see = true;
+      this.del = true;
     },
-    upTabs(name){
-      localStorage.setItem("name",name);
+    upTabs(name) {
+      localStorage.setItem("name", name);
     },
-    //点击修改按钮
-    UpdateSubmit() {
-      // let name = localStorage.name;
-      if(name == "0"){
-        FranchiserProfileUpdate(this.UpdateList)
-        .then(res => {
-          this.$Message.success("修改成功!");
-          this.reload();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      }
-      // if(name == "name2"){
-      //   FranchiserProfileUpdate(this.UpdateList)
-      //   .then(res => {
-      //     this.$Message.success("修改成功!");
-      //     this.reload();
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
-      // }
-      
-    },
+
     // 取消
     handleReset(name) {
       this.formValidate = { brand_right: 0 };
@@ -1350,7 +1261,7 @@ export default {
     queryData() {
       let FromDate = this.StartEndDate[0];
       let ToDate = this.StartEndDate[1];
-      FranchiserProfileGetEntities({
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And",
@@ -1364,7 +1275,7 @@ export default {
                 FilterField: "ToDate",
                 Relational: "LessEqualThan",
                 FilterValue: ToDate
-              },
+              }
             ]
           },
           {
@@ -1388,7 +1299,7 @@ export default {
     },
     // 点击查询按钮查询信息
     querytable() {
-      FranchiserProfileGetEntities({
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And", //And 与 | Or 或
@@ -1451,14 +1362,14 @@ export default {
   mounted() {
     this.uploadList = this.$refs.upload.fileList;
     // 表格数据
-    GetEntities("FranchiserProfile",this.getTableData)
+    GetEntities(this.Interface, this.getTableData)
       .then(res => {
         this.informationData = res.data;
       })
       .catch(err => {
         console.log(err);
       });
-    // 业务状态
+    // // 业务状态
     this.StatusList = JSON.parse(localStorage.FRANCHISER_STATUS);
     // 加盟商类型
     this.FranchiserTypeList = JSON.parse(localStorage.FRANCHISER_TYPE);
@@ -1466,11 +1377,39 @@ export default {
     this.CertificateTypeList = JSON.parse(localStorage.CERTIFICATE_TYPE);
     // 加盟方式
     this.LeageModeList = JSON.parse(localStorage.LEAGE_MODE);
-     //获取指定大区省份信息
+    //获取指定大区省份信息
     DistrictGetProvince()
       .then(res => {
-        console.log(res.data)
         this.ProviceCodeList = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    //业务类型
+    GetEntities("BusinessType", this.getTableData)
+      .then(res => {
+        this.BusinessTypeList = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    // 所属加盟商的门店信息
+    GetEntities("BusinessStore", {
+      Filters: [
+        {
+          Relational: "And", //And 与 | Or 或
+          Conditions: [
+            {
+              FilterField: "FranchiserId", //字段名
+              Relational: "Equal",
+              FilterValue: this.formValidate.Id //字段名里面的值
+            }
+          ]
+        }
+      ]
+    })
+      .then(res => {
+        this.BusinessStoresList = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -1514,5 +1453,8 @@ export default {
   font-size: 20px;
   cursor: pointer;
   margin: 0 2px;
+}
+.margin_bottom {
+  margin-bottom: 9px;
 }
 </style>

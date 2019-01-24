@@ -1,3 +1,4 @@
+
 <template>
   <div id="leagueRights">
     <!-- 头部 -->
@@ -14,8 +15,8 @@
           <!-- 表格操作按钮 -->
           <Col span="8">
             <div class="tableTop">
-              <Button @click="AddDepartment = true" type="success" class="tableTops">添加</Button>
-              <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+              <Button @click="AddList" type="success" class="tableTops">添加</Button>
+              <Button @click="deleteList" type="error" class="tableTops">删除</Button>
               <Select
                 v-model="querySelect"
                 :label-in-value="true"
@@ -50,9 +51,11 @@
               ref="selection"
               :columns="SettlementCodeTable"
               :data="SettlementCodeData"
-              @on-select="BatchDelete"
               @on-row-dblclick="dblclickUpData"
-              @on-select-all="BatchDelete"
+              @on-select="OneselectionId"
+              @on-select-all="allselectionId"
+              @on-select-all-cancel="allcancelselectionId"
+              @on-select-cancel="OnecancelselectionId"
             ></Table>
           </Col>
           <!-- 分页 -->
@@ -63,7 +66,7 @@
       </Col>
     </Row>
     <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
+    <Modal v-model="delete1" title="提示" @on-ok="ok">
       <h3>确定删除此数据？</h3>
     </Modal>
     <!-- 添加信息 弹出框-->
@@ -74,6 +77,10 @@
       title="添加加盟商权益金规则"
       :mask-closable="false"
     >
+    <p slot="header" style="text-align:left;line-height: 1;">
+      <span v-if="add">添加结算规则</span>
+      <span v-if="see">查看结算规则</span>
+    </p>
       <Form
         ref="formValidate"
         :model="formValidate"
@@ -169,10 +176,10 @@
             </FormItem>
           </Col>
           <Col span="24">
-            <FormItem label="启用" prop="Enabled">
+            <FormItem label="" prop="Enabled">
               <i-switch v-model="formValidate.Enabled" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
+                <span slot="open">启用</span>
+                <span slot="close">禁用</span>
               </i-switch>
             </FormItem>
           </Col>
@@ -187,6 +194,7 @@
                 editable
                 v-model="dataRoyaltyCodeDetail"
                 :columns="columnsRoyaltyCodeDetail"
+                @on-row-click="rowclick"
                 @on-delete="handleDelete"
               />
             </Card>
@@ -200,21 +208,31 @@
         <div class="footer_left">
           <div class="footer_left1">
             <div>
-              <span>创建人:闫子健</span>
+              <span>创建人:</span>
+              <span>{{ formValidate.CreateByName }}</span>
             </div>
             <div>
-              <span>更新人:闫子健</span>
+              <span>更新人:</span>
+              <span>{{ formValidate.UpdateByName }}</span>
             </div>
           </div>
           <div class="footer_left2">
             <div>
-              <span>创建时间:2018/12/13/ 13:00:00</span>
+              <span>创建时间:</span>
+              <span>{{ formValidate.CreateOn }}</span>
             </div>
             <div>
-              <span>更新时间:2018/12/13/ 13:00:00</span>
+              <span>更新时间:</span>
+              <span>{{ formValidate.UpdateOn }}</span>
             </div>
           </div>
         </div>
+        <Button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="delete1 = true;"
+          v-if="del"
+        >删除</Button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -293,73 +311,11 @@
         </button>
       </div>
     </Modal>
-    <!-- 修改信息     添加阶梯明细页面 -->
-    <Modal v-model="SeeAddRoyalty" scrollable width="600" title="添加自定义明细" :mask-closable="false">
-      <Form
-        ref="SeeFormAddRoyalty"
-        :model="SeeFormAddRoyalty"
-        :rules="ruleValidate"
-        label-position="right"
-        :label-width="160"
-      >
-        <Row>
-          <Col span="24">
-            <FormItem label="下限金额(含)" prop="LowerValue">
-              <Input v-model="SeeFormAddRoyalty.LowerValue" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="上限金额(不含)" prop="UpperValue">
-              <Input v-model="SeeFormAddRoyalty.UpperValue" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="固定值或比例" prop="FlatOrPecent">
-              <Input v-model="SeeFormAddRoyalty.FlatOrPecent" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:闫子健</span>
-            </div>
-            <div>
-              <span>更新人:闫子健</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:2018/12/13/ 13:00:00</span>
-            </div>
-            <div>
-              <span>更新时间:2018/12/13/ 13:00:00</span>
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('SeeFormAddRoyalty');SeeAddRoyalty = false;"
-        >
-          <span>取消</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="SeeAddRoyaltySubmit('SeeFormAddRoyalty');"
-        >
-          <span>添加</span>
-        </button>
-      </div>
-    </Modal>
   </div>
 </template>
 <script>
 import Tables from "_c/tables";
-import { GetEntities,GetEntity,Create,Update,Delete,BatchDelete1,Copy,DataDictionaryGetEntities,ValidateUnique,DataDictionaryGetDataCatalog} from "@/api/api";
+import { GetEntities,GetEntity,Create,Update,Delete,BatchDelete,RoyaltyCodeBatchRemoveLadder,RoyaltyCodeRemoveLadder,Copy,ValidateUnique,RoyaltyCodeAddOrUpdateLadder} from "@/api/api";
 export default {
   components: {
     Tables
@@ -368,6 +324,9 @@ export default {
   data() {
     return {
       Interface:"RoyaltyCode",
+      add: "",
+      see: "",
+      del: "",
       // 查询
       querySelectList: [
         {
@@ -518,95 +477,23 @@ export default {
         SortKey: "",
         Enabled: true
       },
-      // 修改信息表单
-      UpdateList: {
-        BusinessGroup: "",
-        Code: "",
-        Description: "",
-        RoyaltyType: "",
-        FlatType: "",
-        ObversionType: "",
-        RoyaltyBenchMark: "",
-        FlatOrPecent: "",
-        SortKey: "",
-        Enabled: true
-      },
       // 添加阶梯明细表单信息
       FormAddRoyalty: {
         LowerValue: "",
         UpperValue: "",
         FlatOrPecent: ""
       },
-      SeeFormAddRoyalty: {
-        LowerValue: "",
-        UpperValue: "",
-        FlatOrPecent: ""
-      },
       // 添加信息表单验证
-      ruleValidate: {
-        // BusinessGroup: [
-        //   { required: true, message: "请选择所属业务群", trigger: "change" }
-        // ],
-        // Code: [
-        //   { required: true, message: "请输入权益金规则代码", trigger: "blur" },
-        //   {
-        //     pattern: /^[0-9a-zA-Z]*$/g,
-        //     message: "权益金规则代码必须是字母加数值",
-        //     trigger: "blur"
-        //   }
-        // ],
-        // Description: [
-        //   { required: true, message: "请输入权益金规则描述", trigger: "blur" }
-        // ],
-        // RoyaltyType: [
-        //   { required: true, message: "请选择权益金方式", trigger: "change" }
-        // ],
-        // FlatType: [
-        //   {
-        //     required: true,
-        //     message: "请选择权益金固定值类型",
-        //     trigger: "change"
-        //   }
-        // ],
-        // ObversionType: [
-        //   {
-        //     required: true,
-        //     message: "请选择天数不足月或年折算方式",
-        //     trigger: "change"
-        //   }
-        // ],
-        // RoyaltyBenchMark: [
-        //   { required: true, message: "请选择权益金计算基准", trigger: "change" }
-        // ],
-        // FlatOrPecent: [
-        //   {
-        //     required: true,
-        //     message: "请选择权益金计算基准",
-        //     trigger: "change"
-        //   },
-        //   {
-        //     pattern: /^(([1-9]{1}\d*)|(0{1}))(\.\d{2})$/,
-        //     message: "小数,保留2位",
-        //     trigger: "change"
-        //   }
-        // ]
-      },
+      ruleValidate: {},
       // 阶梯表格信息
       columnsRoyaltyCodeDetail: [
-        { title: "下限金额（含）", key: "LowerValue", editable: true },
-        { title: "上限金额（不含）", key: "UpperValue", editable: true },
-        { title: "固定值或比例", key: "FlatOrPecent", editable: true },
-        { title: "操作", key: "handle", options: ["delete"] }
-      ],
-      SeecolumnsRoyaltyCodeDetail: [
-        { title: "下限金额（含）", key: "LowerValue", editable: true },
-        { title: "上限金额（不含）", key: "UpperValue", editable: true },
-        { title: "固定值或比例", key: "FlatOrPecent", editable: true },
+        { title: "下限金额（含）", key: "LowerValue",  },
+        { title: "上限金额（不含）", key: "UpperValue",  },
+        { title: "固定值或比例", key: "FlatOrPecent", },
         { title: "操作", key: "handle", options: ["delete"] }
       ],
       // 阶梯表格数组
       dataRoyaltyCodeDetail: [],
-      SeedataRoyaltyCodeDetail: [],
       // 查询启用的按钮样式
       Allelectionprimary1: true,
       Allelectionsuccess1: false,
@@ -637,25 +524,37 @@ export default {
         this.Checkboxif = false;
         this.queryvalueif = true;
       }
-
+    },
+    AddList() {
+      this.AddDepartment = true;
+      this.formValidate = { brand_right: 0 };
+      let see = JSON.parse(sessionStorage.getItem("userInfo"));
+      this.formValidate.CreateByName = see.AccountName;
+      this.formValidate.BusinessGroup = see.BusinessUnit;
+      this.add = true;
+      this.del = false;
+      this.see = false;
     },
     handleDelete(params) {
-      let index = localStorage.row;
-      this.SeedataRoyaltyCodeDetail.splice(index, 1);
+      let detailId = localStorage.row;
+      let index = localStorage.index;
+      this.dataRoyaltyCodeDetail.splice(index, 0);
       let royaltyId = localStorage.BId;
-      let detailId = localStorage.SId;
-      console.log(royaltyId, detailId);
-      RoyaltyCodeBatchRemoveLadder(royaltyId, detailId)
+      RoyaltyCodeRemoveLadder(royaltyId, detailId)
         .then(res => {
           this.$Message.success("删除成功!");
-          localStorage.removeItem("SId");
+          localStorage.removeItem("row");
+          localStorage.removeItem("index");
         })
         .catch(err => {
           console.log(err);
         });
-      console.log(params);
+      // console.log(params);
+    },   
+    rowclick(index){
+       localStorage.setItem("row",JSON.stringify(index.Id));
+       localStorage.setItem("index",JSON.stringify(index));
     },
-
     // 添加加盟商权益金规则信息
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
@@ -664,95 +563,151 @@ export default {
           JSON.stringify(this.dataRoyaltyCodeDetail)
         );
         if (valid) {
-          let Code = this.formValidate.Code;
-          let BusinessGroup = this.formValidate.BusinessGroup;
-          ValidateUnique(this.Interface, Code, BusinessGroup).then(res => {
-            if (res.data == true) {
-              Create(this.Interface, this.formValidate)
-                .then(res => {
-                  if (res.data.Data.RoyaltyType == "2") {
-                    let royaltyId = res.data.Data.Id;
-                    let DetailCollection = JSON.parse(
-                      localStorage.dataRoyaltyCodeDetail
-                    );
-                    RoyaltyCodeAddOrUpdateLadder({
-                      RoyaltyId: royaltyId,
-                      DetailCollection: DetailCollection
-                    })
-                      .then(res => {
-                        this.$Message.success("成功!");
-                        this.AddDepartment = false;
-                        localStorage.removeItem("dataRoyaltyCodeDetail");
-                        this.reload();
-                        this.formValidate = { brand_right: 0 };
+          if (this.add == true) {
+            let Code = this.formValidate.Code;
+            let BusinessGroup = this.formValidate.BusinessGroup;
+            ValidateUnique(this.Interface, Code, BusinessGroup).then(res => {
+              if (res.data == true) {
+                Create(this.Interface, this.formValidate)
+                  .then(res => {
+                    if (res.data.Data.RoyaltyType == "2") {
+                      let royaltyId = res.data.Data.Id;
+                      let DetailCollection = JSON.parse(
+                        localStorage.dataRoyaltyCodeDetail
+                      );
+                      RoyaltyCodeAddOrUpdateLadder({
+                        RoyaltyId: royaltyId,
+                        DetailCollection: DetailCollection
                       })
-                      .catch(err => {
-                        this.$Message.error("失败!");
-                        console.log(err);
-                      });
-                  } else {
-                    this.$Message.success("成功!");
-                    this.AddDepartment = false;
-                    this.reload();
-                  }
-                })
-                .catch(err => {
-                  this.$Message.success("添加失败，请查看添加信息是否完整!");
-                  console.log(err);
-                });
-            } else {
-              this.$Message.success("Code重复,请更改Code");
-            }
-          });
-        } else {
-          this.$Message.error("请输入正确的格式!");
-        }
+                        .then(res => {
+                          this.$Message.success("成功!");
+                          this.AddDepartment = false;
+                          localStorage.removeItem("dataRoyaltyCodeDetail");
+                          this.reload();
+                          this.FormAddRoyalty = { brand_right: 0 };
+                        })
+                        .catch(err => {
+                          this.$Message.error("失败!");
+                        });
+                    } else {
+                      this.$Message.success("成功!");
+                      this.AddDepartment = false;
+                      this.reload();
+                    }
+                  })
+                  .catch(err => {
+                    this.$Message.success("添加失败");
+                  });
+              } else {
+                this.$Message.success("Code重复,请更改Code");
+              }
+            });
+          } else if (this.see == true) {
+             //点击修改按钮
+            Update(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("修改成功!");
+                this.AddDepartment = false;
+                this.$refs[name].resetFields();
+                this.reload();
+              })
+              .catch(err => {
+                this.$Message.error("修改失败!");
+              });
+          }
+        }else {
+          this.$Message.error("信息填写有误!");
+          }
       });
     },
     // 添加阶梯规则信息
     AddRoyaltySubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.dataRoyaltyCodeDetail.push(this.FormAddRoyalty);
-          this.FormAddRoyalty = { brand_right: 0 };
           this.AddRoyalty = false;
+          if(this.add == true){
+            this.dataRoyaltyCodeDetail.push(this.FormAddRoyalty);
+            this.FormAddRoyalty = { brand_right: 0 };
+          }else if(this.see == true){
+            let royaltyId = JSON.parse(localStorage.BId);
+            this.dataRoyaltyCodeDetail.push(this.FormAddRoyalty);
+            RoyaltyCodeAddOrUpdateLadder({
+            RoyaltyId: royaltyId,
+            DetailCollection: [this.FormAddRoyalty]
+          })
+            .then(res => {
+              this.$Message.success("成功!");
+              this.FormAddRoyalty = { brand_right: 0 };  
+            })
+            .catch(err => {
+              this.$Message.error("失败!");
+            });
+          }
         }
       });
     },
-    SeeAddRoyaltySubmit() {
-      this.SeedataRoyaltyCodeDetail.push(this.SeeFormAddRoyalty);
-      this.SeeFormAddRoyalty = { brand_right: 0 };
-      this.SeeAddRoyalty = false;
-      localStorage.setItem(
-        "dataRoyaltyCodeDetail",
-        JSON.stringify(this.SeedataRoyaltyCodeDetail)
-      );
-      let royaltyId = localStorage.BId;
-      let DetailCollection = JSON.parse(localStorage.dataRoyaltyCodeDetail);
-      RoyaltyCodeAddOrUpdateLadder({
-        RoyaltyId: royaltyId,
-        DetailCollection: DetailCollection
-      })
-        .then(res => {
-          this.$Message.success("成功!");
-          this.SeeFormAddRoyalty = { brand_right: 0 };
-        })
-        .catch(err => {
-          this.$Message.error("失败!");
-          console.log(err);
-        });
-    },
-    // 取消
-    handleReset(name) {
-      this.$refs[name].resetFields();
-      this.$Message.info("已取消");
-    },
     // 删除数据接口
     deleteList() {
-      if (this.BatchDeleteList.length == 0) {
+      if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
-        RoyaltyCodeBatchDelete(this.delete)
+        this.delete1 = true;
+      }
+    },
+    OneselectionId(selection,row) {
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete.push(this.BatchDeleteList[i].Id);
+      }
+      function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+          if (temp.indexOf(array[i]) == -1) {
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      }
+      this.delete = uniq(this.delete);
+      console.log("勾选")
+      console.log(this.delete)
+    },
+    OnecancelselectionId(selection,row) {
+      function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+          if(arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
+      }
+      removeByValue(this.delete,row.Id);
+      console.log("取消")
+      console.log(this.delete)
+    },
+    // allselectionId(selection) {
+    //   console.log(this.delete);
+    //    for (var i = 0; i < selection.length; i++) {
+    //     this.delete.push(selection[i].Id);
+    //   }
+    // },
+    // allcancelselectionId(selection) {
+    //      this.delete = selection
+    // },
+    ok() {
+      console.log("接口"+this.delete)
+      if (this.formValidate.Id == undefined) {
+        BatchDelete(this.Interface, this.delete)
+          .then(res => {  
+            this.$Message.success("删除成功!");
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error("删除失败!");
+            console.log(err);
+          });
+      } else {
+        Delete(this.Interface, this.formValidate.Id)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
@@ -763,40 +718,26 @@ export default {
           });
       }
     },
-    BatchDelete(selection) {
-      this.BatchDeleteList = selection;
-      for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete.push(this.BatchDeleteList[i].Id);
-        console.log(this.BatchDeleteList[i].Id);
-      }
+    // 取消
+    handleReset(name) {
+      this.$refs[name].resetFields();
+      this.$Message.info("已取消");
     },
+
     //详情修改页面
     dblclickUpData(index) {
       this.AddDepartment = true;
+      this.add = false;
+      this.see = true;  
       this.formValidate = index;
+      this.del = true;
       localStorage.setItem("BId", index.Id);
       if (index.RoyaltyType == "2") {
         this.RoyaltyCodeDetail = true;
-        this.SeedataRoyaltyCodeDetail = index.CustomCollection;
+        this.dataRoyaltyCodeDetail = index.CustomCollection;
       } else {
         this.RoyaltyCodeDetail = false;
       }
-      console.log(index);
-    },
-    dblclickUpDatajt(index) {
-      localStorage.setItem("SId", index.Id);
-      localStorage.setItem("row", index);
-    },
-    //点击修改按钮
-    UpdateSubmit() {
-      Update(this.Interface,this.formValidate)
-        .then(res => {
-          this.$Message.success("修改成功!");
-          this.reload();
-        })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 点击查询按钮查询信息
     querytable() {
@@ -853,4 +794,3 @@ export default {
   }
 };
 </script>
-

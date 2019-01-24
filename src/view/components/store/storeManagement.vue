@@ -61,7 +61,7 @@
       <Col span="8">
         <div class="tableTop">
           <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -90,9 +90,11 @@
           ref="selection"
           :columns="informationTable"
           :data="informationData"
-          @on-select="BatchDelete"
           @on-row-dblclick="dblclickUpData"
-          @on-select-all="BatchDelete"
+          @on-select="OneselectionId"
+          @on-select-all="allselectionId"
+          @on-select-all-cancel="allcancelselectionId"
+          @on-select-cancel="OnecancelselectionId"
         ></Table>
         <!-- 表格 end-->
       </Col>
@@ -102,19 +104,26 @@
         <!-- 分页 end-->
       </Col>
     </Row>
-    <!-- 添加信息 弹出框-->
-    <Modal v-model="AddDepartment" scrollable width="1100" title="添加门店信息" :mask-closable="false">
+    <!-- 添加/参看信息 弹出框-->
+    <Modal v-model="AddDepartment" scrollable width="900"  :mask-closable="false">
+      <p slot="header" style="text-align:left;line-height: 1;">
+        <span v-if="add">添加门店信息</span>
+        <span v-if="see">查看门店信息</span>
+      </p>
+       <p slot="close" style="margin-right:10px;line-height: 3;" @click="close('formValidate')">
+        <Icon type="md-close"  size="20" color="gray"/>
+      </p>
       <Form
         ref="formValidate"
         :model="formValidate"
         :rules="ruleValidate"
         label-position="right"
-        :label-width="120"
+        :label-width="100"
       >
         <Row>
            <Col span="23">
             <FormItem label="所属加盟商" prop="Franchiser">
-              <Select v-model="formValidate.Franchiser" style="width:200px">
+              <Select v-model="formValidate.Franchiser" style="width:200px" :disabled="isdisabledFn">
                 <Option
                   v-for="item in FranchiserList"
                   :value="item.Name"
@@ -146,7 +155,7 @@
           </Col>
           <Col span="12">
             <FormItem label="开业日期" prop="OpenOn">
-              <DatePicker type="date" v-model="formValidate.OpenOn" placeholder="Select date" style="width:415px"></DatePicker>
+              <DatePicker type="date" v-model="formValidate.OpenOn" placeholder="Select date" ></DatePicker>
             </FormItem>
           </Col>
           <Col span="23">
@@ -195,9 +204,21 @@
             </FormItem>
           </Col>
 
-          <Col span="23">
+          <Col span="11">
             <FormItem label="地址" prop="Address">
               <Input v-model="formValidate.Address" placeholder="请输入"></Input>
+            </FormItem>
+          </Col>
+
+           <Col span="6">
+            <FormItem label="经度" prop="Longitude">
+              <Input v-model="formValidate.Longitude" placeholder="请输入"></Input>
+            </FormItem>
+          </Col>
+
+           <Col span="6">
+            <FormItem label="纬度" prop="Latitude">
+              <Input v-model="formValidate.Latitude" placeholder="请输入"></Input>
             </FormItem>
           </Col>
 
@@ -256,21 +277,30 @@
           <div class="footer_left1">
             <div>
               <span>创建人:</span>
-              <span>{{ Founder }}</span>
+              <span>{{ formValidate.CreateByName }}</span>
             </div>
-            <div>
+            <div> 
               <span>更新人:</span>
+              <span>{{ formValidate.UpdateByName }}</span>
             </div>
           </div>
           <div class="footer_left2">
             <div>
               <span>创建时间:</span>
+              <span>{{ formValidate.CreateOn }}</span>
             </div>
             <div>
               <span>更新时间:</span>
+              <span>{{ formValidate.UpdateOn }}</span>
             </div>
           </div>
         </div>
+        <Button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="delete1 = true;"
+          v-if="del"
+        >删除</Button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -287,225 +317,36 @@
         </button>
       </div>
     </Modal>
-    <!-- 查看信息 弹出框-->
-    <Modal
-      v-model="upDepartment"
-      scrollable
-      width="1100"
-      title="查看门店信息"
-      :mask-closable="false"
-      :styles="{top: '20px'}"
-    >
-          <Form
-            ref="UpdateList"
-            :model="UpdateList"
-            :rules="ruleValidate"
-            label-position="right"
-            :label-width="120"
-          >
-          <Row>
-            <Divider orientation="left">所属加盟商信息</Divider>
-            <Col span="8">
-              <FormItem label="加盟商代码" prop="Franchiser">
-                 <Input v-model="UpdateList.Code" placeholder="请输入" disabled ></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="客户名称" prop="Franchiser">
-                 <Input v-model="UpdateList.Code" placeholder="请输入" disabled ></Input>
-              </FormItem>
-            </Col>
-            <Divider orientation="left">门店信息</Divider>
-            <Col span="11">
-              <FormItem label="门店代码" prop="Code">
-                <Input v-model="UpdateList.Code" placeholder="请输入" ></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="门店名称" prop="Description">
-                <Input v-model="UpdateList.Description" placeholder="请输入" ></Input>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="门店类型" prop="StoreType">
-                <Select v-model="UpdateList.StoreType">
-                  <Option
-                    v-for="item in StoreTypeList"
-                    :value="item.Description"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="开业日期" prop="OpenOn">
-                <DatePicker type="date" v-model="UpdateList.OpenOn" placeholder="Select date" style="width:415px"></DatePicker>
-              </FormItem>
-            </Col>
-            <Col span="23">
-              <FormItem label="描述" prop="LongDescription">
-                <Input
-                  v-model="UpdateList.LongDescription"
-                  type="textarea"
-                  :autosize="{minRows: 2,maxRows: 5}"
-                  placeholder="请输入"
-                ></Input>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="省" prop="ProviceCode">
-                <Select
-                  v-model="UpdateList.ProviceCode"
-                  :label-in-value="true"
-                  @on-change="SelectProviceCode"
-                >
-                  <Option
-                    v-for="item in ProviceCodeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Name }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="8">
-              <FormItem label="市" prop="CityCode">
-                <Select
-                  v-model="UpdateList.CityCode"
-                  :label-in-value="true"
-                  @on-change="SelectCityCode"
-                >
-                  <Option
-                    v-for="item in CityCodeList"
-                    :value="item.Id"
-                    :key="item.Code"
-                  >{{ item.Name }}</Option>
-                </Select>
-              </FormItem>
-            </Col>
-            <Col span="7">
-              <FormItem label="邮编" prop="PostalCode">
-                <Input v-model="UpdateList.PostalCode" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-
-            <Col span="23">
-              <FormItem label="地址" prop="Address">
-                <Input v-model="UpdateList.Address" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-
-            <Col span="11">
-              <FormItem label="传真" prop="Fax">
-                <Input v-model="UpdateList.Fax" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="联系电话" prop="TelPhone">
-                <Input v-model="UpdateList.TelPhone" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="联系人姓名" prop="ContactName">
-                <Input v-model="UpdateList.ContactName" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="联系人电话" prop="ContactTel">
-                <Input v-model="UpdateList.ContactTel" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="11">
-              <FormItem label="联系人手机" prop="ContactPhone">
-                <Input v-model="UpdateList.ContactPhone" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="12">
-              <FormItem label="联系人邮箱" prop="ContactEMail">
-                <Input v-model="UpdateList.ContactEMail" placeholder="请输入"></Input>
-              </FormItem>
-            </Col>
-            <Col span="24">
-              <FormItem label="业务类型" prop="BusinessType">
-                <RadioGroup v-model="UpdateList.BusinessType">
-                  <Radio v-for="item in BusinessTypeList" :label="item.Description">
-                    <span>{{item.Description}}</span>
-                  </Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-            <Col span="24">
-              <FormItem label="业务状态" prop="Status">
-                <RadioGroup v-model="UpdateList.Status">
-                  <Radio v-for="item in StatusList" :label="item.Code">
-                    <span>{{item.Description}}</span>
-                  </Radio>
-                </RadioGroup>
-              </FormItem>
-            </Col>
-          </Row>
-          </Form>
-      <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:</span>
-              <span>{{ UpdateList.CreateByName }}</span>
-            </div>
-            <div>
-              <span>更新人:</span>
-              <span>{{ UpdateList.UpdateByName }}</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:</span>
-              <span>{{ UpdateList.CreateOn }}</span>
-            </div>
-            <div>
-              <span>更新时间:</span>
-              <span>{{ UpdateList.UpdateOn }}</span>
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('UpdateList');upDepartment = false;"
-        >
-          <span>取消</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="UpdateSubmit('UpdateList');"
-        >
-          <span>修改</span>
-        </button>
-      </div>
-    </Modal>
     <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
+    <Modal v-model="delete1" title="提示" @on-ok="ok">
       <h3>确定删除此数据？</h3>
     </Modal>
   </div>
 </template>
 <script>
 import {
-  getSTORE_BUSINESS_TYPE,
-  getSTORE_TYPE,
-  getSTORE_STATUS,
+  GetEntities,
+  GetEntity,
+  Create,
+  Update,
+  Delete,
+  BatchDelete,
+  Copy,
   DistrictGetProvince,
   DistrictGetArea,
-  BusinessStoreGetEntities,
-  BusinessStoreCreate,
-  BusinessStoreBatchDelete,
-  BusinessStoreUpdate,
-  FranchiserProfileGetEntities
+  DistrictGetEntity
 } from "@/api/api";
 export default {
   inject: ["reload"],
   data() {
     return {
+      Interface:"BusinessStore",
+      // 弹框标题信息
+      add: "",
+      see: "",
+      del: "",
+      // 加盟商禁用
+      isdisabledFn:false,
       // 地址
       ProviceCodeList:[],
       CityCodeList:[],
@@ -703,10 +544,10 @@ export default {
         ContactName: "",
         ContactTel: "",
         ContactPhone: "",
-        ContactEMail: ""
+        ContactEMail: "",
+        Longitude:"",
+        Latitude:"",
       },
-      // 修改信息表单
-      UpdateList: {},
       // 创建人
       Founder: "",
       UpdatePerson: "",
@@ -719,6 +560,9 @@ export default {
     };
   },
   methods: {
+     close(name){
+            this.$refs[name].resetFields();
+        },
     //选择省获取 市数据  查询省
     SelectProviceCode(value) {
       this.queryCityCode = "";
@@ -747,67 +591,122 @@ export default {
     AddDepartment1() {
       this.AddDepartment = true;
       let see = JSON.parse(sessionStorage.getItem("userInfo"));
-      this.Founder = see.AccountName;
+      this.formValidate.CreateByName = see.AccountName;
+      this.formValidate.BusinessGroup = see.BusinessUnit;
+      this.add = true;
+      this.see = false;
+      this.del = false;
+      this.isdisabledFn = false;
+
     },
-    // 添加加盟商信息
-    handleSubmit() {
-      BusinessStoreCreate(this.formValidate)
-        .then(res => {
-          this.$Message.success("成功!");
-          this.AddDepartment = false;
-          this.reload();
-          this.formValidate = { brand_right: 0 };
-        })
-        .catch(err => {
-          this.$Message.error("失败!");
-          console.log(err);
-        });
+    // 添加/修改加盟商信息
+    handleSubmit(name) {
+      // 验证表单
+      this.$refs[name].validate(valid => {
+        // 验证表单成功后调用
+        if(valid){
+          // 当进入的是添加弹框就调用添加接口
+          if(this.add == true){
+            // 添加加盟商信息接口
+            Create(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("添加成功!");
+                this.AddDepartment = false;
+                this.$refs[name].resetFields();
+                this.reload();
+              })
+              .catch(err => {
+                this.$Message.error("添加失败!");
+              });
+            // 当进入的是查看弹框就调用修改接口
+          }else if(this.see == true){
+            this.TabBusinessStores = true;
+            //点击修改按钮
+            Update(this.Interface, this.formValidate)
+            .then(res => {
+              this.$Message.success("修改成功!");
+              this.AddDepartment = false;
+              this.$refs[name].resetFields();
+              this.reload();
+            })
+            .catch(err => {
+              this.$Message.error("修改失败!");
+            });
+          }
+        }
+      });
     },
     // 取消
     handleReset(name) {
-      this.formValidate = { brand_right: 0 };
       this.$refs[name].resetFields();
       this.$Message.info("已取消");
     },
     //详情修改页面
     dblclickUpData(index) {
-      this.upDepartment = true;
-      this.UpdateList = index;
-      console.log(index);
+      this.AddDepartment = true;
+      this.add = false;
+      this.see = true;
+      this.del = true;
+      this.formValidate = index;
+      this.isdisabledFn = true;
     },
-    //点击修改按钮
-    UpdateSubmit() {
-      // let name = localStorage.name;s
-      // if(name == "0"){
-      BusinessStoreUpdate(this.UpdateList)
-        .then(res => {
-          this.$Message.success("修改成功!");
-          this.reload();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      // }
-      // if(name == "name2"){
-      //   FranchiserProfileUpdate(this.UpdateList)
-      //   .then(res => {
-      //     this.$Message.success("修改成功!");
-      //     this.reload();
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
-      // }
-    },
-    // upTabs(name){
-    //   localStorage.setItem("name",name);
-    // },
-    // 删除数据接口
+       // 删除数据接口
     deleteList() {
-      if (this.BatchDeleteList.length == 0) {
+      if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
-        BusinessStoreBatchDelete(this.delete)
+        this.delete1 = true;
+      }
+    },
+    OneselectionId(selection,row) {
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete.push(this.BatchDeleteList[i].Id);
+      }
+      function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+          if (temp.indexOf(array[i]) == -1) {
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      }
+      this.delete = uniq(this.delete);
+    },
+    OnecancelselectionId(selection,row) {
+      function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+          if(arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
+      }
+      removeByValue(this.delete,row.Id);
+    },
+    allselectionId(selection) {
+      console.log(this.delete);
+       for (var i = 0; i < selection.length; i++) {
+        this.delete.push(selection[i].Id);
+      }
+    },
+    allcancelselectionId(selection) {
+         this.delete = selection
+    },
+    ok() {
+      if (this.see == false && this.add == false) {
+        BatchDelete(this.Interface, this.delete)
+          .then(res => {
+            this.$Message.success("删除成功!");
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error("删除失败!");
+            console.log(err);
+          });
+      } else if(this.see == true){
+        Delete(this.Interface, this.formValidate.Id)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
@@ -818,16 +717,9 @@ export default {
           });
       }
     },
-    BatchDelete(selection) {
-      this.BatchDeleteList = selection;
-      for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete.push(this.BatchDeleteList[i].Id);
-        console.log(this.BatchDeleteList[i].Id);
-      }
-    },
         // 点击查询按钮查询信息
     querytable() {
-      BusinessStoreGetEntities({
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And", //And 与 | Or 或
@@ -851,8 +743,8 @@ export default {
   },
   mounted() {
     
-    // 表格数据
-    BusinessStoreGetEntities(this.getTableData)
+    // // 表格数据
+    GetEntities(this.Interface,this.getTableData)
       .then(res => {
         this.informationData = res.data;
       })
@@ -860,7 +752,7 @@ export default {
         console.log(err);
       });
       // 获取加盟商的信息Code   循环到门店所属加盟商
-    FranchiserProfileGetEntities(this.getTableData)
+    GetEntities("FranchiserProfile",this.getTableData)
       .then(res => {
         this.FranchiserList = res.data;
       })
@@ -875,30 +767,12 @@ export default {
       .catch(err => {
         console.log(err);
       });
-    // 业务类型
-    getSTORE_BUSINESS_TYPE()
-      .then(res => {
-        this.BusinessTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    //业务类型
+    this.BusinessTypeList = JSON.parse(localStorage.STORE_BUSINESS_TYPE);
     // 门店类型
-    getSTORE_TYPE()
-      .then(res => {
-        this.StoreTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.StoreTypeList = JSON.parse(localStorage.STORE_TYPE);
     // 业务状态
-    getSTORE_STATUS()
-      .then(res => {
-        this.StatusList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.StatusList = JSON.parse(localStorage.STORE_STATUS);
   }
 };
 </script>

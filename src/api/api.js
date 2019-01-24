@@ -226,3 +226,11 @@ export const RoyaltyCodeAddOrUpdateLadder = Data => {
     method: "post"
   });
 }
+//删除权益金的阶梯
+export const RoyaltyCodeRemoveLadder = (royaltyId, detailId) => {
+  return axios.request({
+    url: apiUrl + "/api/RoyaltyCode/RemoveLadder?royaltyId="+ royaltyId +"&detailId=" + detailId,
+    method: "post"
+  });
+}
+

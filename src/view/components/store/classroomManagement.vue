@@ -19,11 +19,7 @@
                 placeholder="请选择 "
                 clearable
               >
-                <Option
-                  v-for="item in StoreList"
-                  :value="item.value"
-                  :key="item.Id"
-                >{{ item.Code }}</Option>
+                <Option v-for="item in StoreList" :value="item.value" :key="item.Id">{{ item.Code }}</Option>
               </Select>
             </Col>
           </Row>
@@ -59,7 +55,7 @@
                   v-for="item in ClassRoomTypeList"
                   :key="item.Code"
                   :value="item.Id"
-                >{{ item.label }}</Radio>
+                >{{ item.Description }}</Radio>
               </RadioGroup>
             </Col>
           </Row>
@@ -88,7 +84,7 @@
       <Col span="8">
         <div class="tableTop">
           <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -117,9 +113,11 @@
           ref="selection"
           :columns="informationTable"
           :data="informationData"
-          @on-select="BatchDelete"
-          @on-row-dblclick="dblclickUpData"
-          @on-select-all="BatchDelete"
+         @on-row-dblclick="dblclickUpData"
+          @on-select="OneselectionId"
+          @on-select-all="allselectionId"
+          @on-select-all-cancel="allcancelselectionId"
+          @on-select-cancel="OnecancelselectionId"
         ></Table>
         <!-- 表格 end-->
       </Col>
@@ -130,7 +128,14 @@
       </Col>
     </Row>
     <!-- 添加信息 弹出框-->
-    <Modal v-model="AddDepartment" scrollable width="1000" title="添加门店信息" :mask-closable="false">
+    <Modal v-model="AddDepartment" scrollable width="1000" :mask-closable="false">
+      <p slot="header" style="text-align:left;line-height: 1;">
+        <span v-if="add">添加教室信息</span>
+        <span v-if="see">查看教室信息</span>
+      </p>
+      <p slot="close" style="margin-right:10px;line-height: 3;" @click="close('formValidate')">
+        <Icon type="md-close" size="20" color="gray"/>
+      </p>
       <Form
         ref="formValidate"
         :model="formValidate"
@@ -141,17 +146,10 @@
         <Row>
           <Col span="23">
             <FormItem label="所属门店" prop="Store">
-              <Input v-model="formValidate.Store" placeholder="请输入" style="width:200px" ></Input>
-              <!-- <Select v-model="formValidate.Store">
-                <Option
-                  v-for="item in StoreList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>-->
+              <Input v-model="formValidate.Store" placeholder="请输入" style="width:200px"></Input>
             </FormItem>
           </Col>
-          <Col span="10" >
+          <Col span="10">
             <FormItem label="代码" prop="Code">
               <Input v-model="formValidate.Code" placeholder="请输入"></Input>
             </FormItem>
@@ -185,33 +183,27 @@
           </Col>
           <Col span="12">
             <FormItem label="启用日期" prop="FromDate">
-              <DatePicker type="date" v-model="formValidate.FromDate" placeholder="Select date" ></DatePicker>
+              <DatePicker type="date" v-model="formValidate.FromDate" placeholder="Select date"></DatePicker>
             </FormItem>
           </Col>
           <Col span="10">
             <FormItem label="停用日期" prop="ToDate">
-              <DatePicker type="date" v-model="formValidate.ToDate" placeholder="Select date" ></DatePicker>
+              <DatePicker type="date" v-model="formValidate.ToDate" placeholder="Select date"></DatePicker>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="每天开始时间" prop="FromTime">
-              <TimePicker
-                v-model="formValidate.FromTime"
-                placeholder="Select time"
-              ></TimePicker>
+              <TimePicker v-model="formValidate.FromTime" placeholder="Select time"></TimePicker>
             </FormItem>
           </Col>
           <Col span="10">
             <FormItem label="每天结束时间" prop="ToTime">
-              <TimePicker
-                v-model="formValidate.ToTime"
-                placeholder="Select time"
-              ></TimePicker>
+              <TimePicker v-model="formValidate.ToTime" placeholder="Select time"></TimePicker>
             </FormItem>
           </Col>
           <Col span="5">
             <FormItem label="长" prop="Length">
-              <Input v-model="formValidate.Length" placeholder="(单位：m)"  style="width:150px"></Input>
+              <Input v-model="formValidate.Length" placeholder="(单位：m)" style="width:150px"></Input>
             </FormItem>
           </Col>
           <Col span="5">
@@ -219,7 +211,7 @@
               <Input v-model="formValidate.Width" placeholder="(单位：m)" style="width:150px"></Input>
             </FormItem>
           </Col>
-          <Col span="5" >
+          <Col span="5">
             <FormItem label="高" prop="Height">
               <Input v-model="formValidate.Height" placeholder="(单位：m)" style="width:150px"></Input>
             </FormItem>
@@ -229,7 +221,7 @@
               <Input v-model="formValidate.AreaSize" placeholder="(单位：m2)" style="width:150px"></Input>
             </FormItem>
           </Col>
-         
+
           <Col span="22">
             <FormItem label="特征" prop="Features">
               <Input
@@ -240,7 +232,7 @@
               ></Input>
             </FormItem>
           </Col>
-           <Col span="11">
+          <Col span="11">
             <FormItem label="禁用日期" prop="InvalidDate">
               <DatePicker type="date" v-model="formValidate.InvalidDate" placeholder="Select date"></DatePicker>
             </FormItem>
@@ -255,21 +247,19 @@
               ></Input>
             </FormItem>
           </Col>
-           <Col span="7">
+          <Col span="7">
             <FormItem label="排序码" prop="SortKey">
               <Input v-model="formValidate.SortKey" placeholder="请输入"></Input>
             </FormItem>
           </Col>
           <Col span="7">
-            <FormItem label="启用" prop="Enabled">
+            <FormItem label prop="Enabled">
               <i-switch v-model="formValidate.Enabled" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
+                <span slot="open">启用</span>
+                <span slot="close">禁用</span>
               </i-switch>
             </FormItem>
           </Col>
-          
-         
         </Row>
       </Form>
       <div slot="footer">
@@ -277,21 +267,30 @@
           <div class="footer_left1">
             <div>
               <span>创建人:</span>
-              <span>{{ Founder }}</span>
+              <span>{{ formValidate.CreateByName }}</span>
             </div>
-            <div>
+            <div> 
               <span>更新人:</span>
+              <span>{{ formValidate.UpdateByName }}</span>
             </div>
           </div>
           <div class="footer_left2">
             <div>
               <span>创建时间:</span>
+              <span>{{ formValidate.CreateOn }}</span>
             </div>
             <div>
               <span>更新时间:</span>
+              <span>{{ formValidate.UpdateOn }}</span>
             </div>
           </div>
         </div>
+        <Button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="delete1 = true;"
+          v-if="del"
+        >删除</Button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -309,211 +308,27 @@
       </div>
     </Modal>
     <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
+    <Modal v-model="delete1" title="提示" @on-ok="ok">
       <h3>确定删除此数据？</h3>
-    </Modal>
-
-        <!-- 修改信息 弹出框-->
-    <Modal v-model="upDepartment" scrollable width="1100" title="查看加盟商信息" :mask-closable="false" >
-          <Form
-            ref="UpdateList"
-            :model="UpdateList"
-            :rules="ruleValidate"
-            label-position="right"
-            :label-width="120"
-          >
-                   <Row>
-          <Col span="23">
-            <FormItem label="所属门店" prop="Store">
-              <Input v-model="UpdateList.Store" placeholder="请输入" style="width:200px" ></Input>
-              <!-- <Select v-model="UpdateList.Store">
-                <Option
-                  v-for="item in StoreList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>-->
-            </FormItem>
-          </Col>
-          <Col span="10" >
-            <FormItem label="代码" prop="Code">
-              <Input v-model="UpdateList.Code" placeholder="请输入"></Input>
-            </FormItem>
-          </Col>
-          <Col span="10" offset="2">
-            <FormItem label="名称" prop="Description">
-              <Input v-model="UpdateList.Description" placeholder="请输入"></Input>
-            </FormItem>
-          </Col>
-          <Col span="10">
-            <FormItem label="教室类型" prop="ClassRoomType">
-              <Select v-model="UpdateList.ClassRoomType">
-                <Option
-                  v-for="item in StatusList"
-                  :value="item.Id"
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="10" offset="2">
-            <FormItem label="教室当前状态" prop="Status">
-              <Select v-model="UpdateList.Status">
-                <Option
-                  v-for="item in StatusList"
-                  :value="item.Description  "
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="启用日期" prop="FromDate">
-              <DatePicker type="date" v-model="UpdateList.FromDate" placeholder="Select date" ></DatePicker>
-            </FormItem>
-          </Col>
-          <Col span="10">
-            <FormItem label="停用日期" prop="ToDate">
-              <DatePicker type="date" v-model="UpdateList.ToDate" placeholder="Select date" ></DatePicker>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="每天开始时间" prop="FromTime">
-              <TimePicker
-                v-model="UpdateList.FromTime"
-                placeholder="Select time"
-              ></TimePicker>
-            </FormItem>
-          </Col>
-          <Col span="10">
-            <FormItem label="每天结束时间" prop="ToTime">
-              <TimePicker
-                v-model="UpdateList.ToTime"
-                placeholder="Select time"
-              ></TimePicker>
-            </FormItem>
-          </Col>
-          <Col span="5">
-            <FormItem label="长" prop="Length">
-              <Input v-model="UpdateList.Length" placeholder="(单位：m)"  style="width:150px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="5">
-            <FormItem label="宽" prop="Width">
-              <Input v-model="UpdateList.Width" placeholder="(单位：m)" style="width:150px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="5" >
-            <FormItem label="高" prop="Height">
-              <Input v-model="UpdateList.Height" placeholder="(单位：m)" style="width:150px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="5">
-            <FormItem label="面积" prop="AreaSize">
-              <Input v-model="UpdateList.AreaSize" placeholder="(单位：m2)" style="width:150px"></Input>
-            </FormItem>
-          </Col>
-         
-          <Col span="22">
-            <FormItem label="特征" prop="Features">
-              <Input
-                v-model="UpdateList.Features"
-                type="textarea"
-                :autosize="{minRows: 2,maxRows: 5}"
-                placeholder="请输入"
-              ></Input>
-            </FormItem>
-          </Col>
-           <Col span="11">
-            <FormItem label="禁用日期" prop="InvalidDate">
-              <DatePicker type="date" v-model="UpdateList.InvalidDate" placeholder="Select date"></DatePicker>
-            </FormItem>
-          </Col>
-          <Col span="22">
-            <FormItem label="禁用原因" prop="Comments">
-              <Input
-                v-model="UpdateList.Comments"
-                type="textarea"
-                :autosize="{minRows: 2,maxRows: 5}"
-                placeholder="请输入"
-              ></Input>
-            </FormItem>
-          </Col>
-           <Col span="7">
-            <FormItem label="排序码" prop="SortKey">
-              <Input v-model="UpdateList.SortKey" placeholder="请输入"></Input>
-            </FormItem>
-          </Col>
-          <Col span="7">
-            <FormItem label="启用" prop="Enabled">
-              <i-switch v-model="UpdateList.Enabled" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
-              </i-switch>
-            </FormItem>
-          </Col>
-          
-         
-        </Row>
-          </Form>
-        </TabPane>
-        
-      
-      <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:</span>
-              <span>{{ UpdateList.CreateByName }}</span>
-            </div>
-            <div>
-              <span>更新人:</span>
-              <span>{{ UpdateList.UpdateByName }}</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:</span>
-              <span>{{ UpdateList.CreateOn }}</span>
-            </div>
-            <div>
-              <span>更新时间:</span>
-              <span>{{ UpdateList.UpdateOn }}</span>
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('UpdateList');upDepartment = false;"
-        >
-          <span>取消</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="UpdateSubmit('UpdateList');"
-        >
-          <span>修改</span>
-        </button>
-      </div>
     </Modal>
   </div>
 </template>
 <script>
 import {
-  getSTORE_ROOM_TYPE,
-  getSTORE_ROOM_STATUS,
-  ClassRoomCreate,
-  ClassRoomGetEntities,
-  ClassRoomBatchDelete,
-  ClassRoomUpdate,
-  BusinessStoreGetEntities
+  GetEntities,
+  GetEntity,
+  Create,
+  Update,
+  Delete,
+  BatchDelete,
+  Copy
 } from "@/api/api";
 export default {
   inject: ["reload"],
   data() {
     return {
+      // 接口
+      Interface: "ClassRoom",
       // 所属门店下拉框数据
       queryProviceCode: "",
       StoreList: [
@@ -522,6 +337,10 @@ export default {
           label: "测试"
         }
       ],
+      // 弹框标题信息
+      add: "",
+      see: "",
+      del: "",
       // 教室类型
       RadioClassRoomType: "",
       ClassRoomTypeList: [],
@@ -584,24 +403,26 @@ export default {
           key: "Status",
           width: 150,
           sortable: true,
-            render: (h, params) => {
-                let texts = "";
-                if(params.row.Status == 0) {
-                    texts = "空闲";
-                }
-                if(params.row.Status == 1) {
-                    texts = "占用";
-                }
-                if(params.row.Status == 2) {
-                    texts = "维修";
-                }
-                return h(
-                    "div", {
-                        props: {}
-                    },
-                    texts
-                );s
+          render: (h, params) => {
+            let texts = "";
+            if (params.row.Status == 0) {
+              texts = "空闲";
             }
+            if (params.row.Status == 1) {
+              texts = "占用";
+            }
+            if (params.row.Status == 2) {
+              texts = "维修";
+            }
+            return h(
+              "div",
+              {
+                props: {}
+              },
+              texts
+            );
+            s;
+          }
         },
         {
           title: "启用日期",
@@ -609,7 +430,7 @@ export default {
           key: "FromDate",
           width: 120,
           sortable: true,
-           render: (h, params) => {
+          render: (h, params) => {
             return h(
               "Tooltip",
               {
@@ -659,20 +480,21 @@ export default {
           sortable: true,
           key: "Enabled",
           render: (h, params) => {
-                let texts = "";
-                if(params.row.Enabled == true) {
-                    texts = "是";
-                } else if(params.row.Enabled == false) {
-                    texts = "否";
-                }
-                return h(
-                    "div", {
-                        props: {}
-                    },
-                    texts
-                );s
+            let texts = "";
+            if (params.row.Enabled == true) {
+              texts = "是";
+            } else if (params.row.Enabled == false) {
+              texts = "否";
             }
-
+            return h(
+              "div",
+              {
+                props: {}
+              },
+              texts
+            );
+            s;
+          }
         },
         {
           title: "禁用原因",
@@ -753,10 +575,8 @@ export default {
         InvalidDate: "",
         SortKey: ""
       },
-            // 修改信息表单
-      UpdateList: {},
       //   表单验证
-      ruleValidate: {  },
+      ruleValidate: {},
       // 创建人
       Founder: "",
       UpdatePerson: "",
@@ -770,13 +590,67 @@ export default {
       this.AddDepartment = true;
       let see = JSON.parse(sessionStorage.getItem("userInfo"));
       this.Founder = see.AccountName;
+      this.add = true;
+      this.see = false;
+      this.del = false;
     },
-    // 删除数据接口
+     // 删除数据接口
     deleteList() {
-      if (this.BatchDeleteList.length == 0) {
+      if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
-        ClassRoomBatchDelete(this.delete)
+        this.delete1 = true;
+      }
+    },
+    OneselectionId(selection, row) {
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete.push(this.BatchDeleteList[i].Id);
+      }
+      function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+          if (temp.indexOf(array[i]) == -1) {
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      }
+      this.delete = uniq(this.delete);
+    },
+    OnecancelselectionId(selection, row) {
+      function removeByValue(arr, val) {
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
+      }
+      removeByValue(this.delete, row.Id);
+    },
+    allselectionId(selection) {
+      console.log(this.delete);
+      for (var i = 0; i < selection.length; i++) {
+        this.delete.push(selection[i].Id);
+      }
+    },
+    allcancelselectionId(selection) {
+      this.delete = selection;
+    },
+    ok() {
+      if (this.see == false && this.add == false) {
+        BatchDelete(this.Interface, this.delete)
+          .then(res => {
+            this.$Message.success("删除成功!");
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error("删除失败!");
+            console.log(err);
+          });
+      } else if (this.see == true) {
+        Delete(this.Interface, this.formValidate.Id)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
@@ -787,67 +661,60 @@ export default {
           });
       }
     },
-    BatchDelete(selection) {
-      this.BatchDeleteList = selection;
-      for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete.push(this.BatchDeleteList[i].Id);
-        console.log(this.BatchDeleteList[i].Id);
-      }
-    },
     //详情修改页面
     dblclickUpData(index) {
-      this.upDepartment = true;
-      this.UpdateList = index;
-      console.log(index);
+      this.AddDepartment = true;
+      this.formValidate = index;
+      this.add = false;
+      this.see = true;
+      this.del = true;
     },
-    // 添加加盟商信息
-    handleSubmit() {
-      ClassRoomCreate(this.formValidate)
-        .then(res => {
-          this.$Message.success("成功!");
-          this.AddDepartment = false;
-          this.reload();
-          this.formValidate = { brand_right: 0 };
-        })
-        .catch(err => {
-          this.$Message.error("失败!");
-          console.log(err);
-        });
+        // 添加/修改信息
+    handleSubmit(name) {
+      // 验证表单
+      this.$refs[name].validate(valid => {
+        // 验证表单成功后调用
+        if (valid) {
+          // 当进入的是添加弹框就调用添加接口
+          if (this.add == true) {
+            // 添加加盟商信息接口
+            Create(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("添加成功!");
+                this.AddDepartment = false;
+                this.$refs[name].resetFields();
+                this.reload();
+              })
+              .catch(err => {
+                this.$Message.error("添加失败!");
+              });
+            // 当进入的是查看弹框就调用修改接口
+          } else if (this.see == true) {
+            this.TabBusinessStores = true;
+            //点击修改按钮
+            Update(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("修改成功!");
+                this.AddDepartment = false;
+                this.$refs[name].resetFields();
+                this.reload();
+              })
+              .catch(err => {
+                this.$Message.error("修改失败!");
+              });
+          }
+        }
+      });
     },
-        // 取消
+    // 取消
     handleReset(name) {
       this.formValidate = { brand_right: 0 };
       this.$refs[name].resetFields();
       this.$Message.info("已取消");
     },
-        //点击修改按钮
-    UpdateSubmit() {
-    //   let name = localStorage.name;
-    //   if(name == "0"){
-        ClassRoomUpdate(this.UpdateList)
-        .then(res => {
-          this.$Message.success("修改成功!");
-          this.reload();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    //   }
-      // if(name == "name2"){
-      //   FranchiserProfileUpdate(this.UpdateList)
-      //   .then(res => {
-      //     this.$Message.success("修改成功!");
-      //     this.reload();
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
-      // }
-      
-    },
     // 点击查询按钮查询信息
     querytable() {
-      ClassRoomGetEntities({
+      GetEntities(this.Interface,{
         Filters: [
           {
             Relational: "And", //And 与 | Or 或
@@ -868,33 +735,24 @@ export default {
           console.log(err);
         });
     },
+    close(name) {
+      this.$refs[name].resetFields();
+    }
   },
   mounted() {
     //   教室类型
-    getSTORE_ROOM_TYPE()
-      .then(res => {
-        this.ClassRoomTypeList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.ClassRoomTypeList = JSON.parse(localStorage.STORE_ROOM_TYPE);
     //   教室当前状态
-    getSTORE_ROOM_STATUS()
-      .then(res => {
-        this.StatusList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.StatusList = JSON.parse(localStorage.STORE_ROOM_STATUS);
     // 表格数据
-    ClassRoomGetEntities(this.getTableData)
+    GetEntities(this.Interface, this.getTableData)
       .then(res => {
         this.informationData = res.data;
       })
       .catch(err => {
         console.log(err);
       });
-        // 查询条件  门店的信息循环到教室
+    // 查询条件  门店的信息循环到教室
     BusinessStoreGetEntities(this.getTableData)
       .then(res => {
         this.StoreList = res.data;
