@@ -821,7 +821,7 @@
 						//修改大表单
 						Update(this.Interface, this.formValidate).then(res => {
 							console.log(res.data)
-							this.$Message.success("修改成功");
+							this.$Message.success("修改信息成功");
 							this.reload();
 						}).catch(err => {
 							console.log(err)

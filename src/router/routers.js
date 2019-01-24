@@ -1037,16 +1037,6 @@ export default [
           import('@/view/components/system/organization.vue')
       },
       {
-        path: 'system_position',
-        name: 'system_position',
-        meta: {
-          icon: 'md-git-branch',
-          title: '职位'
-        },
-        component: () =>
-          import('@/view/components/system/position.vue')
-      },
-      {
         path: 'system_role',
         name: 'system_role',
         meta: {

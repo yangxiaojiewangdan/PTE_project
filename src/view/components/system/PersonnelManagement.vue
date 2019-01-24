@@ -147,7 +147,7 @@
 					</FormItem>
 					<FormItem label="主管姓名" prop="Supervisor">
 						<Select v-model="formValidate.Supervisor" style="width:200px" placeholder="请选择">
-							<Option v-for="item in data1" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
+							<Option v-for="item in IsSupervisorList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
 					</FormItem>
 					<FormItem label="部门名称" prop="BusinessUnitId">
@@ -545,6 +545,7 @@
 					Enabled: true,
 					IsAdministrtor: true,
 				},
+				IsSupervisorList:[],
 			}
 		},
 		methods: {
@@ -563,6 +564,7 @@
 				})
 			},
 			Add() {
+				this.formValidate = {};
 				this.AddDepartment = true;
 				this.add = true;
 				this.see = false;
@@ -661,6 +663,7 @@
 						//如果正则正确就调用接口发送数据
 						Create(this.Interface, this.formValidate).then(res => {
 							this.$Message.success('成功!');
+							this.reload();
 							//this.AddDepartment = false;
 						}).catch(err => {
 							console.log(err)
@@ -695,6 +698,13 @@
 			//人员表格
 			GetEntities(this.Interface, this.data4).then(res => {
 				this.data1 = res.data
+				this.data1.forEach(item=>{
+					console.log(item)
+					if(item.IsSupervisor == true){
+						this.IsSupervisorList.push(item)
+						console.log(this.IsSupervisorList)
+					}
+				})
 				console.log(res.data)
 				this.loading = false;
 			}).catch(err => {
