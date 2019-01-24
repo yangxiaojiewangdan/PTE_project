@@ -14,8 +14,8 @@
           <!-- 表格操作按钮 -->
           <Col span="8">
             <div class="tableTop">
-              <Button @click="AddDepartment = true" type="success" class="tableTops">添加</Button>
-              <Button @click="delete1 = true" type="error" class="tableTops">删除</Button>
+              <Button @click="AddList" type="success" class="tableTops">添加</Button>
+              <Button @click="deleteList" type="error" class="tableTops">删除</Button>
               <Select
                 v-model="querySelect"
                 :label-in-value="true"
@@ -36,7 +36,7 @@
                 class="tableTops"
               />
               <Checkbox :checked.sync="single" v-if="Checkboxif" class="tableTops">无效</Checkbox>
-              <Button type="primary" class="tableTops" @click="querytable">查询</Button>
+              <Button type="primary" class="tableTops">查询</Button>
             </div>
           </Col>
           <!-- 表格 -->
@@ -50,9 +50,11 @@
               ref="selection"
               :columns="SettlementCodeTable"
               :data="SettlementCodeData"
-              @on-select="BatchDelete"
               @on-row-dblclick="dblclickUpData"
-              @on-select-all="BatchDelete"
+              @on-select="OneselectionId"
+              @on-select-all="allselectionId"
+              @on-select-all-cancel="allcancelselectionId"
+              @on-select-cancel="OnecancelselectionId"
             ></Table>
           </Col>
           <!-- 分页 -->
@@ -63,37 +65,29 @@
       </Col>
     </Row>
     <!-- 删除信息弹出框 -->
-    <Modal v-model="delete1" title="提示" @on-ok="deleteList">
-      <h3>确定删除此数据？</h3>
+    <Modal v-model="delete1" title="提示" @on-ok="ok">
+      <h3>确定删除这条数据？</h3>
     </Modal>
     <!-- 添加信息 弹出框-->
-    <Modal
-      v-model="AddDepartment"
-      width="600"
-      height="600"
-      title="添加加盟商结算规则"
-      :mask-closable="false"
-      :styles="{top: '40px'}"
-    >
-      <Form
-        ref="formValidate"
-        :model="formValidate"
-        :rules="ruleValidate"
-        label-position="right"
-        :label-width="150"
-      >
+    <Modal v-model="AddDepartment" width="600" :mask-closable="false">
+      <p slot="header" style="text-align:left;line-height: 1;">
+        <span v-if="add">添加结算规则</span>
+        <span v-if="see">查看结算规则</span>
+      </p>
+
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate1" label-position="right" :label-width="150">
         <Row>
           <Col span="24">
             <FormItem label="所属业务群" prop="BusinessGroup">
-              <Select v-model="formValidate.BusinessGroup" style="width:300px">
-                <Option
-                  v-for="item in BusinessGroupList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
+              <Input
+                v-model="formValidate.BusinessGroup"
+                placeholder="请输入"
+                style="width:300px"
+                disabled
+              ></Input>
             </FormItem>
           </Col>
+          <Divider></Divider>
           <Col span="24">
             <FormItem label="结算规则代码" prop="Code">
               <Input v-model="formValidate.Code" placeholder="请输入" style="width:300px"></Input>
@@ -186,8 +180,8 @@
           <Col span="24">
             <FormItem label="启用" prop="Enabled">
               <i-switch v-model="formValidate.Enabled" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
+                <span slot="open">启用</span>
+                <span slot="close">禁用</span>
               </i-switch>
             </FormItem>
           </Col>
@@ -197,21 +191,31 @@
         <div class="footer_left">
           <div class="footer_left1">
             <div>
-              <span>创建人:闫子健</span>
+              <span>创建人:</span>
+              <span>{{ formValidate.CreateByName }}</span>
             </div>
             <div>
-              <span>更新人:闫子健</span>
+              <span>更新人:</span>
+              <span>{{ formValidate.UpdateByName }}</span>
             </div>
           </div>
           <div class="footer_left2">
             <div>
-              <span>创建时间:2018/12/13/ 13:00:00</span>
+              <span>创建时间:</span>
+              <span>{{ formValidate.CreateOn }}</span>
             </div>
             <div>
-              <span>更新时间:2018/12/13/ 13:00:00</span>
+              <span>更新时间:</span>
+              <span>{{ formValidate.UpdateOn }}</span>
             </div>
           </div>
         </div>
+        <Button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="delete1 = true;"
+          v-if="del"
+        >删除</Button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -228,188 +232,36 @@
         </button>
       </div>
     </Modal>
-    <!-- 修改信息 弹出框-->
-    <Modal
-      v-model="upDepartment"
-      width="600"
-      height="600"
-      title="修改加盟商结算规则"
-      :mask-closable="false"
-      :styles="{top: '40px'}"
-    >
-      <Form
-        ref="UpdateList"
-        :model="UpdateList"
-        :rules="ruleValidate"
-        label-position="right"
-        :label-width="150"
-      >
-        <Row>
-          <Col span="24">
-            <FormItem label="所属业务群" prop="BusinessGroup">
-              <Select v-model="UpdateList.BusinessGroup" style="width:300px">
-                <Option
-                  v-for="item in BusinessGroupList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="结算规则代码" prop="Code">
-              <Input v-model="UpdateList.Code" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="结算规则描述" prop="Description">
-              <Input
-                v-model="UpdateList.Description"
-                type="textarea"
-                :autosize="{minRows: 2,maxRows: 5}"
-                placeholder="请输入"
-                style="width:300px"
-              ></Input>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="结算方式" prop="SettleType">
-              <Select
-                v-model="UpdateList.SettleType"
-                :label-in-value="true"
-                @on-change="v=>{setOption(v,'type')}"
-                style="width:300px"
-              >
-                <Option
-                  v-for="item in SettleTypeList"
-                  :value="item.Id"
-                  :key="item.Code"
-                >{{ item.Description }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="24" v-if="FromDay">
-            <FormItem label="可结算起始天" prop="FromDay">
-              <Select
-                v-model="UpdateList.FromDay"
-                :label-in-value="true"
-                @on-change="v=>{setOption(v,'type')}"
-                style="width:300px"
-              >
-                <Option
-                  v-for="item in FromDayList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="24" v-if="ToDay">
-            <FormItem label="可结算终止天" prop="ToDay">
-              <Select v-model="UpdateList.ToDay" style="width:300px">
-                <Option
-                  v-for="item in ToDayList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="24" v-if="PeriodOfT">
-            <FormItem label="T+N" prop="PeriodOfT">
-              <Select v-model="UpdateList.PeriodOfT" style="width:300px">
-                <Option
-                  v-for="item in PeriodOfTList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-          <Col span="24" v-if="ExcludeHoliday">
-            <FormItem label="节假日(含/不含)" prop="ExcludeHoliday">
-              <i-switch v-model="UpdateList.ExcludeHoliday" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
-              </i-switch>
-            </FormItem>
-          </Col>
-          <Col span="24" v-if="Allow">
-            <FormItem label="允许周几结算" prop="Allow">
-              <Checkbox v-model="UpdateList.AllowMon">周一</Checkbox>
-              <Checkbox v-model="UpdateList.AllowTue">周二</Checkbox>
-              <Checkbox v-model="UpdateList.AllowWed">周三</Checkbox>
-              <Checkbox v-model="UpdateList.AllowThu">周四</Checkbox>
-              <Checkbox v-model="UpdateList.AllowFri">周五</Checkbox>
-              <Checkbox v-model="UpdateList.AllowSat">周六</Checkbox>
-              <Checkbox v-model="UpdateList.AllowSun">周日</Checkbox>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="排序码" prop="SortKey">
-              <Input v-model="UpdateList.SortKey" placeholder="请输入" style="width:300px"></Input>
-            </FormItem>
-          </Col>
-          <Col span="24">
-            <FormItem label="启用" prop="Enabled">
-              <i-switch v-model="UpdateList.Enabled" size="large">
-                <span slot="open">On</span>
-                <span slot="close">Off</span>
-              </i-switch>
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <div class="footer_left">
-          <div class="footer_left1">
-            <div>
-              <span>创建人:闫子健</span>
-            </div>
-            <div>
-              <span>更新人:闫子健</span>
-            </div>
-          </div>
-          <div class="footer_left2">
-            <div>
-              <span>创建时间:2018/12/13/ 13:00:00</span>
-            </div>
-            <div>
-              <span>更新时间:2018/12/13/ 13:00:00</span>
-            </div>
-          </div>
-        </div>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="handleReset('UpdateList');upDepartment = false;"
-        >
-          <span>取消</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-primary ivu-btn-large"
-          @click="UpdateSubmit('UpdateList');"
-        >
-          <span>确定</span>
-        </button>
-      </div>
-    </Modal>
+    <ruleValidate v-on:ruleValidate="ruleValidate"></ruleValidate>
   </div>
 </template>
 <script>
+import ruleValidate from "_c/ruleValidate";
 import {
-  getSettlementCodeData,
-  SettlementCodeCreate,
-  SettlementCodeBatchDelete,
-  SettlementCodeUpdate,
-  getSettleType,
-  SettlementCodeValidateUnique
+  GetEntities,
+  GetEntity,
+  Create,
+  Update,
+  Delete,
+  BatchDelete,
+  Copy,
+  DataDictionaryGetEntities,
+  ValidateUnique,
+  DataDictionaryGetDataCatalog,
 } from "@/api/api";
 export default {
+  components: {
+    ruleValidate
+  },
   inject: ["reload"],
   data() {
     return {
+      ruleValidate1: {},
+      // 接口
+      Interface: "SettlementCode",
+      add: "",
+      see: "",
+      del: "",
       // 查询
       querySelectList: [
         {
@@ -432,7 +284,7 @@ export default {
       single: false,
       // 表格
       SettlementCodeTable: [
-        { type: "selection", width: 50, align: "center", fixed: "left" },
+        { type: "selection", width: 50, align: "center" },
         {
           title: "所属业务群",
           key: "BusinessGroup",
@@ -480,7 +332,7 @@ export default {
       SettlementCodeData: [],
       // 添加信息 弹出框
       // 所属业务群
-      BusinessGroupList: [{ value: "0", label: "比特易早教" }],
+      BusinessGroupList: "",
       // 结算方式下拉框循环数据
       SettleTypeList: [],
       // 可结算起始天下拉框循环数据
@@ -562,7 +414,6 @@ export default {
       ],
       // 添加/修改加盟商结算规则默认隐藏
       AddDepartment: false,
-      upDepartment: false,
       // 当结算方式选为【Monthly，NextMonth，EndOfYear】时显示，现在默认隐藏
       Allow: false,
       // 当结算方式选为【RealTime】时隐藏，现在默认显示
@@ -588,55 +439,33 @@ export default {
         AllowSun: true,
         ExcludeHoliday: true,
         SortKey: "",
-        Enabled: true
-      },
-      // 修改结算方式表单
-      UpdateList: {
-        BusinessGroup: "",
-        Code: "",
-        Description: "",
-        SettleType: "",
-        FromDay: "",
-        ToDay: "",
-        PeriodOfT: "",
-        AllowMon: "",
-        AllowTue: "",
-        AllowWed: "",
-        AllowThu: "",
-        AllowFri: "",
-        AllowSat: "",
-        AllowSun: "",
-        ExcludeHoliday: "",
-        SortKey: "",
-        Enabled: ""
-      },
-      // 表单验证
-      ruleValidate: {
-        // BusinessGroup: [
-        //   { required: true, message: "请选择所属业务群", trigger: "change" }
-        // ],
-        // Code: [
-        //   { required: true, message: "请输入结算规则代码", trigger: "blur" },
-        //   {
-        //     pattern: /^[0-9a-zA-Z]*$/g,
-        //     message: "结算规则代码必须是字母加数值",
-        //     trigger: "blur"
-        //   }
-        // ],
-        // Description: [
-        //   { required: true, message: "请输入结算规则描述", trigger: "blur" }
-        // ],
-        // SettleType: [
-        //   { required: true, message: "请选择结算方式", trigger: "blur" }
-        // ]
+        Enabld: true
       },
       // 删除信息弹出框
       delete1: false,
       BatchDeleteList: [],
-      delete: []
+      delete: [],
     };
   },
   methods: {
+    ruleValidate: function(ruleValidate) {
+      this.ruleValidate1 = ruleValidate;
+    },
+    AddList() {
+      this.AddDepartment = true;
+      this.formValidate = { brand_right: 0 };
+      let see = JSON.parse(sessionStorage.getItem("userInfo"));
+      this.formValidate.CreateByName = see.AccountName;
+      this.formValidate.BusinessGroup = see.BusinessUnit;
+      this.add = true;
+      this.del = false;
+      this.see = false;
+      this.ToDay = true;
+      this.FromDay = true;
+      this.ExcludeHoliday = true;
+      this.PeriodOfT = true;
+      this.Allow = false;
+    },
     // 结算方式下拉框选择事件
     setOption(value, type) {
       if (value.value == "0" || value.value == "2") {
@@ -673,45 +502,108 @@ export default {
         this.queryvalueif = true;
       }
     },
-    // 添加加盟商结算规则信息
+    // 添加/查看修改加盟商结算规则信息
     handleSubmit(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          let Code = this.formValidate.Code;
-          let BusinessGroup = this.formValidate.BusinessGroup;
-          SettlementCodeValidateUnique(Code, BusinessGroup).then(res => {
-            if (res.data == true) {
-              SettlementCodeCreate(this.formValidate)
-                .then(res => {
-                  this.$Message.success("成功!");
-                  this.AddDepartment = false;
-                  this.reload();
-                  this.formValidate = { brand_right: 0 };
-                })
-                .catch(err => {
-                  console.log(err);
-                  this.reload();
-                  this.formValidate = { brand_right: 0 };
-                });
-            } else {
-              this.$Message.success("Code重复,请更改Code");
-            }
-          });
+          if (this.formValidate.Id == undefined) {
+            let Code = this.formValidate.Code;
+            let BusinessGroup = this.formValidate.BusinessGroup;
+            ValidateUnique(this.Interface, Code, BusinessGroup).then(res => {
+              if (res.data == true) {
+                Create(this.Interface, this.formValidate)
+                  .then(res => {
+                    this.$Message.success("成功!");
+                    this.AddDepartment = false;
+                    this.reload();
+                    this.formValidate = { brand_right: 0 };
+                  })
+                  .catch(err => {
+                    console.log(err);
+                    this.reload();
+                    this.formValidate = { brand_right: 0 };
+                  });
+              } else {
+                this.$Message.success("Code重复,请更改Code");
+              }
+            });
+          }
+          if (this.formValidate.Id) {
+            Update(this.Interface, this.formValidate)
+              .then(res => {
+                this.$Message.success("修改成功!");
+                this.reload();
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
         } else {
-          this.$Message.error("请输入正确的格式!");
+          this.$Message.error("信息填写有误!");
         }
       });
     },
     handleReset(name) {
       this.$refs[name].resetFields();
-      this.$Message.info("已取消添加结算规则");
+      // this.$Message.info("已取消添加结算规则");
     },
     // 删除数据接口
     deleteList() {
-      if (this.BatchDeleteList.length == 0) {
+      if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
       } else {
-        SettlementCodeBatchDelete(this.delete)
+        this.delete1 = true;
+      }
+    },
+    OneselectionId(selection,row) {
+      this.BatchDeleteList = selection;
+      for (var i = 0; i < this.BatchDeleteList.length; i++) {
+        this.delete.push(this.BatchDeleteList[i].Id);
+      }
+      function uniq(array) {
+        var temp = []; //一个新的临时数组
+        for (var i = 0; i < array.length; i++) {
+          if (temp.indexOf(array[i]) == -1) {
+            temp.push(array[i]);
+          }
+        }
+        return temp;
+      }
+      this.delete = uniq(this.delete);
+    },
+    OnecancelselectionId(selection,row) {
+      function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+          if(arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
+      }
+      removeByValue(this.delete,row.Id);
+    },
+    allselectionId(selection) {
+      console.log(this.delete);
+       for (var i = 0; i < selection.length; i++) {
+        this.delete.push(selection[i].Id);
+      }
+    },
+    allcancelselectionId(selection) {
+         this.delete = selection
+    },
+    ok() {
+      if (this.formValidate.Id == undefined) {
+        BatchDelete(this.Interface, this.delete)
+          .then(res => {
+            this.$Message.success("删除成功!");
+            this.reload();
+          })
+          .catch(err => {
+            this.$Message.error("删除失败!");
+            console.log(err);
+          });
+      } else {
+        Delete(this.Interface, this.formValidate.Id)
           .then(res => {
             this.$Message.success("删除成功!");
             this.reload();
@@ -722,17 +614,13 @@ export default {
           });
       }
     },
-    BatchDelete(selection) {
-      console.log(selection);
-      this.BatchDeleteList = selection;
-      for (var i = 0; i < this.BatchDeleteList.length; i++) {
-        this.delete.push(this.BatchDeleteList[i].Id);
-      }
-    },
     //详情修改页面
     dblclickUpData(index) {
-      this.upDepartment = true;
-      this.UpdateList = index;
+      this.AddDepartment = true;
+      this.add = false;
+      this.see = true;
+      this.formValidate = index;
+      this.del = true;
       console.log(index);
       if (index.SettleType == "0" || index.SettleType == "2") {
         this.ToDay = false;
@@ -759,32 +647,15 @@ export default {
         this.PeriodOfT = true;
         this.Allow = true;
       }
-    },
-    //点击修改按钮
-    UpdateSubmit() {
-      SettlementCodeUpdate(this.UpdateList)
-        .then(res => {
-          this.$Message.success("修改成功!");
-          this.reload();
-        })
-        .catch(err => {
-          console.log(err);
-        });
     }
   },
   mounted() {
+    // 结算规则
+    this.SettleTypeList = JSON.parse(localStorage.FRANCHISER_STATUS);
     // 人员表格
-    getSettlementCodeData(this.getTableData)
+    GetEntities(this.Interface, this.getTableData)
       .then(res => {
         this.SettlementCodeData = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
-    // 结算方式
-    getSettleType(this.getTableData)
-      .then(res => {
-        this.SettleTypeList = res.data;
       })
       .catch(err => {
         console.log(err);

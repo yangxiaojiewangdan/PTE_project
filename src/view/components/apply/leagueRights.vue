@@ -197,10 +197,11 @@
                 @on-row-click="rowclick"
                 @on-delete="handleDelete"
               />
+               <Button type="text" @click="AddRoyalty = true" style="margin-left:48%;" size="small">
+                 <Icon type="md-add" size="25"  />
+               </Button>
             </Card>
-            <Button type="info" @click="AddRoyalty = true">
-              <Icon type="md-add"/>添加阶梯
-            </Button>
+            
           </Col>
         </Row>
       </Form>
@@ -687,7 +688,7 @@ export default {
     },
     // allselectionId(selection) {
     //   console.log(this.delete);
-    //    for (var i = 0; i < selection.length; i++) {
+    //    for (var i = 0; i < selection.length; i++) {/8*
     //     this.delete.push(selection[i].Id);
     //   }
     // },
@@ -737,11 +738,11 @@ export default {
         this.dataRoyaltyCodeDetail = index.CustomCollection;
       } else {
         this.RoyaltyCodeDetail = false;
+        // this.dataRoyaltyCodeDetail = { brand_right: 0 };  
       }
     },
     // 点击查询按钮查询信息
     querytable() {
-      console.log(this.querySelect)
       GetEntities(this.Interface,{
         Filters: [
           {
