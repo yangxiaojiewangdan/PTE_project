@@ -489,6 +489,16 @@ export default [
     },
     component: Main,
     children: [
+    {
+        path: 'edAd_course',
+        name: 'edAd_course',
+        meta: {
+          icon: 'ios-infinite',
+          title: '课程管理'
+        },
+        component: () =>
+          import('@/view/components/edAd/course.vue')
+      },
       {
         path: 'edAd_classpackage',
         name: 'edAd_classpackage',
@@ -499,16 +509,7 @@ export default [
         component: () =>
           import('@/view/components/edAd/classpackage.vue')
       },
-      {
-        path: 'edAd_course',
-        name: 'edAd_course',
-        meta: {
-          icon: 'ios-infinite',
-          title: '课程管理'
-        },
-        component: () =>
-          import('@/view/components/edAd/course.vue')
-      },
+      
       {
         path: 'edAd_courseCalendar',
         name: 'edAd_courseCalendar',

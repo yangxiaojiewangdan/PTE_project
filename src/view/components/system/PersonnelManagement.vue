@@ -53,19 +53,25 @@
 		</Modal>
 		<!-- 删除信息弹出框 end-->
 		<!-- 添加信息 弹出框-->
-		<Modal v-model="AddDepartment" width="1000" :mask-closable="false">
+		<Modal v-model="AddDepartment" width="900" :mask-closable="false">
 			<p slot="header" style="text-align: left; line-height: 1;">
 				<span v-if="add">添加人员</span>
 				<span v-if="see">查看人员</span>
 			</p>
-			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90" inline>
+			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="95">
 				<Row>
-					<Col span="16" style="border-right: 1px solid rgb(238, 238, 238); height: 100%;">
-
 					<Col span="24">
-					<FormItem label="姓名" prop="LastName">
-						<Input v-model="formValidate.LastName" placeholder="请输入" style="width:200px" />
+					<Col span="7">
+					<FormItem label="手机" prop="MobilePhone">
+						<Input v-model="formValidate.MobilePhone" placeholder="请输入" />
 					</FormItem>
+					</Col>
+					<Col span="7">
+					<FormItem label="姓名" prop="LastName">
+						<Input v-model="formValidate.LastName" placeholder="请输入" />
+					</FormItem>
+					</Col>
+					<Col span="6">
 					<FormItem label="性别" prop="Gender">
 						<RadioGroup v-model="formValidate.Gender">
 							<Radio v-for="item in radioList" :label="item.Code">
@@ -74,102 +80,111 @@
 						</RadioGroup>
 					</FormItem>
 					</Col>
-					<FormItem label="出生日期" prop="BrithDate">
-						<DatePicker v-model="formValidate.BrithDate" type="date" @on-change="formValidate.BrithDate=$event" format="yyyy-MM-dd" placeholder="请选择日期" style="width: 200px"></DatePicker>
-					</FormItem>
-
-					<FormItem label="入职日期" prop="JoinDate">
-						<DatePicker v-model="formValidate.JoinDate" type="date" @on-change="formValidate.JoinDate=$event" format="yyyy-MM-dd" placeholder="请选择日期" style="width: 200px"></DatePicker>
-					</FormItem>
-					<FormItem label="手机" prop="MobilePhone">
-						<Input v-model="formValidate.MobilePhone" placeholder="请输入" style="width:200px" />
-					</FormItem>
-					<FormItem label="邮箱" prop="Email">
-						<Input v-model="formValidate.Email" placeholder="请输入" style="width:200px" />
-					</FormItem>
-
-					<FormItem label="登录账号" prop="Account">
-						<Input v-model="formValidate.Account" placeholder="请输入" style="width:200px" />
-					</FormItem>
-					<FormItem label="固定电话" prop="TelPhone">
-						<Input v-model="formValidate.TelPhone" placeholder="请输入" style="width:200px" />
-					</FormItem>
-
-					<FormItem label="邮编" prop="PostalCode">
-						<Input v-model="formValidate.PostalCode" placeholder="请输入" style="width:200px" />
-					</FormItem>
-
-					<FormItem label="地址" prop="Address">
-						<Input v-model="formValidate.Address" placeholder="请输入" style="width:200px" />
-					</FormItem>
-					<FormItem label="QQ号" prop="QQ">
-						<Input v-model="formValidate.QQ" placeholder="请输入" style="width:200px" />
-					</FormItem>
-					<FormItem label="微信" prop="WeChat">
-						<Input v-model="formValidate.WeChat" placeholder="请输入" style="width:200px" />
-					</FormItem>
-
+					</Col>
 					<Col span="24">
+					<Col span="8">
+					<FormItem label="职位" prop="Title">
+						<Input v-model="formValidate.Title" placeholder="请输入" />
+					</FormItem>
+					</Col>
+					<Col span="6">
+					<FormItem label="入职日期" prop="JoinDate">
+						<DatePicker v-model="formValidate.JoinDate" type="date" @on-change="formValidate.JoinDate=$event" format="yyyy-MM-dd" placeholder="请选择日期"></DatePicker>
+					</FormItem>
+					</Col>
+					<Col span="6">
+					<FormItem label="出生日期" prop="BrithDate">
+						<DatePicker v-model="formValidate.BrithDate" type="date" @on-change="formValidate.BrithDate=$event" format="yyyy-MM-dd" placeholder="请选择日期"></DatePicker>
+					</FormItem>
+					</Col>
+					</Col>
+					<Col span="24">
+					<Col span="6">
+					<FormItem label="角色名称" prop="RoleName">
+						<Select v-model="formValidate.RoleName" placeholder="请选择">
+							<Option v-for="item in BusinessRoleList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="6">
+					<FormItem label="主管姓名" prop="Supervisor">
+						<Select v-model="formValidate.Supervisor" placeholder="请选择">
+							<Option v-for="item in IsSupervisorList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="8">
+					<FormItem label="部门名称" prop="BusinessUnitId">
+						<Select v-model="formValidate.BusinessUnitId" placeholder="请选择" :label-in-value="true" @on-change="getItemName">
+							<Option v-for="item in BusinessUnitList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					</Col>
+
+					<Col span="10">
+					<FormItem label="QQ号" prop="QQ">
+						<Input v-model="formValidate.QQ" placeholder="请输入" />
+					</FormItem>
+					</Col>
+					<Col span="10">
+					<FormItem label="微信" prop="WeChat">
+						<Input v-model="formValidate.WeChat" placeholder="请输入" />
+					</FormItem>
+					</Col>
+
+					<Col span="10">
+					<FormItem label="邮箱" prop="Email">
+						<Input v-model="formValidate.Email" placeholder="请输入" />
+					</FormItem>
+					</Col>
+					<Col span="10">
+					<FormItem label="固定电话" prop="TelPhone">
+						<Input v-model="formValidate.TelPhone" placeholder="请输入" />
+					</FormItem>
+					</Col>
+					<Col span="24">
+
+					<Col span="14">
+					<FormItem label="地址" prop="Address">
+						<Input v-model="formValidate.Address" placeholder="请输入" />
+					</FormItem>
+					</Col>
+					<Col span="6">
+					<FormItem label="邮编" prop="PostalCode">
+						<Input v-model="formValidate.PostalCode" placeholder="请输入" />
+					</FormItem>
+					</Col>
+					</Col>
+					<Col span="24">
+					<Col span="2">
+					<FormItem label="" prop="IsSupervisor" style="width:90px ;">
+						<Checkbox v-model="formValidate.IsSupervisor" style="width: 70px;">主管</Checkbox>
+					</FormItem>
+					</Col>
+					<Col span="4">
+					<FormItem label="" prop="IsAdministrtor" style="width:100px ;">
+						<Checkbox v-model="formValidate.IsAdministrtor" style="width: 80px;">管理员</Checkbox>
+					</FormItem>
+					</Col>
+					<Col span="2">
 					<FormItem label="" prop="AllowLogin" style="width:90px ;">
 						<Checkbox v-model="formValidate.AllowLogin" style="width: 70px;">允许登录</Checkbox>
 					</FormItem>
+					</Col>
 
-					<FormItem label="" prop="IsSupervisor" style="width:90px ;">
-						<Checkbox v-model="formValidate.IsSupervisor" style="width: 70px;">主管标识</Checkbox>
-					</FormItem>
-
-					<FormItem label="" prop="IsAdministrtor" style="width:100px ;">
-						<Checkbox v-model="formValidate.IsAdministrtor" style="width: 80px;">管理员标识</Checkbox>
-					</FormItem>
-
+					<Col span="2">
 					<FormItem label="" prop="Enabled" style="width:70px ;">
 						<Checkbox v-model="formValidate.Enabled" style="width: 70px;">启用</Checkbox>
 					</FormItem>
 					</Col>
+					</Col>
+					<Col span="20">
 					<FormItem label="备注" prop="Comments">
-						<Input v-model="formValidate.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:500px;"></Input>
+						<Input v-model="formValidate.Comments" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入"></Input>
 					</FormItem>
 					</Col>
-					<Col span="6">
-					<!--<FormItem label="qq" prop="BusinessGroup">
-						<Input v-model="formValidate.BusinessGroup" placeholder="请输入" style="width:200px" />
-					</FormItem>-->
-					<FormItem label="用户名" prop="Account">
-						<Input v-model="formValidate.Account" placeholder="请输入" style="width:200px" />
-					</FormItem>
-					<FormItem label="职位" prop="Title">
-						<Input v-model="formValidate.Title" placeholder="请输入" style="width:200px" />
-					</FormItem>
-					<FormItem label="角色名称" prop="RoleName">
-						<Select v-model="formValidate.RoleName" style="width:200px" placeholder="请选择">
-							<Option v-for="item in BusinessRoleList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
-						</Select>
-					</FormItem>
-					<FormItem label="主管姓名" prop="Supervisor">
-						<Select v-model="formValidate.Supervisor" style="width:200px" placeholder="请选择">
-							<Option v-for="item in IsSupervisorList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
-						</Select>
-					</FormItem>
-					<FormItem label="部门名称" prop="BusinessUnitId">
-						<Select v-model="formValidate.BusinessUnitId" style="width:200px" placeholder="请选择" :label-in-value="true" @on-change="getItemName">
-							<Option v-for="item in BusinessUnitList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
-						</Select>
-					</FormItem>
-					<FormItem label="" prop="AllowLogin" style="width:100%;height: 10px;">
-						<Checkbox v-model="formValidate.AllowLogin" style="width: 70px;">允许登录</Checkbox>
-					</FormItem>
-					<FormItem label="" prop="IsSupervisor" style="width:100%;height: 10px;">
-						<Checkbox v-model="formValidate.IsSupervisor" style="width: 70px;">主管标识</Checkbox>
-					</FormItem>
 
-					<FormItem label="" prop="IsAdministrtor" style="width:100%;height: 10px;">
-						<Checkbox v-model="formValidate.IsAdministrtor" style="width: 80px;">管理员标识</Checkbox>
-					</FormItem>
-
-					<FormItem label="" prop="Enabled" style="width:100% ;">
-						<Checkbox v-model="formValidate.Enabled" style="width: 70px;">启用</Checkbox>
-					</FormItem>
-					</Col>
 				</Row>
 			</Form>
 			<div slot="footer">
@@ -195,12 +210,13 @@
 						</div>
 					</div>
 				</div>
-				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="ChangePassword; ChangePassword = true;">
-          <span>重置密码</span>
-        </button>
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
           <span>取消</span>
         </button>
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="ChangePassword; ChangePassword = true;">
+          <span>重置密码</span>
+        </button>
+				
 				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('formValidate');">
           <span>确定</span>
        </button>
@@ -545,7 +561,7 @@
 					Enabled: true,
 					IsAdministrtor: true,
 				},
-				IsSupervisorList:[],
+				IsSupervisorList: [],
 			}
 		},
 		methods: {
@@ -698,9 +714,9 @@
 			//人员表格
 			GetEntities(this.Interface, this.data4).then(res => {
 				this.data1 = res.data
-				this.data1.forEach(item=>{
+				this.data1.forEach(item => {
 					console.log(item)
-					if(item.IsSupervisor == true){
+					if(item.IsSupervisor == true) {
 						this.IsSupervisorList.push(item)
 						console.log(this.IsSupervisorList)
 					}
@@ -736,7 +752,7 @@
 			}).catch(err => {
 				console.log(err)
 			})
-			
+
 		}
 	}
 </script>

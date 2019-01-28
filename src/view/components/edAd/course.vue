@@ -70,61 +70,65 @@
 		<Modal v-model="AddDepartment" width="800" title="添加课程信息" :mask-closable="false" :styles="{top: '20px'}">
 			<Form ref="CourseForm" :model="CourseForm" :rules="ruleValidate" :label-width="90" inline>
 				<Row>
-					<Col span="24">
+					<Col span="10">
 					<FormItem label="所属业务群" prop="BusinessGroup">
 						<!--<Select v-model="CourseForm.BusinessGroup" style="width:200px" disabled>
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>-->
 						<Input v-model="CourseForm.BusinessGroup" placeholder="请输入" disabled style="width:200px"></Input>
 					</FormItem>
-
-
+					</Col>
+					<Col span="10">
 					<FormItem label="业务类型" prop="BusinessType">
 						<Select v-model="CourseForm.BusinessType" style="width:200px">
 							<Option v-for="item in BusinessTypeList" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
-					<Col span="24">
-					<FormItem label="上级代码" prop="ParentId">
+					<Col span="10">
+					<!--<FormItem label="上级课程" prop="ParentId">
 						<Input v-model="CourseForm.ParentId" placeholder="请输入" disabled style="width:200px"></Input>
-					</FormItem>
+					</FormItem>-->
 					<FormItem label="课程类型" prop="CourseType">
 						<Select v-model="CourseForm.CourseType" style="width:200px">
 							<Option v-for="item in radioList" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
-					<Col span="24">
+					<Col span="10">
 					<FormItem label="课程代码" prop="Code">
 						<Input v-model="CourseForm.Code" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="24">
 					<FormItem label="课程名称" prop="CourseName">
-						<Input v-model="CourseForm.CourseName" placeholder="请输入" style="width:500px"></Input>
+						<Input v-model="CourseForm.CourseName" placeholder="请输入" style="width:520px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="24">
+						<Col span="10">
 					<FormItem label="课时数" prop="Periods">
 						<Input v-model="CourseForm.Periods" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
+					</Col>
+					<Col span="10">
 					<FormItem label="销课划课方式" prop="CountType">
 						<Select v-model="CourseForm.CountType" style="width:200px">
 							<Option v-for="item in Destruction" :value="item.Id">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
+					</Col>
 					<Col span="24">
 					<FormItem label="课程描述" prop="Description">
-						<Input v-model="CourseForm.Description" type="textarea" :autosize="{minRows: 3,maxRows: 5}" placeholder="请输入" style="width: 500px;"></Input>
+						<Input v-model="CourseForm.Description" type="textarea" :autosize="{minRows: 3,maxRows: 5}" placeholder="请输入" style="width: 520px;"></Input>
 					</FormItem>
 					</Col>
 					<Col span="24">
-					<FormItem label="启用" prop="Enabled">
+					<FormItem label="" prop="Enabled">
 						<i-switch v-model="CourseForm.Enabled" size="large">
-							<span slot="open">On</span>
-							<span slot="close">Off</span>
+							<span slot="open">启用</span>
+							<span slot="close">禁止</span>
 						</i-switch>
 					</FormItem>
 					</Col>
@@ -261,29 +265,23 @@
 				CourseTable: [{
 						type: "selection",
 						width: 45
-					},
-					{
-						title: "所属业务群",
-						key: "BusinessGroup",
-
-						sortable: true
-					},
+				},
 					{
 						title: "业务类型",
 						key: "BusinessType",
-
+						width:120,
 						sortable: true
 					},
 					{
 						title: "课程代码",
 						key: "Code",
-
+						width:120,
 						sortable: true
 					},
 					{
 						title: "课程名称",
 						key: "CourseName",
-
+						width:220,
 						sortable: true
 					},
 					{
@@ -315,7 +313,7 @@
 					{
 						title: "课时数",
 						key: "Periods",
-
+						width:120,
 						sortable: true
 					},
 					{
@@ -343,6 +341,7 @@
 						title: "启用",
 						key: "Enabled",
 						sortable: true,
+						width:120,
 						render: (h, params) => {
 							let texts = "";
 							if(params.row.Enabled == true) {
@@ -361,7 +360,7 @@
 					{
 						title: "创建人",
 						key: "CreateBy",
-
+						width:120,
 						sortable: true
 					},
 					{

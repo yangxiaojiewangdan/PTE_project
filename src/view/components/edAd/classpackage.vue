@@ -117,6 +117,11 @@
 					<FormItem label="" prop="IsAudition" style="width:70px ;">
 						<Checkbox v-model="formValidate.IsAudition" style="width: 60px;">试听包</Checkbox>
 					</FormItem>
+					<FormItem label="" prop="IsExclusive" style="width:200px ;">
+						<Checkbox v-model="formValidate.IsExclusive" style="width: 100px;">门店专属课包</Checkbox>
+					</FormItem>
+					</Col>
+					<Col span="24">
 					<FormItem label="" prop="AllowReturns" style="width:70px ;">
 						<Checkbox v-model="formValidate.AllowReturns" style="width: 60px;">可退费</Checkbox>
 					</FormItem>
@@ -129,17 +134,16 @@
 					<FormItem label="" prop="AllowDiscount" style="width:70px ;">
 						<Checkbox v-model="formValidate.AllowDiscount" style="width: 60px;">可折扣</Checkbox>
 					</FormItem>
-					<FormItem label="" prop="IsExclusive" style="width:200px ;">
-						<Checkbox v-model="formValidate.IsExclusive" style="width: 100px;">门店专属课包</Checkbox>
-					</FormItem>
+					
 					<FormItem label="" prop="Enabled">
 						<i-switch v-model="formValidate.Enabled" size="large">
 							<span slot="open">启用</span>
-							<span slot="close">Off</span>
+							<span slot="close">禁止</span>
 						</i-switch>
 					</FormItem>
-					<!--基本信息结束-->
 					</Col>
+					<!--基本信息结束-->
+					
 				</Row>
 				<Row>
 					<!--课包明细实体-->
@@ -196,11 +200,11 @@
 		<!--课包实体弹框-->
 		<Modal v-model="AddDetail" width="700" title="添加课包实体信息" :mask-closable="false">
 			<Form ref="CousreDetailFrom" :model="CousreDetailFrom" :rules="ruleValidate" :label-width="85" inline>
-				<FormItem label="课包Id" prop="PackageId">
+				<!--<FormItem label="课包Id" prop="PackageId">
 					<Select v-model="CousreDetailFrom.PackageId" style="width:200px">
 						<Option v-for="item in CoursePackageData" :value="item.Id" :key="item.value">{{ item.PackageName }}</Option>
 					</Select>
-				</FormItem>
+				</FormItem>-->
 				<FormItem label="课程Id" prop="CourseId">
 					<Select v-model="CousreDetailFrom.CourseId" style="width:200px" :label-in-value="true" @on-change="v=>{selectPeriods(v,'type')}">
 						<Option v-for="item in CourseData" :value="item.Id">{{ item.CourseName }}</Option>
@@ -210,11 +214,8 @@
 				<FormItem label="课时数" prop="Periods">
 					<Input v-model="CousreDetailFrom.Periods" placeholder="请输入" style="width:200px"></Input>
 				</FormItem>
-				<FormItem label="固定课时" prop="IsLimited">
-					<i-switch v-model="CousreDetailFrom.IsLimited" size="large">
-						<span slot="open">On</span>
-						<span slot="close">Off</span>
-					</i-switch>
+				<FormItem label="" prop="IsLimited">
+					<Checkbox v-model="CousreDetailFrom.IsLimited" style="width: 80px;">固定课时</Checkbox>
 				</FormItem>
 			</Form>
 			<div slot="footer">
@@ -227,34 +228,39 @@
 			</div>
 		</Modal>
 		<!--课包价格弹框-->
-		<Modal v-model="AddPrise" width="700" title="添加课包价格信息" :mask-closable="false">
-			<Form ref="CousrePriseFrom" :model="CousrePriseFrom" :rules="ruleValidate" :label-width="85" inline>
+		<Modal v-model="AddPrise" width="600" title="添加课包价格信息" :mask-closable="false">
+			<Form ref="CousrePriseFrom" :model="CousrePriseFrom" :rules="ruleValidate" :label-width="120" inline>
 				<Row>
 					<Col span="24">
 					<FormItem label="门店" prop="Store">
-						<Select v-model="CousrePriseFrom.StoreId" style="width:200px">
+						<Select v-model="CousrePriseFrom.StoreId" style="width:300px">
 							<Option v-for="item in store" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
-					<FormItem label="销售开始日期" prop="BeginSellDate">
+					<!--<FormItem label="销售开始日期" prop="BeginSellDate">
 						<DatePicker v-model="CousrePriseFrom.BeginSellDate" @on-change="CousrePriseFrom.BeginSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
 					<FormItem label="销售结束日期" prop="EndSellDate">
 						<DatePicker v-model="CousrePriseFrom.EndSellDate" @on-change="CousrePriseFrom.EndSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+					</FormItem>-->
+					<FormItem label="销售开始/结束日期" prop="BeginSellDate">
+						<DatePicker v-model="CousrePriseFrom.BeginSellDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="请选择" style="width: 300px;"></DatePicker>
 					</FormItem>
 					<FormItem label="售价" prop="SellPrice">
-						<Input v-model="CousrePriseFrom.SellPrice" placeholder="请输入" style="width:200px"></Input>
+						<Input v-model="CousrePriseFrom.SellPrice" placeholder="请输入" style="width:300px"></Input>
 					</FormItem>
-					<FormItem label="最低售价" prop="LimitPrice">
-						<Input v-model="CousrePriseFrom.LimitPrice" placeholder="请输入" style="width:200px" ></Input>
+					<Col span="24">
+					<FormItem label="" prop="AllowDiscount">
+						<Checkbox v-model="CousrePriseFrom.AllowDiscount" style="width: 100px;" @on-change="Smallprice()">可折扣</Checkbox>
 					</FormItem>
-					<FormItem label="可折扣" prop="AllowDiscount">
-						<i-switch v-model="CousrePriseFrom.AllowDiscount" size="large">
-							<span slot="open">On</span>
-							<span slot="close">Off</span>
-						</i-switch>
+					</Col>
+					<Col span="24">
+					<FormItem label="最低售价" prop="LimitPrice" v-if="IsLimitPrice">
+						<Input v-model="CousrePriseFrom.LimitPrice" placeholder="请输入" style="width:300px" ></Input>
 					</FormItem>
+					</Col>
+					
 				</Row>
 			</Form>
 			<div slot="footer">
@@ -309,29 +315,12 @@
 				delModal: false,
 				AddDetail: false,
 				AddPrise: false,
+				IsLimitPrice:false,
 				//添加弹框表单表头
 				CoursePackage: [{
 						type: "selection",
 						width: 45
-					},
-					{
-						title: "所属业务群",
-						key: "BusinessGroup",
-						width: 115,
-						sortable: true
-					},
-					{
-						title: "所属业务品牌",
-						key: "BusinessType",
-						width: 130,
-						sortable: true
-					},
-					{
-						title: "门店ID",
-						key: "StoreId",
-						width: 100,
-						sortable: true
-					},
+				},
 					{
 						title: "课包类型",
 						key: "PackageType",
@@ -419,9 +408,9 @@
 						width: 100,
 						render: (h, params) => {
 							let texts = "";
-							if(params.row.AllowDiscount == true) {
+							if(params.row.IsPromotion == true) {
 								texts = "是";
-							} else if(params.row.AllowDiscount == false) {
+							} else if(params.row.IsPromotion == false) {
 								texts = "否";
 							}
 							return h(
@@ -439,9 +428,9 @@
 						width: 100,
 						render: (h, params) => {
 							let texts = "";
-							if(params.row.AllowDiscount == true) {
+							if(params.row.IsAudition == true) {
 								texts = "是";
-							} else if(params.row.AllowDiscount == false) {
+							} else if(params.row.IsAudition == false) {
 								texts = "否";
 							}
 							return h(
@@ -459,9 +448,9 @@
 						width: 100,
 						render: (h, params) => {
 							let texts = "";
-							if(params.row.AllowDiscount == true) {
+							if(params.row.AllowReturns == true) {
 								texts = "是";
-							} else if(params.row.AllowDiscount == false) {
+							} else if(params.row.AllowReturns == false) {
 								texts = "否";
 							}
 							return h(
@@ -479,9 +468,9 @@
 						width: 100,
 						render: (h, params) => {
 							let texts = "";
-							if(params.row.AllowDiscount == true) {
+							if(params.row.AllowAdjustment == true) {
 								texts = "是";
-							} else if(params.row.AllowDiscount == false) {
+							} else if(params.row.AllowAdjustment == false) {
 								texts = "否";
 							}
 							return h(
@@ -499,9 +488,9 @@
 						width: 115,
 						render: (h, params) => {
 							let texts = "";
-							if(params.row.AllowDiscount == true) {
+							if(params.row.AllowOnline == true) {
 								texts = "是";
-							} else if(params.row.AllowDiscount == false) {
+							} else if(params.row.AllowOnline == false) {
 								texts = "否";
 							}
 							return h(
@@ -539,9 +528,9 @@
 						width: 130,
 						render: (h, params) => {
 							let texts = "";
-							if(params.row.AllowDiscount == true) {
+							if(params.row.IsExclusive == true) {
 								texts = "是";
-							} else if(params.row.AllowDiscount == false) {
+							} else if(params.row.IsExclusive == false) {
 								texts = "否";
 							}
 							return h(
@@ -559,9 +548,9 @@
 						width: 80,
 						render: (h, params) => {
 							let texts = "";
-							if(params.row.AllowDiscount == true) {
+							if(params.row.Enabled == true) {
 								texts = "是";
-							} else if(params.row.AllowDiscount == false) {
+							} else if(params.row.Enabled == false) {
 								texts = "否";
 							}
 							return h(
@@ -727,6 +716,9 @@
 			}
 		},
 		methods: {
+			Smallprice(){
+				this.IsLimitPrice = true;
+			},
 			//判断课包类型
 			setOption1(value, type) {
 				this.setId = value

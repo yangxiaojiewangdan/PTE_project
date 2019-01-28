@@ -156,10 +156,9 @@
 								<FormItem label="家长邮箱" prop="ContactEMail">
 									<Input v-model="formValidate.ContactEMail" placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
-								<!--客源信息-->
-								<!--<p class="lineTitle">基本信息</p>
-				<div class="lineTop"></div>-->
-								<Divider orientation="left" class='line'></Divider>
+								<div class="line">
+									客户信息
+								</div>
 								<FormItem label="客户类型" prop="CustomerType">
 									<Select v-model="formValidate.CustomerType" style="width: 200px;">
 										<Option v-for="item in customerTypeData" :value="item.Code">{{item.Description}}</Option>
@@ -196,25 +195,31 @@
 										<Option value="shenzhen">Sydney</Option>
 									</Select>
 								</FormItem>
-								<!--地址-->
-								<!--<p class="lineTitle">基本信息</p>
-				<div class="lineTop"></div>-->
-								<Divider orientation="left" class='line'></Divider>
+
+								<div class="line">
+									联系人地址
+								</div>
+								<Col span="24">
+									
 								<FormItem label="所在省" prop="ProviceCode">
-									<Select v-model="formValidate.ProviceCode" @on-change="SelectProviceCode" style="width:200px">
+									<Select v-model="formValidate.ProviceCode" @on-change="SelectProviceCode" style="width:100px">
 										<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 									</Select>
 								</FormItem>
+								
 								<FormItem label="所在市" prop="CityCode">
-									<Select v-model="formValidate.CityCode" @on-change="SelectCityCode" style="width:200px">
+									<Select v-model="formValidate.CityCode" @on-change="SelectCityCode" style="width:100px">
 										<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name}}</Option>
 									</Select>
 								</FormItem>
+								
 								<FormItem label="所在县区" prop="DistinctCode">
-									<Select v-model="formValidate.DistinctCode" style="width:200px">
+									<Select v-model="formValidate.DistinctCode" style="width:100px">
 										<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 									</Select>
 								</FormItem>
+								
+								</Col>
 								<FormItem label="所在小区" prop="VillageCode">
 									<Select v-model="formValidate.VillageCode" style="width: 200px;">
 										<Option value="beijing">New York</Option>
@@ -226,18 +231,10 @@
 									<Input v-model="formValidate.Address" placeholder="请输入" style="width: 490px;"></Input>
 								</FormItem>
 								<FormItem label="业务部门" prop="BusinessUnit">
-									<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
-										<Option value="beijing">New York</Option>
-										<Option value="shanghai">London</Option>
-										<Option value="shenzhen">Sydney</Option>
-									</Select>
+									<Input v-model="formValidate.BusinessUnit" disabled placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
-								<FormItem label="负责人" prop="BusinessUnit">
-									<Select v-model="formValidate.BusinessUnit" style="width: 200px;">
-										<Option value="beijing">New York</Option>
-										<Option value="shanghai">London</Option>
-										<Option value="shenzhen">Sydney</Option>
-									</Select>
+								<FormItem label="负责人" prop="Owner">
+									<Input v-model="formValidate.Owner" disabled placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
 								</Col>
 							</Row>
@@ -356,24 +353,23 @@
 				EditSave: "编辑",
 				BusinessStoresInput: false,
 				BusinessStoresP: true,
-				ContactsList:[
-					{
-						TelPhone:"13593453487",
-						LastName:'德玛西亚',
-						EMail:'1149265110@qq.com',
-						WeChat:'147258369',
-						QQ:'1149265110',
-						Career:'销售',	
+				ContactsList: [{
+						TelPhone: "13593453487",
+						LastName: '德玛西亚',
+						EMail: '1149265110@qq.com',
+						WeChat: '147258369',
+						QQ: '1149265110',
+						Career: '销售',
 					},
 					{
-						TelPhone:"13661050032",
-						LastName:'提莫队长',
-						EMail:'13661050032.com',
-						WeChat:'895623741',
-						QQ:'852369879845',
-						Career:'技术',	
+						TelPhone: "13661050032",
+						LastName: '提莫队长',
+						EMail: '13661050032.com',
+						WeChat: '895623741',
+						QQ: '852369879845',
+						Career: '技术',
 					},
-					
+
 				],
 				isAdd: false,
 				value3: '',
@@ -606,8 +602,7 @@
 					ContactPhone: '',
 					ContactEMail: '',
 					BusinessUnitId: '',
-					BusinessUnit: '',
-					OwnerId: '',
+					Owner: '',
 					BusinessUnit: '',
 				},
 				FormContacts: {
@@ -859,14 +854,13 @@
 			}).catch(err => {
 				console.log(err)
 			});
-
-			//			DistrictGetProvince().then(res => {
-			//				console.log(res.data)
-			//				this.province = res.data;
-			//			}).catch(err => {
-			//				console.log(err)
-			//			})
-
+			let userInfo = sessionStorage.getItem('userInfo');
+			let array = JSON.parse(userInfo);
+			console.log(array)
+			//业务部门
+			this.formValidate.BusinessUnit = array.BusinessUnit
+			//负责人
+			this.formValidate.Owner = array.LastName
 		}
 	}
 </script>
@@ -905,29 +899,19 @@
 		}
 	}
 	
-	.lineTitle {
-		font-size: 14px;
-		font-weight: 900;
-		color: #5555AA;
-	}
-	
-	.lineTop {
-		width: 80%;
-		height: 2px;
-		margin: 5px 0;
-		border-top: solid #E6E6E6 2px;
-	}
-	
 	.line {
-		color: #5555AA;
-		width: 80%;
-		font-weight: 900;
+		font-size: 14px;
+		font-weight: 600;
+		color: #000;
+		width: 100%;
+		height: 30px;
+		border-bottom: 1px solid #dcdee2;
+		margin-bottom: 10px;
 	}
 	
 	.margin_bottom {
 		margin-bottom: 10px;
 	}
-	.information {
-		
-	}
+	
+	.information {}
 </style>

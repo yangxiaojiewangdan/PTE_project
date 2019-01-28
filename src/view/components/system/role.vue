@@ -7,7 +7,7 @@
 		</Row>
 		<Row>
 			<!--增删改查-->
-			<Col span="7" push="14">
+			<Col span="7" push="16">
 			<div class="organization">
 				<Button type="success" class="organization_tableTop" @click="AddBtn">添加</Button>
 				<Button type="error" class="organization_tableTop" @click="deleteList">删除</Button>
@@ -22,16 +22,16 @@
 
 		<Row>
 			<!--表格-->
-			<Col span="20" push="1">
-			<Table height="520" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="upRoleData" stripe size="small" highlight-row @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" :loading=loading></Table>
+			<Col span="22" push="1">
+			<Table height="600" ref="selection" :columns="columns4" :data="data1" @on-row-dblclick="upRoleData" stripe size="small" highlight-row @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" :loading=loading></Table>
 			</Col>
 			<!--分页-->
-			<Col span="10" push="10">
+			<Col span="10" push="12">
 			<Page :total="100" class="page" />
 			</Col>
 		</Row>
 		<!-- 添加信息 弹出框-->
-		<Modal v-model="AddDepartment" width="800" :mask-closable="false">
+		<Modal v-model="AddDepartment" width="700" :mask-closable="false">
 			<p slot="header" style="text-align: left; line-height: 1;">
 				<span v-if="add">添加系统角色</span>
 				<span v-if="see">查看系统角色</span>
@@ -40,23 +40,24 @@
 				<Row>
 					<Col span="24">
 					<FormItem label="所属业务群" prop="BusinessGroup">
-						<Select v-model="formValidate.BusinessGroup" style="width:280px" placeholder="请选择" :disabled='isDisabled'>
+						<Select v-model="formValidate.BusinessGroup" style="width:416px" placeholder="请选择" :disabled='isDisabled'>
 							<Option v-for="item in ParentId" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
 					<Col span="24">
 					<FormItem label="角色代码" prop="Code">
-						<Input v-model="formValidate.Code" placeholder="请输入" style="width:160px"  :disabled='isDisabled'></Input>
+						<Input v-model="formValidate.Code" placeholder="请输入" :disabled='isDisabled'></Input>
 					</FormItem>
 
 					<FormItem label="角色名称" prop='Description'>
-						<Input v-model="formValidate.Description" placeholder="请输入" style="width:160px"  :disabled='isDisabled'></Input>
+						<Input v-model="formValidate.Description" placeholder="请输入"   :disabled='isDisabled'></Input>
 					</FormItem>
-
+					<Col span="24">
 					<FormItem label="排序码" prop='SortKey'>
-						<Input type="text" v-model="formValidate.SortKey" placeholder="请输入" style="width:160px"  :disabled='isDisabled'></Input>
+						<Input type="text" v-model="formValidate.SortKey" placeholder="请输入" :disabled='isDisabled'></Input>
 					</FormItem>
+					</Col>
 					</Col>
 					<FormItem label="数据权限" prop='DataPermissionLevel'>
 						<RadioGroup v-model="formValidate.DataPermissionLevel">
@@ -73,18 +74,13 @@
 					<FormItem label="" prop="IsStoreFranchise" style="width: 80px;">
 						<Checkbox v-model="formValidate.IsStoreFranchise" style="width: 80px;">门店可用</Checkbox>
 					</FormItem>
-
-					<FormItem label="" prop='IsIntemal' style="width: 80px;">
-						<Checkbox v-model="formValidate.IsIntemal" style="width: 80px;">内置角色</Checkbox>
-					</FormItem>
-
-					<FormItem label="" prop='Enabled' style="width: 80px;">
+					<FormItem label="" prop='Enabled' style="width: 80px; margin-left: 20px;">
 						<Checkbox v-model="formValidate.Enabled" style="width: 80px;">启用</Checkbox>
 					</FormItem>
 					</Col>
 				</Row>
 			</Form>
-			<tree-transfer :title="title" :from_data='fromData' :to_data='toData' :class="{ 'addclass': isactive }" :defaultProps="{label:'Description',children:'PermissionCollection'}" @addBtn='addTo' @removeBtn='remove' height='450px' node_key="Id" pid="ParentId" :button_text="['添加', '删减']" leafOnly >
+			<tree-transfer :title="title" :from_data='fromData' :to_data='toData' :class="{ 'addclass': isactive }" :defaultProps="{label:'Description',children:'PermissionCollection'}" @addBtn='addTo' @removeBtn='remove' height='400px' node_key="Id" pid="ParentId" :button_text="['添加', '删减']" leafOnly >
 			</tree-transfer>
 			<div slot="footer">
 				<div class="footer_left">
@@ -213,21 +209,21 @@
 					{
 						title: '角色代码',
 						key: 'Code',
-						width: 200,
+						
 						sortable: true,
 
 					},
 					{
 						title: '角色名称',
 						key: 'Description',
-						width: 200,
+						
 						sortable: true,
 
 					},
 					{
 						title: '启用',
 						key: 'Enabled',
-						width: 160,
+						
 						sortable: true,
 						render: (h, params) => {
 							let texts = "";
@@ -248,21 +244,20 @@
 					{
 						title: '排序码',
 						key: 'SortKey',
-						width: 150,
+						
 						sortable: true,
 
 					},
 					{
 						title: '创建人',
 						key: 'CreateBy',
-						width: 200,
+						
 						sortable: true,
 
 					},
 					{
 						title: '创建时间',
 						key: 'CreateOn',
-						width: 400,
 						sortable: true,
 
 					},

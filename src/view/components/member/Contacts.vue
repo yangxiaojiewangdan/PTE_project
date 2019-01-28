@@ -115,7 +115,7 @@
 					</Col>
 					<Col span="22">
 					<FormItem label="" prop="IsPrimary" style="display: inline-block;">
-						<Checkbox v-model="formValidate.IsPrimary">主要标识</Checkbox>
+						<Checkbox v-model="formValidate.IsPrimary">主要联系人</Checkbox>
 					</FormItem>
 					<FormItem label="" prop="Enabled" style="display: inline-block;">
 						<Checkbox v-model="formValidate.Enabled">启用</Checkbox>

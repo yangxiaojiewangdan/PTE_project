@@ -2,13 +2,13 @@
 	<div id="PersonnelManagement">
 		<Row>
 			<Col span="24" style="height:100px;">
-			<h1 class="setHeader">组织结构设置</h1>
+			<h1 class="setHeader">组织架构设置</h1>
 			</Col>
 		</Row>
 		<Row class="content">
 			<Col span="6" style="height:750px;">
 			<Col span="24" style="height:40px;">
-			<h2 class="content_left">公司组织结构</h2>
+			<h2 class="content_left">公司组织架构</h2>
 			</Col>
 			<!-- 树状图 -->
 			<Col span="24">
@@ -26,11 +26,11 @@
 			<div class="organization">
 				<Button @click="Add" type="success" class="organization_tableTop">添加</Button>
 				<Button @click="deleteList" type="error" class="organization_tableTop">删除</Button>
-				<Select v-model="formSend.label" style="width:100px">
+				<!--<Select v-model="formSend.label" style="width:100px">
 					<Option v-for="item in department" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
 				<Input v-model="query" placeholder="请输入" style="width: 150px" class="organization_tableTop" />
-				<Button type="primary" class="organization_tableTop" @click="queryData">查询</Button>
+				<Button type="primary" class="organization_tableTop" @click="queryData">查询</Button>-->
 			</div>
 			</Col>
 			<!-- 表格上面的功能 end-->
@@ -86,13 +86,13 @@
 						<Input v-model="formValidate.Description" placeholder="请输入" style="width:460px"></Input>
 					</FormItem>
 					</Col>
-					<Col span="24">
+					<!--<Col span="24">
 					<FormItem label="主管姓名" prop="Supervisor">
 						<Select v-model="formValidate.Supervisor" style="width:460px" placeholder="请选择">
 							<Option v-for="item in cityList1" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
 					</FormItem>
-					</Col>
+					</Col>-->
 					<Col span="24">
 					<FormItem label="部门描述" prop="LongDescription">
 						<Input v-model="formValidate.LongDescription" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
@@ -109,7 +109,7 @@
 					<FormItem label="" prop="Enabled">
 						<i-switch v-model="formValidate.Enabled" size="large" >
 							<span slot="open">启用</span>
-							<span slot="close">Off</span>
+							<span slot="close">禁用</span>
 						</i-switch>
 					</FormItem>
 					</Col>
@@ -527,6 +527,7 @@
 			.organization {
 				margin: 30px 20px 10px 0;
 				float: right;
+				margin-right: 100px;
 				.organization_tableTop {
 					margin: 0 4px;
 				}
