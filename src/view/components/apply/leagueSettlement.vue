@@ -178,7 +178,7 @@
             </FormItem>
           </Col>
           <Col span="24">
-            <FormItem label="启用" prop="Enabled">
+            <FormItem label="" prop="Enabled">
               <i-switch v-model="formValidate.Enabled" size="large">
                 <span slot="open">启用</span>
                 <span slot="close">禁用</span>
