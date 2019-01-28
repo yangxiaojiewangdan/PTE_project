@@ -12,10 +12,9 @@
 			<h3 class="queryquery" style="padding-left:32px;">业务类型：</h3>
 			<Button @click="allinformationData" type="text" class="tableTops">全部</Button>
 			<RadioGroup v-model="button1" type="button">
-				<Radio label="北京"></Radio>
-				<Radio label="上海"></Radio>
-				<Radio label="深圳"></Radio>
-				<Radio label="杭州"></Radio>
+				<Radio v-for="item in BusinessTypeList" :label="item.Code">
+					<span>{{item.Description}}</span>
+				</Radio>
 			</RadioGroup>
 			</Col>
 			<Col span="24" class="Col">
@@ -82,7 +81,7 @@
 
 					<FormItem label="业务类型" prop="BusinessType">
 						<Select v-model="CourseForm.BusinessType" style="width:200px">
-							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+							<Option v-for="item in BusinessTypeList" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
@@ -497,6 +496,7 @@
 				AddCourseDetail: [],
 				CourseDetailId:'',
 				UpDetail:[],
+				BusinessTypeList:[],
 			}
 		},
 		methods: {
@@ -718,7 +718,10 @@
 			this.CourseForm.BusinessGroup = array.BusinessUnit
 			//上级代码
 			this.CourseForm.ParentId = array.SupervisorId
+			this.BusinessTypeList = JSON.parse(localStorage.STORE_BUSINESS_TYPE);
+			console.log(this.BusinessTypeList)
 		}
+		
 	}
 </script>
 <style lang="less" scoped>

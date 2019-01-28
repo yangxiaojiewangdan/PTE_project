@@ -94,7 +94,7 @@
 			<h2>确定删除此数据？</h2>
 		</Modal>
 		<!--添加弹框-->
-		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false" :styles="{top: '40px'}" >
+		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false" :styles="{top: '40px'}">
 			<p slot="header" style="text-align: left; line-height: 1;">
 				<span v-if="add">基本信息</span>
 				<span v-if="see">修改学员</span>
@@ -126,7 +126,7 @@
 								</FormItem>
 
 								<FormItem label="出生日期" prop="BrithDate">
-									<DatePicker @on-change="handleChange;formValidate.BrithDate=$event"  format="yyyy-MM-dd" type="date" placeholder="Select date" v-model="formValidate.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
+									<DatePicker @on-change="handleChange;formValidate.BrithDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" v-model="formValidate.BrithDate" style="width: 200px;" :options="options3"></DatePicker>
 								</FormItem>
 
 								<!--<Col span="4">
@@ -244,78 +244,93 @@
 						</Form>
 					</TabPane>
 					<!--添加联系人-->
-					<TabPane label="联系人" name="name2" style="height:730px;overflow-y:auto;overflow-x:hidden;">
-						<ul class="lianxiren">
-							<li>
-								<p class="addOrUp">
+					<TabPane label="联系人" name="name2" v-if="isAdd" style="height:730px;overflow-y:auto;overflow-x:hidden;">
+						<Row>
+							<Col span="10" offset="1" v-for="(item, index) in ContactsList" :key="index" style="margin-bottom:10px;">
+							<Card>
+								<p slot="title">联系人1</p>
+								<!--<Button slot="extra" size="small" type="text" @click="say(index,$event)">{{ EditSave }}</Button>-->
+								<Form ref="FormContacts" :model="FormContacts" :rules="ruleValidate" label-position="right" :label-width="60">
 									<Row>
-										<Col span="12" push="18">
-										<Icon type="ios-create" size="22"/>
+										<Button slot="extra" size="small" type="text" @click="say(index,$event)">{{ EditSave }}</Button>
+										<Col span="20">
+										<FormItem label="电话:" prop="TelPhone" class="margin_bottom">
+											<Input v-if="BusinessStoresInput" v-model="FormContacts.TelPhone"></Input>
+											<p v-if="BusinessStoresP">{{item.TelPhone}}</p>
+										</FormItem>
 										</Col>
-										<Col span="12" push="9">
-										<Icon type="ios-settings" size='22'/>
+										<Col span="20">
+										<FormItem label="姓名:" prop="LastName" class="margin_bottom">
+											<Input v-if="BusinessStoresInput" v-model="FormContacts.LastName"></Input>
+											<p v-if="BusinessStoresP">{{item.LastName}}</p>
+										</FormItem>
+										</Col>
+										<Col span="20">
+										<!--<FormItem label="关系:" prop="RelationType" class="margin_bottom">
+											<Select v-model="FormContacts.RelationType" >
+												<Option v-for="item in  relationship" :value="item.Code" :key="item.value">{{ item.Description }}</Option>
+											</Select>
+											<Input v-if="BusinessStoresInput" v-model="FormContacts.RelationType"></Input>
+											<p v-if="BusinessStoresP">妈妈</p>
+										</FormItem>-->
+										</Col>
+										<Col span="20">
+										<FormItem label="邮箱:" prop="EMail" class="margin_bottom">
+											<Input v-if="BusinessStoresInput" v-model="FormContacts.EMail"></Input>
+											<p v-if="BusinessStoresP">{{item.EMail}}</p>
+										</FormItem>
+										</Col>
+										<Col span="20">
+										<FormItem label="微信:" prop="WeChat" class="margin_bottom">
+											<Input v-if="BusinessStoresInput" v-model="FormContacts.WeChat"></Input>
+											<p v-if="BusinessStoresP">{{item.WeChat}}</p>
+										</FormItem>
+										</Col>
+										<Col span="20">
+										<FormItem label="QQ:" prop="QQ" class="margin_bottom">
+											<Input v-if="BusinessStoresInput" v-model="FormContacts.QQ"></Input>
+											<p v-if="BusinessStoresP">{{item.QQ}}</p>
+										</FormItem>
+										</Col>
+										<Col span="20">
+										<FormItem label="职业:" prop="Career" class="margin_bottom">
+											<Input v-if="BusinessStoresInput" v-model="FormContacts.Career"></Input>
+											<p v-if="BusinessStoresP">{{item.Career}}</p>
+										</FormItem>
 										</Col>
 									</Row>
-								</p>
-								<Row class="eee">
-									<Col span="24" push="2">
-									<div class="ContactsTep">
-										<span>电话：</span>
-										<span>13593453487</span>
-									</div>
-									<div class="ContactsName">
-										<span>姓名：</span>
-										<span>小明</span>
-									</div>
-									<div class="ContactsDear">
-										<span>关系：</span>
-										<span>爸爸</span>
-									</div>
-									<div class="ContactsEMail">
-										<span>邮箱：</span>
-										<span>1149265110@qq.com</span>
-									</div>
-									<div class="ContactsWeChat">
-										<span>微信：</span>
-										<span>1149265110</span>
-									</div>
-									<div class="ContactsQQ">
-										<span>QQ：</span>
-										<span>1149265110</span>
-									</div>
-									<div class="ContactsCareer">
-										<span>职业：</span>
-										<span>销售</span>
-									</div>
-									</Col>
-								</Row>
-							</li>
-						</ul>
+								</Form>
+							</Card>
+							</Col>
+						</Row>
 
 					</TabPane>
 				</Tabs>
 				</Col>
-				<Col span="8">
-					动态信息
-				</Col>
+				<!--<Col span="8" class="information"> 动态信息
+				</Col>-->
 			</Row>
 
 			<div slot="footer">
 				<div class="footer_left">
 					<div class="footer_left1">
 						<div>
-							<span>创建人:闫子健</span>
+							<span>创建人:</span>
+							<span>{{ formValidate.CreateByName }}</span>
 						</div>
 						<div>
-							<span>更新人:闫子健</span>
+							<span>更新人:</span>
+							<span>{{ formValidate.UpdateByName }}</span>
 						</div>
 					</div>
 					<div class="footer_left2">
 						<div>
-							<span>创建时间:2018/12/13/ 13:00:00</span>
+							<span>创建时间:</span>
+							<span>{{ formValidate.CreateOn }}</span>
 						</div>
 						<div>
-							<span>更新时间:2018/12/13/ 13:00:00</span>
+							<span>更新时间:</span>
+							<span>{{ formValidate.UpdateOn }}</span>
 						</div>
 					</div>
 				</div>
@@ -338,7 +353,30 @@
 		name: 'CustomerProfile',
 		data() {
 			return {
-				value3:'',
+				EditSave: "编辑",
+				BusinessStoresInput: false,
+				BusinessStoresP: true,
+				ContactsList:[
+					{
+						TelPhone:"13593453487",
+						LastName:'德玛西亚',
+						EMail:'1149265110@qq.com',
+						WeChat:'147258369',
+						QQ:'1149265110',
+						Career:'销售',	
+					},
+					{
+						TelPhone:"13661050032",
+						LastName:'提莫队长',
+						EMail:'13661050032.com',
+						WeChat:'895623741',
+						QQ:'852369879845',
+						Career:'技术',	
+					},
+					
+				],
+				isAdd: false,
+				value3: '',
 				add: "",
 				see: "",
 				Interface: "CustomerProfile",
@@ -385,13 +423,7 @@
 						width: 45
 					},
 					{
-						title: "姓",
-						key: "FirstName",
-						width: 120,
-						sortable: true
-					},
-					{
-						title: "名",
+						title: "姓名",
 						key: "LastName",
 						width: 120,
 						sortable: true
@@ -578,24 +610,14 @@
 					OwnerId: '',
 					BusinessUnit: '',
 				},
-				AddCustomerFrom: {
-					FirstName: '',
+				FormContacts: {
 					LastName: '',
-					FullName: '',
 					RelationType: '',
 					TelPhone: '',
 					WeChat: '',
 					QQ: '',
 					EMail: '',
 					Career: '',
-					IsPrimary: true,
-					IsSelfRegister: false,
-					Password: '',
-					ChannelCode: '',
-					Enabled: true,
-					Comments: '',
-					//学员的Id
-					CustomerId: '',
 				},
 				ruleValidate: {
 
@@ -607,6 +629,24 @@
 			}
 		},
 		methods: {
+			say(index, e) {
+				// e.target 是你当前点击的元素
+				// e.currentTarget 是你绑定事件的元素
+				console.log(e.target);
+				console.log(e.currentTarget);
+				console.log(this.ContactsList[index]);
+				if(this.ContactsList[index]) {
+					if(this.EditSave == "编辑") {
+						this.EditSave = "保存";
+						this.BusinessStoresInput = true;
+						this.BusinessStoresP = false;
+					} else if(this.EditSave == "保存") {
+						this.EditSave = "编辑";
+						this.BusinessStoresInput = false;
+						this.BusinessStoresP = true;
+					}
+				}
+			},
 			tabsPage(name) {
 				this.aaa = name;
 			},
@@ -656,10 +696,11 @@
 			dblclickUpData(index) {
 				this.add = false;
 				this.see = true;
+				this.isAdd = true;
 				this.AddDepartment = true;
 				this.formValidate = index;
+				//this.ContactsList = index.ContactCollection;
 				console.log(index)
-				this.AddCustomerFrom.CustomerId = index.Id
 			},
 			handleResetUp() {
 				this.$Message.info('已取消添加部门');
@@ -883,32 +924,10 @@
 		font-weight: 900;
 	}
 	
-	.lianxiren {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		flex-flow: wrap;
-		li {
-			list-style: none;
-			width: 30%;
-			height: 250px;
-			margin: 0px 14px;
-			background: ;
-			border: 1px solid #DDD;
-			.addOrUp {
-				display: block;
-				width: 100%;
-				height: 30px;
-				background: #ddd;
-			}
-			.eee {
-				div {
-					margin-top: 8px;
-					span {
-						font-size: 14px;
-					}
-				}
-			}
-		}
+	.margin_bottom {
+		margin-bottom: 10px;
+	}
+	.information {
+		
 	}
 </style>

@@ -29,7 +29,7 @@
 				<Select v-model="model1" style="width:100px" class="organization_tableTop">
 					<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
-				<Input v-model="value" placeholder="Enter something..." style="width: 150px" class="organization_tableTop" />
+				<Input v-model="value" placeholder="请输入" style="width: 150px" class="organization_tableTop" />
 				<Button type="primary" class="organization_tableTop">查询</Button>
 			</div>
 			</Col>
@@ -131,9 +131,9 @@
 					</FormItem>
 					</Col>
 					<Col span="6">
-					<FormItem label="qq" prop="BusinessGroup">
+					<!--<FormItem label="qq" prop="BusinessGroup">
 						<Input v-model="formValidate.BusinessGroup" placeholder="请输入" style="width:200px" />
-					</FormItem>
+					</FormItem>-->
 					<FormItem label="用户名" prop="Account">
 						<Input v-model="formValidate.Account" placeholder="请输入" style="width:200px" />
 					</FormItem>

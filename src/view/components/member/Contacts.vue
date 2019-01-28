@@ -21,10 +21,10 @@
 				<Option v-for="item in  CustomerProfileList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 			</Select>
 			</Col>
-			<Col span="6">
+			<!--<Col span="6">
 			<Checkbox v-model="Identification">主要标识</Checkbox>
 			<Checkbox v-model="IsEnable" style="padding-left: 20px;">启用</Checkbox>
-			</Col>
+			</Col>-->
 			</Col>
 			</Col>
 		</Row>
