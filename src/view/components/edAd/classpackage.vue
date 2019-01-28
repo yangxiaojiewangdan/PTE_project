@@ -10,7 +10,7 @@
 			<Col span="24" class="querycriteria" style="height: 120px;">
 			<Col span="24" class="Col">
 			<h3 class="queryquery">开始/结束日期：</h3>
-			<DatePicker v-model="StartEndDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="Select date and time(Excluding seconds)" style="width: 300px;margin-left:20px;"></DatePicker>
+			<DatePicker v-model="StartEndDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="请选择" style="width: 300px;margin-left:20px;"></DatePicker>
 			</Col>
 			<Col span="24" class="Col">
 			<h3 class="queryquery" style="padding-left:32px;">课包类型：</h3>
@@ -85,9 +85,7 @@
 					<FormItem label="课包名称" prop="PackageName">
 						<Input v-model="formValidate.PackageName" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
-					<FormItem label="课包描述" prop="Description">
-						<Input v-model="formValidate.Description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width: 500px;"></Input>
-					</FormItem>
+					
 					<FormItem label="期限(月)" prop="FixedPeriods" v-if="qixian">
 						<Input v-model="formValidate.FixedPeriods" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
@@ -100,15 +98,22 @@
 					<FormItem label="赠送课时" prop="ComplimentPeriods" v-if="keshi">
 						<Input v-model="formValidate.ComplimentPeriods" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
+					<FormItem label="销售开始/结束日期" prop="BeginSellDate">
+						<DatePicker v-model="formValidate.BeginSellDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="请选择" style="width: 200px;"></DatePicker>
+					</FormItem>
 					<FormItem label="售价" prop="SellPrice">
 						<Input v-model="formValidate.SellPrice" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
-					<FormItem label="销售开始日期" prop="BeginSellDate">
+					<FormItem label="课包描述" prop="Description">
+						<Input v-model="formValidate.Description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width: 500px;"></Input>
+					</FormItem>
+					<!--<FormItem label="销售开始日期" prop="BeginSellDate">
 						<DatePicker v-model="formValidate.BeginSellDate" @on-change="formValidate.BeginSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>
 					<FormItem label="销售结束日期" prop="EndSellDate">
 						<DatePicker v-model="formValidate.EndSellDate" @on-change="formValidate.EndSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
-					</FormItem>
+					</FormItem>-->
+					
 					<!--单选-->
 					<Col span="24">
 					<FormItem label="" prop="IsPromotion" style="width:70px ;">
