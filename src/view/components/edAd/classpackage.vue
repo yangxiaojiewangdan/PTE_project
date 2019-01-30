@@ -410,7 +410,7 @@
 						title: "促销包",
 						key: "IsPromotion",
 						sortable: true,
-						width: 100,
+						width: 95,
 						render: (h, params) => {
 							let texts = "";
 							if(params.row.IsPromotion == true) {

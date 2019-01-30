@@ -267,12 +267,6 @@
 						width: 45
 				},
 					{
-						title: "业务类型",
-						key: "BusinessType",
-						width:120,
-						sortable: true
-					},
-					{
 						title: "课程代码",
 						key: "Code",
 						width:120,
@@ -287,12 +281,13 @@
 					{
 						title: "课程描述",
 						key: "Description",
-
+						width:320,
 						sortable: true
 					},
 					{
 						title: "课程类型",
 						key: "CourseType",
+						width:120,
 						render: (h, params) => {
 							let texts = "";
 							if(params.row.CourseType == 0) {
@@ -313,7 +308,7 @@
 					{
 						title: "课时数",
 						key: "Periods",
-						width:120,
+						width:100,
 						sortable: true
 					},
 					{

@@ -165,7 +165,6 @@ export default [
     meta: {
       hideInMenu: true,
       notCache: true,
-      access: ['admin'],
     },
 
     children: [{
@@ -1014,7 +1013,7 @@ export default [
     name: '系统设置',
     meta: {
       icon: 'logo-buffer',
-      title: '系统设置'
+      title: '系统设置',
     },
     component: Main,
     children: [{
@@ -1032,7 +1031,8 @@ export default [
         name: 'system_organization',
         meta: {
           icon: 'ios-infinite',
-          title: '组织结构'
+          title: '组织结构',
+       	
         },
         component: () =>
           import('@/view/components/system/organization.vue')
@@ -1052,7 +1052,7 @@ export default [
         name: 'system_PersonnelManagement',
         meta: {
           icon: 'md-grid',
-          title: '人员管理'
+          title: '人员管理',
         },
         component: () =>
           import('@/view/components/system/PersonnelManagement.vue')

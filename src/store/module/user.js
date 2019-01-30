@@ -1,7 +1,7 @@
 import {
   login,
   logout,
-  getUserInfo,
+  //getUserInfo,
   getMessage,
   getContentByMsgId,
   hasRead,
@@ -73,7 +73,7 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, {Account, Password}) {
+    handleLogin ({state, commit }, {Account, Password}) {
       Account = Account.trim()
       return new Promise((resolve, reject) => {
         login({
@@ -84,10 +84,12 @@ export default {
           commit('settoken', data.SessionToken)
           console.log(res.data)
           resolve()
+        	debugger;
           //将登陆信息保存在sessionStorage中
           sessionStorage.setItem('userInfo',JSON.stringify(res.data.Data))
           let ttoken  = JSON.parse(sessionStorage.getItem('userInfo'))
-          //console.log( ttoken.RoleName)
+          //
+          console.log( ttoken.RoleName)
           
         }).catch(err => {
           reject(err)
@@ -111,27 +113,27 @@ export default {
       })
     },
     // 获取用户相关信息
-    getUserInfo ({ state, commit }) {
-      return new Promise((resolve, reject) => {
-        try {
-          getUserInfo(state.token).then(res => {
-          	console.log(res.data)
-            const data = res.data
-            commit('setAvator', data.avator)
-            commit('setAccount', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
-            commit('setHasGetInfo', true)
-            resolve(data)
-            
-          }).catch(err => {
-            reject(err)
-          })
-        } catch (error) {
-          reject(error)
-        }
-      })
-    },
+//  getUserInfo ({ state, commit }) {
+//    return new Promise((resolve, reject) => {
+//      try {
+//        getUserInfo(state.token).then(res => {
+//        	console.log(res.data)
+//          const data = res.data
+//          commit('setAvator', data.avator)
+//          commit('setAccount', data.name)
+//          commit('setUserId', data.user_id)
+//          commit('setAccess', data.access)
+//          commit('setHasGetInfo', true)
+//          resolve(data)
+//          
+//        }).catch(err => {
+//          reject(err)
+//        })
+//      } catch (error) {
+//        reject(error)
+//      }
+//    })
+//  },
     // 此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
     getUnreadMessageCount ({ state, commit }) {
       getUnreadCount().then(res => {

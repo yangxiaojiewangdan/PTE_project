@@ -218,23 +218,26 @@
 										<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 									</Select>
 								</FormItem>
-								
 								</Col>
+								<Col span="8">
 								<FormItem label="所在小区" prop="VillageCode">
-									<Select v-model="formValidate.VillageCode" style="width: 200px;">
+									<Select v-model="formValidate.VillageCode" style="width: 150px;">
 										<Option value="beijing">New York</Option>
 										<Option value="shanghai">London</Option>
 										<Option value="shenzhen">Sydney</Option>
 									</Select>
 								</FormItem>
+								</Col>
+								<Col span="12">
 								<FormItem label="详细地址" prop="Address">
-									<Input v-model="formValidate.Address" placeholder="请输入" style="width: 490px;"></Input>
+									<Input v-model="formValidate.Address" placeholder="请输入" style="width: 250px;"></Input>
 								</FormItem>
+								</Col>
 								<FormItem label="业务部门" prop="BusinessUnit">
-									<Input v-model="formValidate.BusinessUnit" disabled placeholder="请输入" style="width: 200px;"></Input>
+									<Input v-model="formValidate.BusinessUnit" placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
 								<FormItem label="负责人" prop="Owner">
-									<Input v-model="formValidate.Owner" disabled placeholder="请输入" style="width: 200px;"></Input>
+									<Input v-model="formValidate.Owner" placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
 								</Col>
 							</Row>
