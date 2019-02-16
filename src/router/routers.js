@@ -802,7 +802,7 @@ export default [
   },
   // 财务中心的路由 end
   // 服务中心的路由
-  {
+{
     path: '/serviceCentre',
     name: '服务中心',
     meta: {
@@ -831,7 +831,7 @@ export default [
           import('@/view/components/drag-list/drag-list.vue')
       }
     ]
-  },
+},
   // 服务中心的路由 end
   // 业务分析的路由
   {
@@ -989,7 +989,8 @@ export default [
         name: 'apply_leagueRights',
         meta: {
           icon: 'md-grid',
-          title: '权益金规则'
+          title: '权益金规则',
+          access:['20001','20011','20033','20036']
         },
         component: () =>
           import('@/view/components/apply/leagueRights.vue')
@@ -999,7 +1000,8 @@ export default [
         name: 'apply_leagueSettlement',
         meta: {
           icon: 'md-grid',
-          title: '加盟商结算规则'
+          title: '加盟商结算规则',
+          access:['20001','20011','20033','20036']
         },
         component: () =>
           import('@/view/components/apply/leagueSettlement.vue')
@@ -1014,6 +1016,7 @@ export default [
     meta: {
       icon: 'logo-buffer',
       title: '系统设置',
+      access:['20001','20011','20033','20036']
     },
     component: Main,
     children: [{
@@ -1021,7 +1024,8 @@ export default [
         name: 'system_business',
         meta: {
           icon: 'md-trending-up',
-          title: '业务线设置'
+          title: '业务线设置',
+          
         },
         component: () =>
           import('@/view/components/system/business.vue')
