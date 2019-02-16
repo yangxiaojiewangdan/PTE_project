@@ -990,7 +990,7 @@ export default [
         meta: {
           icon: 'md-grid',
           title: '权益金规则',
-          access:['20001','20011','20033','20036']
+          //access:['20001','20011','20033','20036']
         },
         component: () =>
           import('@/view/components/apply/leagueRights.vue')
@@ -1016,7 +1016,7 @@ export default [
     meta: {
       icon: 'logo-buffer',
       title: '系统设置',
-      access:['20001','20011','20033','20036']
+      //access:['20001','20011','20033','20036']
     },
     component: Main,
     children: [{

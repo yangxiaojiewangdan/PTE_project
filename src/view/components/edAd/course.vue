@@ -11,7 +11,7 @@
 			<Col span="24" class="Col">
 			<h3 class="queryquery" style="padding-left:32px;">业务类型：</h3>
 			<Button @click="allinformationData" type="text" class="tableTops">全部</Button>
-			<RadioGroup v-model="button1" type="button">
+			<RadioGroup v-model="button2" type="button">
 				<Radio v-for="item in BusinessTypeList" :label="item.Code">
 					<span>{{item.Description}}</span>
 				</Radio>
@@ -248,6 +248,7 @@
 			return {
 				Interface: "Course",
 				button1: '',
+				button2:'',
 				querySelect: '',
 				querySelectList: '',
 				queryvalue: "",

@@ -15,7 +15,7 @@
       </Input>
     </FormItem>
     <FormItem>
-      <Button @click="handleSubmit" type="primary" long>登录</Button>
+     <router-link to='/'><Button @click="handleSubmit" type="primary" long>登录</Button></router-link>
     </FormItem>
   </Form>
 </template>
@@ -59,6 +59,7 @@ export default {
   },
   methods: {
     handleSubmit () {
+    	
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.$emit('on-success-valid', {

@@ -1041,7 +1041,7 @@ export default {
         ]
       })
         .then(res => {
-                  
+                  console.log(res.data)
           function formatNumber(num, precision, separator) {
               var parts;
               // 判断是否为数字

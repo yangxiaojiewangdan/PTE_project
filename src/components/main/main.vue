@@ -15,12 +15,6 @@
                 {{item1.meta.title}}
               </MenuItem>
             </template>
-
-            <!--<Submenu name="3">
-                <template slot="title">Submenu</template>
-                <MenuItem name="3-1">Option 7</MenuItem>
-                <MenuItem name="3-2">Option 8</MenuItem>
-            </Submenu>-->
         </Submenu>
     </Menu>
     </Sider>

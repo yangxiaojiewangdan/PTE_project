@@ -1,7 +1,7 @@
 <template>
   <div class="header-bar">
     <sider-trigger :collapsed="collapsed" icon="md-menu" @on-change="handleCollpasedChange"></sider-trigger>
-      <Menu ref="menu"  :active-name="activeName" :open-names="openedNames" :accordion="accordion" :theme="theme" width="auto" @on-select="handleSelect" @on-open-change='handleChange' >
+      <Menu ref="menu"  :active-name="activeName" :open-names="openedNames" :accordion="accordion" :theme="theme" width="auto" @on-select="handleSelect" @on-open-change='handleChange'>
         <template v-for="item in menuList">
           <template v-if="item.children && item.children.length === 1">
             <side-menu-item v-if="showChildren(item)" :key="`menu-${item.name}`" :parent-item="item"></side-menu-item>

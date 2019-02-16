@@ -205,13 +205,13 @@
 					{
 						title: '部门代码',
 						key: 'Code',
-						width: 150,
+						width: 110,
 						sortable: true
 					},
 					{
 						title: '部门名称',
 						key: 'Description',
-						width: 200,
+						width: 250,
 						sortable: true
 					},
 					{
@@ -249,13 +249,12 @@
 					{
 						title: '创建人',
 						key: 'CreateBy',
-						width: 200,
+						width: 100,
 						sortable: true
 					},
 					{
 						title: '创建时间',
 						key: 'CreateOn',
-						width: 240,
 						sortable: true
 					}
 

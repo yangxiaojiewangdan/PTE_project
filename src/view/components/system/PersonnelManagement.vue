@@ -71,7 +71,7 @@
 						<Input v-model="formValidate.MobilePhone" placeholder="请输入" />
 					</FormItem>
 					<FormItem label="登陆账号" prop="Account" v-if="false">
-						<Input v-model="formValidate.Account" placeholder="请输入"/>
+						<Input v-model="formValidate.Account" placeholder="请输入" />
 					</FormItem>
 					</Col>
 					<Col span="6">
@@ -111,16 +111,17 @@
 					</Col>
 					<Col span="6">
 					<FormItem label="主管姓名" prop="Supervisor">
-						<Select v-model="formValidate.Supervisor" placeholder="请选择">
+						<Select v-model="formValidate.Supervisor" placeholder="请选择" @on-change="PackageIdchange">
 							<Option v-for="item in IsSupervisorList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
 					<Col span="8">
-					<FormItem label="部门名称" prop="BusinessUnitId">
-						<Select v-model="formValidate.BusinessUnitId" placeholder="请选择" :label-in-value="true" @on-change="getItemName">
+					<FormItem label="部门名称" prop="BusinessUnit">
+						<!--<Select v-model="formValidate.BusinessUnit" placeholder="请选择" :label-in-value="true" @on-change="getItemName" disabled>
 							<Option v-for="item in BusinessUnitList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
-						</Select>
+						</Select>-->
+						<Input v-model="formValidate.BusinessUnit" placeholder="请输入"  disabled/>
 					</FormItem>
 					</Col>
 					</Col>
@@ -562,13 +563,33 @@
 				IsSupervisorList: [],
 			}
 		},
-//		computed:{
-//			TelPhone(){
-//				console.log(this.formValidate.TelPhone
-//			}
-//			
-//		},
+		//		computed:{
+		//			TelPhone(){
+		//				console.log(this.formValidate.TelPhone
+		//			}
+		//			
+		//		},
 		methods: {
+			//选择主管带出部门
+			PackageIdchange(value) {
+				console.log(value)
+				GetEntities("BusinessUser", {
+					Filters: [{
+						Relational: "And", //And 与 | Or 或
+						Conditions: [{
+							FilterField: "Id", //字段名
+							Relational: "Equal",
+							FilterValue:value //字段名里面的值
+						}]
+					}]
+				}).then(res => {
+					console.log(res.data)
+					this.formValidate.BusinessUnit = res.data[0].BusinessUnit
+					console.log(this.formValidate.BusinessUnit)
+				}).catch(err =>{
+					console.log(err)
+				})
+			},
 			getItemName(val) {
 				//				console.log(val)
 				//this.formValidate.BusinessUnitId = val.value;
@@ -714,7 +735,7 @@
 
 		},
 		mounted() {
-		//this.formValidate.Account = this.formValidate.TelPhone
+			//this.formValidate.Account = this.formValidate.TelPhone
 			//人员表格
 			GetEntities(this.Interface, this.data4).then(res => {
 				this.data1 = res.data

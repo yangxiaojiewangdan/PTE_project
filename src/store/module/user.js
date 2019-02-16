@@ -93,7 +93,7 @@ export default {
 					Account,
 					Password
 				}).then(res => {
-					debugger;
+					//debugger;
 					const data = res.data.Data
 					//将登陆信息保存在sessionStorage中
 					sessionStorage.setItem('userInfo', JSON.stringify(res.data.Data))
