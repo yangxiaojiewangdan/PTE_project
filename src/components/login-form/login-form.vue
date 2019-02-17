@@ -15,7 +15,7 @@
       </Input>
     </FormItem>
     <FormItem>
-     <router-link to='/'><Button @click="handleSubmit" type="primary" long>登录</Button></router-link>
+     <Button @click="handleSubmit" type="primary" long>登录</Button>
     </FormItem>
   </Form>
 </template>

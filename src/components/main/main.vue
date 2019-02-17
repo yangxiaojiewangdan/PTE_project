@@ -7,16 +7,17 @@
           <img v-show="collapsed" :src="minLogo" key="min-logo" />
         </div>
         <!---->
+    <Menu  @on-select="turnToPage"  active-name="1" id="leftMune"   v-for= "item1 in muneList" >
+    		<MenuItem :name="item1.name" style="float: none;"  v-if="!item1.hasOwnProperty('children')">{{item1.meta.title}}</MenuItem>
+				            <Submenu  v-else  :name="item1.name">
+				                <template slot="title">
+				                    {{item1.meta.title}}
+				                </template>
+				                <MenuItem :name="item2.name"  v-for= "item2 in item1.children">{{item2.meta.title}}</MenuItem>	
+				            </Submenu>
+                    
 
-       <Menu  @on-select="turnToPage"  active-name="1">
-        <Submenu  v-for="item in muneList"  name="1" >
-            <template slot="title" >
-              <MenuItem v-for= "item1 in item.children" :name="item1.name">
-                {{item1.meta.title}}
-              </MenuItem>
-            </template>
-        </Submenu>
-    </Menu>
+            </Menu>
     </Sider>
     <Layout>
       <header-bar @on-coll-change="handleCollapsedChange" accordion ref="HeaderBar" @on-select="turnToPage" :active-name="$route.name" :collapsed="collapsed" @on-change="turnTochange"  :menu-list="menuList">
@@ -124,11 +125,15 @@ export default {
     	if(name.length ===0){
     		return
     	}
-    	this.muneList = this.menuList.filter((item,index) => {
+    	console.log(this.menuList );
+    this.menuList.forEach((item,index) => {
     		if(name[0] === item.name){
-    			return item.children;
+    			this.muneList = item.children;
+    			return
     		}
-    	})
+    	});
+    	    	console.log(this.muneList );
+
     },
 
     turnToPage (route) {
