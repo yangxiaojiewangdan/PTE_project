@@ -1,10 +1,11 @@
 <template>
-  <div id="information">
+  <div id="divid">
     <Row>
-      <Col span="24" style="height:50px;">
-        <h1 class="queryHeader">门店管理</h1>
+      <Col span="24" style="height:50px; background: #fff;">
+        <p class="queryHeader">门店管理</p>
       </Col>
     </Row>
+     <hr>
     <!-- 查询条件 -->
     <Row>
       <Col span="24" class="querycriteria" style="height:160px;">
@@ -13,8 +14,8 @@
           <Row>
             <Col span="10" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:32px;">业务类型：</h3>
-              <Button type="text" class="tableTops">全部</Button>
-              <RadioGroup v-model="RadioBusinessType" type="button">
+              <Button type="text" class="tableTops" @click="clickRadioBusinessType">全部</Button>
+              <RadioGroup v-model="RadioBusinessType" type="button" @on-change="ConditionalQuery">
                 <Radio
                   v-for="item in BusinessTypeList"
                   :key="item.Code"
@@ -26,8 +27,8 @@
           <Row>
             <Col span="10" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:32px;">门店类型：</h3>
-              <Button type="text" class="tableTops">全部</Button>
-              <RadioGroup v-model="RadioStoreType" type="button">
+              <Button type="text" class="tableTops" @click="clickRadioStoreType">全部</Button>
+              <RadioGroup v-model="RadioStoreType" type="button" @on-change="ConditionalQuery">
                 <Radio
                   v-for="item in StoreTypeList"
                   :key="item.Code"
@@ -39,12 +40,11 @@
           <Row>
             <Col span="10" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:32px;">业务状态：</h3>
-              <Button type="text" class="tableTops">全部</Button>
-              <RadioGroup v-model="RadioStatus" type="button">
+              <Button type="text" class="tableTops" @click="clickRadioStatus">全部</Button>
+              <RadioGroup v-model="RadioStatus" type="button" @on-change="ConditionalQuery">
                 <Radio
                   v-for="item in StatusList"
-                  :key="item.Code"
-                  :label="item.Description"
+                  :label="item.Code"
                 >{{ item.Description }}</Radio>
               </RadioGroup>
             </Col>
@@ -53,15 +53,15 @@
       </Col>
     </Row>
     <!-- 查询结果 -->
-    <Row>
+    <Row style="background:#fff;">
       <Col span="15" class="queryEnd">
         <h2>查询结果</h2>
       </Col>
       <!-- 表格上面的功能 -->
       <Col span="8">
         <div class="tableTop">
-          <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
+          <Button @click="AddDepartment1" class="tableTops">添加</Button>
+          <Button @click="deleteList" class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -75,18 +75,17 @@
             style="width: 150px"
             class="tableTops"
           />
-          <Button type="primary" class="tableTops" @click="querytable">查询</Button>
+          <Button type="primary" class="tableTops" @click="ConditionalQuery">查询</Button>
         </div>
       </Col>
       <!-- 表格上面的功能 end-->
-      <Col span="24">
+      <Col span="24" >
         <!-- 表格 -->
         <Table
           height="530"
           size="small"
           highlight-row
           stripe
-          border
           ref="selection"
           :columns="informationTable"
           :data="informationData"
@@ -106,12 +105,12 @@
     </Row>
     <!-- 添加/参看信息 弹出框-->
     <Modal v-model="AddDepartment" scrollable width="900"  :mask-closable="false">
-      <p slot="header" style="text-align:left;line-height: 1;">
+      <p slot="header"  id="Modal_header">
         <span v-if="add">添加门店信息</span>
         <span v-if="see">查看门店信息</span>
       </p>
-       <p slot="close" style="margin-right:10px;line-height: 3;" @click="close('formValidate')">
-        <Icon type="md-close"  size="20" color="gray"/>
+       <p slot="close" id="Modal_close"  @click="close('formValidate')">
+        <Icon type="md-close"  size="20" color="#eee" />
       </p>
       <Form
         ref="formValidate"
@@ -126,8 +125,8 @@
               <Select v-model="formValidate.Franchiser" style="width:200px" :disabled="isdisabledFn">
                 <Option
                   v-for="item in FranchiserList"
-                  :value="item.Name"
-                  :key="item.FranchiserType"
+                  :value="item.Code"
+                  :key="item.Code"
                 >{{ item.Code }}</Option>
               </Select>
             </FormItem>
@@ -255,7 +254,7 @@
           <Col span="24">
             <FormItem label="业务类型" prop="BusinessType">
               <RadioGroup v-model="formValidate.BusinessType">
-                <Radio v-for="item in BusinessTypeList" :label="item.Description">
+                <Radio v-for="item in BusinessTypeList"  :label="item.Description">
                   <span>{{item.Description}}</span>
                 </Radio>
               </RadioGroup>
@@ -264,7 +263,7 @@
           <Col span="24">
             <FormItem label="业务状态" prop="Status">
               <RadioGroup v-model="formValidate.Status">
-                <Radio v-for="item in StatusList" :label="item.Code">
+                <Radio v-for="item in StatusList"  :label="item.Code">
                   <span>{{item.Description}}</span>
                 </Radio>
               </RadioGroup>
@@ -439,13 +438,13 @@ export default {
         },
         {
           title: "省",
-          key: "ProviceCode",
+          key: "ProviceName",
           width: 80,
           sortable: true
         },
         {
           title: "市",
-          key: "CityCode",
+          key: "CityName",
           width: 80,
           sortable: true
         },
@@ -560,17 +559,96 @@ export default {
     };
   },
   methods: {
-     close(name){
-            this.$refs[name].resetFields();
-        },
+    // 点击全部将单选框清空
+    clickRadioBusinessType(){
+      this.RadioBusinessType = "";
+      this.ConditionalQuery();
+    },
+    clickRadioStoreType(){
+      this.RadioStoreType = "";
+      this.ConditionalQuery();
+    },
+    clickRadioStatus(){
+      this.RadioStatus = "";
+      this.ConditionalQuery();
+    },
+    // 查询联动
+    ConditionalQuery(){
+     
+      let BusinessType = '';
+      let StoreType = '';
+      let Status = '';
+      if(this.RadioBusinessType == ""){
+        BusinessType = "";
+      }else{
+        BusinessType = "BusinessType";
+      }
+      if(this.RadioStoreType == ""){
+        StoreType = "";
+      }else{
+        StoreType = "StoreType";
+      }
+      if(this.RadioStatus == ""){
+        Status = "";
+      }else{
+        Status = "Status";
+      }
+      GetEntities(this.Interface, {
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: BusinessType, //字段名
+                Relational: "Equal",
+                FilterValue: this.RadioBusinessType //字段名里面的值
+              },
+              {
+                FilterField: StoreType, //字段名
+                Relational: "Equal",
+                FilterValue: this.RadioStoreType //字段名里面的值
+              },
+              {
+                FilterField:  Status, //字段名
+                Relational: "Equal",
+                FilterValue: this.RadioStatus //字段名里面的值
+              },
+              {
+                FilterField: this.querySelect, //字段名
+                Relational: "Contain",
+                FilterValue: this.queryvalue //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          this.informationData = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+        if(this.RadioBusinessType == "" && this.RadioStoreType == "" && this.RadioStatus == "" && this.queryvalue){
+          GetEntities(this.Interface,this.getTableData)
+            .then(res => {
+              this.informationData = res.data;
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+    },
+    close(name){
+      this.$refs[name].resetFields();
+    },
     //选择省获取 市数据  查询省
     SelectProviceCode(value) {
       this.queryCityCode = "";
       let ParentId = value.value;
-      console.log(ParentId);
       DistrictGetArea(ParentId)
         .then(res => {
           this.CityCodeList = res.data;
+          console.log(res.data);
         })
         .catch(err => {
           console.log(err);
@@ -582,6 +660,17 @@ export default {
       DistrictGetArea(ParentId)
         .then(res => {
           this.DistinctCodeList = res.data;
+          console.log(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      DistrictGetEntity(ParentId)
+        .then(res => {
+          this.formValidate.PostalCode = res.data.PostalCode;
+          this.formValidate.Latitude = res.data.Latitude;
+          this.formValidate.Longitude = res.data.Longitude;
+          console.log(res.data);
         })
         .catch(err => {
           console.log(err);
@@ -643,6 +732,7 @@ export default {
     },
     //详情修改页面
     dblclickUpData(index) {
+      console.log(index);
       this.AddDepartment = true;
       this.add = false;
       this.see = true;
@@ -742,7 +832,7 @@ export default {
     },
   },
   mounted() {
-    
+    this.common.login();
     // // 表格数据
     GetEntities(this.Interface,this.getTableData)
       .then(res => {

@@ -187,15 +187,19 @@
             </Col>
             <Col span="5">
               <FormItem label="定价" prop="OriginalPrice">
-                <Input type="text" v-model="formValidate.OriginalPrice" placeholder="请输入" disabled></Input>
+                <Input  v-model="formValidate.OriginalPrice" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
-            <Col span="5">
+            <Col span="5" v-if="ifTotalPeriod">
               <FormItem label="总课时" prop="TotalPeriod">
                 <Input v-model="formValidate.TotalPeriod" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
-
+            <Col span="5" v-if="ifFixedPeriods">
+              <FormItem label="期限(月)" prop="FixedPeriods">
+                <Input v-model="formValidate.FixedPeriods" placeholder="请输入" disabled></Input>
+              </FormItem>
+            </Col>
             <Col span="6">
               <FormItem label="售价" prop="SalePrice">
                 <Input
@@ -585,6 +589,8 @@ export default {
   },
   data() {
     return {
+      ifTotalPeriod:true,
+      ifFixedPeriods:false,
       q:"",
       isdisabledFn:false,
       Interface: "CustomerOrder",
@@ -841,6 +847,7 @@ export default {
         ChargeAmt: "0",
         ChargeAmt: "",
         UsedPeriod: "0",
+        FixedPeriods:"",
         RemainPeriod: ""
       },
       // 退课申请
@@ -1005,6 +1012,7 @@ export default {
           }
           this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
         }else{
+          
           var newyear = year + 2;
           this.formValidate.EndDate = newyear + "-" + month + "-" + day;
         }
@@ -1041,7 +1049,6 @@ export default {
         ]
       })
         .then(res => {
-                  
           function formatNumber(num, precision, separator) {
               var parts;
               // 判断是否为数字
@@ -1065,9 +1072,13 @@ export default {
           this.formValidate.StartDate = new Date();
           this.formValidate.PackageTypeDesc = res.data[0].PackageTypeDesc;
           this.formValidate.OriginalPrice = formatNumber(res.data[0].SellPrice);
-          this.formValidate.SalePrice  = res.data[0].SellPrice;
+          this.formValidate.SalePrice  = formatNumber(res.data[0].SellPrice);
           this.formValidate.TotalPeriod = res.data[0].TotalPeriods;
           this.FixedPeriodsnum = res.data[0].FixedPeriods;
+          if (this.formValidate.OriginalPrice.indexOf(".")< 0) {
+              this.formValidate.OriginalPrice=this.formValidate.OriginalPrice+".00";
+              this.formValidate.SalePrice=this.formValidate.SalePrice+".00";
+          }
           // 当课包允许折扣售价课更改反之不可更改
           if(res.data[0].AllowDiscount == false){
              this.isdisabledFn = true;
@@ -1082,6 +1093,8 @@ export default {
             var month = parseInt(date.substring(5, 7));
             var day = parseInt(date.substring(8, 10));
             if(this.formValidate.PackageTypeDesc == "固定期限"){
+              this.ifFixedPeriods = true;
+              this.ifTotalPeriod = false;
               var monthnum = parseInt(this.FixedPeriodsnum);
               if (month + monthnum > 12) {
                 var newyear = year + 1;
@@ -1114,6 +1127,8 @@ export default {
               }
               this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
             }else{
+              this.ifFixedPeriods = false;
+              this.ifTotalPeriod = true;
               var newyear = year + 2;
               var newday = day + 20;
               this.formValidate.EndDate = newyear + "-" + month + "-" + newday;

@@ -1,7 +1,7 @@
 <template>
-  <div id="information">
+  <div id="divid">
     <Row>
-      <Col span="24" style="height:50px;">
+      <Col span="24" style="height:50px;background: #fff;">
         <h1 class="queryHeader">加盟商基本信息</h1>
       </Col>
     </Row>
@@ -16,7 +16,7 @@
               <DatePicker
                 v-model="StartEndDate"
                 type="daterange"
-                @on-change="queryData"
+                @on-change="ConditionalQuery"
                 placeholder="Select date and time(Excluding seconds)"
                 style="width: 300px;margin-left:20px;"
               ></DatePicker>
@@ -53,13 +53,15 @@
                   :key="item.Code"
                 >{{ item.Name }}</Option>
               </Select>
-              <Select
+              <Select 
+                @on-change="ConditionalQuery"
                 v-model="queryDistinctCode"
                 style="width:200px;margin-left:20px;"
                 placeholder="区县"
                 clearable
               >
                 <Option
+               
                   v-for="item in DistinctCodeList"
                   :value="item.Id"
                   :key="item.Code"
@@ -70,9 +72,9 @@
           <Row>
             <Col span="16" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:32px;">业务状态：</h3>
-              <Button @click="allinformationData" type="text" class="tableTops">全部</Button>
-              <RadioGroup v-model="RadioGroupStatus" type="button" @on-change="queryData">
-                <Radio v-for="item in StatusList" :key="item.Code" :label="item.Id">
+              <Button type="text" class="tableTops">全部</Button>
+              <RadioGroup v-model="RadioGroupStatus" type="button" @on-change="ConditionalQuery">
+                <Radio v-for="item in StatusList" :label="item.Id">
                   <span>{{item.Description}}</span>
                 </Radio>
               </RadioGroup>
@@ -82,15 +84,15 @@
       </Col>
     </Row>
     <!-- 查询结果 -->
-    <Row>
+    <Row style="background:#fff;">
       <Col span="15" class="queryEnd">
         <h2>查询结果</h2>
       </Col>
       <!-- 表格上面的功能 -->
       <Col span="8">
         <div class="tableTop">
-          <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
+          <Button @click="AddDepartment1" class="tableTops">添加</Button>
+          <Button @click="deleteList" class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -104,7 +106,7 @@
             style="width: 150px"
             class="tableTops"
           />
-          <Button type="primary" class="tableTops" @click="querytable">查询</Button>
+          <Button type="primary" class="tableTops">查询</Button>
         </div>
       </Col>
       <!-- 表格上面的功能 end-->
@@ -115,7 +117,6 @@
           size="small"
           highlight-row
           stripe
-          border
           ref="selection"
           :columns="informationTable"
           :data="informationData"
@@ -141,12 +142,12 @@
       :mask-closable="false"
       :styles="{top: '20px'}"
     >
-      <p slot="header" style="text-align:left;line-height: 1;">
+      <p slot="header" id="Modal_header">
         <span v-if="add">添加加盟商信息</span>
         <span v-if="see">查看加盟商信息</span>
       </p>
-      <p slot="close" style="margin-right:10px;line-height: 3;" @click="close('formValidate')">
-        <Icon type="md-close" size="20" color="gray"/>
+      <p slot="close" id="Modal_close" @click="close('formValidate')">
+        <Icon type="md-close" size="20" color="#eee"/>
       </p>
       <Tabs>
         <TabPane label="加盟商信息" name="name1">
@@ -161,9 +162,19 @@
               <Col span="24">
                 <Col span="24">
                   <Col span="18">
-                    <Col span="24">
+                    <Col span="23">
+                      <FormItem label="所属业务群" prop="BusinessGroup">
+                        <Input
+                          v-model="formValidate.BusinessGroup"
+                          placeholder="请输入"
+                          style="width:300px"
+                          disabled
+                        ></Input>
+                      </FormItem>
+                    </Col>
+                    <Col span="23">
                       <FormItem label="加盟商代码" prop="Code">
-                        <Input v-model="formValidate.Code" placeholder="请输入" style="width:650px"></Input>
+                        <Input v-model="formValidate.Code" placeholder="请输入"></Input>
                       </FormItem>
                     </Col>
                     <Col span="14">
@@ -178,51 +189,6 @@
                           placeholder="请输入"
                           style="width:180px"
                         ></Input>
-                      </FormItem>
-                    </Col>
-                    <Col span="11">
-                      <FormItem label="所属业务群" prop="BusinessGroup">
-                        <Select v-model="formValidate.BusinessGroup">
-                          <Option
-                            v-for="item in BusinessGroupList"
-                            :value="item.value"
-                            :key="item.value"
-                          >{{ item.label }}</Option>
-                        </Select>
-                      </FormItem>
-                    </Col>
-                    <Col span="12">
-                      <FormItem label="业务类型" prop="BusinessType">
-                        <Select v-model="formValidate.BusinessType">
-                          <Option
-                            v-for="item in BusinessTypeList"
-                            :value="item.Description"
-                            :key="item.Code"
-                          >{{ item.Description }}</Option>
-                        </Select>
-                      </FormItem>
-                    </Col>
-
-                    <Col span="11">
-                      <FormItem label="加盟商类型" prop="FranchiserType">
-                        <Select v-model="formValidate.FranchiserType">
-                          <Option
-                            v-for="item in FranchiserTypeList"
-                            :value="item.Description"
-                            :key="item.Code"
-                          >{{ item.Description }}</Option>
-                        </Select>
-                      </FormItem>
-                    </Col>
-                    <Col span="12">
-                      <FormItem label="加盟方式" prop="LeageMode">
-                        <Select v-model="formValidate.LeageMode">
-                          <Option
-                            v-for="item in LeageModeList"
-                            :value="item.Description"
-                            :key="item.Code"
-                          >{{ item.Description }}</Option>
-                        </Select>
                       </FormItem>
                     </Col>
                   </Col>
@@ -267,6 +233,40 @@
                       >
                     </Modal>
                   </Col>
+                </Col>
+                <Col span="8">
+                  <FormItem label="业务类型" prop="BusinessType">
+                    <Select v-model="formValidate.BusinessType">
+                      <Option
+                        v-for="item in BusinessTypeList"
+                        :value="item.Description"
+                        :key="item.Code"
+                      >{{ item.Description }}</Option>
+                    </Select>
+                  </FormItem>
+                </Col>
+
+                <Col span="8">
+                  <FormItem label="加盟商类型" prop="FranchiserType">
+                    <Select v-model="formValidate.FranchiserType">
+                      <Option
+                        v-for="item in FranchiserTypeList"
+                        :value="item.Description"
+                        :key="item.Code"
+                      >{{ item.Description }}</Option>
+                    </Select>
+                  </FormItem>
+                </Col>
+                <Col span="7">
+                  <FormItem label="加盟方式" prop="LeageMode">
+                    <Select v-model="formValidate.LeageMode">
+                      <Option
+                        v-for="item in LeageModeList"
+                        :value="item.Description"
+                        :key="item.Code"
+                      >{{ item.Description }}</Option>
+                    </Select>
+                  </FormItem>
                 </Col>
                 <Col span="24">
                   <Col span="23">
@@ -330,7 +330,7 @@
                     >
                       <Option
                         v-for="item in ProviceCodeList"
-                        :value="item.Name"
+                        :value="item.Id"
                         :key="item.Code"
                       >{{ item.Name }}</Option>
                     </Select>
@@ -383,6 +383,10 @@
                     <Input v-model="formValidate.Fax" placeholder="请输入"></Input>
                   </FormItem>
                 </Col>
+                <Col span="20">
+                  <span style="font-size:20px;">联系人信息</span>
+                </Col>
+                <Divider></Divider>
                 <Col span="11">
                   <FormItem label="联系人姓名" prop="ContactName">
                     <Input v-model="formValidate.ContactName" placeholder="请输入"></Input>
@@ -744,19 +748,19 @@ export default {
         },
         {
           title: "省",
-          key: "ProviceCode",
+          key: "ProviceName",
           width: 80,
           sortable: true
         },
         {
           title: "市",
-          key: "CityCode",
+          key: "CityName",
           width: 80,
           sortable: true
         },
         {
           title: "区县",
-          key: "DistinctCode",
+          key: "DistinctName",
           width: 80,
           sortable: true
         },
@@ -1005,68 +1009,48 @@ export default {
       this.$refs[name].resetFields();
     },
     //选择省获取 市数据
-    SelectProviceCode(value) {
+    SelectProviceCode() {
       this.queryDistinctCode = "";
       this.queryCityCode = "";
-      let ParentId = value.value;
-      DistrictGetArea(ParentId)
-        .then(res => {
-          this.CityCodeList = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      GetEntities(this.Interface, {
-        Filters: [
-          {
-            Relational: "And",
-            Conditions: [
-              {
-                FilterField: "ProviceCode",
-                Relational: "Equal",
-                FilterValue: ParentId
-              }
-            ]
-          }
-        ]
-      })
-        .then(res => {
-          this.informationData = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      if (this.AddDepartment == true) {
+        DistrictGetArea(this.formValidate.ProviceCode)
+          .then(res => {
+            this.CityCodeList = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        DistrictGetArea(this.queryProviceCode)
+          .then(res => {
+            this.CityCodeList = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      this.ConditionalQuery();
     },
     //点击市获取 区县数据
-    SelectCityCode(value) {
-      let ParentId = value.value;
-      DistrictGetArea(ParentId)
-        .then(res => {
-          this.DistinctCodeList = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-      GetEntities(this.Interface, {
-        Filters: [
-          {
-            Relational: "And",
-            Conditions: [
-              {
-                FilterField: "CityCode",
-                Relational: "Equal",
-                FilterValue: ParentId
-              }
-            ]
-          }
-        ]
-      })
-        .then(res => {
-          this.informationData = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    SelectCityCode() {
+      if (this.AddDepartment == true) {
+        DistrictGetArea(this.formValidate.CityCode)
+          .then(res => {
+            this.DistinctCodeList = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        DistrictGetArea(this.queryCityCode)
+          .then(res => {
+            this.DistinctCodeList = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      this.ConditionalQuery();
     },
     SelectDistinctCode(value) {
       let keyId = value;
@@ -1091,40 +1075,85 @@ export default {
       this.del = false;
     },
     // 点击全部查询全部数据
-    allinformationData() {
+    ConditionalQuery() {
       let FromDate = this.StartEndDate[0];
       let ToDate = this.StartEndDate[1];
+      let IdFromDate = "";
+      let IdToDate = "";
+      let Status = "";
+      let ProviceCode = "";
+      let CityCode = "";
+      let DistinctCode = "";
+      if (FromDate == "") {
+        IdFromDate = "";
+      } else {
+        IdFromDate = "FromDate";
+      }
+      if (ToDate == "") {
+        IdToDate = "";
+      } else {
+        IdToDate = "ToDate";
+      }
+      if (this.RadioGroupStatus == "") {
+        Status = "";
+      } else {
+        Status = "Status";
+      }
+      if (this.queryProviceCode == "") {
+        ProviceCode = "";
+      } else {
+        ProviceCode = "ProviceCode";
+      }
+      if (this.queryCityCode == "") {
+        CityCode = "";
+      } else {
+        CityCode = "CityCode";
+      }
+      if (this.queryDistinctCode == "") {
+        DistinctCode = "";
+      } else {
+        DistinctCode = "DistinctCode";
+      }
       GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And",
             Conditions: [
               {
-                FilterField: "Status",
-                Relational: "Equal",
-                FilterValue: " "
-              }
-            ]
-          },
-          {
-            Relational: "And",
-            Conditions: [
-              {
-                FilterField: "FromDate",
+                FilterField: IdFromDate,
                 Relational: "GreaterEqualThan",
                 FilterValue: FromDate
               },
               {
-                FilterField: "ToDate",
+                FilterField: IdToDate,
                 Relational: "LessEqualThan",
                 FilterValue: ToDate
+              },
+              {
+                FilterField: Status,
+                Relational: "Equal",
+                FilterValue: this.RadioGroupStatus
+              },
+              {
+                FilterField: ProviceCode,
+                Relational: "Equal",
+                FilterValue: this.queryProviceCode
+              },
+              {
+                FilterField: CityCode,
+                Relational: "Equal",
+                FilterValue: this.queryCityCode
+              },
+              {
+                FilterField: DistinctCode,
+                Relational: "Equal",
+                FilterValue: this.queryDistinctCode
               }
             ]
           }
         ]
       })
         .then(res => {
-          this.RadioGroupStatus = "";
           this.informationData = res.data;
         })
         .catch(err => {
@@ -1255,70 +1284,6 @@ export default {
       this.formValidate = { brand_right: 0 };
       this.$refs[name].resetFields();
       this.$Message.info("已取消");
-    },
-    // 业务状态查询
-    // 日期框查询
-    queryData() {
-      let FromDate = this.StartEndDate[0];
-      let ToDate = this.StartEndDate[1];
-      GetEntities(this.Interface, {
-        Filters: [
-          {
-            Relational: "And",
-            Conditions: [
-              {
-                FilterField: "FromDate",
-                Relational: "GreaterEqualThan",
-                FilterValue: FromDate
-              },
-              {
-                FilterField: "ToDate",
-                Relational: "LessEqualThan",
-                FilterValue: ToDate
-              }
-            ]
-          },
-          {
-            Relational: "And",
-            Conditions: [
-              {
-                FilterField: "Status",
-                Relational: "Equal",
-                FilterValue: this.RadioGroupStatus
-              }
-            ]
-          }
-        ]
-      })
-        .then(res => {
-          this.informationData = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 点击查询按钮查询信息
-    querytable() {
-      GetEntities(this.Interface, {
-        Filters: [
-          {
-            Relational: "And", //And 与 | Or 或
-            Conditions: [
-              {
-                FilterField: this.querySelect, //字段名
-                Relational: "Contain",
-                FilterValue: this.queryvalue //字段名里面的值
-              }
-            ]
-          }
-        ]
-      })
-        .then(res => {
-          this.informationData = res.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 上传证件
     handleView(name) {

@@ -7,7 +7,7 @@
  
  
   */
-
+ 
 
 /* 设置操作的公共样式 */
     .setHeader{
@@ -18,14 +18,15 @@
 /* 查询操作公共样式 */
 /* 头部 */  
   .queryHeader{
-    color:#55a;
+    font-size: 22px;
+    color:#111;
     margin:10px 30px;
   }
   /* 查询条件的公共样式 */
          /* 高度在页面里定  */
       .querycriteria{
           background: #fff;
-          margin-bottom: 10px;
+          margin-bottom: 10px ;
       }
       .queryquery{
         margin-left:40px;
@@ -37,11 +38,12 @@
   /* 查询条件的公共样式 end */
   /* 查询结果样式 */
   .queryEnd{
-    color:#55a;
-    margin:10px 30px;
+    background: #fff;
+    color:#111;
+    margin:15px 30px;
   }
   .tableTop{
-    margin-bottom: 10px;
+    margin: 10px 0;
   }
   .tableTops{
     margin: 0 5px 0 5px;
@@ -52,3 +54,13 @@
     margin-right: 40px;
     margin-top: 10px;
   }
+  #Modal_header{
+    text-align:left;
+    line-height: 1;
+    color:#eee;
+  }
+  #Modal_close{
+    margin-right:10px;
+    line-height: 3;
+  }
+  

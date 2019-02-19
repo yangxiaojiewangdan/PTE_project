@@ -1,13 +1,13 @@
 <template>
   <Layout style="height: 100%" class="main" >
-    <Sider hide-trigger collapsible :width="256" :collapsed-width="64"  v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}" >
-        <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
-        <div class="logo-con">
-          <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
-          <img v-show="collapsed" :src="minLogo" key="min-logo" />
-        </div>
-        <!---->
-
+     <Header class="Layout_Header">
+          <img  class="logo-con" v-show="!collapsed" :src="maxLogo" key="max-logo" />
+      <header-bar @on-coll-change="handleCollapsedChange" accordion ref="HeaderBar" @on-select="turnToPage" :active-name="$route.name" :collapsed="collapsed" @on-change="turnTochange"  :menu-list="menuList">
+         <user :message-unread-count="unreadCount" :user-avator="userAvator" class="user"/>
+      </header-bar>
+    </Header>
+    <Layout>
+      <Sider hide-trigger collapsible :width="256" :collapsed-width="64"  v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}" >
        <Menu  @on-select="turnToPage"  active-name="1">
         <Submenu  v-for="item in muneList"  name="1" >
             <template slot="title" >
@@ -15,24 +15,9 @@
                 {{item1.meta.title}}
               </MenuItem>
             </template>
-
-            <!--<Submenu name="3">
-                <template slot="title">Submenu</template>
-                <MenuItem name="3-1">Option 7</MenuItem>
-                <MenuItem name="3-2">Option 8</MenuItem>
-            </Submenu>-->
         </Submenu>
     </Menu>
     </Sider>
-    <Layout>
-      <header-bar @on-coll-change="handleCollapsedChange" accordion ref="HeaderBar" @on-select="turnToPage" :active-name="$route.name" :collapsed="collapsed" @on-change="turnTochange"  :menu-list="menuList">
-         <user :message-unread-count="unreadCount" :user-avator="userAvator" class="user"/>
-      </header-bar>
-      <!-- <Header class="header-con">
-          <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
-          <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>
-          <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
-      </Header> -->
         <Content class="main-content-con">
           <Layout class="main-layout-con">
             <div class="tag-nav-wrapper">
@@ -158,7 +143,6 @@ export default {
 
     },
     handleCollapsedChange (state) {
-
       this.collapsed = state
     },
     handleCloseTag (res, type, route) {

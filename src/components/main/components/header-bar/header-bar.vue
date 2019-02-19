@@ -1,6 +1,6 @@
 <template>
   <div class="header-bar">
-    <sider-trigger :collapsed="collapsed" icon="md-menu" @on-change="handleCollpasedChange"></sider-trigger>
+    <!-- <sider-trigger :collapsed="collapsed" icon="md-menu" @on-change="handleCollpasedChange"></sider-trigger> -->
       <Menu ref="menu"  :active-name="activeName" :open-names="openedNames" :accordion="accordion" :theme="theme" width="auto" @on-select="handleSelect" @on-open-change='handleChange' >
         <template v-for="item in menuList">
           <template v-if="item.children && item.children.length === 1">
@@ -12,8 +12,9 @@
             <menu-item v-else :name="getNameOrHref(item)" :key="`menu-${item.name}`"><common-icon :type="item.icon || ''"/><span>{{ showTitle(item) }}</span></menu-item>
           </template>
         </template>
+        
       </Menu>
-    <div class="custom-content-con">
+      <div class="custom-content-con">
       <slot></slot>
     </div>
   </div>

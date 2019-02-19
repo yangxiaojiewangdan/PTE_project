@@ -14,8 +14,8 @@
           <!-- 表格操作按钮 -->
           <Col span="8">
             <div class="tableTop">
-              <Button @click="AddList" type="success" class="tableTops">添加</Button>
-              <Button @click="deleteList" type="error" class="tableTops">删除</Button>
+              <Button @click="AddList"  class="tableTops">添加</Button>
+              <Button @click="deleteList"  class="tableTops">删除</Button>
               <Select
                 v-model="querySelect"
                 :label-in-value="true"
@@ -46,7 +46,6 @@
               size="small"
               highlight-row
               stripe
-              border
               ref="selection"
               :columns="SettlementCodeTable"
               :data="SettlementCodeData"
@@ -651,7 +650,7 @@ export default {
   },
   mounted() {
     // 结算规则
-    this.SettleTypeList = JSON.parse(localStorage.FRANCHISER_STATUS);
+    this.SettleTypeList = JSON.parse(localStorage.SETTLE_TYPE);
     // 人员表格
     GetEntities(this.Interface, this.getTableData)
       .then(res => {

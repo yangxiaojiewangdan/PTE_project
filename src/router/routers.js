@@ -488,8 +488,7 @@ export default [
       title: '教务中心'
     },
     component: Main,
-    children: [
-    {
+    children: [{
         path: 'edAd_course',
         name: 'edAd_course',
         meta: {
@@ -509,7 +508,7 @@ export default [
         component: () =>
           import('@/view/components/edAd/classpackage.vue')
       },
-      
+
       {
         path: 'edAd_courseCalendar',
         name: 'edAd_courseCalendar',
