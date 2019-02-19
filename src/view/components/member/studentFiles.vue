@@ -94,13 +94,13 @@
 			<h2>确定删除此数据？</h2>
 		</Modal>
 		<!--添加弹框-->
-		<Modal v-model="AddDepartment" scrollable width="1100" title="添加学员档案信息" :mask-closable="false" :styles="{top: '40px'}">
+		<Modal v-model="AddDepartment" scrollable width="900" title="添加学员档案信息" :mask-closable="false" :styles="{top: '40px'}">
 			<p slot="header" style="text-align: left; line-height: 1;">
 				<span v-if="add">基本信息</span>
 				<span v-if="see">修改学员</span>
 			</p>
 			<Row>
-				<Col span="16">
+				<Col span="24">
 				<Tabs value="name1" @on-click="tabsPage">
 					<!--添加学员-->
 					<TabPane label="基本信息" name="name1" style="height:730px;overflow-y:auto;overflow-x:hidden;">
@@ -156,6 +156,22 @@
 								<FormItem label="家长邮箱" prop="ContactEMail">
 									<Input v-model="formValidate.ContactEMail" placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
+							
+								<FormItem label="" style="margin-top: -160px;">
+									<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+										<div style="padding: 5px;">
+											<Icon type="ios-cloud-upload" size="60"></Icon>
+											<p>上传照片</p>
+										</div>
+									</Upload>
+								</FormItem>
+								<!--<FormItem label="" >
+									<Upload multiple type="drag" action="//jsonplaceholder.typicode.com/posts/">
+										<div style="padding: 5px">
+											<Icon type="ios-cloud-upload" size="50"></Icon>
+										</div>
+									</Upload>
+								</FormItem>-->
 								<div class="line">
 									客户信息
 								</div>
@@ -200,41 +216,44 @@
 									联系人地址
 								</div>
 								<Col span="24">
-									
+
 								<FormItem label="所在省" prop="ProviceCode">
 									<Select v-model="formValidate.ProviceCode" @on-change="SelectProviceCode" style="width:100px">
 										<Option v-for="item in province" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 									</Select>
 								</FormItem>
-								
+
 								<FormItem label="所在市" prop="CityCode">
 									<Select v-model="formValidate.CityCode" @on-change="SelectCityCode" style="width:100px">
 										<Option v-for="item in city" :value="item.Id" :key="item.value">{{ item.Name}}</Option>
 									</Select>
 								</FormItem>
-								
+
 								<FormItem label="所在县区" prop="DistinctCode">
 									<Select v-model="formValidate.DistinctCode" style="width:100px">
 										<Option v-for="item in county" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 									</Select>
 								</FormItem>
-								
 								</Col>
+								<Col span="8">
 								<FormItem label="所在小区" prop="VillageCode">
-									<Select v-model="formValidate.VillageCode" style="width: 200px;">
+									<Select v-model="formValidate.VillageCode" style="width: 150px;">
 										<Option value="beijing">New York</Option>
 										<Option value="shanghai">London</Option>
 										<Option value="shenzhen">Sydney</Option>
 									</Select>
 								</FormItem>
+								</Col>
+								<Col span="12">
 								<FormItem label="详细地址" prop="Address">
-									<Input v-model="formValidate.Address" placeholder="请输入" style="width: 490px;"></Input>
+									<Input v-model="formValidate.Address" placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
+								</Col>
 								<FormItem label="业务部门" prop="BusinessUnit">
-									<Input v-model="formValidate.BusinessUnit" disabled placeholder="请输入" style="width: 200px;"></Input>
+									<Input v-model="formValidate.BusinessUnit" placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
 								<FormItem label="负责人" prop="Owner">
-									<Input v-model="formValidate.Owner" disabled placeholder="请输入" style="width: 200px;"></Input>
+									<Input v-model="formValidate.Owner" placeholder="请输入" style="width: 200px;"></Input>
 								</FormItem>
 								</Col>
 							</Row>

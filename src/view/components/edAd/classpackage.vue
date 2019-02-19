@@ -68,7 +68,7 @@
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
 					</FormItem>
-					<FormItem label="门店Id" prop="StoreId">
+					<FormItem label="门店名称" prop="StoreId">
 						<Select v-model="formValidate.StoreId" style="width:200px">
 							<Option v-for="item in store" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
@@ -98,7 +98,7 @@
 					<FormItem label="赠送课时" prop="ComplimentPeriods" v-if="keshi">
 						<Input v-model="formValidate.ComplimentPeriods" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
-					<FormItem label="销售开始/结束日期" prop="BeginSellDate">
+					<FormItem label="销售截止日期" prop="BeginSellDate">
 						<DatePicker v-model="formValidate.BeginSellDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="请选择" style="width: 200px;"></DatePicker>
 					</FormItem>
 					<FormItem label="售价" prop="SellPrice">
@@ -210,7 +210,7 @@
 						<Option v-for="item in CoursePackageData" :value="item.Id" :key="item.value">{{ item.PackageName }}</Option>
 					</Select>
 				</FormItem>-->
-				<FormItem label="课程Id" prop="CourseId">
+				<FormItem label="课程名称" prop="CourseId">
 					<Select v-model="CousreDetailFrom.CourseId" style="width:200px" :label-in-value="true" @on-change="v=>{selectPeriods(v,'type')}">
 						<Option v-for="item in CourseData" :value="item.Id">{{ item.CourseName }}</Option>
 					</Select>
@@ -249,7 +249,7 @@
 					<FormItem label="销售结束日期" prop="EndSellDate">
 						<DatePicker v-model="CousrePriseFrom.EndSellDate" @on-change="CousrePriseFrom.EndSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
 					</FormItem>-->
-					<FormItem label="销售开始/结束日期" prop="BeginSellDate">
+					<FormItem label="销售截止日期" prop="BeginSellDate">
 						<DatePicker v-model="CousrePriseFrom.BeginSellDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="请选择" style="width: 300px;"></DatePicker>
 					</FormItem>
 					<FormItem label="售价" prop="SellPrice">
@@ -410,7 +410,7 @@
 						title: "促销包",
 						key: "IsPromotion",
 						sortable: true,
-						width: 100,
+						width: 95,
 						render: (h, params) => {
 							let texts = "";
 							if(params.row.IsPromotion == true) {
@@ -603,12 +603,12 @@
 				PricePackage: [],
 				//明细实体表头
 				colDetailedPackage: [{
-						title: "课包Id",
+						title: "课包名称",
 						key: "PackageId",
 						sortable: true
 					},
 					{
-						title: "课程Id",
+						title: "课程名称",
 						key: "CourseId",
 						sortable: true
 					},

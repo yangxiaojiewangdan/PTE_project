@@ -15,7 +15,7 @@
       </Input>
     </FormItem>
     <FormItem>
-      <Button @click="handleSubmit" type="primary" long>登录</Button>
+     <Button @click="handleSubmit" type="primary" long>登录</Button>
     </FormItem>
   </Form>
 </template>
@@ -44,7 +44,7 @@ export default {
   data () {
     return {
       form: {
-        Account: 'admin',
+        Account: '',
         Password: ''
       }
     }
@@ -59,6 +59,7 @@ export default {
   },
   methods: {
     handleSubmit () {
+    	
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.$emit('on-success-valid', {

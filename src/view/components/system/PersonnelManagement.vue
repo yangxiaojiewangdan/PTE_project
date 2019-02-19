@@ -62,13 +62,16 @@
 				<Row>
 					<Col span="24">
 					<Col span="7">
-					<FormItem label="手机" prop="MobilePhone">
-						<Input v-model="formValidate.MobilePhone" placeholder="请输入" />
+					<FormItem label="姓名" prop="LastName">
+						<Input v-model="formValidate.LastName" placeholder="请输入" />
 					</FormItem>
 					</Col>
 					<Col span="7">
-					<FormItem label="姓名" prop="LastName">
-						<Input v-model="formValidate.LastName" placeholder="请输入" />
+					<FormItem label="手机" prop="MobilePhone">
+						<Input v-model="formValidate.MobilePhone" placeholder="请输入" />
+					</FormItem>
+					<FormItem label="登陆账号" prop="Account" v-if="false">
+						<Input v-model="formValidate.Account" placeholder="请输入" />
 					</FormItem>
 					</Col>
 					<Col span="6">
@@ -108,16 +111,17 @@
 					</Col>
 					<Col span="6">
 					<FormItem label="主管姓名" prop="Supervisor">
-						<Select v-model="formValidate.Supervisor" placeholder="请选择">
+						<Select v-model="formValidate.Supervisor" placeholder="请选择" @on-change="PackageIdchange">
 							<Option v-for="item in IsSupervisorList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
 					<Col span="8">
-					<FormItem label="部门名称" prop="BusinessUnitId">
-						<Select v-model="formValidate.BusinessUnitId" placeholder="请选择" :label-in-value="true" @on-change="getItemName">
+					<FormItem label="部门名称" prop="BusinessUnit">
+						<!--<Select v-model="formValidate.BusinessUnit" placeholder="请选择" :label-in-value="true" @on-change="getItemName" disabled>
 							<Option v-for="item in BusinessUnitList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
-						</Select>
+						</Select>-->
+						<Input v-model="formValidate.BusinessUnit" placeholder="请输入"  disabled/>
 					</FormItem>
 					</Col>
 					</Col>
@@ -157,11 +161,6 @@
 					</Col>
 					</Col>
 					<Col span="24">
-					<Col span="2">
-					<FormItem label="" prop="IsSupervisor" style="width:90px ;">
-						<Checkbox v-model="formValidate.IsSupervisor" style="width: 70px;">主管</Checkbox>
-					</FormItem>
-					</Col>
 					<Col span="4">
 					<FormItem label="" prop="IsAdministrtor" style="width:100px ;">
 						<Checkbox v-model="formValidate.IsAdministrtor" style="width: 80px;">管理员</Checkbox>
@@ -216,7 +215,7 @@
 				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="ChangePassword; ChangePassword = true;">
           <span>重置密码</span>
         </button>
-				
+
 				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('formValidate');">
           <span>确定</span>
        </button>
@@ -564,7 +563,33 @@
 				IsSupervisorList: [],
 			}
 		},
+		//		computed:{
+		//			TelPhone(){
+		//				console.log(this.formValidate.TelPhone
+		//			}
+		//			
+		//		},
 		methods: {
+			//选择主管带出部门
+			PackageIdchange(value) {
+				console.log(value)
+				GetEntities("BusinessUser", {
+					Filters: [{
+						Relational: "And", //And 与 | Or 或
+						Conditions: [{
+							FilterField: "Id", //字段名
+							Relational: "Equal",
+							FilterValue:value //字段名里面的值
+						}]
+					}]
+				}).then(res => {
+					console.log(res.data)
+					this.formValidate.BusinessUnit = res.data[0].BusinessUnit
+					console.log(this.formValidate.BusinessUnit)
+				}).catch(err =>{
+					console.log(err)
+				})
+			},
 			getItemName(val) {
 				//				console.log(val)
 				//this.formValidate.BusinessUnitId = val.value;
@@ -611,7 +636,6 @@
 				}).catch(err => {
 					console.log(err)
 				})
-
 			},
 			//删除
 			deleteList() {
@@ -711,17 +735,16 @@
 
 		},
 		mounted() {
+			//this.formValidate.Account = this.formValidate.TelPhone
 			//人员表格
 			GetEntities(this.Interface, this.data4).then(res => {
 				this.data1 = res.data
 				this.data1.forEach(item => {
-					console.log(item)
 					if(item.IsSupervisor == true) {
 						this.IsSupervisorList.push(item)
 						console.log(this.IsSupervisorList)
 					}
 				})
-				console.log(res.data)
 				this.loading = false;
 			}).catch(err => {
 				console.log(err)

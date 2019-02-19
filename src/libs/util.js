@@ -26,9 +26,13 @@ export const hasChild = (item) => {
 	return item.children && item.children.length !== 0
 }
 
+
 const showThisMenuEle = (item, access) => {
 	if(item.meta && item.meta.access && item.meta.access.length) {
+		
+					//目标数组			需要查询的数组
 		if(hasOneOf(item.meta.access, access)) return true
+		
 		else return false
 	} else return true
 }
@@ -40,6 +44,7 @@ export const getMenuByRouter = (list, access) => {
 	let res = []
 	forEach(list, item => {
 		if(!item.meta || (item.meta && !item.meta.hideInMenu)) {
+			//debugger;
 			let obj = {
 				icon: (item.meta && item.meta.icon) || '',
 				name: item.name,
@@ -180,8 +185,14 @@ export const getNewTagList = (list, newRoute) => {
  * @param {*} route 路由列表
  */
 const hasAccess = (access, route) => {
-	if(route.meta && route.meta.access) return hasOneOf(access, route.meta.access)
-	else return true
+	if(route.meta && route.meta.access) 
+	{
+		return hasOneOf(access, route.meta.access)
+	}
+	else 
+	{
+		return true
+	}
 }
 
 /**
@@ -197,6 +208,7 @@ export const canTurnTo = (name, access, routes) => {
 			if(item.children && item.children.length) {
 				return routePermissionJudge(item.children)
 			} else if(item.name === name) {
+				//debugger;
 				return hasAccess(access, item)
 			}
 		})
