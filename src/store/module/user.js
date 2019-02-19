@@ -95,7 +95,7 @@ export default {
 				}).then(res => {
 					//debugger;
 					const data = res.data.Data
-					//将登陆信息保存在sessionStorage中
+					//将用户信息保存在sessionStorage中
 					sessionStorage.setItem('userInfo', JSON.stringify(res.data.Data))
 					let ttoken = JSON.parse(sessionStorage.getItem('userInfo'))
 					//用户信息
@@ -108,7 +108,7 @@ export default {
 					for(var i in PermissionList) {
 						accessRouter.push(PermissionList[i]);
 					}
-					console.log(accessRouter)
+//					console.log(accessRouter)
 					commit('settoken', data.SessionToken)
 					commit('setAvator', data.AccountType)
 					commit('setAccount', data.AccountName)
@@ -148,7 +148,7 @@ export default {
 		}) {
 			return new Promise((resolve, reject) => {
 				//debugger;
-				resolve();
+				resolve(data);
 				//				try {
 				//					//取用户信息
 				//					let userInfo = sessionStorage.getItem('userInfo');

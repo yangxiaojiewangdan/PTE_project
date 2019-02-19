@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
 		})
 	} else {
 		if(store.state.user.hasGetInfo) {
-			//debugger;
+			
 			turnTo(to, store.state.user.access, next)
 		} else {
 			store.dispatch('getUserInfo').then(user => {

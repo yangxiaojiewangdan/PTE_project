@@ -188,13 +188,13 @@ export default {
       .catch(err => {
         console.log(err);
       });
-    DataDictionaryGetEntities("AGREEMENT_STATUS")
-      .then(res => {
-        localStorage.setItem("AGREEMENT_STATUS", JSON.stringify(res.data));
-      })
-      .catch(err => {
-        console.log(err);
-      });
+//  DataDictionaryGetEntities("AGREEMENT_STATUS")
+//    .then(res => {
+//      localStorage.setItem("AGREEMENT_STATUS", JSON.stringify(res.data));
+//    })
+//    .catch(err => {
+//      console.log(err);
+//    });
     DataDictionaryGetEntities("UMPIRE_TYPE")
       .then(res => {
         localStorage.setItem("UMPIRE_TYPE", JSON.stringify(res.data));

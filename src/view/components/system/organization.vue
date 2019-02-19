@@ -12,7 +12,8 @@
 			</Col>
 			<!-- 树状图 -->
 			<Col span="24">
-			<Tree :data="treeList" :render="renderContent" children-key="ChildNodes" class="tree" show-checkbox ref="tree" @on-check-change="choiceAll" @on-select-change='selectChange'></Tree>
+			<!--:render="renderContent"-->
+			<Tree :data="treeList" children-key="ChildNodes" class="tree" @on-select-change='selectChange'></Tree>
 			</Col>
 			<!-- 树状图 end-->
 			</Col>
@@ -62,18 +63,13 @@
 			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
 				<Row>
 					<Col span="24">
-					<FormItem label="所属业务群" prop="BusinessGroup">
-						<Select v-model="formValidate.BusinessGroup" style="width:460px" placeholder="请选择">
-							<Option v-for="item in ParentId" :value="item.value" :key="item.value">{{ item.label }}</Option>
-						</Select>
+					<FormItem label="所属业务群" prop="BusinessGroup" v-if="is">
+						<Input v-model="formValidate.BusinessGroup" placeholder="请输入" style="width:460px"></Input>
 					</FormItem>
 					</Col>
-					<Col span="24" v-if="is">
+					<Col span="24">
 					<FormItem label="上级部门" prop="ParentId">
-						<!--<Select v-model="formValidate.ParentId"  style="width:460px" placeholder="请选择">
-							<Option v-for="item in ParentId" :value="item.value" :key="item.value">{{ item.label }}</Option>
-						</Select>-->
-						<Input v-model="formValidate.ParentId" placeholder="请输入" style="width:460px"></Input>
+						<Input v-model="formValidate.ParentId" placeholder="请输入" style="width:460px" disabled></Input>
 					</FormItem>
 					</Col>
 					<Col span="24">
@@ -107,7 +103,7 @@
 					</Col>
 					<Col span="9">
 					<FormItem label="" prop="Enabled">
-						<i-switch v-model="formValidate.Enabled" size="large" >
+						<i-switch v-model="formValidate.Enabled" size="large">
 							<span slot="open">启用</span>
 							<span slot="close">禁用</span>
 						</i-switch>
@@ -190,8 +186,7 @@
 					data
 				}) => {
 					return(
-						<span> { data.Description } </span>
-
+						<span style="color:red" onClick={(e)=>alert("1")}>{ data.Description }</span>
 					)
 				},
 				// 树形图 end
@@ -269,7 +264,7 @@
 				BusinessUnitData: {
 					"Filters": {},
 				},
-				treePid: '',
+				treeCode: '',
 				BatchDeleteList: [],
 				delBusinessUnitArrs: [],
 				// 表格 end      
@@ -299,15 +294,16 @@
 				AddDepartment: false,
 				formValidate: {
 					BusinessGroup: '',
-					ParentId: "-1",
+					ParentId: "",
 					Enabled: true,
 					Code: '',
 					Description: '',
 					Supervisor: '',
 					Id: '',
 				},
-				ruleValidate: {}
-
+				ruleValidate: {},
+				ParentIdData:"", 
+				BusinessGroupData:'',
 				// 添加信息 弹出框 end  
 			}
 		},
@@ -317,35 +313,31 @@
 				this.add = true;
 				this.see = false;
 				this.formValidate = {};
-				this.formValidate.ParentId = "-1";
-
+				this.formValidate.BusinessGroup = this.BusinessGroupData
+				this.formValidate.ParentId  = this.ParentIdData
+				
 			},
-			selectChange(selectedList) {
-				console.log(selectedList);
-
-			},
-			choiceAll(data) {
-				console.log(data)
-				//let choicesAll=this.$refs.tree.getCheckedNodes;
-				//console.log(choicesAll)
-				data.forEach(item => {
-					this.treePid = item.ParentId
+			selectChange(dataList) {
+				console.log(dataList[0].ParentId);
+				this.ParentIdData = dataList[0].ParentId
+				dataList.forEach(item => {
+					console.log(item)
+					this.treeCode = item.Code
 				})
-				this.loading = true;
-				//调用接口刷新页面
+				
 				GetEntities(this.Interface, {
 					"Filters": [{
 						"Relational": 'Or',
 						"Conditions": [{
-							"FilterField": 'ParentId',
+							"FilterField": 'Code',
 							"Relational": "Equal",
-							"FilterValue": this.treePid,
+							"FilterValue": this.treeCode,
 						}]
 					}]
 				}).then(res => {
-					console.log(res)
+					console.log(res.data)
 					this.data1 = res.data;
-					this.loading = false;
+					
 				}).catch(err => {
 					console.log(err)
 				})
@@ -480,10 +472,14 @@
 			},
 		},
 		mounted() {
+			//获取用户信息
+			let userInfo = sessionStorage.getItem('userInfo');
+			let array = JSON.parse(userInfo);
+			this.BusinessGroupData = array.BusinessUnit
+			console.log(this.BusinessGroupData)
 			//获取树形结构
 			GetBusinessUnit(this.Interface).then(res => {
 				this.treeList = res.data
-				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
@@ -491,19 +487,17 @@
 			GetEntities(this.Interface, this.BusinessUnitData).then(res => {
 				this.data1 = res.data
 				this.loading = false;
-				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			})
 			//获取业务群
 			GetEntities("BusinessGroup", this.BusinessUnitData).then(res => {
-				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			})
 			//主管姓名
 			GetEntities("BusinessUser", this.BusinessUnitData).then(res => {
-				console.log(res.data)
+				//console.log(res.data)
 				this.cityList1 = res.data
 			}).catch(err => {
 				console.log(err)

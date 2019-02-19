@@ -123,7 +123,7 @@
 						<Checkbox v-model="formValidate.IsAudition" style="width: 60px;">试听包</Checkbox>
 					</FormItem>
 					<FormItem label="" prop="IsExclusive" style="width:200px ;">
-						<Checkbox v-model="formValidate.IsExclusive" style="width: 100px;">门店专属课包</Checkbox>
+						<Checkbox v-model="formValidate.IsExclusive" style="width: 100px;" disabled>门店专属课包</Checkbox>
 					</FormItem>
 					</Col>
 					<Col span="24">
