@@ -113,7 +113,7 @@
           ref="selection"
           :columns="informationTable"
           :data="informationData"
-         @on-row-dblclick="dblclickUpData"
+          @on-row-dblclick="dblclickUpData"
           @on-select="OneselectionId"
           @on-select-all="allselectionId"
           @on-select-all-cancel="allcancelselectionId"
@@ -123,7 +123,7 @@
       </Col>
       <Col span="24">
         <!-- 分页 -->
-        <Page :total="100" class="page"/>
+        <Page :total="100" class="page" @on-change="pagechange"/>
         <!-- 分页 end-->
       </Col>
     </Row>
@@ -187,18 +187,8 @@
             </FormItem>
           </Col>
           <Col span="10">
-            <FormItem label="停用日期" prop="ToDate">
-              <DatePicker type="date" v-model="formValidate.ToDate" placeholder="Select date"></DatePicker>
-            </FormItem>
-          </Col>
-          <Col span="12">
-            <FormItem label="每天开始时间" prop="FromTime">
-              <TimePicker v-model="formValidate.FromTime" placeholder="Select time"></TimePicker>
-            </FormItem>
-          </Col>
-          <Col span="10">
-            <FormItem label="每天结束时间" prop="ToTime">
-              <TimePicker v-model="formValidate.ToTime" placeholder="Select time"></TimePicker>
+            <FormItem label="可用时间" prop="ToTime">
+              <TimePicker type="timerange" @on-change="FromTimeToTime" placeholder="Select time"></TimePicker>
             </FormItem>
           </Col>
           <Col span="5">
@@ -232,12 +222,25 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="11">
+          <Col span="7">
+            <FormItem label="排序码" prop="SortKey">
+              <Input v-model="formValidate.SortKey" placeholder="请输入"></Input>
+            </FormItem>
+          </Col>
+          <Col span="14">
+            <FormItem label prop="Enabled">
+              <i-switch v-model="formValidate.Enabled" size="large" @on-change="Enabledchange">
+                <span slot="open">启用</span>
+                <span slot="close">禁用</span>
+              </i-switch>
+            </FormItem>
+          </Col>
+          <Col span="24" v-if="end">
             <FormItem label="禁用日期" prop="InvalidDate">
               <DatePicker type="date" v-model="formValidate.InvalidDate" placeholder="Select date"></DatePicker>
             </FormItem>
           </Col>
-          <Col span="22">
+          <Col span="22" v-if="end">
             <FormItem label="禁用原因" prop="Comments">
               <Input
                 v-model="formValidate.Comments"
@@ -245,19 +248,6 @@
                 :autosize="{minRows: 2,maxRows: 5}"
                 placeholder="请输入"
               ></Input>
-            </FormItem>
-          </Col>
-          <Col span="7">
-            <FormItem label="排序码" prop="SortKey">
-              <Input v-model="formValidate.SortKey" placeholder="请输入"></Input>
-            </FormItem>
-          </Col>
-          <Col span="7">
-            <FormItem label prop="Enabled">
-              <i-switch v-model="formValidate.Enabled" size="large">
-                <span slot="open">启用</span>
-                <span slot="close">禁用</span>
-              </i-switch>
             </FormItem>
           </Col>
         </Row>
@@ -269,7 +259,7 @@
               <span>创建人:</span>
               <span>{{ formValidate.CreateByName }}</span>
             </div>
-            <div> 
+            <div>
               <span>更新人:</span>
               <span>{{ formValidate.UpdateByName }}</span>
             </div>
@@ -327,6 +317,7 @@ export default {
   inject: ["reload"],
   data() {
     return {
+      end: false,
       // 接口
       Interface: "ClassRoom",
       // 所属门店下拉框数据
@@ -450,12 +441,7 @@ export default {
             );
           }
         },
-        {
-          title: "停用日期",
-          key: "ToDate",
-          width: 110,
-          sortable: true
-        },
+
         {
           title: "每天开始时间",
           key: "FromTime",
@@ -543,7 +529,16 @@ export default {
       ],
       //表格数组
       getTableData: {
-        Filters: {}
+        Filters: [
+          {
+            Relational: "",
+            Conditions: []
+          }
+        ],
+        OrderBy: {},
+        Paging: "true",
+        PageSize: "5",
+        PageIndex: "1"
       },
       informationData: [],
       // 删除信息弹出框
@@ -562,7 +557,6 @@ export default {
         ClassRoomType: "",
         Status: "",
         FromDate: "",
-        ToDate: "",
         FromTime: "",
         ToTime: "",
         Length: "",
@@ -585,6 +579,38 @@ export default {
     };
   },
   methods: {
+    pagechange(value){
+      console.log(value);
+       GetEntities(this.Interface, {
+        Filters: [
+          {
+            Relational: "",
+            Conditions: []
+          }
+        ],
+        OrderBy: {},
+        Paging: "true",
+        PageSize: "5",
+        PageIndex: value
+      },)
+      .then(res => {
+        this.informationData = res.data.PageData;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    },
+    FromTimeToTime(value) {
+      this.formValidate.FromTime = value[0];
+      this.formValidate.ToTime = value[1];
+    },
+    Enabledchange(value) {
+      if (value == true) {
+        this.end = false;
+      } else if (value == false) {
+        this.end = true;
+      }
+    },
     // 创建人
     AddDepartment1() {
       this.AddDepartment = true;
@@ -594,7 +620,7 @@ export default {
       this.see = false;
       this.del = false;
     },
-     // 删除数据接口
+    // 删除数据接口
     deleteList() {
       if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
@@ -663,13 +689,14 @@ export default {
     },
     //详情修改页面
     dblclickUpData(index) {
+      console.log(index);
       this.AddDepartment = true;
       this.formValidate = index;
       this.add = false;
       this.see = true;
       this.del = true;
     },
-        // 添加/修改信息
+    // 添加/修改信息
     handleSubmit(name) {
       // 验证表单
       this.$refs[name].validate(valid => {
@@ -714,7 +741,7 @@ export default {
     },
     // 点击查询按钮查询信息
     querytable() {
-      GetEntities(this.Interface,{
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And", //And 与 | Or 或
@@ -747,19 +774,19 @@ export default {
     // 表格数据
     GetEntities(this.Interface, this.getTableData)
       .then(res => {
-        this.informationData = res.data;
+        this.informationData = res.data.PageData;
       })
       .catch(err => {
         console.log(err);
       });
     // 查询条件  门店的信息循环到教室
-    BusinessStoreGetEntities(this.getTableData)
-      .then(res => {
-        this.StoreList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    // BusinessStoreGetEntities(this.getTableData)
+    //   .then(res => {
+    //     this.StoreList = res.data;
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
   }
 };
 </script>

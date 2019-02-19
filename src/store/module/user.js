@@ -1,15 +1,18 @@
 import {
-	login,
-	logout,
-	//getUserInfo,
-	getMessage,
-	getContentByMsgId,
-	hasRead,
-	removeReaded,
-	restoreTrash,
-	getUnreadCount
+  login,
+  logout,
+  //getUserInfo,
+  getMessage,
+  getContentByMsgId,
+  hasRead,
+  removeReaded,
+  restoreTrash,
+  getUnreadCount
 } from '@/api/user'
-import { settoken, gettoken } from '@/libs/util'
+import {
+  settoken,
+  gettoken
+} from '@/libs/util'
 export default {
 	state: {
 		Account: '',

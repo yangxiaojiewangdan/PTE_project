@@ -19,6 +19,11 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(ElementUI);
 
+// 引入公共js 
+import common from "./commonFunction/Function.js"
+Vue.prototype.common = common
+
+
 //url全局变量
 //import global_ from "./Global"; //引用文件
 //Vue.prototype.GLOBAL = global_; //挂载到Vue实例上面
@@ -55,3 +60,6 @@ new Vue({
   store,
   render: h => h(App)
 })
+
+
+

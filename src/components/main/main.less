@@ -1,88 +1,150 @@
-.main{
-  position: relative;
-  .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):after {
-     width: 0px; 
+ .main {
 
-}
-  .ivu-menu-vertical.ivu-menu-light:after {
-    display: none;  
+  // 组件的头部
+  .Layout_Header {
+    background: #3D4D65;
+    height: 83px;
+    padding: 0;
+    line-height: 0;
+    border-bottom: 3px solid #000000;
   }
-  .ivu-menu .ivu-menu-item:hover{
-    background: #2d8cf0;
+
+  .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item,
+  .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title {
+    color: rgba(255, 255, 255, 0.9);
   }
+
+  .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu) {
+    color: #fff;
+    background: #5B7294;
+    z-index: 2;
+  }
+
+  .ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened {
+    background: #000000
+  }
+
+  .ivu-menu-dark {
+    background: #3D4D65;
+
+  }
+
+  position: relative;
+
+  .ivu-menu-light.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):after {
+    width: 0px;
+
+  }
+
   .ivu-menu-light {
-     width: none;
-     background-color:#000000;
-      background-color:rgba(0,0,0,0); 
+    background: none;
   }
-  .ivu-menu-submenu-title-icon{
+
+  .ivu-menu-vertical.ivu-menu-light:after {
     display: none;
   }
-  .header-bar{
-    background: #001529;
-    .sider-trigger-a{
+
+  .ivu-menu-item:hover {
+    background: #5B7294;
+  }
+
+  .header-bar {
+    float: left;
+    padding-left: 10%;
+    width: 87%;
+    height: 20%;
+    background: #3D4D65;
+
+    .sider-trigger-a {
       padding: 0;
       float: left;
       color: #fff;
     }
-    .user{
+
+    .user {
       margin-top: 20%;
       color: #fff;
     }
   }
-  .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item ,#leftMune {
-    padding-left: 70px!important;
-    width: 233px;
+
+  .ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item,
+  #leftMune {
+    padding-left: 70px !important;
+    width: 100%;
     color: #F0F0F0;
-    
-  } 
-  .ivu-menu,.ivu-menu-item,.ivu-menu-submenu{
-    float: left;
-    //height: 44px;
-  }
-  .ivu-menu{
-    .ivu-menu-item,.ivu-menu-submenu-title{
-      padding: 15px 5px;
-    }
 
   }
-  .logo-con{
-    padding: 10px;
-    img{
-      height: 44px;
-      width: auto;
-      display: block;
-      margin: 0 auto;
+
+  .ivu-menu,
+  .ivu-menu-item,
+  .ivu-menu-submenu {
+    float: left;
+    // height: 50px;
+  }
+
+  .ivu-menu {
+    .ivu-menu-submenu-title {
+      padding: 14px 17px;
+
+      .ivu-icon {
+        margin: 2px 30% 18px;
+        font-size: 25px;
+      }
+    }
+
+    .ivu-icon-ios-arrow-down {
+      display: none;
     }
   }
-  .main-layout-con{
+
+  .ivu-menu-submenu-title span {
+    display: block;
+  }
+
+  .logo-con {
+    float: left;
+    padding: 15px 0 0 10px;
+    height: 70px;
+    width: 13%;
+    margin: 0 auto;
+  }
+
+  .main-layout-con {
     overflow: hidden;
   }
-  .main-content-con{
+
+  .main-content-con {
     overflow: hidden;
+    background: #eee;
+
   }
-  .tag-nav-wrapper{
+
+  .tag-nav-wrapper {
     padding: 0;
-    background:#F0F0F0;
+    background: #F0F0F0;
   }
-  .content-wrapper{
+
+  .content-wrapper {
     padding: 18px;
     overflow: auto;
   }
-  .left-sider{
-    .ivu-layout-sider-children{
-      overflow-y: scroll;
+
+  .left-sider {
+    .ivu-layout-sider-children {
       margin-right: -18px;
     }
   }
 }
-.ivu-menu-item > i{
+
+.ivu-menu-item>i {
   margin-right: 12px !important;
 }
-.ivu-menu-submenu > .ivu-menu > .ivu-menu-item > i {
+
+.ivu-menu-submenu>.ivu-menu>.ivu-menu-item>i {
   margin-right: 8px !important;
 }
-.collased-menu-dropdown{
+
+.collased-menu-dropdown {
   width: 100%;
   margin: 0;
   line-height: normal;
@@ -93,23 +155,24 @@
   list-style: none;
   cursor: pointer;
   transition: background 0.2s ease-in-out;
-  &:hover{
-    background: rgba(100, 100, 100, 0.1);
+
+  &:hover {
+    background: #fff;
   }
+
   & * {
     color: #515a6e;
   }
-  .ivu-menu-item > i{
+
+  .ivu-menu-item>i {
     margin-right: 12px !important;
   }
-  .ivu-menu-submenu > .ivu-menu > .ivu-menu-item > i {
+
+  .ivu-menu-submenu>.ivu-menu>.ivu-menu-item>i {
     margin-right: 8px !important;
   }
 }
 
-.ivu-select-dropdown.ivu-dropdown-transfer{
+.ivu-select-dropdown.ivu-dropdown-transfer {
   max-height: 400px;
 }
-
-
-

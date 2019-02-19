@@ -91,13 +91,12 @@
         <Row>
           <Col span="24">
             <FormItem label="所属业务群" prop="BusinessGroup">
-              <Select v-model="formValidate.BusinessGroup" style="width:300px">
-                <Option
-                  v-for="item in BusinessGroupList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
-              </Select>
+              <Input
+                v-model="formValidate.BusinessGroup"
+                placeholder="请输入"
+                style="width:300px"
+                disabled
+              ></Input>
             </FormItem>
           </Col>
           <Col span="24">

@@ -188,6 +188,7 @@ export default {
       .catch(err => {
         console.log(err);
       });
+
 //  DataDictionaryGetEntities("AGREEMENT_STATUS")
 //    .then(res => {
 //      localStorage.setItem("AGREEMENT_STATUS", JSON.stringify(res.data));

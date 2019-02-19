@@ -166,7 +166,6 @@ export default [
 			hideInMenu: true,
 			notCache: true,
 		},
-
 		children: [{
 			path: '/home',
 			name: 'home',
@@ -541,7 +540,6 @@ export default [
 				component: () =>
 					import('@/view/components/edAd/classpackage.vue')
 			},
-
 			{
 				path: 'edAd_courseCalendar',
 				name: 'edAd_courseCalendar',
