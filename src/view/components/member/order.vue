@@ -1,10 +1,11 @@
 <template>
   <div id="information">
     <Row>
-      <Col span="24" style="height:50px;">
-        <h1 class="queryHeader">订单管理</h1>
+      <Col span="24" style="height:50px;background: #fff;">
+        <p class="queryHeader">订单管理</p>
       </Col>
     </Row>
+    <hr>
     <!-- 查询条件 -->
     <Row>
       <Col span="24" class="querycriteria" style="height:200px;">
@@ -60,15 +61,15 @@
       </Col>
     </Row>
     <!-- 查询结果 -->
-    <Row>
+    <Row style="background:#fff;">
       <Col span="15" class="queryEnd">
         <h2>查询结果</h2>
       </Col>
       <!-- 表格上面的功能 -->
       <Col span="8">
         <div class="tableTop">
-          <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
+          <Button @click="AddDepartment1"  class="tableTops">添加</Button>
+          <Button @click="deleteList"  class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -93,7 +94,6 @@
           size="small"
           highlight-row
           stripe
-          border
           ref="selection"
           :columns="informationTable"
           :data="informationData"
@@ -114,9 +114,12 @@
     <Enquiringcustomers v-if="Enquiringcustomers1" v-on:childByValue="childByValue"></Enquiringcustomers>
     <!-- 添加信息 弹出框-->
     <Modal v-model="AddDepartment" scrollable width="1300" :mask-closable="false">
-      <p slot="header" style="text-align:left;line-height: 1;">
+      <p slot="header" id="Modal_header">
         <span v-if="add">添加订单</span>
         <span v-if="see">查看订单详情</span>
+      </p>
+      <p slot="close" id="Modal_close" @click="close('formValidate')">
+        <Icon type="md-close" size="20" color="#eee"/>
       </p>
       <Form
         ref="formValidate"
@@ -418,7 +421,15 @@
           @click="PaymentOrder = true;"
           v-if="del"
         >
-          <span>支付</span>
+          <span>线上支付</span>
+        </button>
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="PaymentOrder = true;"
+          v-if="del"
+        >
+          <span>手工入帐</span>
         </button>
         <button
           type="button"
@@ -890,7 +901,9 @@ export default {
     };
   },
   methods: {
- 
+    close(name) {
+      this.$refs[name].resetFields();
+    },
     // 查询条件
     queryquerychange(value){
       console.log(value)
@@ -1161,7 +1174,7 @@ export default {
                 this.$Message.success("成功!");
                 this.AddDepartment = false;
                 this.reload();
-                this.formValidate = { brand_right: 0 };
+                this.$refs[name].resetFields();
               })
               .catch(err => {
                 this.$Message.error("失败!");
@@ -1178,6 +1191,7 @@ export default {
               .then(res => {
                 this.$Message.success("修改成功!");
                 this.reload();
+                this.$refs[name].resetFields();
               })
               .catch(err => {
                 console.log(err);
@@ -1304,6 +1318,7 @@ export default {
     },
     // 取消
     handleReset(name) {
+      this.formValidate = { brand_right: 0 };
       this.$refs[name].resetFields();
       this.$Message.info("已取消");
     }

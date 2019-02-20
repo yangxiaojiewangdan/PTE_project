@@ -830,9 +830,38 @@ export default {
           console.log(err);
         });
     },
+    go(){
+      this.AddDepartment = true;
+      let id = this.$route.query.id;
+      GetEntities("BusinessStore",{
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: "Id", //字段名
+                Relational: "Equal",
+                FilterValue: id //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          this.formValidate = res.data[0];
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   },
   mounted() {
     this.common.login();
+    if(this.$route.query.id == undefined){
+    }else{
+      this.go();
+    }
+    this.$route.query.id;
     // // 表格数据
     GetEntities(this.Interface,this.getTableData)
       .then(res => {
@@ -863,6 +892,7 @@ export default {
     this.StoreTypeList = JSON.parse(localStorage.STORE_TYPE);
     // 业务状态
     this.StatusList = JSON.parse(localStorage.STORE_STATUS);
+   
   }
 };
 </script>
