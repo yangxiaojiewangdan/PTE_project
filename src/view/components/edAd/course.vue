@@ -1,80 +1,4 @@
 <template>
-<<<<<<< HEAD
-	<div>
-		<Row>
-			<Col span="24" style="height:50px;">
-			<h1 class="queryHeader">课程信息</h1>
-			</Col>
-		</Row>
-		<!--查询条件-->
-		<Row>
-			<Col span="24" class="querycriteria" style="height: 160px;">
-			<Col span="24" class="Col">
-			<h3 class="queryquery" style="padding-left:32px;">业务类型：</h3>
-			<Button @click="allinformationData" type="text" class="tableTops">全部</Button>
-			<RadioGroup v-model="button2" type="button">
-				<Radio v-for="item in BusinessTypeList" :label="item.Code">
-					<span>{{item.Description}}</span>
-				</Radio>
-			</RadioGroup>
-			</Col>
-			<Col span="24" class="Col">
-			<h3 class="queryquery" style="padding-left:32px;">课程类型：</h3>
-			<Button @click="allinformationData" type="text" class="tableTops">全部</Button>
-			<RadioGroup v-model="button1" type="button">
-				<Radio v-for="item in radioList" :label="item.Code">
-					<span>{{item.Description}}</span>
-				</Radio>
-			</RadioGroup>
-			</Col>
-			<Col span="24" class="Col">
-			<h3 class="queryquery" style="padding-left:32px;">销课方式：</h3>
-			<Button @click="allinformationData" type="text" class="tableTops">全部</Button>
-			<RadioGroup v-model="button1" type="button">
-				<Radio v-for="item in Destruction" :label="item.Id">
-					<span>{{item.Description}}</span>
-				</Radio>
-			</RadioGroup>
-			</Col>
-			</Col>
-		</Row>
-		<!--增删改查-->
-		<Row>
-			<Col span="15" class="queryEnd">
-			<h2>查询结果</h2>
-			</Col>
-			<Col span="8">
-			<div class="tableTop">
-				<Button  class="tableTops" @click="AddDepartment = true">添加</Button>
-				<Button @click="deleteList"  class="tableTops">删除</Button>
-				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
-					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-				</Select>
-				<Input v-model="queryvalue" placeholder="请输入" style="width: 150px" class="tableTops" />
-				<Button type="primary" class="tableTops">查询</Button>
-			</div>
-			</Col>
-			<Col span="24">
-			<!-- 表格 -->
-			<Table height="550" size="small" highlight-row stripe border ref="selection" :columns="CourseTable" :data="CourseData" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId"></Table>
-			</Col>
-			<Col span="24">
-			<!-- 分页 -->
-			<Page :total="100" class="page" />
-			</Col>
-		</Row>
-		<!--确定删除弹框-->
-		<Modal v-model="delModal" title="提示" @on-ok="ok" @on-cancel="cancel">
-			<h2>确定删除此数据？</h2>
-		</Modal>
-		<!--添加信息弹框-->
-		<Modal v-model="AddDepartment" width="800" title="添加课程信息" :mask-closable="false" :styles="{top: '20px'}">
-			<Form ref="CourseForm" :model="CourseForm" :rules="ruleValidate" :label-width="90" inline>
-				<Row>
-					<Col span="10">
-					<FormItem label="所属业务群" prop="BusinessGroup">
-						<!--<Select v-model="CourseForm.BusinessGroup" style="width:200px" disabled>
-=======
   <div>
     <Row>
       <Col span="24" style="height:50px;">
@@ -173,7 +97,6 @@
           <Col span="10">
             <FormItem label="所属业务群" prop="BusinessGroup">
               <!--<Select v-model="CourseForm.BusinessGroup" style="width:200px" disabled>
->>>>>>> d1598e88cb7ab5018aa83cb1235f1650ec18ea9d
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
               </Select>-->
               <Input
