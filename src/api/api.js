@@ -93,9 +93,9 @@ export const Copy = (Interface, keyId) => {
   });
 };
 // 获取组织树结构
-export const GetBusinessUnit = Interface => {
+export const GetBusinessUnit = (Interface,businessGroup) => {
   return axios.request({
-    url: apiUrl + "/api/" + Interface + "/GetBusinessUnit?businessGroup=*",
+    url: apiUrl + "/api/" + Interface + "/GetBusinessUnit?businessGroup=" + businessGroup,
     method: "get"
   });
 };

@@ -44,8 +44,8 @@
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button type="success" class="tableTops" @click="AddDepartment = true">添加</Button>
-				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
+				<Button  class="tableTops" @click="AddDepartment = true">添加</Button>
+				<Button @click="deleteList"  class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>

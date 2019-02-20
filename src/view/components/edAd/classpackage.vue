@@ -30,8 +30,8 @@
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button type="success" class="tableTops" @click="Add">添加</Button>
-				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
+				<Button  class="tableTops" @click="Add">添加</Button>
+				<Button @click="deleteList" class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
@@ -68,11 +68,11 @@
 							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 						</Select>
 					</FormItem>
-					<FormItem label="门店名称" prop="StoreId">
+					<!--<FormItem label="门店名称" prop="StoreId">
 						<Select v-model="formValidate.StoreId" style="width:200px">
 							<Option v-for="item in store" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
-					</FormItem>
+					</FormItem>-->
 
 					<FormItem label="课包类型" prop="PackageType">
 						<Select v-model="formValidate.PackageType" style="width:200px" @on-change="v=>{setOption1(v,'type')}">
@@ -98,8 +98,14 @@
 					<FormItem label="赠送课时" prop="ComplimentPeriods" v-if="keshi">
 						<Input v-model="formValidate.ComplimentPeriods" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
-					<FormItem label="销售截止日期" prop="BeginSellDate">
-						<DatePicker v-model="formValidate.BeginSellDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="请选择" style="width: 200px;"></DatePicker>
+					<FormItem label="销售截止日期" prop="Time">
+						<DatePicker v-model="formValidate.Time" type="daterange" @on-change="queryData" format="yyyy-MM-dd" placeholder="请选择" style="width: 200px;"></DatePicker>
+					</FormItem >
+					<FormItem v-if="is" label="销售开始日期" prop="BeginSellDate">
+						<Input v-model="formValidate.BeginSellDate" placeholder="请输入" style="width:200px"></Input>
+					</FormItem>
+					<FormItem v-if="is" label="销售结束日期" prop="EndSellDate">
+						<Input v-model="formValidate.EndSellDate" placeholder="请输入" style="width:200px"></Input>
 					</FormItem>
 					<FormItem label="售价" prop="SellPrice">
 						<Input v-model="formValidate.SellPrice" placeholder="请输入" style="width:200px"></Input>
@@ -122,8 +128,13 @@
 					<FormItem label="" prop="IsAudition" style="width:70px ;">
 						<Checkbox v-model="formValidate.IsAudition" style="width: 60px;">试听包</Checkbox>
 					</FormItem>
-					<FormItem label="" prop="IsExclusive" style="width:200px ;">
-						<Checkbox v-model="formValidate.IsExclusive" style="width: 100px;" disabled>门店专属课包</Checkbox>
+					<FormItem label="" prop="IsExclusive">
+						<Checkbox v-model="formValidate.IsExclusive">门店专属课包</Checkbox>
+					</FormItem>
+					<FormItem label="门店" prop="Store" v-if="ShopBag">
+						<Select v-model="CousrePriseFrom.StoreId" style="width:100px">
+							<Option v-for="item in store" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
+						</Select>
 					</FormItem>
 					</Col>
 					<Col span="24">
@@ -162,7 +173,7 @@
             </Button>
 				</Row>
 				<!--课包价格实体-->
-				<!--				<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">课包价格实体</Divider>-->
+				<template v-if="isShop">
 				<div class="line">
 					课包价格实体
 				</div>
@@ -170,6 +181,7 @@
 				<Button type="info" @click="AddPrise = true">
               <Icon type="md-add"/>添加课包价格实体
             </Button>
+            </template>
 			</Form>
 			<div slot="footer">
 				<div class="footer_left">
@@ -243,14 +255,14 @@
 						</Select>
 					</FormItem>
 					</Col>
-					<!--<FormItem label="销售开始日期" prop="BeginSellDate">
-						<DatePicker v-model="CousrePriseFrom.BeginSellDate" @on-change="CousrePriseFrom.BeginSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
+					<FormItem label="销售开始日期" prop="BeginSellDate" v-if="is">
+						<Input v-model="CousrePriseFrom.BeginSellDate" placeholder="请输入" ></Input>
 					</FormItem>
-					<FormItem label="销售结束日期" prop="EndSellDate">
-						<DatePicker v-model="CousrePriseFrom.EndSellDate" @on-change="CousrePriseFrom.EndSellDate=$event" format="yyyy-MM-dd" type="date" placeholder="Select date" style="width: 200px"></DatePicker>
-					</FormItem>-->
-					<FormItem label="销售截止日期" prop="BeginSellDate">
-						<DatePicker v-model="CousrePriseFrom.BeginSellDate" type="daterange" @on-change="queryData;StartEndDate=$event" format="yyyy-MM-dd" placeholder="请选择" style="width: 300px;"></DatePicker>
+					<FormItem label="销售结束日期" prop="EndSellDate" v-if="is">
+						<Input v-model="CousrePriseFrom.EndSellDate" placeholder="请输入"></Input>
+					</FormItem>
+					<FormItem label="销售截止日期" prop="time">
+						<DatePicker v-model="CousrePriseFrom.time" type="daterange" @on-change="queryData2" format="yyyy-MM-dd" placeholder="请选择" style="width: 300px;"></DatePicker>
 					</FormItem>
 					<FormItem label="售价" prop="SellPrice">
 						<Input v-model="CousrePriseFrom.SellPrice" placeholder="请输入" style="width:300px"></Input>
@@ -321,6 +333,9 @@
 				AddDetail: false,
 				AddPrise: false,
 				IsLimitPrice:false,
+				ShopBag:false,
+				isShop:true,
+				is:false,
 				//添加弹框表单表头
 				CoursePackage: [{
 						type: "selection",
@@ -584,7 +599,8 @@
 					SellPeriods: '',
 					ComplimentPeriods: '',
 					SellPrice: '',
-					BeginSellDate: '',
+					Time:'',
+					BeginSellDate:'',
 					EndSellDate: '',
 					IsPromotion: '',
 					IsAudition: '',
@@ -602,11 +618,12 @@
 				//课包价格实体
 				PricePackage: [],
 				//明细实体表头
-				colDetailedPackage: [{
-						title: "课包名称",
-						key: "PackageId",
-						sortable: true
-					},
+				colDetailedPackage: [
+//					{
+//						title: "课包名称",
+//						key: "PackageId",
+//						sortable: true
+//					},
 					{
 						title: "课程名称",
 						key: "CourseId",
@@ -620,7 +637,21 @@
 					{
 						title: "固定课时",
 						key: "IsLimited",
-						sortable: true
+						sortable: true,
+						render: (h, params) => {
+							let texts = "";
+							if(params.row.IsLimited == true) {
+								texts = "是";
+							} else if(params.row.IsLimited == false) {
+								texts = "否";
+							}
+							return h(
+								"div", {
+									props: {}
+								},
+								texts
+							);
+						}
 					},
 					{
 						title: "操作",
@@ -692,6 +723,7 @@
 				],
 				//课包价格实体表单
 				CousrePriseFrom: {
+					time:'',
 					PackageId: '',
 					StoreId: '',
 					Store: '',
@@ -718,6 +750,21 @@
 				PackageDetailID: '',
 				UpPackageDetail: [],
 				UpPackagePrise: [],
+				startTime:'',
+				EndTime:'',
+				startTime2:'',
+				EndTime2:'',
+			}
+		},
+		watch:{
+			'formValidate.IsExclusive'(newvalue){
+				if(newvalue){
+					this.ShopBag = true;
+					this.isShop = false;
+				}else{
+					this.ShopBag = false;
+					this.isShop = true;
+				}
 			}
 		},
 		methods: {
@@ -754,8 +801,21 @@
 			allinformationData() {
 
 			},
-			queryData() {
-
+			queryData(data) {
+				this.startTime = data[0]
+				this.formValidate.BeginSellDate = this.startTime
+				this.EndTime = data[1]
+				this.formValidate.EndSellDate = this.EndTime
+			},
+			queryData2(data) {
+				console.log(data)
+				this.startTime2 = data[0]
+				this.CousrePriseFrom.BeginSellDate = this.startTime2
+				console.log(this.startTime2)
+				this.EndTime2 = data[1]
+				this.CousrePriseFrom.EndSellDate = this.EndTime2
+				console.log(this.EndTime2)
+				console.log(this.CousrePriseFrom.EndSellDate)
 			},
 			//取消添加
 			handleReset(name) {

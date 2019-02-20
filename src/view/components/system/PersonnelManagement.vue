@@ -12,7 +12,7 @@
 			</Col>
 			<!-- 树状图 -->
 			<Col span="24">
-			<Tree :data="treeList" class="tree" :render="renderContent" children-key="ChildNodes" show-checkbox ref="tree" @on-check-change="choiceAll"></Tree>
+			<Tree :data="treeList" class="tree"  children-key="ChildNodes"  ref="tree" @on-check-change="choiceAll" @on-select-change='selectChange'></Tree>
 			</Col>
 			<!-- 树状图 end-->
 			</Col>
@@ -24,8 +24,8 @@
 			<!-- 表格上面的功能 -->
 			<Col span="24">
 			<div class="organization">
-				<Button @click="Add" type="success" class="organization_tableTop">添加</Button>
-				<Button @click="deleteList" type="error" class="organization_tableTop">删除</Button>
+				<Button @click="Add"  class="organization_tableTop">添加</Button>
+				<Button @click="deleteList"  class="organization_tableTop">删除</Button>
 				<Select v-model="model1" style="width:100px" class="organization_tableTop">
 					<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
@@ -611,31 +611,31 @@
 				this.see = false;
 				//this.formValidate = {};
 			},
-			choiceAll(data) {
-				console.log(data)
-				//let choicesAll=this.$refs.tree.getCheckedNodes;
-				//console.log(choicesAll)
-				data.forEach(item => {
-					this.treePid = item.ParentId
-				})
-				this.loading = true;
-				//调用接口刷新页面
-				GetEntities(this.Interface, {
-					"Filters": [{
-						"Relational": 'Or',
-						"Conditions": [{
-							"FilterField": 'ParentId',
-							"Relational": "Equal",
-							"FilterValue": this.treePid,
-						}]
-					}]
-				}).then(res => {
-					console.log(res)
-					this.data1 = res.data;
-					this.loading = false;
-				}).catch(err => {
-					console.log(err)
-				})
+			selectChange(dataList) {
+				console.log(dataList[0].ParentId);
+				this.ParentIdData = dataList[0].ParentId
+//				dataList.forEach(item => {
+//					console.log(item)
+//					this.treeCode = item.Code
+//				})
+//				
+//				GetEntities(this.Interface, {
+//					"Filters": [{
+//						"Relational": 'Or',
+//						"Conditions": [{
+//							"FilterField": 'Code',
+//							"Relational": "Equal",
+//							"FilterValue": this.treeCode,
+//						}]
+//					}]
+//				}).then(res => {
+//					console.log(res.data)
+//					this.data1 = res.data;
+//					
+//				}).catch(err => {
+//					console.log(err)
+//				})
+
 			},
 			//删除
 			deleteList() {

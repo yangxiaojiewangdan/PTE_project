@@ -9,8 +9,8 @@
 			<!--增删改查-->
 			<Col span="7" push="16">
 			<div class="organization">
-				<Button type="success" class="organization_tableTop" @click="AddBtn">添加</Button>
-				<Button type="error" class="organization_tableTop" @click="deleteList">删除</Button>
+				<Button  class="organization_tableTop" @click="AddBtn">添加</Button>
+				<Button  class="organization_tableTop" @click="deleteList">删除</Button>
 				<Select v-model="model1" style="width:100px" class="organization_tableTop">
 					<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
