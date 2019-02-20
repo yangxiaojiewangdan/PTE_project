@@ -104,7 +104,6 @@ export default {
 					//用户信息
 					let userInfo = sessionStorage.getItem('userInfo');
 					let userData = JSON.parse(userInfo);
-
 					let PermissionList = userData.PermissionCollection
 					//let arr = Object.getOwnPropertyNames(PermissionList)
 					var accessRouter = []
