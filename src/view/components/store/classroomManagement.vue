@@ -1,7 +1,7 @@
 <template>
   <div id="information">
     <Row>
-      <Col span="24" style="height:50px;">
+      <Col span="24" style="height:50px;background: #fff;">
         <h1 class="queryHeader">教室管理</h1>
       </Col>
     </Row>
@@ -76,15 +76,15 @@
       </Col>
     </Row>
     <!-- 查询结果 -->
-    <Row>
+    <Row style="background:#fff;">
       <Col span="15" class="queryEnd">
         <h2>查询结果</h2>
       </Col>
       <!-- 表格上面的功能 -->
       <Col span="8">
         <div class="tableTop">
-          <Button @click="AddDepartment1" type="success" class="tableTops">添加</Button>
-          <Button @click="deleteList" type="error" class="tableTops">删除</Button>
+          <Button @click="AddDepartment1"  class="tableTops">添加</Button>
+          <Button @click="deleteList"  class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -109,7 +109,6 @@
           size="small"
           highlight-row
           stripe
-          border
           ref="selection"
           :columns="informationTable"
           :data="informationData"
@@ -129,12 +128,12 @@
     </Row>
     <!-- 添加信息 弹出框-->
     <Modal v-model="AddDepartment" scrollable width="1000" :mask-closable="false">
-      <p slot="header" style="text-align:left;line-height: 1;">
+      <p slot="header" id="Modal_header">
         <span v-if="add">添加教室信息</span>
         <span v-if="see">查看教室信息</span>
       </p>
-      <p slot="close" style="margin-right:10px;line-height: 3;" @click="close('formValidate')">
-        <Icon type="md-close" size="20" color="gray"/>
+      <p slot="close" id="Modal_close"  @click="close('formValidate')">
+        <Icon type="md-close" size="20" color="#eee"/>
       </p>
       <Form
         ref="formValidate"

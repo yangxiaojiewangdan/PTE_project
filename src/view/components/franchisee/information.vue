@@ -2,9 +2,10 @@
   <div id="divid">
     <Row>
       <Col span="24" style="height:50px;background: #fff;">
-        <h1 class="queryHeader">加盟商基本信息</h1>
+        <p class="queryHeader">加盟商基本信息</p>
       </Col>
     </Row>
+     <hr>
     <!-- 查询条件 -->
     <Row>
       <Col span="24" class="querycriteria" style="height:160px;">
@@ -334,6 +335,7 @@
                         :key="item.Code"
                       >{{ item.Name }}</Option>
                     </Select>
+                    <input type="hidden" v-model="formValidate.ProviceName" />
                   </FormItem>
                 </Col>
                 <Col span="6">
@@ -349,6 +351,7 @@
                         :key="item.Code"
                       >{{ item.Name }}</Option>
                     </Select>
+                    <input type="hidden" v-model="formValidate.CityName" />
                   </FormItem>
                 </Col>
                 <Col span="6">
@@ -360,6 +363,7 @@
                         :key="item.Code"
                       >{{ item.Name }}</Option>
                     </Select>
+                    <input type="hidden" v-model="formValidate.DistinctName" />
                   </FormItem>
                 </Col>
                 <Col span="5">
@@ -435,8 +439,8 @@
                   slot="extra"
                   size="small"
                   type="text"
-                  @click="say(index,$event)"
-                >{{ EditSave }}</Button>
+                  @click="GoPath(index)"
+                >查看详细信息</Button>
                 <Form
                   ref="FormBusinessStores"
                   :model="FormBusinessStores"
@@ -447,85 +451,63 @@
                     <Col span="24">
                       <Col span="22">
                         <FormItem label="门店类型:" prop="StoreType" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.StoreType"></Input>
-                          <p v-if="BusinessStoresP">{{ item.StoreType }}</p>
+                          <p>{{ item.StoreType }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="业务状态:" prop="Status" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.Status"></Input>
-                          <p v-if="BusinessStoresP">{{ item.Status }}</p>
+                          <p>{{ item.Status }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
-                        <FormItem label="开业日期:" prop="OpenOn" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.OpenOn"></Input>
-                          <p v-if="BusinessStoresP">{{ item.OpenOn }}</p>
+                        <FormItem label="开业日期:" prop="OpenOn" class="margin_bottom"> 
+                          <p>{{ item.OpenOn }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="地址:" prop="OpenOn" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.OpenOn"></Input>
-                          <p
-                            v-if="BusinessStoresP"
-                          >{{ item.ProviceCode +"-"+ item.CityCode +"-"+ item.Address}}</p>
+                          <p>{{ item.ProviceName +"-"+ item.CityName }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="邮编:" prop="PostalCode" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.PostalCode"></Input>
-                          <p v-if="BusinessStoresP">{{ item.PostalCode }}</p>
+                          <p>{{ item.PostalCode }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="经纬度:" prop="Latitude" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.Latitude"></Input>
-                          <p v-if="BusinessStoresP">{{ item.Longitude +"-"+ item.Latitude }}</p>
+                          <p>{{ item.Longitude +"-"+ item.Latitude }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="联系电话:" prop="TelPhone" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.TelPhone"></Input>
-                          <p v-if="BusinessStoresP">{{ item.TelPhone }}</p>
+                          <p>{{ item.TelPhone }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
+                      
                         <FormItem label="传真:" prop="Fax" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.Fax"></Input>
-                          <p v-if="BusinessStoresP">{{ item.Fax }}</p>
+                          <p>{{ item.Fax }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="联系人姓名:" prop="ContactName" class="margin_bottom">
-                          <Input
-                            v-if="BusinessStoresInput"
-                            v-model="FormBusinessStores.ContactName"
-                          ></Input>
-                          <p v-if="BusinessStoresP">{{ item.ContactName }}</p>
+                          <p>{{ item.ContactName }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="联系人电话:" prop="ContactTel" class="margin_bottom">
-                          <Input v-if="BusinessStoresInput" v-model="FormBusinessStores.ContactTel"></Input>
-                          <p v-if="BusinessStoresP">{{ item.ContactTel }}</p>
+                          <p>{{ item.ContactTel }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="联系人手机:" prop="ContactPhone" class="margin_bottom">
-                          <Input
-                            v-if="BusinessStoresInput"
-                            v-model="FormBusinessStores.ContactPhone"
-                          ></Input>
-                          <p v-if="BusinessStoresP">{{ item.ContactPhone }}</p>
+                          <p>{{ item.ContactPhone }}</p>
                         </FormItem>
                       </Col>
                       <Col span="22">
                         <FormItem label="联系人邮箱:" prop="ContactEMail" class="margin_bottom">
-                          <Input
-                            v-if="BusinessStoresInput"
-                            v-model="FormBusinessStores.ContactEMail"
-                          ></Input>
-                          <p v-if="BusinessStoresP">{{ item.ContactEMail }}</p>
+                          <p>{{ item.ContactEMail }}</p>
                         </FormItem>
                       </Col>
                     </Col>
@@ -605,8 +587,6 @@ export default {
   data() {
     return {
       EditSave: "编辑",
-      BusinessStoresInput: false,
-      BusinessStoresP: true,
       // 接口
       Interface: "FranchiserProfile",
       // 查看时显示门店 添加时隐藏
@@ -922,8 +902,11 @@ export default {
         FromDate: "",
         ToDate: "",
         ProviceCode: "",
+        ProviceName: "",
         CityCode: "",
+        CityName:"",
         DistinctCode: "",
+        DistinctName: "",
         Address: "",
         PostalCode: "",
         Status: "",
@@ -987,29 +970,22 @@ export default {
     };
   },
   methods: {
-    say(index, e) {
-      // e.target 是你当前点击的元素
-      // e.currentTarget 是你绑定事件的元素
-      console.log(e.target);
-      console.log(e.currentTarget);
-      console.log(this.BusinessStoresList[index]);
-      if (this.BusinessStoresList[index]) {
-        if (this.EditSave == "编辑") {
-          this.EditSave = "保存";
-          this.BusinessStoresInput = true;
-          this.BusinessStoresP = false;
-        } else if (this.EditSave == "保存") {
-          this.EditSave = "编辑";
-          this.BusinessStoresInput = false;
-          this.BusinessStoresP = true;
-        }
-      }
+    GoPath(index){
+      let IndexId = this.BusinessStoresList[index].Id;
+      this.$router.push({path:'/store/store_storeManagement',query:{id:IndexId}});
     },
     close(name) {
       this.$refs[name].resetFields();
     },
     //选择省获取 市数据
     SelectProviceCode() {
+      DistrictGetEntity(this.formValidate.ProviceCode)
+          .then(res => {
+            this.formValidate.ProviceName = res.data.Name;
+          })
+          .catch(err => {
+            console.log(err);
+          });
       this.queryDistinctCode = "";
       this.queryCityCode = "";
       if (this.AddDepartment == true) {
@@ -1033,6 +1009,13 @@ export default {
     },
     //点击市获取 区县数据
     SelectCityCode() {
+       DistrictGetEntity(this.formValidate.CityCode)
+          .then(res => {
+            this.formValidate.CityName = res.data.Name;
+          })
+          .catch(err => {
+            console.log(err);
+          });
       if (this.AddDepartment == true) {
         DistrictGetArea(this.formValidate.CityCode)
           .then(res => {
@@ -1058,6 +1041,7 @@ export default {
         .then(res => {
           // 获取到区县的邮编放到添加的邮编输入框中
           this.formValidate.PostalCode = res.data.PostalCode;
+          this.formValidate.DistinctName = res.data.Name;
         })
         .catch(err => {
           console.log(err);
@@ -1267,13 +1251,33 @@ export default {
     },
     //详情修改页面
     dblclickUpData(index) {
-      console.log(index);
       this.TabBusinessStores = true;
       this.AddDepartment = true;
       this.formValidate = index;
       this.add = false;
       this.see = true;
       this.del = true;
+      // 所属加盟商的门店信息
+      GetEntities("BusinessStore", {
+        Filters: [
+          {
+            Relational: "And", //And 与 | Or 或
+            Conditions: [
+              {
+                FilterField: "Franchiser", //字段名
+                Relational: "Equal",
+                FilterValue: index.Code //字段名里面的值
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          this.BusinessStoresList = res.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     upTabs(name) {
       localStorage.setItem("name", name);
@@ -1358,27 +1362,7 @@ export default {
       .catch(err => {
         console.log(err);
       });
-    // 所属加盟商的门店信息
-    GetEntities("BusinessStore", {
-      Filters: [
-        {
-          Relational: "And", //And 与 | Or 或
-          Conditions: [
-            {
-              FilterField: "FranchiserId", //字段名
-              Relational: "Equal",
-              FilterValue: this.formValidate.Id //字段名里面的值
-            }
-          ]
-        }
-      ]
-    })
-      .then(res => {
-        this.BusinessStoresList = res.data;
-      })
-      .catch(err => {
-        console.log(err);
-      });
+
   }
 };
 </script>

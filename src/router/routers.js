@@ -541,14 +541,34 @@ export default [
 					import('@/view/components/edAd/classpackage.vue')
 			},
 			{
-				path: 'edAd_courseCalendar',
-				name: 'edAd_courseCalendar',
+				path: 'edAd_Calendar',
+				name: 'edAd_Calendar',
 				meta: {
 					icon: 'md-git-branch',
-					title: '课程日历'
+					title: '课表天日历'
 				},
 				component: () =>
-					import('@/view/components/edAd/courseCalendar.vue')
+					import('@/view/components/edAd/Calendar.vue')
+			},
+			{
+				path: 'edAd_SundayCalendar',
+				name: 'edAd_SundayCalendar',
+				meta: {
+					icon: 'md-git-branch',
+					title: '课表周日历'
+				},
+				component: () =>
+					import('@/view/components/edAd/SundayCalendar.vue')
+			},
+			{
+				path: 'edAd_MonthlyCalendar',
+				name: 'edAd_MonthlyCalendar',
+				meta: {
+					icon: 'md-git-branch',
+					title: '课表月日历'
+				},
+				component: () =>
+					import('@/view/components/edAd/MonthlyCalendar.vue')
 			},
 			{
 				path: 'edAd_classroomCalendar',
