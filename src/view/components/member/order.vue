@@ -14,7 +14,11 @@
           <Row>
             <Col span="15" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:46px;">加盟商：</h3>
-              <Select v-model="SelectFranchiser" @on-change="queryquerychange" style="width:200px;margin-left:20px;">
+              <Select
+                v-model="SelectFranchiser"
+                @on-change="queryquerychange"
+                style="width:200px;margin-left:20px;"
+              >
                 <Option
                   v-for="item in FranchiserList"
                   :value="item.Code"
@@ -26,12 +30,12 @@
           <Row>
             <Col span="15" class="queryquerytop">
               <h3 class="queryquery" style="padding-left:60px;">门店：</h3>
-              <Select v-model="SelectStore" @on-change="queryquerychange" style="width:200px;margin-left:20px;">
-                <Option
-                  v-for="item in StoreList"
-                  :value="item.Id"
-                  :key="item.Id"
-                >{{ item.Code }}</Option>
+              <Select
+                v-model="SelectStore"
+                @on-change="queryquerychange"
+                style="width:200px;margin-left:20px;"
+              >
+                <Option v-for="item in StoreList" :value="item.Id" :key="item.Id">{{ item.Code }}</Option>
               </Select>
             </Col>
           </Row>
@@ -68,8 +72,8 @@
       <!-- 表格上面的功能 -->
       <Col span="8">
         <div class="tableTop">
-          <Button @click="AddDepartment1"  class="tableTops">添加</Button>
-          <Button @click="deleteList"  class="tableTops">删除</Button>
+          <Button @click="AddDepartment1" class="tableTops">添加</Button>
+          <Button @click="deleteList" class="tableTops">删除</Button>
           <Select v-model="querySelect" :label-in-value="true" style="width:120px">
             <Option
               v-for="item in querySelectList"
@@ -190,7 +194,7 @@
             </Col>
             <Col span="5">
               <FormItem label="定价" prop="OriginalPrice">
-                <Input  v-model="formValidate.OriginalPrice" placeholder="请输入" disabled></Input>
+                <Input v-model="formValidate.OriginalPrice" placeholder="请输入" disabled></Input>
               </FormItem>
             </Col>
             <Col span="5" v-if="ifTotalPeriod">
@@ -591,7 +595,8 @@ import {
   CustomerOrderBatchDeleteOrder,
   CustomerOrderUpdateOrder,
   CustomerOrderPaymentOrder,
-  CustomerOrderCancelOrderRequest
+  CustomerOrderCancelOrderRequest,
+  GetTransactionJournalByOrder
 } from "@/api/api";
 export default {
   inject: ["reload"],
@@ -600,10 +605,10 @@ export default {
   },
   data() {
     return {
-      ifTotalPeriod:true,
-      ifFixedPeriods:false,
-      q:"",
-      isdisabledFn:false,
+      ifTotalPeriod: true,
+      ifFixedPeriods: false,
+      q: "",
+      isdisabledFn: false,
       Interface: "CustomerOrder",
       ifDiscountCode: false,
       del: "",
@@ -858,7 +863,7 @@ export default {
         ChargeAmt: "0",
         ChargeAmt: "",
         UsedPeriod: "0",
-        FixedPeriods:"",
+        FixedPeriods: "",
         RemainPeriod: ""
       },
       // 退课申请
@@ -905,9 +910,9 @@ export default {
       this.$refs[name].resetFields();
     },
     // 查询条件
-    queryquerychange(value){
-      console.log(value)
-      GetEntities(this.Interface,{
+    queryquerychange(value) {
+      console.log(value);
+      GetEntities(this.Interface, {
         Filters: [
           {
             Relational: "And", //And 与 | Or 或
@@ -951,13 +956,13 @@ export default {
     // 订单支付
     PaymentOrderSubmit() {
       CustomerOrderPaymentOrder({
+        IsDeposit: true,
         OrderId: this.formValidate.Id,
+        PaymentAccount: this.formPaymentOrder.PaymentAccount,
         PaymentCode: this.formPaymentOrder.PaymentCode,
         PaymentAmt: this.formPaymentOrder.PaymentAmt
       })
         .then(res => {
-          this.data1 = res.data.Data; 
-          console.log(this.data1)
           this.$Message.success("成功!");
           this.reload();
         })
@@ -990,60 +995,59 @@ export default {
     // 选择开始日期带出结束日期
     StartDatechange(date) {
       var year = parseInt(date.substring(0, 4));
-        var month = parseInt(date.substring(5, 7));
-        var day = parseInt(date.substring(8, 10));
-        if(this.formValidate.PackageTypeDesc == "固定期限"){
-          var monthnum = parseInt(this.FixedPeriodsnum);
-          if (month + monthnum > 12) {
-            var newyear = year + 1;
-            var newmonth = month + monthnum - 12;
-            var newday = day;
-          } else if (month + monthnum > 12 * 2) {
-            var newyear = year + 2;
-            var newmonth = month + monthnum - 12 * 2;
-            var newday = day;
-          } else if (month + monthnum > 12 * 3) {
-            var newyear = year + 3;
-            var newmonth = month + monthnum - 12 * 3;
-            var newday = day;
-          } else if (month + monthnum > 12 * 4) {
-            var newyear = year + 4;
-            var newmonth = month + monthnum - 12 * 4;
-            var newday = day;
-          } else if (month + monthnum > 12 * 5) {
-            var newyear = year + 5;
-            var newmonth = month + monthnum - 12 * 5;
-            var newday = day;
-          } else if (month + monthnum > 12 * 6) {
-            var newyear = year + 6;
-            var newmonth = month + monthnum - 12 * 6;
-            var newday = day;
-          } else {
-            var newyear = year;
-            var newmonth = month + monthnum;
-            var newday = day;
-          }
-          this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
-        }else{
-          
+      var month = parseInt(date.substring(5, 7));
+      var day = parseInt(date.substring(8, 10));
+      if (this.formValidate.PackageTypeDesc == "固定期限") {
+        var monthnum = parseInt(this.FixedPeriodsnum);
+        if (month + monthnum > 12) {
+          var newyear = year + 1;
+          var newmonth = month + monthnum - 12;
+          var newday = day;
+        } else if (month + monthnum > 12 * 2) {
           var newyear = year + 2;
-          this.formValidate.EndDate = newyear + "-" + month + "-" + day;
+          var newmonth = month + monthnum - 12 * 2;
+          var newday = day;
+        } else if (month + monthnum > 12 * 3) {
+          var newyear = year + 3;
+          var newmonth = month + monthnum - 12 * 3;
+          var newday = day;
+        } else if (month + monthnum > 12 * 4) {
+          var newyear = year + 4;
+          var newmonth = month + monthnum - 12 * 4;
+          var newday = day;
+        } else if (month + monthnum > 12 * 5) {
+          var newyear = year + 5;
+          var newmonth = month + monthnum - 12 * 5;
+          var newday = day;
+        } else if (month + monthnum > 12 * 6) {
+          var newyear = year + 6;
+          var newmonth = month + monthnum - 12 * 6;
+          var newday = day;
+        } else {
+          var newyear = year;
+          var newmonth = month + monthnum;
+          var newday = day;
         }
+        this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
+      } else {
+        var newyear = year + 2;
+        this.formValidate.EndDate = newyear + "-" + month + "-" + day;
+      }
     },
     // 售价x数量=总金额
     SalePricechange() {
       this.formValidate.BalanceAmt =
         this.formValidate.SalePrice * this.formValidate.Quantity;
-     if(this.formValidate.SalePrice !== this.formValidate.OriginalPrice){
-         this.ifDiscountCode = true;
-     }else{
-       this.ifDiscountCode = false;
-     }
+      if (this.formValidate.SalePrice !== this.formValidate.OriginalPrice) {
+        this.ifDiscountCode = true;
+      } else {
+        this.ifDiscountCode = false;
+      }
     },
-    SalePriceblur(){
-      if(this.formValidate.SalePrice < 100){
-       this.$Message.warning('课包最低售价为100');
-     }
+    SalePriceblur() {
+      if (this.formValidate.SalePrice < 100) {
+        this.$Message.warning("课包最低售价为100");
+      }
     },
     // 选择课包带出数据
     PackageIdchange(value) {
@@ -1063,49 +1067,55 @@ export default {
       })
         .then(res => {
           function formatNumber(num, precision, separator) {
-              var parts;
-              // 判断是否为数字
-              if (!isNaN(parseFloat(num)) && isFinite(num)) {
-                  // 把类似 .5, 5. 之类的数据转化成0.5, 5, 为数据精度处理做准, 至于为什么
-                  // 不在判断中直接写 if (!isNaN(num = parseFloat(num)) && isFinite(num))
-                  // 是因为parseFloat有一个奇怪的精度问题, 比如 parseFloat(12312312.1234567119)
-                  // 的值变成了 12312312.123456713
-                  num = Number(num);
-                  // 处理小数点位数
-                  num = (typeof precision !== 'undefined' ? num.toFixed(precision) : num).toString();
-                  // 分离数字的小数部分和整数部分
-                  parts = num.split('.');
-                  // 整数部分加[separator]分隔, 借用一个著名的正则表达式
-                  parts[0] = parts[0].toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1' + (separator || ','));
-          
-                  return parts.join('.');
-              }
-              return NaN;
+            var parts;
+            // 判断是否为数字
+            if (!isNaN(parseFloat(num)) && isFinite(num)) {
+              // 把类似 .5, 5. 之类的数据转化成0.5, 5, 为数据精度处理做准, 至于为什么
+              // 不在判断中直接写 if (!isNaN(num = parseFloat(num)) && isFinite(num))
+              // 是因为parseFloat有一个奇怪的精度问题, 比如 parseFloat(12312312.1234567119)
+              // 的值变成了 12312312.123456713
+              num = Number(num);
+              // 处理小数点位数
+              num = (typeof precision !== "undefined"
+                ? num.toFixed(precision)
+                : num
+              ).toString();
+              // 分离数字的小数部分和整数部分
+              parts = num.split(".");
+              // 整数部分加[separator]分隔, 借用一个著名的正则表达式
+              parts[0] = parts[0]
+                .toString()
+                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1" + (separator || ","));
+
+              return parts.join(".");
+            }
+            return NaN;
           }
           this.formValidate.StartDate = new Date();
           this.formValidate.PackageTypeDesc = res.data[0].PackageTypeDesc;
           this.formValidate.OriginalPrice = formatNumber(res.data[0].SellPrice);
-          this.formValidate.SalePrice  = formatNumber(res.data[0].SellPrice);
+          this.formValidate.SalePrice = formatNumber(res.data[0].SellPrice);
           this.formValidate.TotalPeriod = res.data[0].TotalPeriods;
           this.FixedPeriodsnum = res.data[0].FixedPeriods;
-          if (this.formValidate.OriginalPrice.indexOf(".")< 0) {
-              this.formValidate.OriginalPrice=this.formValidate.OriginalPrice+".00";
-              this.formValidate.SalePrice=this.formValidate.SalePrice+".00";
+          if (this.formValidate.OriginalPrice.indexOf(".") < 0) {
+            this.formValidate.OriginalPrice =
+              this.formValidate.OriginalPrice + ".00";
+            this.formValidate.SalePrice = this.formValidate.SalePrice + ".00";
           }
           // 当课包允许折扣售价课更改反之不可更改
-          if(res.data[0].AllowDiscount == false){
-             this.isdisabledFn = true;
-          }else if(res.data[0].AllowDiscount == true){
-              this.isdisabledFn = false;
+          if (res.data[0].AllowDiscount == false) {
+            this.isdisabledFn = true;
+          } else if (res.data[0].AllowDiscount == true) {
+            this.isdisabledFn = false;
           }
-          if(this.formValidate.StartDate == ""){
-            this.formValidate.EndDate == ""
-          }else if(this.formValidate.StartDate){
+          if (this.formValidate.StartDate == "") {
+            this.formValidate.EndDate == "";
+          } else if (this.formValidate.StartDate) {
             let date = this.formValidate.StartDate.toLocaleDateString();
             var year = parseInt(date.substring(0, 4));
             var month = parseInt(date.substring(5, 7));
             var day = parseInt(date.substring(8, 10));
-            if(this.formValidate.PackageTypeDesc == "固定期限"){
+            if (this.formValidate.PackageTypeDesc == "固定期限") {
               this.ifFixedPeriods = true;
               this.ifTotalPeriod = false;
               var monthnum = parseInt(this.FixedPeriodsnum);
@@ -1138,17 +1148,16 @@ export default {
                 var newmonth = month + monthnum;
                 var newday = day;
               }
-              this.formValidate.EndDate = newyear + "-" + newmonth + "-" + newday;
-            }else{
+              this.formValidate.EndDate =
+                newyear + "-" + newmonth + "-" + newday;
+            } else {
               this.ifFixedPeriods = false;
               this.ifTotalPeriod = true;
               var newyear = year + 2;
               var newday = day + 20;
               this.formValidate.EndDate = newyear + "-" + month + "-" + newday;
             }
-              
           }
-          
         })
         .catch(err => {
           console.log(err);
@@ -1213,12 +1222,21 @@ export default {
     },
     //双击表格
     dblclickUpData(index) {
+      console.log(index);
       this.AddDepartment = true;
       this.del = true;
       this.add = false;
       this.see = true;
       this.formValidate = index;
       this.formValidate.TotalPeriod = this.formValidate.RemainPeriod;
+      GetTransactionJournalByOrder(index.Id)
+        .then(res => {
+          this.data1 = res.data;
+          console.log(res.data);
+        })
+        .catch(err => {
+          this.$Message.error("获取交易记录失败!");
+        });
     },
     // 删除接口
     deleteList() {

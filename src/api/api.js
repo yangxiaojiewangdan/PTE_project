@@ -234,3 +234,11 @@ export const RoyaltyCodeRemoveLadder = (royaltyId, detailId) => {
   });
 }
 
+//查看订单交易记录
+export const GetTransactionJournalByOrder = (OrderId) => {
+  return axios.request({
+    url: apiUrl + "/api/Transaction/GetTransactionJournalByOrder?OrderId="+ OrderId +"&IncludeDeposit=true",
+    method: "get"
+  });
+}
+
