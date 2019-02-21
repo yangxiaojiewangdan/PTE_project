@@ -198,7 +198,6 @@
 						type: 'selection',
 						width: 50,
 						align: 'center',
-						fixed: 'left'
 					},
 					{
 						title: '部门代码',
@@ -487,8 +486,7 @@
 			//获取用户信息
 			let userInfo = sessionStorage.getItem('userInfo');
 			let array = JSON.parse(userInfo);
-			this.BusinessGroupData = array.BusinessUnit
-			console.log(this.BusinessGroupData)
+			this.BusinessGroupData = array.BusinessGroup
 			//获取树形结构
 			GetBusinessUnit(this.Interface, this.BusinessGroupData).then(res => {
 				this.treeList = res.data

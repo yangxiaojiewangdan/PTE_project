@@ -12,7 +12,7 @@
 			</Col>
 			<!-- 树状图 -->
 			<Col span="24">
-			<Tree :data="treeList" class="tree"  children-key="ChildNodes"  ref="tree" @on-check-change="choiceAll" @on-select-change='selectChange'></Tree>
+			<Tree :data="treeList" class="tree"  children-key="ChildNodes"  ref="tree" @on-select-change='selectChange'></Tree>
 			</Col>
 			<!-- 树状图 end-->
 			</Col>
@@ -68,7 +68,7 @@
 					</Col>
 					<Col span="7">
 					<FormItem label="手机" prop="MobilePhone">
-						<Input v-model="formValidate.MobilePhone" placeholder="请输入" />
+						<Input v-model="formValidate.MobilePhone" placeholder="请输入" @on-blur="phone"/>
 					</FormItem>
 					<FormItem label="登陆账号" prop="Account" v-if="false">
 						<Input v-model="formValidate.Account" placeholder="请输入" />
@@ -114,6 +114,11 @@
 						<Select v-model="formValidate.Supervisor" placeholder="请选择" @on-change="PackageIdchange">
 							<Option v-for="item in IsSupervisorList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
+					</FormItem>
+					</Col>
+					<Col span="8">
+					<FormItem label="部门名称Id" prop="BusinessUnitId" v-if="false">
+						<Input v-model="formValidate.BusinessUnitId" placeholder="请输入"/>
 					</FormItem>
 					</Col>
 					<Col span="8">
@@ -306,7 +311,6 @@
 						type: 'selection',
 						width: 50,
 						align: 'center',
-						fixed: 'left'
 					},
 					{
 						title: '所属部门名称',
@@ -570,6 +574,9 @@
 		//			
 		//		},
 		methods: {
+			phone(){
+			this.formValidate.Account = this.formValidate.MobilePhone
+			},
 			//选择主管带出部门
 			PackageIdchange(value) {
 				console.log(value)
@@ -583,9 +590,9 @@
 						}]
 					}]
 				}).then(res => {
-					console.log(res.data)
 					this.formValidate.BusinessUnit = res.data[0].BusinessUnit
-					console.log(this.formValidate.BusinessUnit)
+					this.formValidate.BusinessUnitId = res.data[0].BusinessUnitId
+					this.$forceUpdate();
 				}).catch(err =>{
 					console.log(err)
 				})
@@ -742,7 +749,6 @@
 				this.data1.forEach(item => {
 					if(item.IsSupervisor == true) {
 						this.IsSupervisorList.push(item)
-						console.log(this.IsSupervisorList)
 					}
 				})
 				this.loading = false;
@@ -763,14 +769,14 @@
 			});
 			//角色名称
 			GetEntities("BusinessRole", this.data4).then(res => {
-				console.log(res.data)
+				
 				this.BusinessRoleList = res.data
 			}).catch(err => {
 				console.log(err)
 			})
 			//部门
 			GetEntities("BusinessUnit", this.data4).then(res => {
-				console.log(res.data)
+				
 				this.BusinessUnitList = res.data
 			}).catch(err => {
 				console.log(err)

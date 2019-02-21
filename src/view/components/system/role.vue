@@ -203,8 +203,6 @@
 				columns4: [{
 						type: 'selection',
 						width: 50,
-						fixed: 'left'
-
 					},
 					{
 						title: '角色代码',
