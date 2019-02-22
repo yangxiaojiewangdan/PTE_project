@@ -579,6 +579,16 @@ export default [
 				},
 				component: () =>
 					import('@/view/components/edAd/classroomCalendar.vue')
+			},
+			{
+				path: 'edAd_classes',
+				name: 'edAd_classes',
+				meta: {
+					icon: 'md-crop',
+					title: '班级'
+				},
+				component: () =>
+					import('@/view/components/edAd/classes.vue')
 			}
 		]
 	},
