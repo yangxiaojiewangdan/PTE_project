@@ -856,7 +856,7 @@ export default {
     }
   },
   mounted() {
-    this.common.login();
+    
     if(this.$route.query.id == undefined){
     }else{
       this.go();

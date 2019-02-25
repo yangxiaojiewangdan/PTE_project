@@ -25,8 +25,8 @@
 			<!-- 表格上面的功能 -->
 			<Col span="24">
 			<div class="organization">
-				<Button @click="Add" type="success" class="organization_tableTop">添加</Button>
-				<Button @click="deleteList" type="error" class="organization_tableTop">删除</Button>
+				<Button @click="Add" class="organization_tableTop">添加</Button>
+				<Button @click="deleteList" class="organization_tableTop">删除</Button>
 				<!--<Select v-model="formSend.label" style="width:100px">
 					<Option v-for="item in department" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
@@ -65,6 +65,9 @@
 					<Col span="24">
 					<FormItem label="所属业务群" prop="BusinessGroup" v-if="is">
 						<Input v-model="formValidate.BusinessGroup" placeholder="请输入" style="width:460px"></Input>
+					</FormItem>
+					<FormItem label="部门Id" prop="Id" v-if="is">
+						<Input v-model="formValidate.Id" placeholder="请输入" style="width:460px"></Input>
 					</FormItem>
 					</Col>
 					<Col span="24">
@@ -302,8 +305,9 @@
 					Id: '',
 				},
 				ruleValidate: {},
-				ParentIdData:"", 
-				BusinessGroupData:'',
+				ParentIdData: "",
+				departmentId: "",
+				BusinessGroupData: '',
 				// 添加信息 弹出框 end  
 			}
 		},
@@ -314,17 +318,20 @@
 				this.see = false;
 				this.formValidate = {};
 				this.formValidate.BusinessGroup = this.BusinessGroupData
-				this.formValidate.ParentId  = this.ParentIdData
-				
+				this.formValidate.ParentId = this.ParentIdData
+				this.formValidate.Id = this.departmentId
+
 			},
 			selectChange(dataList) {
-				console.log(dataList[0].ParentId);
+				console.log(dataList)
 				this.ParentIdData = dataList[0].ParentId
+				this.departmentId = dataList[0].Id
+				console.log(this.departmentId)
 				dataList.forEach(item => {
-					console.log(item)
+					//console.log(item)
 					this.treeCode = item.Code
 				})
-				
+
 				GetEntities(this.Interface, {
 					"Filters": [{
 						"Relational": 'Or',
@@ -335,9 +342,9 @@
 						}]
 					}]
 				}).then(res => {
-					console.log(res.data)
+					//console.log(res.data)
 					this.data1 = res.data;
-					
+
 				}).catch(err => {
 					console.log(err)
 				})
@@ -405,22 +412,27 @@
 			// 添加信息 弹出框函数
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
-					if(valid && this.formValidate.Id == undefined || this.formValidate.Id == "") {
-						Create(this.Interface, this.formValidate).then(res => {
-							this.treeList = res.data
-							this.$Message.success('成功!');
-							this.AddDepartment = false;
-							this.reload();
-						}).catch(err => {
-							console.log(err)
-						})
+					if(valid) {
+						if(this.add) {
+							Create(this.Interface, this.formValidate).then(res => {
+								this.treeList = res.data
+								this.$Message.success('成功!');
+								this.AddDepartment = false;
+								this.reload();
+							}).catch(err => {
+								console.log(err)
+							})
+						} else if(this.see) {
+							Update(this.Interface, this.formValidate).then(res => {
+								this.$Message.success('修改成功!');
+								this.reload();
+							}).catch(err => {
+								console.log(err)
+							})
+						}
+
 					} else {
-						Update(this.Interface, this.formValidate).then(res => {
-							this.$Message.success('修改成功!');
-							this.reload();
-						}).catch(err => {
-							console.log(err)
-						})
+						this.$Message.error('验证失败!');
 					}
 				})
 			},
@@ -478,8 +490,9 @@
 			this.BusinessGroupData = array.BusinessUnit
 			console.log(this.BusinessGroupData)
 			//获取树形结构
-			GetBusinessUnit(this.Interface).then(res => {
+			GetBusinessUnit(this.Interface, this.BusinessGroupData).then(res => {
 				this.treeList = res.data
+				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
@@ -491,8 +504,7 @@
 				console.log(err)
 			})
 			//获取业务群
-			GetEntities("BusinessGroup", this.BusinessUnitData).then(res => {
-			}).catch(err => {
+			GetEntities("BusinessGroup", this.BusinessUnitData).then(res => {}).catch(err => {
 				console.log(err)
 			})
 			//主管姓名

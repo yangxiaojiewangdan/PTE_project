@@ -1232,7 +1232,6 @@ export default {
       GetTransactionJournalByOrder(index.Id)
         .then(res => {
           this.data1 = res.data;
-          console.log(res.data);
         })
         .catch(err => {
           this.$Message.error("获取交易记录失败!");

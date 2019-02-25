@@ -2,9 +2,10 @@
   <div id="information">
     <Row>
       <Col span="24" style="height:50px;background: #fff;">
-        <h1 class="queryHeader">教室管理</h1>
+        <p class="queryHeader">教室管理</p>
       </Col>
     </Row>
+    <hr>
     <!-- 查询条件 -->
     <Row>
       <Col span="24" class="querycriteria" style="height:245px;">
@@ -145,7 +146,14 @@
         <Row>
           <Col span="23">
             <FormItem label="所属门店" prop="Store">
-              <Input v-model="formValidate.Store" placeholder="请输入" style="width:200px"></Input>
+              <Select
+                v-model="formValidate.Store"
+                style="width:200px;"
+                placeholder="请选择 "
+                clearable
+              >
+                <Option v-for="item in StoreList" :value="item.Id" :key="item.Id">{{ item.Code }}</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span="10">
@@ -528,16 +536,7 @@ export default {
       ],
       //表格数组
       getTableData: {
-        Filters: [
-          {
-            Relational: "",
-            Conditions: []
-          }
-        ],
-        OrderBy: {},
-        Paging: "true",
-        PageSize: "5",
-        PageIndex: "1"
+        Filters: {}
       },
       informationData: [],
       // 删除信息弹出框
@@ -581,16 +580,7 @@ export default {
     pagechange(value){
       console.log(value);
        GetEntities(this.Interface, {
-        Filters: [
-          {
-            Relational: "",
-            Conditions: []
-          }
-        ],
-        OrderBy: {},
-        Paging: "true",
-        PageSize: "5",
-        PageIndex: value
+        Filters: {}
       },)
       .then(res => {
         this.informationData = res.data.PageData;
@@ -773,19 +763,20 @@ export default {
     // 表格数据
     GetEntities(this.Interface, this.getTableData)
       .then(res => {
-        this.informationData = res.data.PageData;
+        this.informationData = res.data;
       })
       .catch(err => {
         console.log(err);
       });
     // 查询条件  门店的信息循环到教室
-    // BusinessStoreGetEntities(this.getTableData)
-    //   .then(res => {
-    //     this.StoreList = res.data;
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
+    GetEntities("BusinessStore",this.getTableData)
+      .then(res => {
+        // console.log(res)
+        this.StoreList = res.data;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 </script>

@@ -14,11 +14,11 @@ import '@/assets/icons/iconfont.css'
 import '@/assets/style/iview.css'
 import '@/assets/style/common.css'
 import TreeTable from 'tree-table-vue'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-
-Vue.use(ElementUI);
-
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
+import FullCalendar from 'vue-fullcalendar'
+Vue.use(FullCalendar)
 // 引入公共js 
 import common from "./commonFunction/Function.js"
 Vue.prototype.common = common
@@ -60,6 +60,3 @@ new Vue({
   store,
   render: h => h(App)
 })
-
-
-
