@@ -110,14 +110,102 @@
       </Col>
       <!-- 课表 -->
       <Col span="22">
-        <Table :columns="ClassHeader" border :data="data1"></Table>
+        <Table :columns="ClassHeader" border :data="data1" @on-row-click="Royaltyclick"></Table>
+      </Col>
+      <Col span="22" class="footButton">
+        <Button type="info">以开课</Button>
+        <Button type="success">未开课</Button>
+        <Button type="warning">已取消</Button>
+        <Button type="error">已结束</Button>
       </Col>
     </Row>
+    <Modal v-model="CourseInformation" title="课程信息" width="1300">
+      <Row>
+        <Col span="8" offset="8">
+          <h1>A班级</h1>
+        </Col>
+        <Col span="8">
+          <h2>当前状态为:正在预约</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="6" style="margin-top:20px;">
+          <div class="line">基本信息</div>
+          <Col span="21" offset="3" class="marginbottom marginbottom1">日期：
+            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
+          </Col>
+          <Col span="21" offset="3" class="marginbottom">上课时间：
+            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
+          </Col>
+          <Col span="21" offset="3" class="marginbottom marginbottom1">教室：
+            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
+          </Col>
+          <Col span="21" offset="3" class="marginbottom">课程主题：
+            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
+          </Col>
+          <Col span="21" offset="3" class="marginbottom borderbottom">课程阶段：
+            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
+          </Col>
+          <div class="line">授课老师</div>
+          <Col span="23" offset="2" class="marginbottom">主教：
+            <Input
+              v-model="value"
+              placeholder="Enter something..."
+              style="width: 100px;margin-right:20px;"
+            />工时：
+            <Input v-model="value" placeholder="Enter something..." style="width: 100px"/>
+          </Col>
+          <Col span="23" offset="2" class="marginbottom">助教：
+            <Input
+              v-model="value"
+              placeholder="Enter something..."
+              style="width: 100px;margin-right:20px;"
+            />工时：
+            <Input v-model="value" placeholder="Enter something..." style="width: 100px"/>
+          </Col>
+          <Col span="23" offset="2" class="marginbottom">外教：
+            <Input
+              v-model="value"
+              placeholder="Enter something..."
+              style="width: 100px;margin-right:20px;"
+            />工时：
+            <Input v-model="value" placeholder="Enter something..." style="width: 100px"/>
+          </Col>
+          <div class="line">上课自带物品说明</div>
+          <Input v-model="value6" type="textarea" :rows="4" placeholder="Enter something..."/>
+        </Col>
+        <Col span="17" offset="1" style="border-left:1px solid #aaa;margin-top:20px;">
+          <Col span="17" class="queryEnd">
+            <h2>最多人数: 6 人</h2>
+          </Col>
+          <Col span="2" class="queryEnd">
+            <Button>添加学员</Button>
+          </Col>
+          <Col span="22" offset="1">
+            <tables
+              height="500"
+              disabled-hover
+              search-place="top"
+              ref="tables"
+              size="small"
+              editable
+              v-model="dataRoyaltyCodeDetail"
+              :columns="columnsRoyaltyCodeDetail"
+            />
+          </Col>
+        </Col>
+      </Row>
+      <div slot="footer"></div>
+    </Modal>
   </div>
 </template>
 <script>
 import { EducationalGetTimeTableByDate, GetEntities } from "@/api/api";
+import Tables from "_c/tables";
 export default {
+  components: {
+    Tables
+  },
   data() {
     return {
       AddDay: 0,
@@ -128,31 +216,78 @@ export default {
       ClassHeader: [
         {
           title: "时间/教室",
-          key: "TimeClass"
+          key: "TimeClass",
+          width: 90
         }
       ],
       data1: [],
       TabularData: [],
-      DailySchedule: []
+      DailySchedule: [],
+
+      // 课程弹框信息
+      CourseInformation: false,
+      value: "",
+      value6: "",
+      columnsRoyaltyCodeDetail: [
+        { title: "订单号", key: "LowerValue" },
+        { title: "姓名", key: "UpperValue" },
+        { title: "排课方式", key: "FlatOrPecent" },
+        { title: "操作", key: "handle", options: ["delete"] }
+      ],
+      dataRoyaltyCodeDetail: [
+        {
+          LowerValue: "John Brown",
+          UpperValue: 18,
+          FlatOrPecent: "New York No. 1 Lake Park"
+        },
+        {
+          LowerValue: "John Brown",
+          UpperValue: 18,
+          FlatOrPecent: "New York No. 1 Lake Park"
+        },
+        {
+          LowerValue: "John Brown",
+          UpperValue: 18,
+          FlatOrPecent: "New York No. 1 Lake Park"
+        }
+      ]
     };
   },
   methods: {
-    // 将教室/时间循环到表格头
+    Royaltyclick(index) {
+      console.log(index);
+      
+    },
+    // 将教室/时间循环到表格头  将信息循环到表格
     addPerson() {
       for (var i = 0; i < this.TabularData.length; i++) {
         let newitems = {
           title: this.TabularData[i].Description,
-          key: "class" + i
+          key: "class" + i,
+          tooltip: true,
         };
         this.ClassHeader.push(newitems);
       }
       for (var i = 0; i <= 10; i++) {
         let a = 9;
-        let name = { TimeClass: a + i + ":15:00" };
+        let name = { TimeClass: a + i + ":15" };
         this.data1.push(name);
       }
-      this.data1[2].age=20;
-      console.log(this.data1)
+      for (var i = 0; i < this.DailySchedule.length; i++) {
+        let subscript = this.DailySchedule[i].FromTime.substr(11, 2) - 9;
+        for (var a = 0; a < this.ClassHeader.length; a++) {
+          if (this.ClassHeader[a].title == this.DailySchedule[i].ClassRoom) {
+            let key = this.ClassHeader[a].key;
+            this.data1[subscript][key] =
+              "班级：" +
+              this.DailySchedule[i].ClassesName +
+              " 课程：" +
+              this.DailySchedule[i].CourseName +
+              " 授课老师：" +
+              this.DailySchedule[i].Teacher;
+          }
+        }
+      }
     },
     // 时间
     CurrentTime1() {
@@ -168,20 +303,6 @@ export default {
   },
   mounted() {
     this.CurrentTime1();
-    // 获取日课表信息
-    EducationalGetTimeTableByDate({
-      StoreId: 14142291989024768,
-      DateInQuery: "2019-02-25"
-    })
-      .then(res => {
-        // this.DailySchedule = res.data;
-        // console.log(res.data[0].FromTime.substr(11));
-        console.log(res.data);
-
-      })
-      .catch(err => {
-        console.log(err);
-      });
     // 查询所属的教室
     GetEntities("ClassRoom", {
       Filters: [
@@ -199,8 +320,21 @@ export default {
     })
       .then(res => {
         this.TabularData = res.data;
-        // 查到教室将教室循环出来
-        this.addPerson();
+
+        // 获取日课表信息
+        EducationalGetTimeTableByDate({
+          StoreId: 14094325341868032,
+          DateInQuery: "2019-02-25"
+        })
+          .then(res => {
+            this.DailySchedule = res.data;
+            console.log(res.data);
+            // 查到教室将教室循环出来
+            this.addPerson();
+          })
+          .catch(err => {
+            console.log(err);
+          });
       })
       .catch(err => {
         console.log(err);
@@ -211,6 +345,26 @@ export default {
 <style scoped>
 .tableTop {
   margin-top: 0px;
+}
+.footButton{
+  margin-top: 10px;
+}
+.footButton button{
+  margin-left: 20px;
+}
+.marginbottom {
+  margin-bottom: 20px !important;
+}
+.marginbottom1 {
+  margin-left: 64px;
+}
+.line {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+  width: 100%;
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 10px;
 }
 </style>
 
