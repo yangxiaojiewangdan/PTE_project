@@ -187,7 +187,6 @@
 						type: 'selection',
 						width: 50,
 						align: 'center',
-						fixed: 'left'
 					},
 					{
 						title: '姓名',
