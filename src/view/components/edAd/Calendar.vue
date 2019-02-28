@@ -110,10 +110,91 @@
       </Col>
       <!-- 课表 -->
       <Col span="22">
-        <Table  :columns="ClassHeader" border :data="data1" @on-row-click="Royaltyclick">
-            <template slot-scope="{ row,column,index }" :slot="slot">
-              <b style="color:red;" @click="ss(column,index)">{{ row.class0 }}</b>
-            </template>
+        <Table
+          :columns="ClassHeader"
+          disabled-hover
+          border
+          :data="data1"
+          @on-row-click="Royaltyclick"
+        >
+          <template slot-scope="{ row,column }" slot="class0">
+            <div class="pointer" @click="columnindex(column)">{{ row.class0 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class1">
+            <div class="pointer" @click="columnindex(column)">{{ row.class1 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class2">
+            <div class="pointer" @click="columnindex(column)">{{ row.class2 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class3">
+            <div class="pointer" @click="columnindex(column)">{{ row.class3 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class4">
+            <div class="pointer" @click="columnindex(column)">{{ row.class4 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class5">
+            <div class="pointer" @click="columnindex(column)">{{ row.class5 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class6">
+            <div class="pointer" @click="columnindex(column)">{{ row.class6 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class7">
+            <div class="pointer" @click="columnindex(column)">{{ row.class7 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class8">
+            <div class="pointer" @click="columnindex(column)">{{ row.class8 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class9">
+            <div class="pointer" @click="columnindex(column)">{{ row.class9 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class10">
+            <div class="pointer" @click="columnindex(column)">{{ row.class10 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class11">
+            <div class="pointer" @click="columnindex(column)">{{ row.class11 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class12">
+            <div class="pointer" @click="columnindex(column)">{{ row.class12 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class13">
+            <div class="pointer" @click="columnindex(column)">{{ row.class13 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class14">
+            <div class="pointer" @click="columnindex(column)">{{ row.class14 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class15">
+            <div class="pointer" @click="columnindex(column)">{{ row.class15 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class16">
+            <div class="pointer" @click="columnindex(column)">{{ row.class16 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class17">
+            <div class="pointer" @click="columnindex(column)">{{ row.class17 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class18">
+            <div class="pointer" @click="columnindex(column)">{{ row.class18 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class19">
+            <div class="pointer" @click="columnindex(column)">{{ row.class19 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class20">
+            <div class="pointer" @click="columnindex(column)">{{ row.class20 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class21">
+            <div class="pointer" @click="columnindex(column)">{{ row.class21 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class22">
+            <div class="pointer" @click="columnindex(column)">{{ row.class22 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class23">
+            <div class="pointer" @click="columnindex(column)">{{ row.class23 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class24">
+            <div class="pointer" @click="columnindex(column)">{{ row.class24 }}</div>
+          </template>
+          <template slot-scope="{ row,column }" slot="class25">
+            <div class="pointer" @click="columnindex(column)">{{ row.class25 }}</div>
+          </template>
         </Table>
       </Col>
       <Col span="22" class="footButton">
@@ -126,86 +207,166 @@
     <Modal v-model="CourseInformation" title="课程信息" width="1300">
       <Row>
         <Col span="8" offset="8">
-          <h1>A班级</h1>
+          <h1>{{ ModalClassesName }}</h1>
+          <h1>{{ Topic }}</h1>
         </Col>
         <Col span="8">
-          <h2>当前状态为:正在预约</h2>
+          <h2>当前状态为:{{ ModalStatus }}</h2>
         </Col>
       </Row>
-      <Row>
-        <Col span="6" style="margin-top:20px;">
-          <div class="line">基本信息</div>
-          <Col span="21" offset="3" class="marginbottom marginbottom1">日期：
-            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
+      <Form :model="formValidate">
+        <Row>
+          <Col span="6" style="margin-top:20px;">
+            <div class="line">基本信息</div>
+            <Col span="21" offset="3" class="marginleft">
+              <FormItem label="日期：">
+                <Input
+                  v-model="formValidate.AttendDate"
+                  placeholder="Enter something..."
+                  style="width: 200px"
+                />
+              </FormItem>
+            </Col>
+            <Col span="21" offset="3">
+              <FormItem label="上课时间：">
+                <Input
+                  v-model="formValidate.FromTime"
+                  placeholder="Enter something..."
+                  style="width: 200px"
+                />
+              </FormItem>
+            </Col>
+            <Col span="21" offset="3" class="marginleft">
+              <FormItem label="教室：">
+                <Input
+                  v-model="formValidate.ClassRoom"
+                  placeholder="Enter something..."
+                  style="width: 200px"
+                />
+              </FormItem>
+            </Col>
+            <Col span="21" offset="3">
+              <FormItem label="课程名称：">
+                <Input
+                  v-model="formValidate.CourseName"
+                  placeholder="Enter something..."
+                  style="width: 200px"
+                />
+              </FormItem>
+            </Col>
+            <Col span="21" offset="3">
+              <FormItem label="课程阶段：">
+                <Input
+                  v-model="formValidate.PhaseName"
+                  placeholder="Enter something..."
+                  style="width: 200px"
+                />
+              </FormItem>
+            </Col>
+            <div class="line">授课老师</div>
+            <Col span="11" offset="1">
+              <FormItem label="主教：">
+                <Input
+                  v-model="formValidate.Teacher"
+                  placeholder="Enter something..."
+                  style="width: 90px;"
+                />
+              </FormItem>
+            </Col>
+            <Col span="11" offset="1">
+              <FormItem label="工时：">
+                <Input
+                  v-model="formValidate.TeacherWT"
+                  placeholder="Enter something..."
+                  style="width: 90px"
+                />
+              </FormItem>
+            </Col>
+            <Col span="11" offset="1">
+              <FormItem label="助教：">
+                <Input
+                  v-model="formValidate.Assistant"
+                  placeholder="Enter something..."
+                  style="width: 90px;"
+                />
+              </FormItem>
+            </Col>
+            <Col span="11" offset="1">
+              <FormItem label="工时：">
+                <Input
+                  v-model="formValidate.AssistantWT"
+                  placeholder="Enter something..."
+                  style="width: 90px"
+                />
+              </FormItem>
+            </Col>
+            <Col span="11" offset="1">
+              <FormItem label="外教：">
+                <Input
+                  v-model="formValidate.ForeignTeacher"
+                  placeholder="Enter something..."
+                  style="width: 90px;"
+                />
+              </FormItem>
+            </Col>
+            <Col span="11" offset="1">
+              <FormItem label="工时：">
+                <Input
+                  v-model="formValidate.ForeignTeacherWT"
+                  placeholder="Enter something..."
+                  style="width: 90px"
+                />
+              </FormItem>
+            </Col>
+            <div class="line">上课自带物品说明</div>
+            <FormItem>
+              <Input
+                v-model="formValidate.PerpareComments"
+                type="textarea"
+                placeholder="Enter something..."
+              />
+            </FormItem>
           </Col>
-          <Col span="21" offset="3" class="marginbottom">上课时间：
-            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
+          <Col span="17" offset="1" style="border-left:1px solid #aaa;margin-top:20px;">
+            <Col span="17" class="queryEnd">
+              <h2>最多人数: 6 人</h2>
+            </Col>
+            <Col span="2" class="queryEnd">
+              <Button>添加学员</Button>
+            </Col>
+            <Col span="22" offset="1">
+              <tables
+                height="500"
+                disabled-hover
+                search-place="top"
+                ref="tables"
+                size="small"
+                editable
+                @on-row-click="Royaltyclick"
+                v-model="dataRoyaltyCodeDetail"
+                :columns="columnsRoyaltyCodeDetail"
+              />
+            </Col>
           </Col>
-          <Col span="21" offset="3" class="marginbottom marginbottom1">教室：
-            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
-          </Col>
-          <Col span="21" offset="3" class="marginbottom">课程主题：
-            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
-          </Col>
-          <Col span="21" offset="3" class="marginbottom borderbottom">课程阶段：
-            <Input v-model="value" placeholder="Enter something..." style="width: 200px"/>
-          </Col>
-          <div class="line">授课老师</div>
-          <Col span="23" offset="2" class="marginbottom">主教：
-            <Input
-              v-model="value"
-              placeholder="Enter something..."
-              style="width: 100px;margin-right:20px;"
-            />工时：
-            <Input v-model="value" placeholder="Enter something..." style="width: 100px"/>
-          </Col>
-          <Col span="23" offset="2" class="marginbottom">助教：
-            <Input
-              v-model="value"
-              placeholder="Enter something..."
-              style="width: 100px;margin-right:20px;"
-            />工时：
-            <Input v-model="value" placeholder="Enter something..." style="width: 100px"/>
-          </Col>
-          <Col span="23" offset="2" class="marginbottom">外教：
-            <Input
-              v-model="value"
-              placeholder="Enter something..."
-              style="width: 100px;margin-right:20px;"
-            />工时：
-            <Input v-model="value" placeholder="Enter something..." style="width: 100px"/>
-          </Col>
-          <div class="line">上课自带物品说明</div>
-          <Input v-model="value6" type="textarea" :rows="4" placeholder="Enter something..."/>
-        </Col>
-        <Col span="17" offset="1" style="border-left:1px solid #aaa;margin-top:20px;">
-          <Col span="17" class="queryEnd">
-            <h2>最多人数: 6 人</h2>
-          </Col>
-          <Col span="2" class="queryEnd">
-            <Button>添加学员</Button>
-          </Col>
-          <Col span="22" offset="1">
-            <tables
-              height="500"
-              disabled-hover
-              search-place="top"
-              ref="tables"
-              size="small"
-              editable
-              @on-row-click="Royaltyclick"
-              v-model="dataRoyaltyCodeDetail"
-              :columns="columnsRoyaltyCodeDetail"
-            />
-          </Col>
-        </Col>
-      </Row>
-      <div slot="footer"></div>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <button type="button" class="ivu-btn ivu-btn-text ivu-btn-large">
+          <span>取消</span>
+        </button>
+        <button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large">
+          <span>确定</span>
+        </button>
+      </div>
     </Modal>
   </div>
 </template>
 <script>
-import { EducationalGetTimeTableByDate, GetEntities } from "@/api/api";
+import {
+  EducationalGetTimeTableByDate,
+  GetEntities,
+  GetEntity
+} from "@/api/api";
 import Tables from "_c/tables";
 export default {
   components: {
@@ -213,8 +374,27 @@ export default {
   },
   data() {
     return {
-      slot: "class0",
-      slot1:"class1",
+      // 上课信息  弹框
+      ModalClassesName: "",
+      ModalStatus: "",
+      Topic: "",
+      formValidate: {
+        AttendDate: "",
+        FromTime: "",
+        ClassRoom: "",
+        CourseName: "",
+        PhaseName: "",
+        Teacher: "",
+        TeacherWT: "",
+        Assistant: "",
+        AssistantWT: "",
+        ForeignTeacher: "",
+        ForeignTeacherWT: "",
+        PerpareComments: ""
+      },
+
+      indexsubscript: "",
+      JudgementClassroom: "",
       AddDay: 0,
       model1: "",
       cityList: [],
@@ -289,31 +469,76 @@ export default {
     };
   },
   methods: {
-    ss(column) {
-      console.log(column._index);
+    columnindex(column) {
+      this.JudgementClassroom = column.slot;
     },
     // 签到
     show() {
       this.$Message.info("签到成功");
     },
     Royaltyclick(index) {
+      var count = Object.keys(index);
+      for (var i = 0; i < count.length; i++) {
+        if (count[i] == this.JudgementClassroom) {
+          this.indexsubscript = i - (count.length - 1) / 2 - 1;
+          console.log(this.indexsubscript);
+        }
+      }
       console.log(index);
-      // this.CourseInformation = true;
+      var arr = [];
+      for (let i in index) {
+        let o = {};
+        o[i] = index[i];
+        arr.push(o);
+      }
+
+      let keyId = JSON.stringify(arr[this.indexsubscript]);
+      let keyid = keyId.substr(5, 17);
+      GetEntity("Educational", keyid)
+        .then(res => {
+          console.log();
+          this.formValidate = res.data;
+          this.ModalClassesName = res.data.ClassesName;
+          this.Topic = res.data.Topic;
+          if (res.data.Status == 1) {
+            this.ModalStatus = "关闭预约";
+          }
+          if (res.data.Status == 2) {
+            this.ModalStatus = "已开课";
+          }
+          if (res.data.Status == 3) {
+            this.ModalStatus = "已结课";
+          }
+          if (res.data.Status == 4) {
+            this.ModalStatus = "取消";
+          }
+          this.formValidate.AttendDate = res.data.AttendDate.substr(0, 10);
+          this.formValidate.FromTime = res.data.FromTime.substr(11, 10);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      this.CourseInformation = true;
     },
     // 将教室/时间循环到表格头  将信息循环到表格
     addPerson() {
-      console.log(this.ClassHeader)
+      console.log(this.ClassHeader);
       for (var i = 0; i < this.TabularData.length; i++) {
+        let classi = "class" + i;
         let newitems = {
           title: this.TabularData[i].Description,
-          slot: "class" + i,
+          slot: classi,
           tooltip: true
         };
         this.ClassHeader.push(newitems);
       }
       for (var i = 0; i <= 10; i++) {
         let a = 9;
-        let name = { TimeClass: a + i + ":15" };
+        let name = { TimeClass: a + i + ":15" ,
+                        cellClassName:{
+
+                        }
+                    };
         this.data1.push(name);
       }
       for (var i = 0; i < this.DailySchedule.length; i++) {
@@ -323,7 +548,7 @@ export default {
             let slot = this.ClassHeader[a].slot;
             this.data1[subscript][slot] =
               "班级：" + this.DailySchedule[i].ClassesName;
-            this.data1[subscript][i] = this.DailySchedule[i].Id
+            this.data1[subscript][i] = this.DailySchedule[i].Id;
           }
         }
       }
@@ -381,6 +606,9 @@ export default {
 };
 </script>
 <style scoped>
+.pointer:hover {
+  cursor: pointer;
+}
 .tableTop {
   margin-top: 0px;
 }
@@ -390,11 +618,8 @@ export default {
 .footButton button {
   margin-left: 20px;
 }
-.marginbottom {
-  margin-bottom: 20px !important;
-}
-.marginbottom1 {
-  margin-left: 64px;
+.marginleft {
+  margin-left: 62px;
 }
 .line {
   font-size: 16px;
@@ -403,6 +628,22 @@ export default {
   width: 100%;
   border-bottom: 1px solid #aaa;
   margin-bottom: 10px;
+}
+.ivu-table .Already_begun {
+  background-color: #2db7f5;
+  color: #fff;
+}
+.ivu-table .Missed_classes {
+  background-color: #187;
+  color: #fff;
+}
+.ivu-table .Cancelled {
+  background-color: #ff6600;
+  color: #fff;
+}
+.ivu-table .Has_ended {
+  background-color: red;
+  color: #fff;
 }
 </style>
 
