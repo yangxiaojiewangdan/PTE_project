@@ -14,11 +14,11 @@ import '@/assets/icons/iconfont.css'
 import '@/assets/style/iview.css'
 import '@/assets/style/common.css'
 import TreeTable from 'tree-table-vue'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-
-Vue.use(ElementUI);
-
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
+import FullCalendar from 'vue-fullcalendar'
+Vue.use(FullCalendar)
 // 引入公共js 
 import common from "./commonFunction/Function.js"
 Vue.prototype.common = common
@@ -32,34 +32,31 @@ Vue.prototype.common = common
 //if(process.env.NODE_ENV !== 'production') require('@/mock')
 
 Vue.use(iView, {
-  i18n: (key, value) => i18n.t(key, value)
+i18n: (key, value) => i18n.t(key, value)
 })
 Vue.use(TreeTable)
 /**
- * @description 注册admin内置插件
- */
+* @description 注册admin内置插件
+*/
 installPlugin(Vue)
 /**
- * @description 生产环境关掉提示
- */
+* @description 生产环境关掉提示
+*/
 Vue.config.productionTip = false
 /**
- * @description 全局注册应用配置
- */
+* @description 全局注册应用配置
+*/
 Vue.prototype.$config = config
 /**
- * 注册指令
- */
+* 注册指令
+*/
 importDirective(Vue)
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  i18n,
-  store,
-  render: h => h(App)
+el: '#app',
+router,
+i18n,
+store,
+render: h => h(App)
 })
-
-
-

@@ -1,5 +1,5 @@
-export default{
-    login:function(){
-        console.log("1111");
-    }
+export default {
+  formatTime: function () {
+    console.log("sss")
+  }
 }

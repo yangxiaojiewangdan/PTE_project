@@ -734,6 +734,7 @@
 			// 添加信息 弹出框函数 end
 			// 查看信息 修改信息 弹出框函数
 			onEditMoney(index) {
+				console.log(index);
 				this.add = false;
 				this.see = true;
 				this.AddDepartment = true;

@@ -93,7 +93,7 @@ export const Copy = (Interface, keyId) => {
   });
 };
 // 获取组织树结构
-export const GetBusinessUnit = (Interface,businessGroup) => {
+export const GetBusinessUnit = (Interface, businessGroup) => {
   return axios.request({
     url: apiUrl + "/api/" + Interface + "/GetBusinessUnit?businessGroup=" + businessGroup,
     method: "get"
@@ -229,7 +229,7 @@ export const RoyaltyCodeAddOrUpdateLadder = Data => {
 //删除权益金的阶梯
 export const RoyaltyCodeRemoveLadder = (royaltyId, detailId) => {
   return axios.request({
-    url: apiUrl + "/api/RoyaltyCode/RemoveLadder?royaltyId="+ royaltyId +"&detailId=" + detailId,
+    url: apiUrl + "/api/RoyaltyCode/RemoveLadder?royaltyId=" + royaltyId + "&detailId=" + detailId,
     method: "post"
   });
 }
@@ -263,6 +263,7 @@ export const EducationalGetTimeTableSummaryByMonth = (StoreId,DateInQuery) => {
     url: apiUrl + "/api/Educational/GetTimeTableSummaryByMonth?StoreId="+StoreId+"&DateInQuery="+DateInQuery,
     method: "get"
   });
+
 }
 //获取加盟商门店信息
 //获取直营门店
@@ -328,3 +329,5 @@ export const UpClasses = Data => {
     method: "post"
   });
 }
+
+

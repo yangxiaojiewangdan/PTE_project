@@ -13,7 +13,7 @@
         <Col span="24">
           <Row>
             <Col span="10" class="queryquerytop">
-              <h3 class="queryquery" style="padding-left:32px;">业务类型：</h3>
+              <h3 class="queryquery" style="padding-left:32px;">业务模式：</h3>
               <Button type="text" class="tableTops" @click="clickRadioBusinessType">全部</Button>
               <RadioGroup v-model="RadioBusinessType" type="button" @on-change="ConditionalQuery">
                 <Radio
@@ -252,7 +252,7 @@
             </FormItem>
           </Col>
           <Col span="24">
-            <FormItem label="业务类型" prop="BusinessType">
+            <FormItem label="业务模式" prop="BusinessType">
               <RadioGroup v-model="formValidate.BusinessType">
                 <Radio v-for="item in BusinessTypeList"  :label="item.Description">
                   <span>{{item.Description}}</span>
@@ -349,7 +349,7 @@ export default {
       // 地址
       ProviceCodeList:[],
       CityCodeList:[],
-      // 业务类型
+      // 业务模式
       RadioBusinessType: "",
       BusinessTypeList: [],
       // 门店类型
@@ -388,7 +388,7 @@ export default {
           sortable: true
         },
         {
-          title: "业务类型",
+          title: "业务模式",
           key: "BusinessType",
           width: 110,
           sortable: true
@@ -856,7 +856,7 @@ export default {
     }
   },
   mounted() {
-    this.common.login();
+    
     if(this.$route.query.id == undefined){
     }else{
       this.go();
