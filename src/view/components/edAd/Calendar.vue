@@ -535,8 +535,8 @@ export default {
       for (var i = 0; i <= 10; i++) {
         let a = 9;
         let name = { TimeClass: a + i + ":15" ,
-                        cellClassName:{
-
+                        cellClassName:  {
+                          
                         }
                     };
         this.data1.push(name);
