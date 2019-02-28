@@ -65,14 +65,17 @@
 					</FormItem>
 					<FormItem label="所属业务品牌" prop="BusinessType">
 						<Select v-model="formValidate.BusinessType" style="width:200px">
-							<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+							<Option v-for="item in BusinessTypeList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
-					<!--<FormItem label="门店名称" prop="StoreId">
-						<Select v-model="formValidate.StoreId" style="width:200px">
+					<!--<FormItem label="门店名称" prop="StoreName">
+						<Select v-model="formValidate.StoreName" style="width:200px" @on-change="selectName">
 							<Option v-for="item in store" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>-->
+					<FormItem label="门店名称" prop="StoreId" v-if="false">
+						<Input v-model="formValidate.StoreId"></Input>
+					</FormItem>
 
 					<FormItem label="课包类型" prop="PackageType">
 						<Select v-model="formValidate.PackageType" style="width:200px" @on-change="v=>{setOption1(v,'type')}">
@@ -309,10 +312,7 @@
 				CourseData: [],
 				//课包类型
 				ClassPackage: [],
-				cityList: [{
-					value: '*',
-					label: '*'
-				}, ],
+				BusinessTypeList: [],
 				//门店数组
 				store: [],
 				//课程数组
@@ -590,6 +590,7 @@
 					BusinessGroup: '',
 					BusinessType: '',
 					StoreId: '',
+					StoreName:'',
 					PackageType: '',
 					Code: '',
 					PackageName: '',
@@ -768,6 +769,9 @@
 			}
 		},
 		methods: {
+			selectName(value){
+				this.formValidate.StoreId = value;
+			},
 			Smallprice(){
 				this.IsLimitPrice = true;
 			},
@@ -794,7 +798,7 @@
 				let userInfo = sessionStorage.getItem('userInfo');
 				let array = JSON.parse(userInfo);
 				console.log(array)
-				this.formValidate.BusinessGroup = array.BusinessUnit
+				this.formValidate.BusinessGroup = array.BusinessGroup
 
 			},
 			//查询全部
@@ -839,7 +843,7 @@
 						//接口发送上边的data
 						Create(this.Interface, this.formValidate).then(res => {
 							console.log(res.data)
-							this.reload();
+							
 							//拿课包的Id和明细价格
 							this.packageId = res.data.Data.Id
 							this.packageDetail = JSON.parse(
@@ -865,7 +869,7 @@
 								}).then(res => {
 									console.log(res.data)
 									this.$Message.success("添加成功");
-									this.reload();
+									
 								}).catch(err => {
 									console.log(err)
 								})
@@ -1107,35 +1111,37 @@
 			//获取课包
 			GetEntities(this.Interface, this.getTableData).then(res => {
 				this.CoursePackageData = res.data
-				console.log(this.CoursePackageData)
 			}).catch(err => {
 				console.log(err)
 			})
 			//获取课程
 			GetEntities("Course", this.getTableData).then(res => {
 				this.CourseData = res.data;
-				console.log(this.CourseData)
+			}).catch(err => {
+				console.log(err)
+			})
+			//业务类型
+			GetEntities("BusinessType", this.getTableData).then(res => {
+				this.BusinessTypeList = res.data;
+				console.log(this.BusinessTypeList)
 			}).catch(err => {
 				console.log(err)
 			})
 			//门店Id
 			GetEntities("BusinessStore", this.getTableData).then(res => {
 				this.store = res.data
-				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			})
 			//课包类型
 			DataDictionaryGetEntities("PACKAGE_TYPE").then(res => {
 				this.ClassPackage = res.data;
-				//console.log(this.ClassPackage)
 			}).catch(err => {
 				console.log(err)
 			});
 			let userInfo = sessionStorage.getItem('userInfo');
 			let array = JSON.parse(userInfo);
-			console.log(array)
-			this.formValidate.BusinessGroup = array.BusinessUnit
+			this.formValidate.BusinessGroup = array.BusinessGroup
 		}
 	}
 </script>

@@ -24,9 +24,9 @@ export const DistrictGetArea = (ParentId) => {
   });
 };
 //  根据数据主键(Id)查询单条数据
-export const DistrictGetEntity = (keyId) => {
+export const DistrictGetEntity = (Interface,keyId) => {
   return axios.request({
-    url: apiUrl + "/api/District/GetEntity?keyId=" + keyId,
+    url: apiUrl + "/api/"+ Interface + "/GetEntity?keyId=" + keyId,
     method: "get"
   });
 };
@@ -50,7 +50,7 @@ export const GetEntities = (Interface, Data) => {
 // 根据数据主键(Id)查询单条数据
 export const GetEntity = (Interface, keyId) => {
   return axios.request({
-    url: apiUrl + "/api/" + Interface + "/GetEntity?keyId" + keyId,
+    url: apiUrl + "/api/" + Interface + "/GetEntity?keyId=" + keyId,
     method: "get"
   });
 };
@@ -233,4 +233,98 @@ export const RoyaltyCodeRemoveLadder = (royaltyId, detailId) => {
     method: "post"
   });
 }
+//查看订单交易记录
+export const GetTransactionJournalByOrder = (OrderId) => {
+  return axios.request({
+    url: apiUrl + "/api/Transaction/GetTransactionJournalByOrder?OrderId=" + OrderId + "&IncludeDeposit=true",
+    method: "get"
+  });
+}
+// 排课
 
+// 查询天课表
+export const EducationalGetTimeTableByDate = Data => {
+  return axios.request({
+    url: apiUrl + "/api/Educational/GetTimeTableByDate",
+    data: Data,
+    method: "post"
+  });
+}
+//查询周课表摘要汇总信息
+export const EducationalGetTimeTableSummaryByWeek = (StoreId,DateInQuery) => {
+  return axios.request({
+    url: apiUrl + "/api/Educational/GetTimeTableSummaryByWeek?StoreId="+StoreId+"&DateInQuery="+DateInQuery,
+    method: "get"
+  });
+}
+//查询月课表摘要汇总信息
+export const EducationalGetTimeTableSummaryByMonth = (StoreId,DateInQuery) => {
+  return axios.request({
+    url: apiUrl + "/api/Educational/GetTimeTableSummaryByMonth?StoreId="+StoreId+"&DateInQuery="+DateInQuery,
+    method: "get"
+  });
+}
+//获取加盟商门店信息
+//获取直营门店
+//获取所有大区的数据 
+export const GetDirectStore = () => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/GetDirectStore",
+    method: "get"
+  });
+};
+export const GetFranchiseStore = (FranchiserId) => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/GetFranchiseStore?FranchiserId="+ FranchiserId,
+    method: "get"
+  });
+};
+
+//单次排课
+export const SingleArrangement = Data => {
+  return axios.request({
+    url: apiUrl + "/api/Educational/SingleArrangement",
+    data: Data,
+    method: "post"
+  });
+};
+//阶段排课
+export const BatchArrangement = Data => {
+  return axios.request({
+    url: apiUrl + "/api/Educational/BatchArrangement",
+    data: Data,
+    method: "post"
+  });
+}
+//自定义排课
+export const CustomArrangement = Data => {
+  return axios.request({
+    url: apiUrl + "/api/Educational/CustomArrangement",
+    data: Data,
+    method: "post"
+  });
+}
+//通过订单学员添加学员到班级
+export const AddMemberViaOrder = Data => {
+  return axios.request({
+    url: apiUrl + "/api/Classes/AddMemberViaOrder",
+    data: Data,
+    method: "post"
+  });
+}
+//删除班级里的学员
+export const RemoveMember = Data => {
+  return axios.request({
+    url: apiUrl + "/api/Classes/RemoveMember",
+    data: Data,
+    method: "post"
+  });
+}
+//给学员更换班级
+export const UpClasses = Data => {
+  return axios.request({
+    url: apiUrl + "/api/Classes/UpClasses",
+    data: Data,
+    method: "post"
+  });
+}
