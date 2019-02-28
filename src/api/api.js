@@ -258,3 +258,10 @@ export const EducationalGetTimeTableSummaryByWeek = (StoreId,DateInQuery) => {
     method: "get"
   });
 }
+//查询月课表摘要汇总信息
+export const EducationalGetTimeTableSummaryByMonth = (StoreId,DateInQuery) => {
+  return axios.request({
+    url: apiUrl + "/api/Educational/GetTimeTableSummaryByMonth?StoreId="+StoreId+"&DateInQuery="+DateInQuery,
+    method: "get"
+  });
+}

@@ -40,12 +40,6 @@
       <Col span="22" class="footButton">
         <Table :columns="WeekHeader" border :data="data1"></Table>
       </Col>
-      <Col span="22" class="footButton">
-        <Button type="info">以开课</Button>
-        <Button type="success">未开课</Button>
-        <Button type="warning">已取消</Button>
-        <Button type="error">已结束</Button>
-      </Col>
     </Row>
   </div>
 </template>
@@ -61,16 +55,16 @@ export default {
       model1: "",
       cityList: [],
       CurrentTime: "",
-      TableWeek:[],
+      TableWeek: [],
       WeekHeader: [
         { title: "时间/周", key: "TimeWeek", width: 110 },
+        { title: "周日", key: "Sunday" },
         { title: "周一", key: "Monday" },
         { title: "周二", key: "Tuesday" },
         { title: "周三", key: "Wednesday" },
         { title: "周四", key: "Thursday" },
         { title: "周五", key: "Friday" },
         { title: "周六", key: "Saturday" },
-        { title: "周日", key: "Sunday" }
       ],
       data1: [],
       Code: ""
@@ -78,17 +72,20 @@ export default {
   },
   methods: {
     addPerson() {
+      // 循环时间
       for (var i = 0; i <= 10; i++) {
         let a = 9;
         let name = { TimeWeek: a + i + ":15" };
         this.data1.push(name);
       }
-      // for (var i = 0; i < this.TableWeek.length; i++) {
-      //   let subscript = this.TableWeek[i].FromTime.substr(0, 2) - 9;
-      //   this.data1[subscript][this.TableWeek[i].DayOfWeek] ="班级：" +
-      //         this.TableWeek[i].CompletedCourseTimes
-      // }
-      
+      // 循环周信息
+      for (var i = 0; i < this.TableWeek.length; i++) {
+        let subscript = this.TableWeek[i].FromTime.substr(0, 2) - 9;
+        let a = this.TableWeek[i].DayOfWeek + 1;
+        let key = this.WeekHeader[a].key;
+        this.data1[subscript][key] =
+          "课程完成百分比:" + this.TableWeek[i].CompletedPercent;
+      }
     },
     // 时间
     CurrentTime1() {
@@ -104,13 +101,13 @@ export default {
       //今天是这周的第几天
       var today = date.getDay();
       //上周日距离今天的天数（负数表示）
-      var stepSunDay = -today + 1;
+      var stepSunDay = -today ;
       // 如果今天是周日
       if (today == 0) {
         stepSunDay = -7;
       }
       // 周一距离今天的天数（负数表示）
-      var stepMonday = 7 - today;
+      var stepMonday = 6 - today;
       var time = date.getTime();
       var monday = new Date(time + stepSunDay * 24 * 3600 * 1000);
       var sunday = new Date(time + stepMonday * 24 * 3600 * 1000);
@@ -148,9 +145,17 @@ export default {
   mounted() {
     this.CurrentTime1();
     // 查询周课表摘要汇总信息
-    EducationalGetTimeTableSummaryByWeek("14094325341868032", "2019-02-25")
+    let myDate = new Date();
+    let DateInQuery =
+      myDate.getFullYear() +
+      "-" +
+      (myDate.getMonth() + 1) +
+      "-" +
+      myDate.getDate();
+    EducationalGetTimeTableSummaryByWeek("14094325341868032", DateInQuery)
       .then(res => {
-        this.TableWeek = res.data
+        this.TableWeek = res.data;
+        console.log(res.data);
         this.addPerson();
       })
       .catch(err => {
@@ -164,9 +169,6 @@ export default {
   margin-top: 0px;
 }
 .footButton {
-  margin: 10px 0;
-}
-.footButton button {
-  margin-left: 20px;
+  margin: 30px 0 70px 0;
 }
 </style>

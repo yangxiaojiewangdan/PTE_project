@@ -110,10 +110,14 @@
       </Col>
       <!-- 课表 -->
       <Col span="22">
-        <Table :columns="ClassHeader" border :data="data1" @on-row-click="Royaltyclick"></Table>
+        <Table  :columns="ClassHeader" border :data="data1" @on-row-click="Royaltyclick">
+            <template slot-scope="{ row,column,index }" :slot="slot">
+              <b style="color:red;" @click="ss(column,index)">{{ row.class0 }}</b>
+            </template>
+        </Table>
       </Col>
       <Col span="22" class="footButton">
-        <Button type="info">以开课</Button>
+        <Button type="info">已开课</Button>
         <Button type="success">未开课</Button>
         <Button type="warning">已取消</Button>
         <Button type="error">已结束</Button>
@@ -189,6 +193,7 @@
               ref="tables"
               size="small"
               editable
+              @on-row-click="Royaltyclick"
               v-model="dataRoyaltyCodeDetail"
               :columns="columnsRoyaltyCodeDetail"
             />
@@ -208,6 +213,8 @@ export default {
   },
   data() {
     return {
+      slot: "class0",
+      slot1:"class1",
       AddDay: 0,
       model1: "",
       cityList: [],
@@ -215,24 +222,52 @@ export default {
       AttendDate: "",
       ClassHeader: [
         {
-          title: "时间/教室",
+          title: "开始时间/教室",
           key: "TimeClass",
-          width: 90
+          width: 120
         }
       ],
       data1: [],
       TabularData: [],
       DailySchedule: [],
-
       // 课程弹框信息
       CourseInformation: false,
       value: "",
       value6: "",
+      texts: "签到",
       columnsRoyaltyCodeDetail: [
         { title: "订单号", key: "LowerValue" },
         { title: "姓名", key: "UpperValue" },
         { title: "排课方式", key: "FlatOrPecent" },
-        { title: "操作", key: "handle", options: ["delete"] }
+        {
+          title: "签到",
+          key: "1",
+          width: 80,
+          render: (h, params) => {
+            let texts = "签到";
+            return h("div", [
+              h(
+                "Button",
+                {
+                  props: {
+                    type: "primary",
+                    size: "small"
+                  },
+                  style: {
+                    marginRight: "5px"
+                  },
+                  on: {
+                    click: () => {
+                      this.show();
+                    }
+                  }
+                },
+                this.texts
+              )
+            ]);
+          }
+        },
+        { title: "操作", key: "handle", options: ["delete"], width: 80 }
       ],
       dataRoyaltyCodeDetail: [
         {
@@ -254,17 +289,25 @@ export default {
     };
   },
   methods: {
+    ss(column) {
+      console.log(column._index);
+    },
+    // 签到
+    show() {
+      this.$Message.info("签到成功");
+    },
     Royaltyclick(index) {
       console.log(index);
-      
+      // this.CourseInformation = true;
     },
     // 将教室/时间循环到表格头  将信息循环到表格
     addPerson() {
+      console.log(this.ClassHeader)
       for (var i = 0; i < this.TabularData.length; i++) {
         let newitems = {
           title: this.TabularData[i].Description,
-          key: "class" + i,
-          tooltip: true,
+          slot: "class" + i,
+          tooltip: true
         };
         this.ClassHeader.push(newitems);
       }
@@ -277,14 +320,10 @@ export default {
         let subscript = this.DailySchedule[i].FromTime.substr(11, 2) - 9;
         for (var a = 0; a < this.ClassHeader.length; a++) {
           if (this.ClassHeader[a].title == this.DailySchedule[i].ClassRoom) {
-            let key = this.ClassHeader[a].key;
-            this.data1[subscript][key] =
-              "班级：" +
-              this.DailySchedule[i].ClassesName +
-              " 课程：" +
-              this.DailySchedule[i].CourseName +
-              " 授课老师：" +
-              this.DailySchedule[i].Teacher;
+            let slot = this.ClassHeader[a].slot;
+            this.data1[subscript][slot] =
+              "班级：" + this.DailySchedule[i].ClassesName;
+            this.data1[subscript][i] = this.DailySchedule[i].Id
           }
         }
       }
@@ -311,8 +350,8 @@ export default {
           Conditions: [
             {
               FilterField: "Store",
-              Relational: 0,
-              FilterValue: 14142291989024768
+              Relational: "Equal",
+              FilterValue: 14094325341868032
             }
           ]
         }
@@ -320,10 +359,9 @@ export default {
     })
       .then(res => {
         this.TabularData = res.data;
-
         // 获取日课表信息
         EducationalGetTimeTableByDate({
-          StoreId: 14094325341868032,
+          StoreId: 14094326276526080,
           DateInQuery: "2019-02-25"
         })
           .then(res => {
@@ -346,10 +384,10 @@ export default {
 .tableTop {
   margin-top: 0px;
 }
-.footButton{
+.footButton {
   margin-top: 10px;
 }
-.footButton button{
+.footButton button {
   margin-left: 20px;
 }
 .marginbottom {

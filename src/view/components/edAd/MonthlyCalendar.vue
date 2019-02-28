@@ -36,27 +36,28 @@
   </div>
 </template>
 <script>
+import { EducationalGetTimeTableSummaryByMonth } from "@/api/api";
 import { FullCalendar } from "vue-fullcalendar";
 export default {
   data() {
     return {
-      monthData: [
-        {
-          title: "eeeeeeeee", // 事件内容
-          start: "2019-2-24", // 事件开始时间
-          end: "2019-2-28", // 事件结束时间
-          cssClass: "red" // 事件的样式   class名（由后台返回数据）  red为自己定义的class名
-        }
-      ]
+      monthData: [],
+      TableMonth: []
     };
   },
   methods: {
-    // 选择月份                                                                                                                                                                                                                                                                                                                                               
-    changeMonth(start, end, current) {
-     console.log(start);
-      console.log(end);
-      console.log(current);
+    addPerson() {
+      // 循环月信息
+      for (var i = 0; i < this.TableMonth.length; i++) {
+        let newitems = {
+          title: "完成百分比" + this.TableMonth[i].CompletedPercent,
+          start: this.TableMonth[i].BusinessDate
+        };
+        this.monthData.push(newitems);
+      }
     },
+    // 选择月份
+    changeMonth(start, end, current) {},
     // 点击事件
     eventClick(event, jsEvent, pos) {
       console.log("eventClick", event, jsEvent, pos);
@@ -69,6 +70,26 @@ export default {
     moreClick(day, events, jsEvent) {
       console.log("moreCLick", day, events, jsEvent);
     }
+  },
+  mounted() {
+    // 查询月课表摘要汇总信息
+    let myDate = new Date();
+    let DateInQuery =
+      myDate.getFullYear() +
+      "-" +
+      (myDate.getMonth() + 1) +
+      "-" +
+      myDate.getDate();
+    EducationalGetTimeTableSummaryByMonth("14094325341868032", DateInQuery)
+      .then(res => {
+        this.TableMonth = res.data;
+        console.log(res.data);
+
+        this.addPerson();
+      })
+      .catch(err => {
+        console.log(err);
+      });
   },
   components: {
     "full-calendar": require("vue-fullcalendar")
@@ -103,6 +124,9 @@ export default {
   text-align: center;
   border-right: 1px solid #e0e0e0;
   font-size: 20px;
+}
+.full-calendar-body .dates .dates-events .events-week .events-day {
+  min-height: 98px !important;
 }
 </style>
 
