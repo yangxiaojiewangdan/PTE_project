@@ -11,7 +11,7 @@
 						<Input v-model="formValidate.Store" placeholder="请输入" disabled></Input>
 					</FormItem>-->
 					<FormItem label="门店名称" prop="Store">
-						<Select v-model="formValidate.Store">
+						<Select v-model="formValidate.Store" @on-change="selectStore">
 							<Option v-for="item in storeList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
@@ -32,18 +32,18 @@
 					<Col v-if="singleCourse">
 					<Col span="12">
 					<FormItem label="上课日期" prop="AttendDate">
-						<DatePicker type="date" v-model="formValidate.AttendDate" placeholder="请选择"></DatePicker>
+						<DatePicker type="date" v-model="formValidate.AttendDate" placeholder="请选择" :options="options3"></DatePicker>
 					</FormItem>
 					</Col>
 					<Col span="24">
 					<Col span="12">
-					<FormItem label="上课开始时间" prop="FromTime">
-						<TimePicker type="time" v-model="formValidate.FromTime" placeholder="请选择"></TimePicker>
+					<FormItem label="开始时间" prop="FromTime">
+						<TimePicker type="time" v-model="formValidate.FromTime" format="HH:mm" placeholder="请选择"></TimePicker>
 					</FormItem>
 					</Col>
 					<Col span="12">
-					<FormItem label="上课结束时间" prop="ToTime ">
-						<TimePicker type="time" v-model="formValidate.ToTime " placeholder="请选择"></TimePicker>
+					<FormItem label="结束时间" prop="ToTime ">
+						<TimePicker type="time" v-model="formValidate.ToTime " format="HH:mm" placeholder="请选择"></TimePicker>
 					</FormItem>
 					</Col>
 					</Col>
@@ -51,29 +51,29 @@
 					<!--批量排课-->
 					<Col v-if="batchCourse">
 					<Col span="24">
-					<FormItem label="上课起止日期" prop="FromDateTime">
-						<DatePicker type="daterange" v-model="formValidate.FromDateTime" placeholder="请选择" @on-change="queryData"></DatePicker>
+					<FormItem label="上课日期" prop="FromDateTime">
+						<DatePicker type="daterange" v-model="formValidate.FromDateTime" :options="options3" placeholder="请选择" @on-change="queryData"></DatePicker>
 					</FormItem>
-					<FormItem label="上课开始日期" prop="FromDate " v-if="false">
+					<FormItem label="开始日期" prop="FromDate " v-if="false">
 						<DatePicker type="date" v-model="formValidate.FromDate " placeholder="请选择"></DatePicker>
 					</FormItem>
-					<FormItem label="上课结束日期" prop="ToDate " v-if="false">
+					<FormItem label="结束日期" prop="ToDate " v-if="false">
 						<DatePicker type="date" v-model="formValidate.ToDate " placeholder="请选择"></DatePicker>
 					</FormItem>
 					</Col>
 					<Col span="24">
 					<Col span="12">
-					<FormItem label="上课开始时间" prop="FromTime">
+					<FormItem label="开始时间" prop="FromTime">
 						<TimePicker type="time" v-model="formValidate.FromTime" placeholder="请选择"></TimePicker>
 					</FormItem>
 					</Col>
 					<Col span="12">
-					<FormItem label="上课结束时间" prop="ToTime">
+					<FormItem label="结束时间" prop="ToTime">
 						<TimePicker type="time" v-model="formValidate.ToTime" placeholder="请选择"></TimePicker>
 					</FormItem>
 					</Col>
 					</Col>
-					<Col span="24" class="check">
+					<Col span="22" class="check" push="2">
 					<Checkbox v-model="formValidate.AllowMon">周一</Checkbox>
 					<Checkbox v-model="formValidate.AllowTue">周二</Checkbox>
 					<Checkbox v-model="formValidate.AllowWed">周三</Checkbox>
@@ -88,6 +88,11 @@
 					<div class="line">
 						课程班级
 					</div>
+					<Col span="24">
+					<FormItem label="课程主题" prop="Topic" v-if="StageClasses">
+						<Input v-model="formValidate.Topic " placeholder="请输入"></Input>
+					</FormItem>
+					</Col>
 					<Col span="12">
 					<FormItem label="班级" prop="ClassesId">
 						<Select v-model="formValidate.ClassesId" @on-change="selsctClasses">
@@ -103,12 +108,7 @@
 					</FormItem>
 					</Col>
 					<Col span="12">
-					<FormItem label="课程主题" prop="Topic" v-if="StageClasses">
-						<Input v-model="formValidate.Topic " placeholder="请输入"></Input>
-					</FormItem>
-					</Col>
-					<Col span="12">
-					<FormItem label="课程名称" prop="CourseId">
+					<FormItem label="课程" prop="CourseId">
 						<Select v-model="formValidate.CourseId" @on-change="selectCourse">
 							<Option v-for="item in CoursePackageList" :value="item.Id" :key="item.value">{{ item.CourseName }}</Option>
 						</Select>
@@ -187,7 +187,7 @@
 				<Button class="tableTops" @click="SearchModal" style="margin-bottom: 10px;">添加上课学员</Button>
 				</Col>
 				<Col span="23" push="1">
-				<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="formValidate.MemberCollection" :columns="StudentDataHeader" @on-delete="handleDeleteDetail" height="400" border stripe @on-row-dblclick="dblclickUpDetail" />
+				<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="formValidate.MemberCollection" :columns="StudentDataHeader" @on-delete="handleDeleteDetail" height="600" border stripe @on-row-dblclick="dblclickUpDetail" />
 				</Col>
 				</Col>
 			</Row>
@@ -227,26 +227,33 @@
 				getTableData: {
 					Filters: {}
 				},
+				time: Date.now(),
+				options3: {
+					disabledDate: date => {
+						// this成功指向vue实例
+						return date && date.valueOf() < this.time -86400000;
+					}
+				},
 				formValidate: {
 					Topic: '',
 					AttendDate: '',
-					FromTime: '',
-					ToTime: '',
+					FromTime: '9:15',
+					ToTime: '10:15',
 					ClassRoom: '',
-					ExpectPeriod: '',
+					ExpectPeriod: '1',
 					ClassesId: '',
 					AutoAddClassesMember: '',
 					CourseId: '',
 					PhaseId: '',
 					TeacherId: '',
 					Teacher: '',
-					TeacherWT: '',
+					TeacherWT: '45',
 					AssistantId: '',
 					Assistant: '',
-					AssistantWT: '',
+					AssistantWT: '0',
 					ForeignTeacherId: '',
 					ForeignTeacher: '',
-					ForeignTeacher: '',
+					ForeignTeacherWT: '0',
 					Comments: '',
 					ClassesName: "",
 					Phase: "",
@@ -257,13 +264,13 @@
 					MemberCollection: [],
 					Id: '',
 					ClassMode: '',
-					AllowMon: '',
-					AllowTue: '',
-					AllowWed: '',
-					AllowThu: '',
-					AllowFri: '',
-					AllowSat: "",
-					AllowSun: '',
+					AllowMon: true,
+					AllowTue: true,
+					AllowWed: true,
+					AllowThu: true,
+					AllowFri: true,
+					AllowSat: true,
+					AllowSun: true,
 					FromTime1: '',
 				},
 				StudentDataHeader: [{
@@ -408,12 +415,7 @@
 					this.stageCourse = false;
 					this.batchCourse = true;
 					this.StageClasses = true;
-				} else if(this.arrangingCourses === 3) {
-					this.singleCourse = false;
-					this.batchCourse = false;
-					this.stageCourse = true;
-					this.StageClasses = false;
-				} else if(this.arrangingCourses === 1 || this.arrangingCourses == "") {
+				}else if(this.arrangingCourses === 1 || this.arrangingCourses == "") {
 					this.stageCourse = false;
 					this.batchCourse = false;
 					this.singleCourse = true;
@@ -474,6 +476,41 @@
 					console.log(err)
 				})
 			},
+			selectStore(value) {
+				console.log(value)
+				//请求门店下的教室
+				GetEntities("ClassRoom", {
+					Filters: [{
+						Relational: "And",
+						Conditions: [{
+							FilterField: "Store",
+							Relational: "Equal",
+							FilterValue: value
+						}]
+					}]
+				}).then(res=>{
+					this.classesRoomLIst = res.data
+					console.log(this.classesRoomLIst)
+				}).catch(err=>{
+					console.log(err)
+				});
+				//请求门店下的人员
+//				GetEntities("BusinessUser", {
+//					Filters: [{
+//						Relational: "And",
+//						Conditions: [{
+//							FilterField: "Store",
+//							Relational: "Equal",
+//							FilterValue: value
+//						}]
+//					}]
+//				}).then(res=>{
+//					console.log(res.data)
+//				}).catch(err=>{
+//					console.log(err)
+//				})
+
+			},
 			SearchModal(){
 //				this.name1 = true;
 //				console.log(this.name1)
@@ -485,12 +522,6 @@
 			GetEntities("BusinessStore", this.getTableData).then(res => {
 				this.storeList = res.data
 				console.log(this.storeList)
-			}).catch(err => {
-				console.log(err)
-			})
-			//获取教室
-			GetEntities("ClassRoom", this.getTableData).then(res => {
-				this.classesRoomLIst = res.data;
 			}).catch(err => {
 				console.log(err)
 			})

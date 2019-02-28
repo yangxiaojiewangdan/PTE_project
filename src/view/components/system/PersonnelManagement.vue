@@ -132,6 +132,20 @@
 					</Col>
 
 					<Col span="10">
+					<FormItem label="所属加盟商" prop="Franchiser">
+						<Select v-model="formValidate.Franchiser" @on-change="queryMethodId" >
+							<Option v-for="item in FranchiseeList" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="10">
+					<FormItem label="所属门店" prop="Store">
+						<Select v-model="formValidate.Store" @on-change="queryMethodStoreId" >
+							<Option v-for="item in StoreList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="10">
 					<FormItem label="QQ号" prop="QQ">
 						<Input v-model="formValidate.QQ" placeholder="请输入" />
 					</FormItem>
@@ -248,7 +262,7 @@
 </template>
 <script>
 	import { ModifyPassword } from '@/api/data'
-	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities } from '@/api/api'
+	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities,GetDirectStore,GetFranchiseStore} from '@/api/api'
 	import yanzheng from '@/assets/json/yanzheng.json'
 
 	export default {
@@ -539,7 +553,7 @@
 				Supervisor: '',
 				AddDepartment: false,
 				formValidate: {
-					BusinessGroup: '*',
+					BusinessGroup: '',
 					BusinessUnitId: '',
 					BusinessUnit: '',
 					LastName: '',
@@ -551,6 +565,12 @@
 					TelPhone: '',
 					MobilePhone: '',
 					Supervisor: '',
+					//所属加盟名称
+					Franchiser: '',
+					FranchiserId:'',
+					//所属门店名称
+					Store: '',
+					StoreId:'',
 					WeChat: '',
 					QQ: '',
 					Email: '',
@@ -565,6 +585,8 @@
 					IsAdministrtor: true,
 				},
 				IsSupervisorList: [],
+				FranchiseeList:[],
+				StoreList:[],
 			}
 		},
 		//		computed:{
@@ -643,6 +665,21 @@
 //					console.log(err)
 //				})
 
+			},
+			queryMethodId(value){
+				this.formValidate.FranchiserId = value;
+				//获取加盟商下的门店
+				GetFranchiseStore(this.formValidate.FranchiserId).then(res =>{
+					console.log(res.data)
+					this.StoreList = res.data;
+				}).catch(err =>{
+					console.log(err)
+				})
+					
+			},
+			queryMethodStoreId(value){
+				console.log(value)
+				this.formValidate.StoreId = value;
 			},
 			//删除
 			deleteList() {
@@ -782,6 +819,17 @@
 			}).catch(err => {
 				console.log(err)
 			})
+			//获取加盟商
+			GetEntities("FranchiserProfile", this.data4).then(res => {
+				this.FranchiseeList = res.data
+			}).catch(err => {
+				console.log(err)
+			})
+			//获取用户信息
+			let userInfo = sessionStorage.getItem('userInfo');
+			let userData = JSON.parse(userInfo);
+			this.formValidate.BusinessGroup = userData.BusinessGroup
+			this.formValidate.BusinessUnitId  = userData.BusinessUnitId 
 
 		}
 	}

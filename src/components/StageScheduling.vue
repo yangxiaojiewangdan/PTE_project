@@ -29,26 +29,27 @@
 								<Col span="24">
 								<p class="Classes">课程主题</p>
 								<Input v-model="item.Topic" placeholder="请输入" class="selectClasses"></Input>
+								<p class="Classes">上课日期</p>
+								<DatePicker type="date" v-model="item.AttendDate" placeholder="请选择" class="selectClasses" :options="options3"></DatePicker>
 								</Col>
 								<Col span="24">
-								<p class="Classes">上课日期</p>
-								<DatePicker type="date" v-model="item.AttendDate" placeholder="请选择" class="selectClasses"></DatePicker>
 								<p class="Classes">上课时间</p>
 								<TimePicker type="time" v-model="item.FromTime" placeholder="请选择" format="HH:mm" class="selectClasses"></TimePicker>
-								</Col>
-								<Col span="24">
-								
 								<p class="Classes">结束时间</p>
 								<TimePicker type="time" v-model="item.ToTime" placeholder="请选择" format="HH:mm" class="selectClasses"></TimePicker>
-								<p class="Classes">选择教室</p>
+								</Col>
+								<Col span="24">
+								<p class="Classes1">教室</p>
 								<Select v-model="item.ClassRoom" class="selectClasses">
 									<Option v-for="item in classesRoomLIst" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 								</Select>
+								<p class="Classes">应销课时</p>
+								<Input v-model="item.ExpectPeriod " placeholder="请输入" class="selectClasses3"></Input>
+								<Icon type="md-trash" size="30" @click="handleRemove123(index)"class="selectClasses1" />
 								</Col>
 								<Col span="24">
-								<p class="Classes">应销课时</p>
-								<Input v-model="item.ExpectPeriod " placeholder="请输入" class="selectClasses"></Input>
-								<Icon type="md-trash" size="26" @click="handleRemove123(index)"class="selectClasses1" />
+								
+								
 								</Col>
 							</Row>
 							<div class="line1"></div>
@@ -78,7 +79,7 @@
 					</Col>
 					
 					<Col span="12">
-					<FormItem label="课程名称" prop="CourseId">
+					<FormItem label="课程" prop="CourseId">
 						<Select v-model="formValidate.CourseId" @on-change="selectCourse">
 							<Option v-for="item in CoursePackageList" :value="item.Id" :key="item.value">{{ item.CourseName }}</Option>
 						</Select>
@@ -189,6 +190,14 @@
 				getTableData: {
 					Filters: {}
 				},
+				//设置不可选日期
+				time: Date.now(),
+				options3: {
+					disabledDate: date => {
+						// this成功指向vue实例
+						return date && date.valueOf() < this.time -86400000;
+					}
+				},
 				formValidate: {
 					ArrangementDetail:[],
 					ClassRoom: '',
@@ -198,12 +207,13 @@
 					PhaseId: '',
 					TeacherId: '',
 					Teacher: '',
-					TeacherWT: '',
+					TeacherWT: '45',
 					AssistantId: '',
 					Assistant: '',
-					AssistantWT: '',
+					AssistantWT: '0',
 					ForeignTeacherId: '',
 					ForeignTeacher: '',
+					ForeignTeacherWT:'0',
 					ForeignTeacher: '',
 					Comments: '',
 					ClassesName: "",
@@ -216,10 +226,10 @@
 						items: [{
 							Topic: '',
 							AttendDate:'',
-							FromTime:'',
-							ToTime:'',
+							FromTime:'09:15',
+							ToTime:'10:15',
 							ClassRoom:'',
-							ExpectPeriod:'',
+							ExpectPeriod:'1',
 							index: 1,
 							status: 1
 						}]
@@ -347,16 +357,6 @@
 				this.formValidate.FromDate = data[0]
 				this.formValidate.ToDate = data[1]
 			},
-			//根据门店Id查门店的教室
-			selectStore(value){
-				console.log(value)
-				DistrictGetEntity('BusinessStore',value).then(res=>{
-					console.log(res.data)
-				}).catch(err=>{
-					console.log(err)
-				})
-			},
-				
 			//根据班级Id查班级数据
 			selsctClasses(value) {
 				console.log(value)
@@ -378,6 +378,40 @@
 				}).catch(err => {
 					console.log(err)
 				})
+			},
+			selectStore(value) {
+				//请求门店下的教室
+				GetEntities("ClassRoom", {
+					Filters: [{
+						Relational: "And",
+						Conditions: [{
+							FilterField: "Store",
+							Relational: "Equal",
+							FilterValue: value
+						}]
+					}]
+				}).then(res=>{
+					this.classesRoomLIst = res.data
+					console.log(this.classesRoomLIst)
+				}).catch(err=>{
+					console.log(err)
+				});
+				//请求门店下的人员
+//				GetEntities("BusinessUser", {
+//					Filters: [{
+//						Relational: "And",
+//						Conditions: [{
+//							FilterField: "Store",
+//							Relational: "Equal",
+//							FilterValue: value
+//						}]
+//					}]
+//				}).then(res=>{
+//					console.log(res.data)
+//				}).catch(err=>{
+//					console.log(err)
+//				})
+
 			},
 			chengTime(data){
 				this.formValidate.formDynamic.items.FromTime = data[0]
@@ -406,12 +440,6 @@
 			GetEntities("BusinessStore", this.getTableData).then(res => {
 				this.storeList = res.data
 				console.log(this.storeList)
-			}).catch(err => {
-				console.log(err)
-			})
-			//获取教室
-			GetEntities("ClassRoom", this.getTableData).then(res => {
-				this.classesRoomLIst = res.data;
 			}).catch(err => {
 				console.log(err)
 			})
@@ -465,6 +493,12 @@
 		margin-left: 18px;
 		padding-bottom: 10px;
 	}
+	.Classes1{
+		display: inline-block;
+		margin-right: 10px;
+		margin-left: 40px;
+		padding-bottom: 10px;
+	}
 	.selectClasses{
 		display: inline-block;
 		width: 30%;
@@ -472,5 +506,13 @@
 	.selectClasses1{
 		display: inline-block;
 		float: right;
+	}
+	.selectClasses2{
+		display: inline-block;
+		width: 80%;
+	}
+	.selectClasses3{
+		display: inline-block;
+		width: 20%;
 	}
 </style>

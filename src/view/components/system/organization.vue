@@ -95,14 +95,14 @@
 					<Col span="24">
 					<Col span="11">
 					<FormItem label="所属加盟商" prop="SortKey">
-						<Select v-model="formValidate.ClassMode" @on-change="queryMethodId" >
+						<Select v-model="formValidate.Franchiser" @on-change="queryMethodId" >
 							<Option v-for="item in FranchiseeList" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
 					<Col span="11">
 						<FormItem label="所属门店" prop="SortKey">
-						<Select v-model="formValidate.ClassMode" @on-change="queryMethodStoreId" >
+						<Select v-model="formValidate.Store" @on-change="queryMethodStoreId" >
 							<Option v-for="item in StoreList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
@@ -527,7 +527,7 @@
 			let userInfo = sessionStorage.getItem('userInfo');
 			let userData = JSON.parse(userInfo);
 			this.BusinessGroupData = userData.BusinessGroup
-			console.log(userData)
+			//console.log(userData)
 			//获取树形结构
 			GetBusinessUnit(this.Interface, this.BusinessGroupData).then(res => {
 				this.treeList = res.data

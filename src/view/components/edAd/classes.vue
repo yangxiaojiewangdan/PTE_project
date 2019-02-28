@@ -80,7 +80,7 @@
 					</FormItem>-->
 					<FormItem label="门店名称" prop="Store">
 						<Select v-model="formValidate.Store" @on-change="selectStore">
-							<Option v-for="item in storeList" :value="item.Description" :key="item.value">{{ item.Description }}</Option>
+							<Option v-for="item in storeList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
@@ -149,7 +149,7 @@
 				</Form>
 				</Col>
 				<Col span="17">
-				<Col span="1"push="22">
+				<Col span="1" push="22">
 				<Button class="tableTops" @click="SearchModal" style="margin-bottom: 10px;">添加上课学员</Button>
 				</Col>
 				<Col span="24" push="1">
@@ -262,10 +262,10 @@
 		data() {
 			return {
 				Interface: 'Classes',
-				queryClassesName:'',
-				queryClassesRoom:'',
-				queryClassesLeader:'',
-				queryClassesData:'',
+				queryClassesName: '',
+				queryClassesRoom: '',
+				queryClassesLeader: '',
+				queryClassesData: '',
 				StartEndDate: '',
 				querySelect: '',
 				querySelectList: [],
@@ -626,6 +626,37 @@
 			},
 			selectStore(value) {
 				this.formValidate.StoreId = value;
+				//请求门店下的教室
+				GetEntities("ClassRoom", {
+					Filters: [{
+						Relational: "And",
+						Conditions: [{
+							FilterField: "Store",
+							Relational: "Equal",
+							FilterValue: value
+						}]
+					}]
+				}).then(res=>{
+					this.classesRoomLIst = res.data
+				}).catch(err=>{
+					console.log(err)
+				});
+				//请求门店下的人员
+				GetEntities("BusinessUser", {
+					Filters: [{
+						Relational: "And",
+						Conditions: [{
+							FilterField: "Store",
+							Relational: "Equal",
+							FilterValue: value
+						}]
+					}]
+				}).then(res=>{
+					console.log(res.data)
+				}).catch(err=>{
+					console.log(err)
+				})
+
 			},
 			childByValue(childValue) {
 				this.name = childValue
@@ -662,43 +693,42 @@
 				})
 			},
 			//查询联动
-//			ConditionalQuery() {
-//				GetEntities(this.Interface, {
-//					Relational: "And",
-//					Conditions: [{
-//							FilterField: ClassesName, //字段名
-//							Relational: "Equal",
-//							FilterValue: this.RadioBusinessType //字段名里面的值
-//						},
-//						{
-//							FilterField: StoreType, //字段名
-//							Relational: "Equal",
-//							FilterValue: this.RadioStoreType //字段名里面的值
-//						},
-//						{
-//							FilterField: Status, //字段名
-//							Relational: "Equal",
-//							FilterValue: this.RadioStatus //字段名里面的值
-//						},
-//						{
-//							FilterField: this.querySelect, //字段名
-//							Relational: "Contain",
-//							FilterValue: this.queryvalue //字段名里面的值
-//						}
-//					]
-//				}).then(res => {
-//					console.log(res.data)
-//				}).catch(err => {
-//					console.log(err)
-//				})
-//			}
+			//			ConditionalQuery() {
+			//				GetEntities(this.Interface, {
+			//					Relational: "And",
+			//					Conditions: [{
+			//							FilterField: ClassesName, //字段名
+			//							Relational: "Equal",
+			//							FilterValue: this.RadioBusinessType //字段名里面的值
+			//						},
+			//						{
+			//							FilterField: StoreType, //字段名
+			//							Relational: "Equal",
+			//							FilterValue: this.RadioStoreType //字段名里面的值
+			//						},
+			//						{
+			//							FilterField: Status, //字段名
+			//							Relational: "Equal",
+			//							FilterValue: this.RadioStatus //字段名里面的值
+			//						},
+			//						{
+			//							FilterField: this.querySelect, //字段名
+			//							Relational: "Contain",
+			//							FilterValue: this.queryvalue //字段名里面的值
+			//						}
+			//					]
+			//				}).then(res => {
+			//					console.log(res.data)
+			//				}).catch(err => {
+			//					console.log(err)
+			//				})
+			//			}
 
 		},
 		mounted() {
 			//获取已有的班级
 			GetEntities(this.Interface, this.getTableData).then(res => {
 				this.classesData = res.data;
-				console.log(this.classesData)
 			}).catch(err => {
 				console.log(err)
 			})
@@ -711,12 +741,6 @@
 			//门店
 			GetEntities("BusinessStore", this.getTableData).then(res => {
 				this.storeList = res.data
-			}).catch(err => {
-				console.log(err)
-			})
-			//获取教室
-			GetEntities("ClassRoom", this.getTableData).then(res => {
-				this.classesRoomLIst = res.data;
 			}).catch(err => {
 				console.log(err)
 			})
