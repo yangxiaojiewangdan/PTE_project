@@ -24,7 +24,7 @@
 						自定义阶段
 					</div>
 					<Form ref="formDynamic" :model="formValidate.formDynamic">
-						<FormItem v-for="(item, index) in formValidate.formDynamic.items" v-if="item.status" :key="index" :label="'自定义 ' + item.index" :prop="'items.' + index + '.value'" :rules="{message: 'Item ' + item.index +' can not be empty', trigger: 'blur'}">
+						<FormItem v-for="(item, index) in formValidate.formDynamic.items" v-if="item.status" :key="index"  :prop="'items.' + index + '.value'" :rules="{message: 'Item ' + item.index +' can not be empty', trigger: 'blur'}">
 							<Row>
 								<Col span="24">
 								<p class="Classes">课程主题</p>
@@ -51,6 +51,9 @@
 								<Icon type="md-trash" size="26" @click="handleRemove123(index)"class="selectClasses1" />
 								</Col>
 							</Row>
+							<div class="line1"></div>
+								
+							
 						</FormItem>
 						<FormItem>
 							<Row>
@@ -145,7 +148,7 @@
 				</Col>
 				<Col span="16">
 				<h3 style="margin-bottom:10px;margin-left: 30px;">学员列表</h3>
-				<Col span="24" push="20">
+				<Col span="2" push="20">
 				<Button class="tableTops"  @click="SearchModal" style="margin-bottom: 10px;">添加上课学员</Button>
 				</Col>
 				<Col span="23" push="1">
@@ -448,6 +451,9 @@
 		width: 100%;
 		border-bottom: 1px solid #999;
 		margin-bottom: 10px;
+	}
+	.line1 {
+		border-bottom: 1px dashed  #999;
 	}
 	
 	.check {

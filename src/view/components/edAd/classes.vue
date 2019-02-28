@@ -149,7 +149,7 @@
 				</Form>
 				</Col>
 				<Col span="17">
-				<Col span="24" push="21">
+				<Col span="1"push="22">
 				<Button class="tableTops" @click="SearchModal" style="margin-bottom: 10px;">添加上课学员</Button>
 				</Col>
 				<Col span="24" push="1">

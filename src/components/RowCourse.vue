@@ -183,7 +183,7 @@
 				</Col>
 				<Col span="16">
 				<h3 style="margin-bottom:10px;margin-left: 30px;">学员列表</h3>
-				<Col span="24" push="20">
+				<Col span="2" push="20">
 				<Button class="tableTops" @click="SearchModal" style="margin-bottom: 10px;">添加上课学员</Button>
 				</Col>
 				<Col span="23" push="1">
