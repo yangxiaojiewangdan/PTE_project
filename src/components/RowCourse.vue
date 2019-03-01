@@ -1,10 +1,10 @@
 <template>
 	<div class="RowCourse">
 		<Modal width="1300" v-model="modal1" title="排课" :mask-closable="false" :styles="{top: '20px'}">
-			<Row>
+			<Row style="height:800px;overflow-x:hidden;">
 				<Col span="8" style="border-right: 1px solid #DCDCDC;">
 				<Col span="22">
-				<Form ref="formValidate" :model="formValidate" :label-width="90">
+				<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90">
 					<Col span="24">
 					<Col span="12">
 					<!--<FormItem label="门店名称" prop="Store">
@@ -25,11 +25,11 @@
 					</Col>
 					</Col>
 					<Col span="24">
-					<div class="line">
-						上课时间
-					</div>
 					<!--单节排课-->
 					<Col v-if="singleCourse">
+						<div class="line">
+						上课时间
+					</div>
 					<Col span="12">
 					<FormItem label="上课日期" prop="AttendDate">
 						<DatePicker type="date" v-model="formValidate.AttendDate" placeholder="请选择" :options="options3"></DatePicker>
@@ -42,7 +42,7 @@
 					</FormItem>
 					</Col>
 					<Col span="12">
-					<FormItem label="结束时间" prop="ToTime ">
+					<FormItem label="结束时间" prop="ToTime">
 						<TimePicker type="time" v-model="formValidate.ToTime " format="HH:mm" placeholder="请选择"></TimePicker>
 					</FormItem>
 					</Col>
@@ -50,6 +50,9 @@
 					</Col>
 					<!--批量排课-->
 					<Col v-if="batchCourse">
+						<div class="line">
+						上课时间
+					</div>
 					<Col span="24">
 					<FormItem label="上课日期" prop="FromDateTime">
 						<DatePicker type="daterange" v-model="formValidate.FromDateTime" :options="options3" placeholder="请选择" @on-change="queryData"></DatePicker>
@@ -82,6 +85,55 @@
 					<Checkbox v-model="formValidate.AllowSat">周六</Checkbox>
 					<Checkbox v-model="formValidate.AllowSun">周日</Checkbox>
 					</Col>
+					</Col>
+					<!--自定义排课-->
+					<Col v-if="stageCourse">
+						<div class="line">
+						自定义排课
+						</div>
+						
+						<Form ref="formDynamic" :model="formValidate.formDynamic">
+						<FormItem v-for="(item, index) in formValidate.formDynamic.items" v-if="item.status" :key="index"  :prop="'items.' + index + '.value'">
+							<Row>
+								<Col span="24">
+								<p class="Classes">课程主题</p>
+								<Input v-model="item.Topic" placeholder="请输入" class="selectClasses"></Input>
+								<p class="Classes">上课日期</p>
+								<DatePicker type="date" v-model="item.AttendDate" placeholder="请选择" class="selectClasses" :options="options3"></DatePicker>
+								</Col>
+								<Col span="24">
+								<p class="Classes">上课时间</p>
+								<TimePicker type="time" v-model="item.FromTime" placeholder="请选择" format="HH:mm" class="selectClasses"></TimePicker>
+								<p class="Classes">结束时间</p>
+								<TimePicker type="time" v-model="item.ToTime" placeholder="请选择" format="HH:mm" class="selectClasses"></TimePicker>
+								</Col>
+								<Col span="24">
+								<p class="Classes1">教室</p>
+								<Select v-model="item.ClassRoom" class="selectClasses">
+									<Option v-for="item in classesRoomLIst" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
+								</Select>
+								<p class="Classes">应销课时</p>
+								<Input v-model="item.ExpectPeriod " placeholder="请输入" class="selectClasses3"></Input>
+								<Icon type="md-trash" size="30" @click="handleRemove123(index)"class="selectClasses1" />
+								</Col>
+								<Col span="24">
+								
+								
+								</Col>
+							</Row>
+							<div class="line1"></div>
+								
+							
+						</FormItem>
+						<FormItem>
+							<Row>
+								<Col span="12">
+								<Button type="dashed" long @click="handleAdd123" icon="md-add">添加上课时间段</Button>
+								</Col>
+							</Row>
+						</FormItem>
+					</Form>
+						
 					</Col>
 					</Col>
 					<Col span="24">
@@ -137,7 +189,7 @@
 						授课老师
 					</div>
 					<Col span="12">
-					<FormItem label="授课老师" prop="TeacherId  ">
+					<FormItem label="授课老师" prop="TeacherId">
 						<Select v-model="formValidate.TeacherId">
 							<Option v-for="item in peopleUserList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
@@ -195,7 +247,7 @@
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate'); modal1= false;">
                         <span>取消</span>
                     </button>
-				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit1('formValidate');">
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('formValidate');">
                         <span>确定</span>
                    </button>
 			</div>
@@ -208,7 +260,7 @@
 	import Tables from "_c/tables";
 	import SearchStuden from "_c/SearchStuden";
 	import { AddOrUpdateCourse, AddOrUpdatePrice, RemoveCourse, RemovePrice } from '@/api/data'
-	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities, SingleArrangement, BatchArrangement, DistrictGetEntity,RemoveMember} from '@/api/api'
+	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities, SingleArrangement, BatchArrangement, DistrictGetEntity,RemoveMember,CustomArrangement} from '@/api/api'
 	export default {
 		name: 'RowCourse',
 		inject: ["reload"],
@@ -220,6 +272,7 @@
 			return {
 				modal1: true,
 				aaa:false,
+				index: 1,
 				singleCourse: true,
 				batchCourse: false,
 				stageCourse: false,
@@ -235,6 +288,7 @@
 					}
 				},
 				formValidate: {
+					ArrangementDetail:[],
 					Topic: '',
 					AttendDate: '',
 					FromTime: '9:15',
@@ -272,6 +326,56 @@
 					AllowSat: true,
 					AllowSun: true,
 					FromTime1: '',
+					formDynamic: {
+						items: [{
+							Topic: '',
+							AttendDate:'',
+							FromTime:'09:15',
+							ToTime:'10:15',
+							ClassRoom:'',
+							ExpectPeriod:'1',
+							index: 1,
+							status: 1
+						}]
+					},
+				},
+				ruleValidate:{
+					ClassMode: [
+                        { required: true, message: '必填', trigger: 'change',type:'number'}
+                    ],
+                    AttendDate: [
+                        { required: true, message: '必填', trigger: 'blur',type:'data'}
+                    ],
+                    FromTime: [
+                        { required: true, message: '必填', trigger: 'change' }
+                    ],
+                    ToTime: [
+                        { required: true, message: '必填', trigger: 'change' }
+                    ],
+                    FromDateTime: [
+                        { required: true, message: '必填', trigger: 'change' }
+                    ],
+                    Topic: [
+                        { required: true, message: '必填', trigger: 'blur' }
+                    ],
+                    ClassesId: [
+                        { required: true, message: '请选择教室', trigger: 'change',type:'number'}
+                    ],
+                    ClassRoom: [
+                        { required: true, message: '必填', trigger: 'change',type:'number'}
+                    ],
+                    CourseId: [
+                        { required: true, message: '必填', trigger: 'change' ,type:'number'}
+                    ],
+                    ExpectPeriod: [
+                        { required: true, message: '必填', trigger: 'blur' }
+                    ],
+                    PhaseId: [
+                        { required: true, message: '必填', trigger: 'change',type:'number'}
+                    ],
+                     TeacherId: [
+                        { required: true, message: '必填', trigger: 'change',type:'number'}
+                    ],
 				},
 				StudentDataHeader: [{
 						type: "selection",
@@ -344,6 +448,10 @@
 						value: 2,
 						label: '批量排课'
 					},
+					{
+						value: 3,
+						label: '自定义排课'
+					},
 				],
 				//周
 				weekList: [{
@@ -405,6 +513,7 @@
 			//SearchStuden传来的学员订单
 			childStudenList(childValue){
 				console.log(childValue.Data.ClassesMemberCollection)
+				this.formValidate.MemberCollection = childValue.Data.ClassesMemberCollection
 			},
 			//排课方式
 			timetablingMethod(value) {
@@ -420,6 +529,11 @@
 					this.batchCourse = false;
 					this.singleCourse = true;
 					this.StageClasses = true;
+				}else if(this.arrangingCourses === 3){
+					this.batchCourse = false;
+					this.singleCourse = false;
+					this.StageClasses = false;
+					this.stageCourse = true;
 				}
 			},
 			//取消添加
@@ -428,25 +542,60 @@
 				this.$Message.info('已取消');
 			},
 			//确认添加
-			handleSubmit1(name) {
+			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
 					if(valid) {
 						if(this.arrangingCourses === 1) {
 							SingleArrangement(this.formValidate).then(res => {
 								console.log(res.data)
+								this.$Message.success('成功');
+								this.reload();
 							}).catch(err => {
 								console.log(err)
 							})
 						} else if(this.arrangingCourses === 2) {
 							BatchArrangement(this.formValidate).then(res => {
 								console.log(res.data)
+								this.$Message.success('成功');
+								this.reload();
 							}).catch(err => {
+								console.log(err)
+							})
+						} else if(this.arrangingCourses === 3) {
+							//console.log(this.formValidate.formDynamic.items)
+							this.formValidate.ArrangementDetail = this.formValidate.formDynamic.items
+							//console.log(this.formValidate.ArrangementDetail)
+							CustomArrangement(this.formValidate).then(res=>{
+								console.log(res.data)
+								this.$Message.success('成功');
+								this.reload();
+							}).catch(err=>{
 								console.log(err)
 							})
 						}
 
 					}
 				})
+			},
+			handleAdd123() {
+				this.index++;
+				this.formValidate.formDynamic.items.push({
+					Topic: '',
+					AttendDate:'',
+					FromTime:'',
+					ToTime:'',
+					ClassRoom:'',
+					ExpectPeriod:'',
+					index: this.index,
+					status: 1
+				});
+			},
+			handleRemove123(index) {
+				this.formValidate.formDynamic.items[index].status = 0;
+			},
+			chengTime(data){
+				this.formValidate.formDynamic.items.FromTime = data[0]
+				this.formValidate.formDynamic.items.ToTime = data[1]
 			},
 			queryData(data) {
 				console.log(data)
@@ -459,7 +608,6 @@
 				this.classesId = value;
 				this.GetclassesId = value;
 				DistrictGetEntity("Classes", this.GetclassesId).then(res => {
-					console.log(res.data.ClassesMemberCollection)
 					//班级学生
 					this.formValidate.MemberCollection = res.data.ClassesMemberCollection
 				}).catch(err => {
