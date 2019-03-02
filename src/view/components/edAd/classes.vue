@@ -444,14 +444,14 @@
 				],
 				ruleValidate: {
 					 ClassRoom: [
-                        { required: true, message: '必填', trigger: 'change',type:'number' }
+                        { required: true, message: '必填', trigger: 'change',}
                     ],
                     ClassesName: [
                         { required: true, message: '必填', trigger: 'blur' },
                     ],
-                    time: [
-                        { required: true, message: '必填', trigger: 'change',type:'date'}
-                    ],
+//                  time: [
+//                      { required: true, message: '必填', trigger: 'change',type:'date'}
+//                  ],
                     Teacher: [
                         { required: true, message: '请选择授课老师', trigger: 'change',type:'number'}
                     ],
@@ -504,7 +504,7 @@
 		},
 		methods: {
 			Add() {
-				this.formValidate = {};
+				this.$refs.formValidate.resetFields(); 
 				this.StudentData = [];
 				this.AddDepartment = true;
 				this.add = true;
@@ -545,6 +545,7 @@
 				removeByValue(this.BatchDeleteList, row.Id);
 			},
 			dblclickUpData(index) {
+				this.$refs.formValidate.resetFields(); 
 				console.log(index)
 				this.detailedClassesId = index.Id
 				this.FromClasses = index.ClassesName
@@ -619,7 +620,7 @@
 							Create(this.Interface, this.formValidate).then(res => {
 								console.log(res.data)
 								this.classesId = res.data.Data.Id;
-								this.$Message.info('请添加班级学员');
+								this.$Message.info('请在添加班级学员');
 							}).catch(err => {
 								console.log(err)
 							})

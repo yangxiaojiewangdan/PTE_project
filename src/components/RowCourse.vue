@@ -343,18 +343,18 @@
 					ClassMode: [
                         { required: true, message: '必填', trigger: 'change',type:'number'}
                     ],
-                    AttendDate: [
-                        { required: true, message: '必填', trigger: 'blur',type:'data'}
-                    ],
+//                  AttendDate: [
+//                      { required: true, message: '必填', trigger: 'blur',type:'data'}
+//                  ],
                     FromTime: [
                         { required: true, message: '必填', trigger: 'change' }
                     ],
                     ToTime: [
                         { required: true, message: '必填', trigger: 'change' }
                     ],
-                    FromDateTime: [
-                        { required: true, message: '必填', trigger: 'change' }
-                    ],
+//                  FromDateTime: [
+//                      { required: true, message: '必填', trigger: 'change' }
+//                  ],
                     Topic: [
                         { required: true, message: '必填', trigger: 'blur' }
                     ],

@@ -325,7 +325,28 @@
 					Supervisor: '',
 					Id: '',
 				},
-				ruleValidate: {},
+				ruleValidate: {
+					BusinessGroup: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					Code: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					Description: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					name: [{
+						required: true,
+						message: 'The name cannot be empty',
+						trigger: 'blur'
+					}],
+				},
 				ParentIdData: "",
 				departmentId: "",
 				BusinessGroupData: '',
@@ -336,10 +357,10 @@
 		},
 		methods: {
 			Add() {
+				this.$refs.formValidate.resetFields();  
 				this.AddDepartment = true;
 				this.add = true;
 				this.see = false;
-				this.formValidate = {};
 				this.formValidate.BusinessGroup = this.BusinessGroupData
 				this.formValidate.ParentId = this.ParentIdData
 				this.formValidate.Id = this.departmentId
@@ -499,6 +520,7 @@
 			},
 			//详情修改页面
 			upDataBusinessUnit(index) {
+				this.$refs.formValidate.resetFields();  
 				this.add = false;
 				this.see = true;
 				this.AddDepartment = true;
