@@ -14,12 +14,14 @@
           <Row>
             <Col span="4" class="queryquerytop">
               <h3 class="queryquery">门店：</h3>
-              <Select v-model="model1" style="width:160px">
-                <Option
-                  v-for="item in cityList"
-                  :value="item.value"
-                  :key="item.value"
-                >{{ item.label }}</Option>
+              <Select
+                v-model="Store_Id"
+                style="width:160px;"
+                placeholder="请选择 "
+                clearable
+                @on-change="changeStoreId"
+              >
+                <Option v-for="item in StoreList" :value="item.Id" :key="item.Id">{{ item.Code }}</Option>
               </Select>
             </Col>
             <Col span="4" class="queryquerytop">
@@ -83,7 +85,7 @@
         <h2>查询结果</h2>
       </Col>
       <Col span="2" offset="1">
-        <Button>
+        <Button @click="Lastday">
           <Icon type="ios-arrow-back" size="20"/>
         </Button>
       </Col>
@@ -91,26 +93,33 @@
         <h1>{{ CurrentTime }}</h1>
       </Col>
       <Col span="2">
-        <Button>
+        <Button @click="Thenextday">
           <Icon type="ios-arrow-forward" size="20"/>
         </Button>
       </Col>
       <Col span="4">
-        <Select v-model="model1" style="width:160px" placeholder="请选择日期">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        <DatePicker
+          type="date"
+          @on-change="DatePicker"
+          :options="options1"
+          placeholder="Select date"
+          style="width: 200px"
+        ></DatePicker>
       </Col>
       <Col span="8">
         <div class="tableTop">
-          <Button class="tableTops">单节排课</Button>
-          <Button class="tableTops">批量排课</Button>
-          <Button class="tableTops">阶段排课</Button>
+          <Button class="tableTops" @click="timeCourse">排课</Button>
+          <Button class="tableTops" @click="timeCourse1">自定义排课</Button>
           <Button class="tableTops">打印课表</Button>
+          <Button class="tableTops" @click="exportData">
+            <Icon type="ios-download-outline"></Icon>打印课表
+          </Button>
         </div>
       </Col>
       <!-- 课表 -->
       <Col span="22">
         <Table
+          ref="table"
           :columns="ClassHeader"
           disabled-hover
           border
@@ -198,10 +207,11 @@
         </Table>
       </Col>
       <Col span="22" class="footButton">
-        <Button type="info">已开课</Button>
-        <Button type="success">未开课</Button>
-        <Button type="warning">已取消</Button>
-        <Button type="error">已结束</Button>
+        <Button type="info">开放预约</Button>
+        <Button style="background-color: #5f5249;color: #fff;">关闭预约</Button>
+        <Button type="success">已开课</Button>
+        <Button type="warning">已结课</Button>
+        <Button type="error" >取消</Button>
       </Col>
     </Row>
     <Modal v-model="CourseInformation" title="课程信息" width="1300">
@@ -359,6 +369,8 @@
         </button>
       </div>
     </Modal>
+    <RowCourse v-if="workoutateachingschedule"></RowCourse>
+    <stageScheduling v-if="CustomCourseScheduling"></stageScheduling>
   </div>
 </template>
 <script>
@@ -368,9 +380,15 @@ import {
   GetEntity
 } from "@/api/api";
 import Tables from "_c/tables";
+import RowCourse from "_c/RowCourse";
+import StageScheduling from "_c/StageScheduling";
+import SearchStuden from "_c/SearchStuden";
 export default {
   components: {
-    Tables
+    Tables,
+    RowCourse,
+    SearchStuden,
+    StageScheduling
   },
   data() {
     return {
@@ -392,7 +410,7 @@ export default {
         ForeignTeacherWT: "",
         PerpareComments: ""
       },
-
+      DateInQueryTime: "",
       indexsubscript: "",
       JudgementClassroom: "",
       AddDay: 0,
@@ -465,10 +483,161 @@ export default {
           UpperValue: 18,
           FlatOrPecent: "New York No. 1 Lake Park"
         }
-      ]
+      ],
+      now: "",
+      StoreList: [],
+      // 日期框
+      options1: {
+        shortcuts: [
+          {
+            text: "Today",
+            value() {
+              return new Date();
+            },
+            onClick: picker => {
+              this.$Message.info("Click today");
+            }
+          },
+          {
+            text: "Yesterday",
+            value() {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              return date;
+            },
+            onClick: picker => {
+              this.$Message.info("Click yesterday");
+            }
+          },
+          {
+            text: "One week",
+            value() {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              return date;
+            },
+            onClick: picker => {
+              this.$Message.info("Click a week ago");
+            }
+          }
+        ]
+      },
+      getTableData: {
+        Filters: {}
+      },
+      Store_Id: "",
+      workoutateachingschedule: false,
+      CustomCourseScheduling: false
     };
   },
   methods: {
+    exportData() {
+      this.$refs.table.exportCsv({
+        filename: "The original data"
+      });
+    },
+    timeCourse() {
+      this.workoutateachingschedule = !this.workoutateachingschedule;
+    },
+    timeCourse1() {
+      this.CustomCourseScheduling = !this.CustomCourseScheduling;
+    },
+    // 选择门店ID
+    changeStoreId(value) {
+      console.log(value);
+      this.Store_Id = value;
+      GetEntities("ClassRoom", {
+        Filters: [
+          {
+            Relational: "And",
+            Conditions: [
+              {
+                FilterField: "Store",
+                Relational: "Equal",
+                FilterValue: this.Store_Id
+              }
+            ]
+          }
+        ]
+      })
+        .then(res => {
+          this.TabularData = res.data;
+          this.SearchtheDailySchedule();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 日期查询
+    DatePicker(data) {
+      this.DateInQueryTime = data;
+      this.CurrentTime =
+        data.substr(0, 4) +
+        "年" +
+        data.substr(5, 2) +
+        "月" +
+        data.substr(8, 2) +
+        "日";
+      this.SearchtheDailySchedule();
+      if (data == "") {
+        this.CurrentTime1();
+        this.SearchtheDailySchedule();
+      }
+    },
+    // 上一天
+    Lastday() {
+      this.now.setDate(this.now.getDate() - 1);
+      let a = (this.now.getMonth() + 1).toString();
+      let b = this.now.getDate().toString();
+      if (a.length == 1) {
+        a = "0" + a;
+      }
+      if (b.length == 1) {
+        b = "0" + b;
+      }
+      this.CurrentTime = this.now.getFullYear() + "年" + a + "月" + b + "日";
+      this.DateInQueryTime = this.now.getFullYear() + "-" + a + "-" + b;
+      this.SearchtheDailySchedule();
+    },
+    // 查询日课表
+    SearchtheDailySchedule() {
+      EducationalGetTimeTableByDate({
+        StoreId: 14094326276526080,
+        DateInQuery: this.DateInQueryTime
+      })
+        .then(res => {
+          this.DailySchedule = res.data;
+          // 查到教室将教室循环出来
+          this.ClassHeader = [
+            {
+              title: "开始时间/教室",
+              key: "TimeClass",
+              width: 120
+            }
+          ];
+          this.data1 = [];
+          this.addPerson();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    // 后一天
+    Thenextday() {
+      this.now.setDate(this.now.getDate() + 1);
+      let a = (this.now.getMonth() + 1).toString();
+      let b = this.now.getDate().toString();
+      if (a.length == 1) {
+        a = "0" + a;
+      }
+      if (b.length == 1) {
+        b = "0" + b;
+      }
+      this.CurrentTime = this.now.getFullYear() + "年" + a + "月" + b + "日";
+      this.DateInQueryTime = this.now.getFullYear() + "-" + a + "-" + b;
+      this.SearchtheDailySchedule();
+    },
+    // 获取列下标
     columnindex(column) {
       this.JudgementClassroom = column.slot;
     },
@@ -476,15 +645,16 @@ export default {
     show() {
       this.$Message.info("签到成功");
     },
+    // 点击表格
     Royaltyclick(index) {
+      console.log(index);
       var count = Object.keys(index);
       for (var i = 0; i < count.length; i++) {
         if (count[i] == this.JudgementClassroom) {
-          this.indexsubscript = i - (count.length - 1) / 2 - 1;
-          console.log(this.indexsubscript);
+          this.indexsubscript = i - (count.length - 1) / 2 - 2;
+          console.log(this.indexsubscript)
         }
       }
-      console.log(index);
       var arr = [];
       for (let i in index) {
         let o = {};
@@ -493,10 +663,9 @@ export default {
       }
 
       let keyId = JSON.stringify(arr[this.indexsubscript]);
-      let keyid = keyId.substr(5, 17);
+      let keyid = Number(keyId.substr(5, 17));
       GetEntity("Educational", keyid)
         .then(res => {
-          console.log();
           this.formValidate = res.data;
           this.ModalClassesName = res.data.ClassesName;
           this.Topic = res.data.Topic;
@@ -522,52 +691,79 @@ export default {
     },
     // 将教室/时间循环到表格头  将信息循环到表格
     addPerson() {
-      console.log(this.ClassHeader);
       for (var i = 0; i < this.TabularData.length; i++) {
         let classi = "class" + i;
         let newitems = {
           title: this.TabularData[i].Description,
-          slot: classi,
+          key: classi,
           tooltip: true
         };
         this.ClassHeader.push(newitems);
       }
       for (var i = 0; i <= 10; i++) {
         let a = 9;
-        let name = { TimeClass: a + i + ":15" ,
-                        cellClassName:  {
-                          
-                        }
-                    };
+        let name = { TimeClass: a + i + ":15" };
         this.data1.push(name);
       }
       for (var i = 0; i < this.DailySchedule.length; i++) {
         let subscript = this.DailySchedule[i].FromTime.substr(11, 2) - 9;
         for (var a = 0; a < this.ClassHeader.length; a++) {
           if (this.ClassHeader[a].title == this.DailySchedule[i].ClassRoom) {
-            let slot = this.ClassHeader[a].slot;
-            this.data1[subscript][slot] =
+            let key = this.ClassHeader[a].key;
+            this.data1[subscript][key] =
               "班级：" + this.DailySchedule[i].ClassesName;
             this.data1[subscript][i] = this.DailySchedule[i].Id;
+            let Already_begun = "";
+            // 开放预约
+            if(this.DailySchedule[i].Status == 0){
+                Already_begun = "demo-table-info-cell-name"
+            }
+            // 关闭预约
+            if(this.DailySchedule[i].Status == 1){
+                Already_begun = "demo-table-info-cell-end"
+            }
+            // 已开课
+            if(this.DailySchedule[i].Status == 2){
+                Already_begun = "demo-table-info-cell-address"
+            }
+            // 已结课
+            if(this.DailySchedule[i].Status == 3){
+                Already_begun = "demo-table-info-cell-age"
+            }
+            // 取消
+            if(this.DailySchedule[i].Status == 4){
+                Already_begun = "demo-table-info-cell-fff"
+            }
+            //   console.log(this.ClassHeader[a].key)
+            //   let aa = [];
+            //   // aa.push(this.ClassHeader[a].key)
+            //   aa[]
+            //   console.log(aa)
+            // // this.data1[subscript]["cellClassName"] = {
+            // //   key:Already_begun
+            // // };
           }
         }
       }
     },
     // 时间
     CurrentTime1() {
-      let myDate = new Date();
-      this.CurrentTime =
-        myDate.getFullYear() +
-        "年" +
-        (myDate.getMonth() + 1) +
-        "月" +
-        myDate.getDate() +
-        "日";
+      this.now = new Date();
+      let b = this.now.getDate().toString();
+      let a = (this.now.getMonth() + 1).toString();
+      if (a.length == 1) {
+        a = "0" + a;
+      }
+      if (b.length == 1) {
+        b = "0" + b;
+      }
+      this.CurrentTime = this.now.getFullYear() + "年" + a + "月" + b + "日";
+      this.DateInQueryTime = this.now.getFullYear() + "-" + a + "-" + b;
     }
   },
   mounted() {
     this.CurrentTime1();
-    // 查询所属的教室
+    -// 查询所属的教室
     GetEntities("ClassRoom", {
       Filters: [
         {
@@ -584,20 +780,15 @@ export default {
     })
       .then(res => {
         this.TabularData = res.data;
-        // 获取日课表信息
-        EducationalGetTimeTableByDate({
-          StoreId: 14094326276526080,
-          DateInQuery: "2019-02-25"
-        })
-          .then(res => {
-            this.DailySchedule = res.data;
-            console.log(res.data);
-            // 查到教室将教室循环出来
-            this.addPerson();
-          })
-          .catch(err => {
-            console.log(err);
-          });
+        this.SearchtheDailySchedule();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    // 查询门店
+    GetEntities("BusinessStore", this.getTableData)
+      .then(res => {
+        this.StoreList = res.data;
       })
       .catch(err => {
         console.log(err);
@@ -629,7 +820,7 @@ export default {
   border-bottom: 1px solid #aaa;
   margin-bottom: 10px;
 }
-.ivu-table .Already_begun {
+/* .ivu-table .Already_begun {
   background-color: #2db7f5;
   color: #fff;
 }
@@ -642,6 +833,26 @@ export default {
   color: #fff;
 }
 .ivu-table .Has_ended {
+  background-color: red;
+  color: #fff;
+} */
+.ivu-table .demo-table-info-cell-name {
+  background-color: #2db7f5;
+  color: #fff;
+}
+.ivu-table .demo-table-info-cell-age {
+  background-color: #ff6600;
+  color: #fff;
+}
+.ivu-table .demo-table-info-cell-end {
+  background-color: #5f5249;
+  color: #fff;
+}
+.ivu-table .demo-table-info-cell-address {
+  background-color: #187;
+  color: #fff;
+}
+.ivu-table .demo-table-info-cell-fff {
   background-color: red;
   color: #fff;
 }

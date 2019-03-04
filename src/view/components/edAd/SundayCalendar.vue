@@ -10,23 +10,30 @@
       <Col span="23" class="queryEnd">
         <h2></h2>
       </Col>
-      <Col span="1" offset="1">
-        <Button>
+      <Col span="3" >
+        <h1>{{ CurrentTimemd }}</h1><h2>{{ CurrentTimeweek }}</h2>
+      </Col>
+      <Col span="1" >
+        <Button @click="Lastday">
           <Icon type="ios-arrow-back" size="20"/>
         </Button>
       </Col>
-      <Col span="6">
-        <h1>{{ CurrentTime }}</h1>
+      <Col span="3">
+        <h1 style="margin-left: 19px;">{{ CurrentTime }}</h1>
       </Col>
       <Col span="1">
-        <Button>
+        <Button @click="Thenextday">
           <Icon type="ios-arrow-forward" size="20"/>
         </Button>
       </Col>
       <Col span="4">
-        <Select v-model="model1" style="width:160px" placeholder="请选择日期">
-          <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-        </Select>
+        <DatePicker
+          type="date"
+          @on-change="DatePicker"
+          :options="options1"
+          placeholder="Select date"
+          style="width: 200px"
+        ></DatePicker>
       </Col>
       <Col span="8">
         <div class="tableTop">
@@ -55,22 +62,75 @@ export default {
       model1: "",
       cityList: [],
       CurrentTime: "",
+      CurrentTimemd:"",
+      CurrentTimeweek:"",
       TableWeek: [],
       WeekHeader: [
         { title: "时间/周", key: "TimeWeek", width: 110 },
-        { title: "周日", key: "Sunday" },
-        { title: "周一", key: "Monday" },
-        { title: "周二", key: "Tuesday" },
-        { title: "周三", key: "Wednesday" },
-        { title: "周四", key: "Thursday" },
-        { title: "周五", key: "Friday" },
-        { title: "周六", key: "Saturday" },
+        { title: "周日", key: "Sunday",tooltip: true },
+        { title: "周一", key: "Monday" ,tooltip: true},
+        { title: "周二", key: "Tuesday",tooltip: true },
+        { title: "周三", key: "Wednesday",tooltip: true },
+        { title: "周四", key: "Thursday",tooltip: true },
+        { title: "周五", key: "Friday",tooltip: true },
+        { title: "周六", key: "Saturday" ,tooltip: true}
       ],
       data1: [],
-      Code: ""
+      Code: "",
+      now:"",
+      DateInQueryTime:"",
+      num:1,
+      s2:"",
+      s3:"",
     };
   },
   methods: {
+    Lastday() {
+      this.s2--;
+      this.CurrentTime =
+        this.s3 +
+        "年-第" +
+        this.s2 +
+        "周";
+        if(this.s2 <= 1 ){
+        this.s2 = 55;
+        this.s3--;
+      }
+      this.now.setDate(this.now.getDate() - 7);
+      let a = (this.now.getMonth() + 1).toString();
+      let b = this.now.getDate().toString();
+      if (a.length == 1) {
+        a = "0" + a;
+      }
+      if (b.length == 1) {
+        b = "0" + b;
+      }
+      this.DateInQueryTime = this.now.getFullYear() + "-" + a + "-" + b;
+      this.SearchtheDailySchedule();
+    },
+    Thenextday() {
+       this.s2++;
+      this.CurrentTime =
+        this.s3 +
+        "年-第" +
+        this.s2 +
+        "周";
+        if(this.s2 >= 54 ){
+        this.s2 = 0;
+        this.s3++;
+      }
+      this.now.setDate(this.now.getDate() + 7);
+      let a = (this.now.getMonth() + 1).toString();
+      let b = this.now.getDate().toString();
+      if (a.length == 1) {
+        a = "0" + a;
+      }
+      if (b.length == 1) {
+        b = "0" + b;
+      }
+      this.DateInQueryTime = this.now.getFullYear() + "-" + a + "-" + b;
+      this.SearchtheDailySchedule();
+    },
     addPerson() {
       // 循环时间
       for (var i = 0; i <= 10; i++) {
@@ -83,84 +143,73 @@ export default {
         let subscript = this.TableWeek[i].FromTime.substr(0, 2) - 9;
         let a = this.TableWeek[i].DayOfWeek + 1;
         let key = this.WeekHeader[a].key;
-        this.data1[subscript][key] =
-          "课程完成百分比:" + this.TableWeek[i].CompletedPercent;
+        this.data1[subscript][key] = "应销课时: (" + this.TableWeek[i].ExpectCourseTimes
+         +") 实销课时: (" + this.TableWeek[i].CompletedCourseTimes
+         +") 完成率: (" + this.TableWeek[i].CompletedPercent+"%)"
+      }
+    },
+        // 日期查询
+    DatePicker(data) {
+      this.DateInQueryTime = data;
+      this.SearchtheDailySchedule();
+      if (data == "") {
+        this.CurrentTime1();
+        this.SearchtheDailySchedule();
       }
     },
     // 时间
-    CurrentTime1() {
+    CurrentTime1() { 
+      this.now = new Date();
       var d1 = new Date();
       var d2 = new Date();
       d2.setMonth(0);
       d2.setDate(1);
       var rq = d1 - d2;
       var s1 = Math.ceil(rq / (24 * 60 * 60 * 1000));
-      var s2 = Math.ceil(s1 / 7);
-      //按周日为一周的最后一天计算
-      var date = new Date();
-      //今天是这周的第几天
-      var today = date.getDay();
-      //上周日距离今天的天数（负数表示）
-      var stepSunDay = -today ;
-      // 如果今天是周日
-      if (today == 0) {
-        stepSunDay = -7;
-      }
-      // 周一距离今天的天数（负数表示）
-      var stepMonday = 6 - today;
-      var time = date.getTime();
-      var monday = new Date(time + stepSunDay * 24 * 3600 * 1000);
-      var sunday = new Date(time + stepMonday * 24 * 3600 * 1000);
-      //本周一的日期 （起始日期）
-      var m = monday.getMonth() + 1;
-      m = m < 10 ? "0" + m : m;
-      var d = monday.getDate();
-      d = d < 10 ? "0" + d : d;
-      var start = m + "月" + d + "日";
-      //本周日的日期 （结束日期）
-      var m1 = sunday.getMonth() + 1;
-      m1 = m1 < 10 ? "0" + m1 : m1;
-      var d1 = sunday.getDate();
-      d1 = d1 < 10 ? "0" + d1 : d1;
-      var end = m1 + "月" + d1 + "日";
-      let myDate = new Date();
+      this.s2 = Math.ceil(s1 / 7);
+      this.s3 = this.now.getFullYear()
       this.CurrentTime =
-        myDate.getFullYear() +
+        this.s3 +
         "年-第" +
-        s2 +
-        "周" +
-        "(" +
-        start +
-        "-" +
-        end +
-        ")";
+        this.s2 +
+        "周";
+        // 获取当前日期
+     
+      let b = this.now.getDate().toString();
+      let a = (this.now.getMonth() + 1).toString();
+      if (a.length == 1) {
+        a = "0" + a;
+      }
+      if (b.length == 1) {
+        b = "0" + b;
+      }
+      var myddy= this.now.getDay();
+      var weekday=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+      this.CurrentTimemd =  a + "月" + b + "日";
+      this.CurrentTimeweek = weekday[myddy];
+      this.DateInQueryTime = this.now.getFullYear() + "-" + a + "-" + b;
     },
     ok() {
       this.$Message.info("Clicked ok");
     },
     cancel() {
       this.$Message.info("Clicked cancel");
+    },
+    SearchtheDailySchedule() {
+      EducationalGetTimeTableSummaryByWeek("14094325341868032", this.DateInQueryTime)
+        .then(res => {
+          this.data1 = [];
+          this.TableWeek = res.data;
+          this.addPerson();
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   mounted() {
     this.CurrentTime1();
-    // 查询周课表摘要汇总信息
-    let myDate = new Date();
-    let DateInQuery =
-      myDate.getFullYear() +
-      "-" +
-      (myDate.getMonth() + 1) +
-      "-" +
-      myDate.getDate();
-    EducationalGetTimeTableSummaryByWeek("14094325341868032", DateInQuery)
-      .then(res => {
-        this.TableWeek = res.data;
-        console.log(res.data);
-        this.addPerson();
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    this.SearchtheDailySchedule();
   }
 };
 </script>

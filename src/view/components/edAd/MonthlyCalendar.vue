@@ -50,11 +50,22 @@ export default {
       // 循环月信息
       for (var i = 0; i < this.TableMonth.length; i++) {
         let newitems = {
-          title: "完成百分比" + this.TableMonth[i].CompletedPercent,
+          title: "应销课时(" + this.TableMonth[i].ExpectCourseTimes+")",
+          start: this.TableMonth[i].BusinessDate
+        };
+        let newitems1 = {
+          title: "实销课时(" + this.TableMonth[i].CompletedCourseTimes+")",
+          start: this.TableMonth[i].BusinessDate
+        };
+        let newitems2 = {
+          title: "完成率(" + this.TableMonth[i].CompletedPercent+"%)",
           start: this.TableMonth[i].BusinessDate
         };
         this.monthData.push(newitems);
-      }
+        this.monthData.push(newitems1);
+        this.monthData.push(newitems2);
+      } 
+      console.log(this.monthData)
     },
     // 选择月份
     changeMonth(start, end, current) {},

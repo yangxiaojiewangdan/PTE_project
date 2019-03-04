@@ -93,18 +93,34 @@
 					</FormItem>
 					</Col>-->
 					<Col span="24">
+					<Col span="11">
+					<FormItem label="所属加盟商" prop="SortKey">
+						<Select v-model="formValidate.ClassMode" @on-change="queryMethodId" >
+							<Option v-for="item in FranchiseeList" :value="item.Id" :key="item.value">{{ item.Name }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					<Col span="11">
+						<FormItem label="所属门店" prop="SortKey">
+						<Select v-model="formValidate.ClassMode" @on-change="queryMethodStoreId" >
+							<Option v-for="item in StoreList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
+						</Select>
+					</FormItem>
+					</Col>
+					</Col>
+					<Col span="24">
 					<FormItem label="部门描述" prop="LongDescription">
 						<Input v-model="formValidate.LongDescription" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入" style="width:460px"></Input>
 					</FormItem>
 					</Col>
 
 					<Col span="24">
-					<Col span="15">
+					<Col span="10">
 					<FormItem label="排序码" prop="SortKey">
-						<Input type="text" v-model="formValidate.SortKey" placeholder="请输入" style="width:200px"></Input>
+						<Input type="text" v-model="formValidate.SortKey" placeholder="请输入"></Input>
 					</FormItem>
 					</Col>
-					<Col span="9">
+					<Col span="4">
 					<FormItem label="" prop="Enabled">
 						<i-switch v-model="formValidate.Enabled" size="large">
 							<span slot="open">启用</span>
@@ -151,7 +167,7 @@
 </template>
 <script>
 	//import { getTreeList, getBusinessUnitData, addBusinessUnit, deleteBusinessUnit, BusinessUnitGetEntities, upBusinessUnit } from '@/api/data'
-	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities } from '@/api/api'
+	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities,GetDirectStore,GetFranchiseStore} from '@/api/api'
 
 	export default {
 		inject: ['reload'],
@@ -300,6 +316,12 @@
 					Enabled: true,
 					Code: '',
 					Description: '',
+					//所属加盟名称
+					Franchiser: '',
+					FranchiserId:'',
+					//所属门店名称
+					Store: '',
+					StoreId:'',
 					Supervisor: '',
 					Id: '',
 				},
@@ -308,6 +330,8 @@
 				departmentId: "",
 				BusinessGroupData: '',
 				// 添加信息 弹出框 end  
+				FranchiseeList:[],
+				StoreList:[],
 			}
 		},
 		methods: {
@@ -481,12 +505,29 @@
 				this.formValidate = index;
 				console.log(index)
 			},
+			queryMethodId(value){
+				this.formValidate.FranchiserId = value;
+				//获取加盟商下的门店
+				GetFranchiseStore(this.formValidate.FranchiserId).then(res =>{
+					console.log(res.data)
+					this.StoreList = res.data;
+				}).catch(err =>{
+					console.log(err)
+				})
+					
+			},
+			queryMethodStoreId(value){
+				console.log(value)
+				this.formValidate.StoreId = value;
+			}
+				
 		},
 		mounted() {
 			//获取用户信息
 			let userInfo = sessionStorage.getItem('userInfo');
-			let array = JSON.parse(userInfo);
-			this.BusinessGroupData = array.BusinessGroup
+			let userData = JSON.parse(userInfo);
+			this.BusinessGroupData = userData.BusinessGroup
+			console.log(userData)
 			//获取树形结构
 			GetBusinessUnit(this.Interface, this.BusinessGroupData).then(res => {
 				this.treeList = res.data
@@ -502,7 +543,9 @@
 				console.log(err)
 			})
 			//获取业务群
-			GetEntities("BusinessGroup", this.BusinessUnitData).then(res => {}).catch(err => {
+			GetEntities("BusinessGroup", this.BusinessUnitData).then(res => {
+				
+			}).catch(err => {
 				console.log(err)
 			})
 			//主管姓名
@@ -512,6 +555,19 @@
 			}).catch(err => {
 				console.log(err)
 			})
+			//获取门店信息
+			GetDirectStore(this.BusinessUnitData).then(res =>{
+				//this.StoreList = res.data
+			}).catch(err=>{
+				console.log(err)
+			})
+			//获取加盟商
+			GetEntities("FranchiserProfile", this.BusinessUnitData).then(res => {
+				this.FranchiseeList = res.data
+			}).catch(err => {
+				console.log(err)
+			})
+			
 		}
 	}
 </script>

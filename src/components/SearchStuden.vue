@@ -37,7 +37,7 @@
 			</Row>
 			<!--表格-->
 			<Col>
-			<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="StudentData2" :columns="StudentDataHeader2" @on-delete="handleDeleteDetail" height="400" border stripe @on-row-dblclick="dblclickUpDetail" style="margin-top: 30px;" />
+			<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="StudentData2" :columns="StudentDataHeader2" @on-delete="handleDeleteDetail" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" height="400" border stripe @on-row-dblclick="dblclickUpDetail" style="margin-top: 30px;" />
 			</Col>
 			<div slot="footer">
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleResetAdd;AddPrise = false;">
@@ -47,72 +47,82 @@
                         <span>确定</span>
                    </button>
 			</div>
+			<p v-if="false">{{inputName}}</p>
+			<input type="button" value="弹框" @click="childClick" v-if="false">
 		</Modal>
+
 	</div>
 </template>
 
 <script>
 	import Tables from "_c/tables";
 	import { AddOrUpdateCourse, AddOrUpdatePrice, RemoveCourse, RemovePrice } from '@/api/data'
-	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities } from '@/api/api'
+	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities,AddMemberViaOrder} from '@/api/api'
 	export default {
+		 props: {
+      		inputName: Number,
+      		required: true
+   		 },
 		name: 'SearchStuden',
 		components: {
 			Tables,
 		},
+		inject: ["reload"],
 		data() {
 			return {
+				ParentClasses:this.inputName,
 				AddPrise: true,
 				model11: '',
 				StudentData2: [],
+				toClassesList:{},
+				//批量选中
+				BatchDeleteList: [],
 				StudentDataHeader2: [{
 						type: "selection",
 						width: 45
 					},
 					{
 						title: "订单号",
-						key: "Status",
+						key: "OrderNo",
 						sortable: true,
 
 					},
 					{
 						title: "姓名",
-						key: "Status",
+						key: "LastName",
 						sortable: true,
 						width: 80
 
 					},
 					{
-						title: "昵称",
+						title: "联系方式",
 						key: "Status",
 						sortable: true,
-						width: 80
 
 					},
 					{
 						title: "订单类型",
+						key: "OrderType",
+						sortable: true,
+						width: 120
+
+					},
+					{
+						title: "课程主题",
+						key: "PackageName",
+						sortable: true,
+
+					},
+					{
+						title: "课程阶段",
 						key: "Status",
 						sortable: true,
 						width: 120
 
 					},
 					{
-						title: "总课时",
-						key: "Status",
-						sortable: true,
-						width: 100
-
-					},
-					{
-						title: "已销课时",
-						key: "Status",
-						sortable: true,
-						width: 120
-
-					},
-					{
-						title: "剩余课时",
-						key: "Status",
+						title: "合约状态",
+						key: "OrderStatusDesc",
 						sortable: true,
 						width: 120
 
@@ -138,7 +148,18 @@
 				this.$Message.info('已取消');
 			},
 			handleSubmitAdd() {
-				alert(123)
+//				console.log(this.BatchDeleteList)
+//				console.log(this.ParentClasses)
+				AddMemberViaOrder({ClassesId:this.ParentClasses,OrderId:this.BatchDeleteList}).then(res=>{
+					console.log(res.data)
+					this.toClassesList = res.data;
+					this.$emit('childStudenList',this.toClassesList)
+					this.AddPrise = false;
+					this.$Message.success('添加成功!')
+					
+				}).catch(err=>{
+					console.log(err)
+				})
 			},
 			dblclickUpDetail() {
 
@@ -146,9 +167,63 @@
 			handleDeleteDetail() {
 
 			},
+			childClick() {
+				this.$emit('childByValue', this.AddPrise)
+			},
+			childMethod(flag) {
+				console.log(flag)
+			},
+			//勾选中触发
+			BatchDelete(selection, row) {
+				for(var i = 0; i < selection.length; i++) {
+					this.BatchDeleteList.push(selection[i].Id);
+				};
+
+				function uniq(array) {
+					var temp = []; //一个新的临时数组
+					for(var i = 0; i < array.length; i++) {
+						if(temp.indexOf(array[i]) == -1) {
+							temp.push(array[i]);
+						}
+					}
+					return temp;
+				};
+				this.BatchDeleteList = uniq(this.BatchDeleteList)
+			},
+			//取消勾选是触发
+			CancelBatchDelete(selection, row) {
+				function removeByValue(arr, val) {  
+					for(var i = 0; i < arr.length; i++) {    
+						if(arr[i] == val) {      
+							arr.splice(i, 1);      
+							break;    
+						}  
+					}
+				}
+				removeByValue(this.BatchDeleteList, row.Id);
+			},
+			//全选
+			allselectionId(selection) {
+				for(var i = 0; i < selection.length; i++) {
+					this.BatchDeleteList.push(selection[i].Id);
+				}
+			},
+			//取消全选
+			allcancelselectionId(selection) {
+				this.BatchDeleteList = selection
+			},
+
 		},
 		mounted() {
-
+			this.childClick()
+			//订单学员
+			GetEntities('CustomerOrder', {Filters: {} })
+				.then(res => {
+					this.StudentData2 = res.data;
+				})
+				.catch(err => {
+					console.log(err);
+				});
 		},
 	}
 </script>
@@ -157,6 +232,7 @@
 	.queryStuden {
 		display: inline;
 	}
+	
 	.Col {
 		margin-top: 16px;
 	}

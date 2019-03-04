@@ -24,9 +24,9 @@ export const DistrictGetArea = (ParentId) => {
   });
 };
 //  根据数据主键(Id)查询单条数据
-export const DistrictGetEntity = (keyId) => {
+export const DistrictGetEntity = (Interface, keyId) => {
   return axios.request({
-    url: apiUrl + "/api/District/GetEntity?keyId=" + keyId,
+    url: apiUrl + "/api/" + Interface + "/GetEntity?keyId=" + keyId,
     method: "get"
   });
 };
@@ -233,7 +233,6 @@ export const RoyaltyCodeRemoveLadder = (royaltyId, detailId) => {
     method: "post"
   });
 }
-
 //查看订单交易记录
 export const GetTransactionJournalByOrder = (OrderId) => {
   return axios.request({
@@ -265,6 +264,7 @@ export const EducationalGetTimeTableSummaryByMonth = (StoreId, DateInQuery) => {
     method: "get"
   });
 }
+
 
 //单次排课
 export const SingleArrangement = Data => {
