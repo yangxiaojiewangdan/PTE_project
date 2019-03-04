@@ -5,7 +5,7 @@
         <p class="queryHeader">门店管理</p>
       </Col>
     </Row>
-     <hr>
+    <hr>
     <!-- 查询条件 -->
     <Row>
       <Col span="24" class="querycriteria" style="height:160px;">
@@ -42,10 +42,7 @@
               <h3 class="queryquery" style="padding-left:32px;">业务状态：</h3>
               <Button type="text" class="tableTops" @click="clickRadioStatus">全部</Button>
               <RadioGroup v-model="RadioStatus" type="button" @on-change="ConditionalQuery">
-                <Radio
-                  v-for="item in StatusList"
-                  :label="item.Code"
-                >{{ item.Description }}</Radio>
+                <Radio v-for="item in StatusList" :label="item.Code">{{ item.Description }}</Radio>
               </RadioGroup>
             </Col>
           </Row>
@@ -79,7 +76,7 @@
         </div>
       </Col>
       <!-- 表格上面的功能 end-->
-      <Col span="24" >
+      <Col span="24">
         <!-- 表格 -->
         <Table
           height="530"
@@ -104,13 +101,13 @@
       </Col>
     </Row>
     <!-- 添加/参看信息 弹出框-->
-    <Modal v-model="AddDepartment" scrollable width="900"  :mask-closable="false">
-      <p slot="header"  id="Modal_header">
+    <Modal v-model="AddDepartment" scrollable width="900" :mask-closable="false">
+      <p slot="header" id="Modal_header">
         <span v-if="add">添加门店信息</span>
         <span v-if="see">查看门店信息</span>
       </p>
-       <p slot="close" id="Modal_close"  @click="close('formValidate')">
-        <Icon type="md-close"  size="20" color="#eee" />
+      <p slot="close" id="Modal_close" @click="close('formValidate')">
+        <Icon type="md-close" size="20" color="#eee"/>
       </p>
       <Form
         ref="formValidate"
@@ -120,9 +117,13 @@
         :label-width="100"
       >
         <Row>
-           <Col span="23">
+          <Col span="23">
             <FormItem label="所属加盟商" prop="Franchiser">
-              <Select v-model="formValidate.Franchiser" style="width:200px" :disabled="isdisabledFn">
+              <Select
+                v-model="formValidate.Franchiser"
+                style="width:200px"
+                :disabled="isdisabledFn"
+              >
                 <Option
                   v-for="item in FranchiserList"
                   :value="item.Code"
@@ -133,12 +134,34 @@
           </Col>
           <Col span="11">
             <FormItem label="门店代码" prop="Code">
-              <Input v-model="formValidate.Code" placeholder="请输入" ></Input>
+              <Input v-model="formValidate.Code" placeholder="请输入"></Input>
             </FormItem>
           </Col>
           <Col span="12">
             <FormItem label="门店名称" prop="Description">
-              <Input v-model="formValidate.Description" placeholder="请输入" ></Input>
+              <Input v-model="formValidate.Description" placeholder="请输入"></Input>
+            </FormItem>
+          </Col>
+          <Col span="11">
+            <FormItem label="业务线" prop="BusinessGroup">
+              <Select v-model="formValidate.BusinessGroup">
+                <Option
+                  v-for="item in List"
+                  :value="item.Description"
+                  :key="item.Code"
+                >{{ item.Description }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="业务类型" prop="BusinessType">
+              <Select v-model="formValidate.BusinessType">
+                <Option
+                  v-for="item in List"
+                  :value="item.Description"
+                  :key="item.Code"
+                >{{ item.Description }}</Option>
+              </Select>
             </FormItem>
           </Col>
           <Col span="11">
@@ -154,7 +177,7 @@
           </Col>
           <Col span="12">
             <FormItem label="开业日期" prop="OpenOn">
-              <DatePicker type="date" v-model="formValidate.OpenOn" placeholder="Select date" ></DatePicker>
+              <DatePicker type="date" v-model="formValidate.OpenOn" placeholder="Select date"></DatePicker>
             </FormItem>
           </Col>
           <Col span="23">
@@ -180,6 +203,7 @@
                   :key="item.Code"
                 >{{ item.Name }}</Option>
               </Select>
+              <input type="hidden" v-model="formValidate.ProviceName">
             </FormItem>
           </Col>
           <Col span="8">
@@ -195,6 +219,7 @@
                   :key="item.Code"
                 >{{ item.Name }}</Option>
               </Select>
+              <input type="hidden" v-model="formValidate.CityName">
             </FormItem>
           </Col>
           <Col span="7">
@@ -209,13 +234,13 @@
             </FormItem>
           </Col>
 
-           <Col span="6">
+          <Col span="6">
             <FormItem label="经度" prop="Longitude">
               <Input v-model="formValidate.Longitude" placeholder="请输入"></Input>
             </FormItem>
           </Col>
 
-           <Col span="6">
+          <Col span="6">
             <FormItem label="纬度" prop="Latitude">
               <Input v-model="formValidate.Latitude" placeholder="请输入"></Input>
             </FormItem>
@@ -252,9 +277,9 @@
             </FormItem>
           </Col>
           <Col span="24">
-            <FormItem label="业务模式" prop="BusinessType">
-              <RadioGroup v-model="formValidate.BusinessType">
-                <Radio v-for="item in BusinessTypeList"  :label="item.Description">
+            <FormItem label="业务模式" prop="BusinessMode">
+              <RadioGroup v-model="formValidate.BusinessMode">
+                <Radio v-for="item in BusinessTypeList" :label="item.Description">
                   <span>{{item.Description}}</span>
                 </Radio>
               </RadioGroup>
@@ -263,7 +288,7 @@
           <Col span="24">
             <FormItem label="业务状态" prop="Status">
               <RadioGroup v-model="formValidate.Status">
-                <Radio v-for="item in StatusList"  :label="item.Code">
+                <Radio v-for="item in StatusList" :label="item.Description">
                   <span>{{item.Description}}</span>
                 </Radio>
               </RadioGroup>
@@ -278,7 +303,7 @@
               <span>创建人:</span>
               <span>{{ formValidate.CreateByName }}</span>
             </div>
-            <div> 
+            <div>
               <span>更新人:</span>
               <span>{{ formValidate.UpdateByName }}</span>
             </div>
@@ -339,16 +364,16 @@ export default {
   inject: ["reload"],
   data() {
     return {
-      Interface:"BusinessStore",
+      Interface: "BusinessStore",
       // 弹框标题信息
       add: "",
       see: "",
       del: "",
       // 加盟商禁用
-      isdisabledFn:false,
+      isdisabledFn: false,
       // 地址
-      ProviceCodeList:[],
-      CityCodeList:[],
+      ProviceCodeList: [],
+      CityCodeList: [],
       // 业务模式
       RadioBusinessType: "",
       BusinessTypeList: [],
@@ -401,34 +426,9 @@ export default {
         },
         {
           title: "业务状态 ",
-          key: "Status",
+          key: "StatusDesc",
           width: 110,
-          sortable: true,
-           render: (h, params) => {
-                let texts = "";
-                if(params.row.Status == 0) {
-                    texts = "装修中";
-                }
-                if(params.row.Status == 1) {
-                    texts = "试营业";
-                }
-                if(params.row.Status == 2) {
-                    texts = "正式营业";
-                }
-                if(params.row.Status == 3) {
-                    texts = "暂停营业";
-                }
-                if(params.row.Status == 4) {
-                    texts = "终止营业";
-                }
-
-                return h(
-                    "div", {
-                        props: {}
-                    },
-                    texts
-                );s
-            }
+          sortable: true
         },
         {
           title: "所属加盟商",
@@ -513,29 +513,61 @@ export default {
         }
       ],
       // 所属加盟商
-      FranchiserList:[],
+      FranchiserList: [],
       //表格数组
       getTableData: {
         Filters: {}
       },
       informationData: [],
       // 表单验证
-      ruleValidate: {},
+      ruleValidate: {
+        Code: [{ required: true, message: "请输入门店代码", trigger: "blur" }],
+        Description: [
+          { required: true, message: "请输入门店名称", trigger: "blur" }
+        ],
+        BusinessGroup: [
+          { required: true, message: "请选择业务线", trigger: "change" }
+        ],
+        BusinessType: [
+          { required: true, message: "请选择业务类型", trigger: "change" }
+        ],
+        BusinessMode: [
+          { required: true, message: "请选择业务模式", trigger: "change" }
+        ],
+        StoreType: [
+          { required: true, message: "请选择门店类型", trigger: "change" }
+        ],
+        Status: [
+          { required: true, message: "请选择业务状态", trigger: "change" }
+        ],
+        ProviceCode: [
+          { required: true, message: "请选择省", trigger: "change" }
+        ],
+        CityCode: [{ required: true, message: "请选择市", trigger: "change" }],
+        Address: [
+          { required: true, message: "请输入详细地址", trigger: "blur" }
+        ],
+        PostalCode: [{ required: true, message: "请输入邮编", trigger: "blur" }]
+      },
       // 添加/修改加盟商基本信息默认隐藏
       AddDepartment: false,
       upDepartment: false,
       // 添加信息表单
       formValidate: {
+        BusinessGroup: "",
+        BusinessType: "",
         Code: "",
+        BusinessMode: "",
         Description: "",
         LongDescription: "",
-        BusinessType: "",
         StoreType: "",
         Status: "",
         Franchiser: "",
         OpenOn: "",
         ProviceCode: "",
+        ProviceName: "",
         CityCode: "",
+        CityName: "",
         Address: "",
         PostalCode: "",
         TelPhone: "",
@@ -544,8 +576,8 @@ export default {
         ContactTel: "",
         ContactPhone: "",
         ContactEMail: "",
-        Longitude:"",
-        Latitude:"",
+        Longitude: "",
+        Latitude: ""
       },
       // 创建人
       Founder: "",
@@ -560,37 +592,36 @@ export default {
   },
   methods: {
     // 点击全部将单选框清空
-    clickRadioBusinessType(){
+    clickRadioBusinessType() {
       this.RadioBusinessType = "";
       this.ConditionalQuery();
     },
-    clickRadioStoreType(){
+    clickRadioStoreType() {
       this.RadioStoreType = "";
       this.ConditionalQuery();
     },
-    clickRadioStatus(){
+    clickRadioStatus() {
       this.RadioStatus = "";
       this.ConditionalQuery();
     },
     // 查询联动
-    ConditionalQuery(){
-     
-      let BusinessType = '';
-      let StoreType = '';
-      let Status = '';
-      if(this.RadioBusinessType == ""){
+    ConditionalQuery() {
+      let BusinessType = "";
+      let StoreType = "";
+      let Status = "";
+      if (this.RadioBusinessType == "") {
         BusinessType = "";
-      }else{
+      } else {
         BusinessType = "BusinessType";
       }
-      if(this.RadioStoreType == ""){
+      if (this.RadioStoreType == "") {
         StoreType = "";
-      }else{
+      } else {
         StoreType = "StoreType";
       }
-      if(this.RadioStatus == ""){
+      if (this.RadioStatus == "") {
         Status = "";
-      }else{
+      } else {
         Status = "Status";
       }
       GetEntities(this.Interface, {
@@ -609,7 +640,7 @@ export default {
                 FilterValue: this.RadioStoreType //字段名里面的值
               },
               {
-                FilterField:  Status, //字段名
+                FilterField: Status, //字段名
                 Relational: "Equal",
                 FilterValue: this.RadioStatus //字段名里面的值
               },
@@ -628,21 +659,33 @@ export default {
         .catch(err => {
           console.log(err);
         });
-        if(this.RadioBusinessType == "" && this.RadioStoreType == "" && this.RadioStatus == "" && this.queryvalue){
-          GetEntities(this.Interface,this.getTableData)
-            .then(res => {
-              this.informationData = res.data;
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        }
+      if (
+        this.RadioBusinessType == "" &&
+        this.RadioStoreType == "" &&
+        this.RadioStatus == "" &&
+        this.queryvalue
+      ) {
+        GetEntities(this.Interface, this.getTableData)
+          .then(res => {
+            this.informationData = res.data;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     },
-    close(name){
+    close(name) {
       this.$refs[name].resetFields();
     },
     //选择省获取 市数据  查询省
     SelectProviceCode(value) {
+      DistrictGetEntity("District", this.formValidate.ProviceCode)
+        .then(res => {
+          this.formValidate.ProviceName = res.data.Name;
+        })
+        .catch(err => {
+          console.log(err);
+        });
       this.queryCityCode = "";
       let ParentId = value.value;
       DistrictGetArea(ParentId)
@@ -656,6 +699,13 @@ export default {
     },
     //点击市查询
     SelectCityCode(value) {
+      DistrictGetEntity("District", this.formValidate.CityCode)
+        .then(res => {
+          this.formValidate.CityName = res.data.Name;
+        })
+        .catch(err => {
+          console.log(err);
+        });
       let ParentId = value.value;
       DistrictGetArea(ParentId)
         .then(res => {
@@ -665,7 +715,7 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      DistrictGetEntity(ParentId)
+      DistrictGetEntity("District", ParentId)
         .then(res => {
           this.formValidate.PostalCode = res.data.PostalCode;
           this.formValidate.Latitude = res.data.Latitude;
@@ -686,16 +736,15 @@ export default {
       this.see = false;
       this.del = false;
       this.isdisabledFn = false;
-
     },
     // 添加/修改加盟商信息
     handleSubmit(name) {
       // 验证表单
       this.$refs[name].validate(valid => {
         // 验证表单成功后调用
-        if(valid){
+        if (valid) {
           // 当进入的是添加弹框就调用添加接口
-          if(this.add == true){
+          if (this.add == true) {
             // 添加加盟商信息接口
             Create(this.Interface, this.formValidate)
               .then(res => {
@@ -708,19 +757,19 @@ export default {
                 this.$Message.error("添加失败!");
               });
             // 当进入的是查看弹框就调用修改接口
-          }else if(this.see == true){
+          } else if (this.see == true) {
             this.TabBusinessStores = true;
             //点击修改按钮
             Update(this.Interface, this.formValidate)
-            .then(res => {
-              this.$Message.success("修改成功!");
-              this.AddDepartment = false;
-              this.$refs[name].resetFields();
-              this.reload();
-            })
-            .catch(err => {
-              this.$Message.error("修改失败!");
-            });
+              .then(res => {
+                this.$Message.success("修改成功!");
+                this.AddDepartment = false;
+                this.$refs[name].resetFields();
+                this.reload();
+              })
+              .catch(err => {
+                this.$Message.error("修改失败!");
+              });
           }
         }
       });
@@ -740,7 +789,7 @@ export default {
       this.formValidate = index;
       this.isdisabledFn = true;
     },
-       // 删除数据接口
+    // 删除数据接口
     deleteList() {
       if (this.delete.length == 0) {
         this.$Message.info("请先选中删除的数据");
@@ -748,7 +797,7 @@ export default {
         this.delete1 = true;
       }
     },
-    OneselectionId(selection,row) {
+    OneselectionId(selection, row) {
       this.BatchDeleteList = selection;
       for (var i = 0; i < this.BatchDeleteList.length; i++) {
         this.delete.push(this.BatchDeleteList[i].Id);
@@ -764,25 +813,25 @@ export default {
       }
       this.delete = uniq(this.delete);
     },
-    OnecancelselectionId(selection,row) {
+    OnecancelselectionId(selection, row) {
       function removeByValue(arr, val) {
-        for(var i=0; i<arr.length; i++) {
-          if(arr[i] == val) {
-            arr.splice(i, 1);
-            break;
-          }
-        }
+        for (var i = 0; i < arr.length; i++) {
+          if (arr[i] == val) {
+            arr.splice(i, 1);
+            break;
+          }
+        }
       }
-      removeByValue(this.delete,row.Id);
+      removeByValue(this.delete, row.Id);
     },
     allselectionId(selection) {
       console.log(this.delete);
-       for (var i = 0; i < selection.length; i++) {
+      for (var i = 0; i < selection.length; i++) {
         this.delete.push(selection[i].Id);
       }
     },
     allcancelselectionId(selection) {
-         this.delete = selection
+      this.delete = selection;
     },
     ok() {
       if (this.see == false && this.add == false) {
@@ -795,7 +844,7 @@ export default {
             this.$Message.error("删除失败!");
             console.log(err);
           });
-      } else if(this.see == true){
+      } else if (this.see == true) {
         Delete(this.Interface, this.formValidate.Id)
           .then(res => {
             this.$Message.success("删除成功!");
@@ -807,7 +856,7 @@ export default {
           });
       }
     },
-        // 点击查询按钮查询信息
+    // 点击查询按钮查询信息
     querytable() {
       GetEntities(this.Interface, {
         Filters: [
@@ -830,10 +879,10 @@ export default {
           console.log(err);
         });
     },
-    go(){
+    go() {
       this.AddDepartment = true;
       let id = this.$route.query.id;
-      GetEntities("BusinessStore",{
+      GetEntities("BusinessStore", {
         Filters: [
           {
             Relational: "And", //And 与 | Or 或
@@ -856,22 +905,21 @@ export default {
     }
   },
   mounted() {
-    
-    if(this.$route.query.id == undefined){
-    }else{
+    if (this.$route.query.id == undefined) {
+    } else {
       this.go();
     }
     this.$route.query.id;
     // // 表格数据
-    GetEntities(this.Interface,this.getTableData)
+    GetEntities(this.Interface, this.getTableData)
       .then(res => {
         this.informationData = res.data;
       })
       .catch(err => {
         console.log(err);
       });
-      // 获取加盟商的信息Code   循环到门店所属加盟商
-    GetEntities("FranchiserProfile",this.getTableData)
+    // 获取加盟商的信息Code   循环到门店所属加盟商
+    GetEntities("FranchiserProfile", this.getTableData)
       .then(res => {
         this.FranchiserList = res.data;
       })
@@ -892,7 +940,6 @@ export default {
     this.StoreTypeList = JSON.parse(localStorage.STORE_TYPE);
     // 业务状态
     this.StatusList = JSON.parse(localStorage.STORE_STATUS);
-   
   }
 };
 </script>

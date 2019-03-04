@@ -231,7 +231,6 @@
         </button>
       </div>
     </Modal>
-    <ruleValidate v-on:ruleValidate="ruleValidate"></ruleValidate>
   </div>
 </template>
 <script>

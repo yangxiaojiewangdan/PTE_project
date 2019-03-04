@@ -1,4 +1,5 @@
 import axios from "@/libs/api.request";
+import { pctEncChar } from "uri-js";
 //url变量
 export const apiUrl = "http://192.168.31.74:8081";
 
@@ -106,11 +107,11 @@ export const ValidateUnique = (Interface, Code, BusinessGroup) => {
     method: "get"
   });
 };
-
+let see = JSON.parse(sessionStorage.getItem("userInfo"));
 // 查询数据字典的数据项
 export const DataDictionaryGetEntities = (dataCategory) => {
   return axios.request({
-    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=" + dataCategory + "&BusinessGroup=*",
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=" + dataCategory + "&BusinessGroup=" + see.BusinessGroup,
     method: "get"
   });
 };
@@ -326,6 +327,22 @@ export const GetDirectStore = () => {
 export const GetFranchiseStore = (FranchiserId) => {
   return axios.request({
     url: apiUrl + "/api/BusinessStore/GetFranchiseStore?FranchiserId=" + FranchiserId,
+    method: "get"
+  });
+};
+
+// 获取收银交易代码
+export const TrxCodeGetForPayment = (includeDeposit) => {
+  return axios.request({
+    url: apiUrl + "/api/TrxCode/GetForPayment?BusinessGroup=PTE&includeDeposit=" + includeDeposit,
+    method: "get"
+  });
+};
+
+// 获取收银交易代码
+export const CustomerOrderPaymentRequest = (OrderId, PaymentCode, TrxCode) => {
+  return axios.request({
+    url: apiUrl + "/api/CustomerOrder/PaymentRequest?OrderId=" + OrderId + "&PaymentCode=" + PaymentCode + "&TrxCode=" + TrxCode,
     method: "get"
   });
 };

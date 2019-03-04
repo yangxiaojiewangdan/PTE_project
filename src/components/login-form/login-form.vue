@@ -66,7 +66,8 @@ export default {
             Account: this.form.Account,
             Password: this.form.Password
           })
-           DataDictionaryGetEntities("MEMBERSHIP_TYPE")
+    
+    DataDictionaryGetEntities("MEMBERSHIP_TYPE")
       .then(res => {
         localStorage.setItem("MEMBERSHIP_TYPE", JSON.stringify(res.data));
       })

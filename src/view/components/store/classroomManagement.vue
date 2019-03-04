@@ -106,7 +106,7 @@
       <Col span="24">
         <!-- 表格 -->
         <Table
-          height="490"
+          height="450"
           size="small"
           highlight-row
           stripe
@@ -170,7 +170,7 @@
             <FormItem label="教室类型" prop="ClassRoomType">
               <Select v-model="formValidate.ClassRoomType">
                 <Option
-                  v-for="item in StatusList"
+                  v-for="item in List"
                   :value="item.Id"
                   :key="item.Code"
                 >{{ item.Description }}</Option>
@@ -568,7 +568,13 @@ export default {
         SortKey: ""
       },
       //   表单验证
-      ruleValidate: {},
+      ruleValidate: {
+        Store: [ { required: true, message: '请选择所属门店', trigger: 'change' } ],
+        Code: [ { required: true, message: '请输入代码', trigger: 'blur' } ],
+        Description: [ { required: true, message: '请输入名称', trigger: 'blur' } ],
+        ClassRoomType: [ { required: true, message: '请选择教室类型', trigger: 'change' } ],
+        Enabled: [ { required: true, message: '必填', trigger: 'change' } ],
+      },
       // 创建人
       Founder: "",
       UpdatePerson: "",

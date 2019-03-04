@@ -151,7 +151,7 @@
               </FormItem>
             </Col>
             <Col span="8">
-              <FormItem label="客户" prop="ProfileId">
+              <FormItem label="客户" prop="LastName">
                 <Input v-if="ProfileIdHide" v-model="formValidate.ProfileId" placeholder="请输入"></Input>
                 <Input
                   v-model="formValidate.LastName"
@@ -425,15 +425,7 @@
           @click="PaymentOrder = true;"
           v-if="del"
         >
-          <span>线上支付</span>
-        </button>
-        <button
-          type="button"
-          class="ivu-btn ivu-btn-text ivu-btn-large"
-          @click="PaymentOrder = true;"
-          v-if="del"
-        >
-          <span>手工入帐</span>
+          <span>支付</span>
         </button>
         <button
           type="button"
@@ -538,17 +530,30 @@
         <Row>
           <Col span="24">
             <Col span="23">
-              <FormItem label="支付方式" prop="PaymentCode">
-                <Select v-model="formPaymentOrder.PaymentCode">
-                  <Option
-                    v-for="item in PaymentCodeList"
-                    :value="item.Code"
-                    :key="item.Code"
-                  >{{ item.Description }}</Option>
-                </Select>
+              <FormItem label="订单号" >
+                <Input v-model="OrderId" disabled  placeholder="请输入"></Input>
               </FormItem>
             </Col>
-            <Col span="23">
+            <Col span="11">
+              <FormItem label="客户" >
+                <Input v-model="LastNameCustomer" disabled placeholder="请输入"></Input>
+              </FormItem>
+            </Col>
+            <Col span="11" offset="1">
+              <FormItem label="应付金额" >
+                <Input v-model="BalanceAmt" disabled placeholder="请输入"></Input>
+              </FormItem>
+            </Col>
+            
+            <Col span="23" >
+              <FormItem label="支付方式" prop="PaymentCode">
+                <RadioGroup v-model="formPaymentOrder.PaymentCode" @on-change="RadioGroupchange">
+                    <Radio  v-for="item in PaymentCodeList"
+                    :key="item.Code"  :label="item.Code" >{{ item.Description }}</Radio>
+                </RadioGroup>
+              </FormItem>
+            </Col>
+            <Col span="23" >
               <FormItem label="支付账号" prop="PaymentAccount">
                 <Input v-model="formPaymentOrder.PaymentAccount" placeholder="请输入"></Input>
               </FormItem>
@@ -558,10 +563,32 @@
                 <Input v-model="formPaymentOrder.PaymentAmt" placeholder="请输入"></Input>
               </FormItem>
             </Col>
+             <Col span="23">
+              <FormItem label="备注" prop="PaymentAmt">
+                 <Input
+                  v-model="formValidate.Comments"
+                  type="textarea"
+                  :autosize="{minRows: 2,maxRows: 5}"
+                  placeholder="请输入"
+                ></Input>
+              </FormItem>
+            </Col>
+            <Col span="23">
+              <FormItem  >
+                <Checkbox v-model="single" @on-change="singlechange">定金</Checkbox>
+              </FormItem>
+            </Col>
           </Col>
         </Row>
       </Form>
       <div slot="footer">
+        <button
+          type="button"
+          class="ivu-btn ivu-btn-text ivu-btn-large"
+          @click="canvasQR1"
+        >
+          <span>支付二维码</span>
+        </button>
         <button
           type="button"
           class="ivu-btn ivu-btn-text ivu-btn-large"
@@ -578,9 +605,18 @@
         </button>
       </div>
     </Modal>
+        <Modal
+        v-model="canvasQR"
+        title="支付码"
+        @on-ok="ok"
+        @on-cancel="cancel">
+          <canvas id="canvas"></canvas>
+        
+    </Modal>
   </div>
 </template>
 <script>
+import QRCode from 'qrcode'
 import Enquiringcustomers from "_c/Enquiringcustomers";
 import {
   GetEntities,
@@ -596,15 +632,25 @@ import {
   CustomerOrderUpdateOrder,
   CustomerOrderPaymentOrder,
   CustomerOrderCancelOrderRequest,
-  GetTransactionJournalByOrder
+  GetTransactionJournalByOrder,
+  TrxCodeGetForPayment,
+  CustomerOrderPaymentRequest
 } from "@/api/api";
 export default {
   inject: ["reload"],
   components: {
-    Enquiringcustomers
+    Enquiringcustomers,
+    QRCode: QRCode
   },
   data() {
     return {
+      canvasQR:false,
+      codes:'',
+      QRcode:"",
+      TrxCode:"2001",
+      single:"",
+      LastNameCustomer:"",
+      OrderId :"",
       ifTotalPeriod: true,
       ifFixedPeriods: false,
       q: "",
@@ -875,7 +921,13 @@ export default {
       },
       UpdateList: {},
       // 表单验证
-      ruleValidate: {},
+      ruleValidate: {
+        // StoreId: [ { required: true, message: '请选择门店', trigger: 'blur' }  ],
+        // LastName: [ { required: true, message: '请选择客户', trigger: 'blur' }  ],
+        // PackageId: [ { required: true, message: '请选择课包', trigger: 'change' }  ],
+        // StartDate: [ { required: true, message: '请选择开始日期', trigger: 'change' }  ],
+        // EndDate: [ { required: true, message: '请选择结束日期', trigger: 'change' }  ],
+      },
       ruleRetirefromclass: {},
       rulePaymentOrder: {},
       // 创建人
@@ -891,7 +943,7 @@ export default {
       DiscountCodeList: [],
       //   负责人
       OwnerList: [],
-
+      IFpayment:true,
       // 客户Id   默认隐藏
       ProfileIdHide: false,
       // 选择客户组件  默认隐藏
@@ -902,16 +954,48 @@ export default {
       delete: [],
       CancellationCodeList: [],
       // 期限时间
-      FixedPeriodsnum: ""
+      FixedPeriodsnum: "",
+      BalanceAmt:"",
     };
   },
   methods: {
+    canvasQR1(){
+      this.canvasQR = true;
+      this.useqrcode();
+    },
+    useqrcode(){
+        var canvas = document.getElementById('canvas')
+        QRCode.toCanvas(canvas, "this.OrderId", function (error) {
+          if (error) console.error(error)
+          console.log('success!');
+        })
+      },
+    singlechange(){
+      if(this.single == true){
+        TrxCodeGetForPayment(this.single)
+        .then(res => {
+          this.TrxCode = res.data[0].Code
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      }else{
+        TrxCodeGetForPayment(this.single)
+      .then(res => {
+          this.TrxCode = res.data[5].Code
+          console.log(res.data[5].Code)
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      }
+      
+    },
     close(name) {
       this.$refs[name].resetFields();
     },
     // 查询条件
     queryquerychange(value) {
-      console.log(value);
       GetEntities(this.Interface, {
         Filters: [
           {
@@ -938,7 +1022,7 @@ export default {
           console.log(err);
         });
     },
-    // 取消订单
+    // 
     RetirefromclassSubmit() {
       CustomerOrderCancelOrderRequest({
         OrderId: this.formValidate.Id,
@@ -955,20 +1039,29 @@ export default {
     },
     // 订单支付
     PaymentOrderSubmit() {
-      CustomerOrderPaymentOrder({
-        IsDeposit: true,
-        OrderId: this.formValidate.Id,
-        PaymentAccount: this.formPaymentOrder.PaymentAccount,
-        PaymentCode: this.formPaymentOrder.PaymentCode,
-        PaymentAmt: this.formPaymentOrder.PaymentAmt
-      })
-        .then(res => {
-          this.$Message.success("成功!");
-          this.reload();
-        })
-        .catch(err => {
-          this.$Message.success("失败!");
-        });
+        //  CustomerOrderPaymentOrder({
+        //   IsDeposit: true,
+        //   TrxCode :"",
+        //   OrderId: this.formValidate.Id,
+        //   PaymentAccount: this.formPaymentOrder.PaymentAccount,
+        //   PaymentCode: this.formPaymentOrder.PaymentCode,
+        //   PaymentAmt: this.formPaymentOrder.PaymentAmt
+        // })
+        //   .then(res => {
+        //     this.$Message.success("成功!");
+        //     this.reload();-
+        //   })
+        //   .catch(err => {
+        //     this.$Message.success("失败!");
+        //   });
+        CustomerOrderPaymentRequest(this.formValidate.Id,this.formPaymentOrder.PaymentCode,this.TrxCode)
+          .then(res => {
+
+            // this.canvasQR = true;
+          })
+          .catch(err => {
+            this.$Message.success("该订单有未完成的支付请求，请先完成或取消!");
+          });
     },
     OwnerIdchange(value) {
       GetEntities("BusinessUser", {
@@ -1222,20 +1315,17 @@ export default {
     },
     //双击表格
     dblclickUpData(index) {
-      console.log(index);
+      console.log(index.BalanceAmt);
+      this.BalanceAmt = index.BalanceAmt;
+      this.formPaymentOrder.PaymentAmt = index.BalanceAmt;
+      this.OrderId = index.Id;
+      this.LastNameCustomer = index.LastName;
       this.AddDepartment = true;
       this.del = true;
       this.add = false;
       this.see = true;
       this.formValidate = index;
       this.formValidate.TotalPeriod = this.formValidate.RemainPeriod;
-      GetTransactionJournalByOrder(index.Id)
-        .then(res => {
-          this.data1 = res.data;
-        })
-        .catch(err => {
-          this.$Message.error("获取交易记录失败!");
-        });
     },
     // 删除接口
     deleteList() {
@@ -1398,6 +1488,7 @@ export default {
     GetEntities(this.Interface, this.getTableData)
       .then(res => {
         this.informationData = res.data;
+        console.log(this.informationData)
       })
       .catch(err => {
         console.log(err);
@@ -1413,3 +1504,12 @@ export default {
   }
 };
 </script>
+<style>
+#canvas{
+  margin-left:30%; 
+  height: 180px!important;
+  width: 180px!important;
+}
+
+</style>
+

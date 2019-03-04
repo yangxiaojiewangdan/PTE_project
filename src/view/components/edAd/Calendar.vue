@@ -111,9 +111,6 @@
           <Button class="tableTops" @click="timeCourse">排课</Button>
           <Button class="tableTops" @click="timeCourse1">自定义排课</Button>
           <Button class="tableTops">打印课表</Button>
-          <Button class="tableTops" @click="exportData">
-            <Icon type="ios-download-outline"></Icon>打印课表
-          </Button>
         </div>
       </Col>
       <!-- 课表 -->
@@ -211,7 +208,7 @@
         <Button style="background-color: #5f5249;color: #fff;">关闭预约</Button>
         <Button type="success">已开课</Button>
         <Button type="warning">已结课</Button>
-        <Button type="error" >取消</Button>
+        <Button type="error">取消</Button>
       </Col>
     </Row>
     <Modal v-model="CourseInformation" title="课程信息" width="1300">
@@ -531,11 +528,6 @@ export default {
     };
   },
   methods: {
-    exportData() {
-      this.$refs.table.exportCsv({
-        filename: "The original data"
-      });
-    },
     timeCourse() {
       this.workoutateachingschedule = !this.workoutateachingschedule;
     },
@@ -647,14 +639,12 @@ export default {
     },
     // 点击表格
     Royaltyclick(index) {
+      console.log(index)
       var count = Object.keys(index);
-      var con = count.sort();
-      for (var i = 0; i < con.length; i++) {
-      console.log(con[i]);
+      for (var i = 0; i < count.length; i++) {
         if (count[i] == this.JudgementClassroom) {
-          console.log(i)
           this.indexsubscript = i - (count.length - 1) / 2 - 1;
-            console.log(this.indexsubscript);
+          // this.indexsubscript = i - (count.length - 2) / 2 - 1;
         }
       }
       var arr = [];
@@ -714,35 +704,35 @@ export default {
             this.data1[subscript][slot] =
               "班级：" + this.DailySchedule[i].ClassesName;
             this.data1[subscript][i] = this.DailySchedule[i].Id;
-            // let Already_begun = "";
-            // // 开放预约
-            // if(this.DailySchedule[i].Status == 0){
-            //     Already_begun = "demo-table-info-cell-name"
-            // }
-            // // 关闭预约
-            // if(this.DailySchedule[i].Status == 1){
-            //     Already_begun = "demo-table-info-cell-end"
-            // }
-            // // 已开课
-            // if(this.DailySchedule[i].Status == 2){
-            //     Already_begun = "demo-table-info-cell-address"
-            // }
-            // // 已结课
-            // if(this.DailySchedule[i].Status == 3){
-            //     Already_begun = "demo-table-info-cell-age"
-            // }
-            // // 取消
-            // if(this.DailySchedule[i].Status == 4){
-            //     Already_begun = "demo-table-info-cell-fff"
-            // }
-            //   console.log(this.ClassHeader[a].key)
-            //   let aa = [];
-            //   // aa.push(this.ClassHeader[a].key)
-            //   aa[]
-            //   console.log(aa)
-            // // this.data1[subscript]["cellClassName"] = {
-            // //   key:Already_begun
-            // // };
+            let Already_begun = "";
+            // 开放预约
+            if(this.DailySchedule[i].Status == 0){
+                Already_begun = "demo-table-info-cell-name"
+            }
+            // 关闭预约
+            if(this.DailySchedule[i].Status == 1){
+                Already_begun = "demo-table-info-cell-end"
+            }
+            // 已开课
+            if(this.DailySchedule[i].Status == 2){
+                Already_begun = "demo-table-info-cell-address"
+            }
+            // 已结课
+            if(this.DailySchedule[i].Status == 3){
+                Already_begun = "demo-table-info-cell-age"
+            }
+            // 取消
+            if(this.DailySchedule[i].Status == 4){
+                Already_begun = "demo-table-info-cell-fff"
+            }
+            //   console.log(this.ClassHeader[a].slot.length)
+            //   for(var s = 0; s < this.ClassHeader[a].slot.length; s++){
+            //     +
+            //   }
+            //   let aa = this.ClassHeader[a].slot +":"+ Already_begun
+             
+            // this.data1[subscript]["cellClassName"] = {aa};
+
           }
         }
       }
