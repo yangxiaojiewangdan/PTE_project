@@ -647,12 +647,14 @@ export default {
     },
     // 点击表格
     Royaltyclick(index) {
-      console.log(index);
       var count = Object.keys(index);
-      for (var i = 0; i < count.length; i++) {
+      var con = count.sort();
+      for (var i = 0; i < con.length; i++) {
+      console.log(con[i]);
         if (count[i] == this.JudgementClassroom) {
-          this.indexsubscript = i - (count.length - 1) / 2 - 2;
-          console.log(this.indexsubscript)
+          console.log(i)
+          this.indexsubscript = i - (count.length - 1) / 2 - 1;
+            console.log(this.indexsubscript);
         }
       }
       var arr = [];
@@ -661,7 +663,6 @@ export default {
         o[i] = index[i];
         arr.push(o);
       }
-
       let keyId = JSON.stringify(arr[this.indexsubscript]);
       let keyid = Number(keyId.substr(5, 17));
       GetEntity("Educational", keyid)
@@ -695,7 +696,7 @@ export default {
         let classi = "class" + i;
         let newitems = {
           title: this.TabularData[i].Description,
-          key: classi,
+          slot: classi,
           tooltip: true
         };
         this.ClassHeader.push(newitems);
@@ -709,31 +710,31 @@ export default {
         let subscript = this.DailySchedule[i].FromTime.substr(11, 2) - 9;
         for (var a = 0; a < this.ClassHeader.length; a++) {
           if (this.ClassHeader[a].title == this.DailySchedule[i].ClassRoom) {
-            let key = this.ClassHeader[a].key;
-            this.data1[subscript][key] =
+            let slot = this.ClassHeader[a].slot;
+            this.data1[subscript][slot] =
               "班级：" + this.DailySchedule[i].ClassesName;
             this.data1[subscript][i] = this.DailySchedule[i].Id;
-            let Already_begun = "";
-            // 开放预约
-            if(this.DailySchedule[i].Status == 0){
-                Already_begun = "demo-table-info-cell-name"
-            }
-            // 关闭预约
-            if(this.DailySchedule[i].Status == 1){
-                Already_begun = "demo-table-info-cell-end"
-            }
-            // 已开课
-            if(this.DailySchedule[i].Status == 2){
-                Already_begun = "demo-table-info-cell-address"
-            }
-            // 已结课
-            if(this.DailySchedule[i].Status == 3){
-                Already_begun = "demo-table-info-cell-age"
-            }
-            // 取消
-            if(this.DailySchedule[i].Status == 4){
-                Already_begun = "demo-table-info-cell-fff"
-            }
+            // let Already_begun = "";
+            // // 开放预约
+            // if(this.DailySchedule[i].Status == 0){
+            //     Already_begun = "demo-table-info-cell-name"
+            // }
+            // // 关闭预约
+            // if(this.DailySchedule[i].Status == 1){
+            //     Already_begun = "demo-table-info-cell-end"
+            // }
+            // // 已开课
+            // if(this.DailySchedule[i].Status == 2){
+            //     Already_begun = "demo-table-info-cell-address"
+            // }
+            // // 已结课
+            // if(this.DailySchedule[i].Status == 3){
+            //     Already_begun = "demo-table-info-cell-age"
+            // }
+            // // 取消
+            // if(this.DailySchedule[i].Status == 4){
+            //     Already_begun = "demo-table-info-cell-fff"
+            // }
             //   console.log(this.ClassHeader[a].key)
             //   let aa = [];
             //   // aa.push(this.ClassHeader[a].key)
