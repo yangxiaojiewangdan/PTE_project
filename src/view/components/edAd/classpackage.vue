@@ -55,7 +55,7 @@
 		</Modal>
 		<!--添加弹框-->
 		<Modal v-model="AddDepartment" width="1000" title="添加课包信息" :mask-closable="false" :styles="{top: '20px'}">
-			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="85" inline>
+			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="95" inline>
 				<Row>
 					<!--					<Divider orientation="left" class="line" style="font-weight: 900; color: #5555AA;">添加课包信息</Divider>
 -->
@@ -171,7 +171,7 @@
 						课包明细实体
 					</div>
 					<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="DetailedPackage" :columns="colDetailedPackage" @on-delete="handleDeleteDetail" border stripe height="200" @on-row-dblclick="dblclickUpDetail" />
-					<Button type="info" @click="AddDetail = true">
+					<Button type="info" @click="AddDetailHiding">
               <Icon type="md-add"/>添加课包明细实体
             </Button>
 				</Row>
@@ -181,7 +181,7 @@
 					课包价格实体
 				</div>
 				<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="PricePackage" :columns="colPricePackage" @on-delete="handleDeletePrise" border stripe height="200" @on-row-dblclick="dblclickUpPrise" />
-				<Button type="info" @click="AddPrise = true">
+				<Button type="info" @click="AddPriseHiding">
               <Icon type="md-add"/>添加课包价格实体
             </Button>
             </template>
@@ -219,7 +219,7 @@
 		</Modal>
 		<!--课包实体弹框-->
 		<Modal v-model="AddDetail" width="700" title="添加课包实体信息" :mask-closable="false">
-			<Form ref="CousreDetailFrom" :model="CousreDetailFrom" :rules="ruleValidate" :label-width="85" inline>
+			<Form ref="CousreDetailFrom" :model="CousreDetailFrom" :rules="ruleValidate1" :label-width="85" inline>
 				<!--<FormItem label="课包Id" prop="PackageId">
 					<Select v-model="CousreDetailFrom.PackageId" style="width:200px">
 						<Option v-for="item in CoursePackageData" :value="item.Id" :key="item.value">{{ item.PackageName }}</Option>
@@ -249,7 +249,7 @@
 		</Modal>
 		<!--课包价格弹框-->
 		<Modal v-model="AddPrise" width="600" title="添加课包价格信息" :mask-closable="false">
-			<Form ref="CousrePriseFrom" :model="CousrePriseFrom" :rules="ruleValidate" :label-width="120" inline>
+			<Form ref="CousrePriseFrom" :model="CousrePriseFrom" :rules="ruleValidate2" :label-width="120" inline>
 				<Row>
 					<Col span="24">
 					<FormItem label="门店" prop="Store">
@@ -613,7 +613,62 @@
 					Enabled: '',
 					Id: '',
 				},
-				ruleValidate: {},
+				ruleValidate: {
+					BusinessType: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					Code: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					Description: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					PackageName: [{
+						required: true,
+						message: 'The name cannot be empty',
+						trigger: 'blur'
+					}],
+					PackageType: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					SellPrice: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+				},
+				ruleValidate1: {
+					CourseId: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					Periods: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+				},
+				ruleValidate2:{
+					Store: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					SellPrice: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+				},
 				//课包明细实体数组
 				DetailedPackage: [],
 				//课包价格实体
@@ -791,8 +846,8 @@
 				console.log(value)
 			},
 			Add() {
+				this.$refs.formValidate.resetFields();  
 				this.AddDepartment = true;
-				this.formValidate = {};
 				this.DetailedPackage = [];
 				this.PricePackage = [];
 				let userInfo = sessionStorage.getItem('userInfo');
@@ -939,6 +994,7 @@
 			},
 			//双击表格
 			dblclickUpData(index) {
+				this.$refs.formValidate.resetFields();  
 				console.log(index)
 				this.upPackageId = index.Id
 				this.DetailedPackage = index.PackageDetailCollection
@@ -1094,13 +1150,23 @@
 					}
 				})
 			},
+			AddDetailHiding(){
+				this.$refs.CousreDetailFrom.resetFields();
+				this.AddDetail = true;
+			},
 			dblclickUpDetail(index) {
+				this.$refs.CousreDetailFrom.resetFields();
 				console.log(index)
 				this.CousreDetailFrom = index
 				this.PackageDetailID = index.PackageId
-				this.AddDetail = true
+				this.AddDetail = true;
+			},
+			AddPriseHiding(){
+				this.$refs.CousrePriseFrom.resetFields();  
+				this.AddPrise = true;
 			},
 			dblclickUpPrise(index) {
+				this.$refs.CousrePriseFrom.resetFields();  
 				console.log(index)
 				this.CousrePriseFrom = index
 				this.PackagePriseID = index.PackageId

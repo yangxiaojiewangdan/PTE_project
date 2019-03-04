@@ -9,8 +9,8 @@
 			<!--增删改查-->
 			<Col span="7" push="16">
 			<div class="organization">
-				<Button  class="organization_tableTop" @click="AddBtn">添加</Button>
-				<Button  class="organization_tableTop" @click="deleteList">删除</Button>
+				<Button class="organization_tableTop" @click="AddBtn">添加</Button>
+				<Button class="organization_tableTop" @click="deleteList">删除</Button>
 				<Select v-model="model1" style="width:100px" class="organization_tableTop">
 					<Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
@@ -36,7 +36,7 @@
 				<span v-if="add">添加系统角色</span>
 				<span v-if="see">查看系统角色</span>
 			</p>
-			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
+			<Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="90" inline>
 				<Row>
 					<Col span="24">
 					<FormItem label="所属业务群" prop="BusinessGroup">
@@ -51,7 +51,7 @@
 					</FormItem>
 
 					<FormItem label="角色名称" prop='Description'>
-						<Input v-model="formValidate.Description" placeholder="请输入"   :disabled='isDisabled'></Input>
+						<Input v-model="formValidate.Description" placeholder="请输入" :disabled='isDisabled'></Input>
 					</FormItem>
 					<Col span="24">
 					<FormItem label="排序码" prop='SortKey'>
@@ -80,7 +80,7 @@
 					</Col>
 				</Row>
 			</Form>
-			<tree-transfer :title="title" :from_data='fromData' :to_data='toData' :class="{ 'addclass': isactive }" :defaultProps="{label:'Description',children:'PermissionCollection'}" @addBtn='addTo' @removeBtn='remove' height='400px' node_key="Id" pid="ParentId" :button_text="['添加', '删减']" leafOnly >
+			<tree-transfer :title="title" :from_data='fromData' :to_data='toData' :class="{ 'addclass': isactive }" :defaultProps="{label:'Description',children:'PermissionCollection'}" @addBtn='addTo' @removeBtn='remove' height='400px' node_key="Id" pid="ParentId" :button_text="['添加', '删减']" leafOnly>
 			</tree-transfer>
 			<div slot="footer">
 				<div class="footer_left">
@@ -108,7 +108,7 @@
 				<button type="button" class="ivu-btn ivu-btn-text ivu-btn-large" @click="handleReset('formValidate');AddDepartment = false;">
                         <span>取消</span>
                     </button>
-				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('formValidate');">
+				<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-large" @click="handleSubmit('formValidate')">
                         <span>确定</span>
                     </button>
 			</div>
@@ -138,8 +138,8 @@
 				Interface: 'BusinessRole',
 				model1: '',
 				loading: true,
-				isactive : true,
-				isDisabled:false,
+				isactive: true,
+				isDisabled: false,
 				value: '',
 				delModal: false,
 				cityList: [{
@@ -207,21 +207,21 @@
 					{
 						title: '角色代码',
 						key: 'Code',
-						
+
 						sortable: true,
 
 					},
 					{
 						title: '角色名称',
 						key: 'Description',
-						
+
 						sortable: true,
 
 					},
 					{
 						title: '启用',
 						key: 'Enabled',
-						
+
 						sortable: true,
 						render: (h, params) => {
 							let texts = "";
@@ -242,14 +242,14 @@
 					{
 						title: '排序码',
 						key: 'SortKey',
-						
+
 						sortable: true,
 
 					},
 					{
 						title: '创建人',
 						key: 'CreateBy',
-						
+
 						sortable: true,
 
 					},
@@ -282,7 +282,28 @@
 					Id: ''
 				},
 				radioList: [],
-				ruleValidate: {},
+				ruleValidate: {
+					BusinessGroup: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					Code: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					Description: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					name: [{
+						required: true,
+						message: 'The name cannot be empty',
+						trigger: 'blur'
+					}],
+				},
 				//删除数组
 				BatchDeleteList: [],
 				delBusinessRoleArrs: [],
@@ -299,8 +320,8 @@
 		},
 		methods: {
 			AddBtn() {
-				this.AddDepartment = true
-				this.formValidate = {}
+				this.$refs.formValidate.resetFields();  
+				this.AddDepartment = true;
 				this.add = true;
 				this.see = false;
 				this.isactive = true;
@@ -308,6 +329,7 @@
 			},
 			//分配权限
 			upRoleData(index) {
+				this.$refs.formValidate.resetFields();  
 				console.log(index)
 				this.isDisabled = true;
 				this.isactive = false;
@@ -348,7 +370,7 @@
 				console.log(this.toDataRole)
 				//调用增删权限的接口
 				AssignedPermission(this.Interface, {
-					RoleId: this.roleId,	
+					RoleId: this.roleId,
 					PermissionItemCollection: this.toDataRole
 				}).then(res => {
 					console.log(this.toDataRole)
@@ -439,10 +461,11 @@
 			// 添加信息弹出框函数
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
+					console.log(this.$refs [name].fields)
 					if(valid && this.formValidate.Id == undefined || this.formValidate.Id == "") {
 						Create(this.Interface, this.formValidate).then(res => {
 							console.log(res.data)
-							this.roleId =res.data.Data.Id
+							this.roleId = res.data.Data.Id
 							console.log(this.roleId)
 							this.$Message.success('成功!');
 							this.isactive = false;
@@ -501,7 +524,8 @@
 	.organization_tableTop {
 		margin: 0 5px;
 	}
-	.addclass{
-    	display: none;
+	
+	.addclass {
+		display: none;
 	}
 </style>

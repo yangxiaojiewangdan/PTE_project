@@ -71,7 +71,7 @@
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button  class="tableTops" @click="AddDepartment = true;add=true;see=false;">添加</Button>
+				<Button  class="tableTops" @click="Add">添加</Button>
 				<Button @click="deleteList"  class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
@@ -96,7 +96,7 @@
 		<!--添加弹框-->
 		<Modal v-model="AddDepartment" scrollable width="900" title="添加学员档案信息" :mask-closable="false" :styles="{top: '40px'}">
 			<p slot="header" style="text-align: left; line-height: 1;">
-				<span v-if="add">基本信息</span>
+				<span v-if="add">添加学员</span>
 				<span v-if="see">修改学员</span>
 			</p>
 			<Row>
@@ -266,7 +266,7 @@
 							<Card>
 								<p slot="title">联系人1</p>
 								<!--<Button slot="extra" size="small" type="text" @click="say(index,$event)">{{ EditSave }}</Button>-->
-								<Form ref="FormContacts" :model="FormContacts" :rules="ruleValidate" label-position="right" :label-width="60">
+								<Form ref="FormContacts" :model="FormContacts" :rules="ruleValidate1" label-position="right" :label-width="60">
 									<Row>
 										<Button slot="extra" size="small" type="text" @click="say(index,$event)">{{ EditSave }}</Button>
 										<Col span="20">
@@ -634,7 +634,56 @@
 					Career: '',
 				},
 				ruleValidate: {
-
+					LastName: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					NickName: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					Gender: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					BrithDate: [{
+						required: true,
+						message: '必填项',
+						trigger: 'blur'
+					}],
+					ContactName: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					ContactPhone: [{
+						required: true,
+						message: '请输入正确格式',
+						trigger: 'blur',
+						pattern:/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/
+					}],
+					ContactEMail: [{
+						required: true,
+						message: '请输入正确格式',
+						trigger: 'blur',
+						type: 'email',
+					}],
+					CustomerType: [{
+						required: true,
+						message: '必填项',
+						trigger: 'change'
+					}],
+					BusinessUnit: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+				},
+				ruleValidate1:{
+					
 				},
 				//选中的数组id
 				batchArr: [],
@@ -679,6 +728,12 @@
 					console.log(err)
 				})
 			},
+			Add(){
+				this.$refs.formValidate.resetFields();
+				this.add = true;
+				this.see = false;
+				this.AddDepartment = true;
+			},
 			//批量操作的ID
 			BatchDelete(selection) {
 				console.log(selection)
@@ -708,11 +763,13 @@
 			},
 			//修改赋值
 			dblclickUpData(index) {
+				this.$refs.formValidate.resetFields();
 				this.add = false;
 				this.see = true;
 				this.isAdd = true;
-				this.AddDepartment = true;
 				this.formValidate = index;
+				this.AddDepartment = true;
+				
 				//this.ContactsList = index.ContactCollection;
 				console.log(index)
 			},

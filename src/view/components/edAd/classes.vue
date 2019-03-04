@@ -31,7 +31,6 @@
 			</Select>
 			</Col>
 			<Button class="tableTops" @click="timeCourse">排课</Button>
-			<Button class="tableTops" @click="timeCourse1">排课</Button>
 			</Col>
 		</Row>
 		<!--增删改查按钮-->
@@ -80,7 +79,7 @@
 					</FormItem>-->
 					<FormItem label="门店名称" prop="Store">
 						<Select v-model="formValidate.Store" @on-change="selectStore">
-							<Option v-for="item in storeList" :value="item.Description" :key="item.value">{{ item.Description }}</Option>
+							<Option v-for="item in storeList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
@@ -100,21 +99,21 @@
 					</FormItem>
 					</Col>
 					<Col span="20">
-					<FormItem label="开课/结课日期" prop="time">
-						<DatePicker v-model="formValidate.time" type="daterange" @on-change="queryData" format="yyyy-MM-dd" placeholder="请选择"></DatePicker>
+					<FormItem label="开/结课日期" prop="time">
+						<DatePicker v-model="formValidate.time" type="daterange" @on-change="queryData1" format="yyyy-MM-dd" placeholder="请选择"></DatePicker>
 					</FormItem>
 					</Col>
 					<Col span="20">
 					<FormItem label="授课老师" prop="Teacher">
 						<Select v-model="formValidate.Teacher" @on-change="selectTeach">
-							<Option v-for="item in peopleUserList" :value="item.LastName" :key="item.value">{{ item.LastName }}</Option>
+							<Option v-for="item in peopleUserList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
 					<Col span="20">
 					<FormItem label="班主任" prop="ClassesLeader">
 						<Select v-model="formValidate.ClassesLeader" @on-change="selectClassesLeader">
-							<Option v-for="item in peopleUserList" :value="item.LastName" :key="item.value">{{ item.LastName }}</Option>
+							<Option v-for="item in peopleUserList" :value="item.Id" :key="item.value">{{ item.LastName }}</Option>
 						</Select>
 					</FormItem>
 					</Col>
@@ -145,6 +144,15 @@
 					</FormItem>
 					<FormItem label="结课日期" v-if="false">
 						<Input v-model="formValidate.CloseDate"></Input>
+					</FormItem>
+					<FormItem label="" v-if="false">
+						<Input v-model="formValidate.BusinessGroup"></Input>
+					</FormItem>
+					<FormItem label="" v-if="false">
+						<Input v-model="formValidate.BusinessUnit"></Input>
+					</FormItem>
+					<FormItem label="" v-if="false">
+						<Input v-model="formValidate.BusinessUnitId"></Input>
 					</FormItem>
 				</Form>
 				</Col>
@@ -239,7 +247,6 @@
 		</Modal>
 		<SearchStuden v-on:childStudenList="childStudenList" v-if="aaa" :inputName="classesId"></SearchStuden>
 		<RowCourse v-if="bbb"></RowCourse>
-		<stageScheduling v-if="ccc"></stageScheduling>
 	</div>
 </template>
 
@@ -262,10 +269,10 @@
 		data() {
 			return {
 				Interface: 'Classes',
-				queryClassesName:'',
-				queryClassesRoom:'',
-				queryClassesLeader:'',
-				queryClassesData:'',
+				queryClassesName: '',
+				queryClassesRoom: '',
+				queryClassesLeader: '',
+				queryClassesData: '',
 				StartEndDate: '',
 				querySelect: '',
 				querySelectList: [],
@@ -356,7 +363,8 @@
 				],
 				formValidate: {
 					BusinessGroup: '',
-					Id: '',
+					BusinessUnit:'',
+					BusinessUnitId:'',
 					StoreId: '',
 					Store: '',
 					ClassRoom: '',
@@ -370,6 +378,7 @@
 					ClassesLeader: '',
 					Status: '',
 					time: [],
+					Id:'',
 
 				},
 				StudentData: [],
@@ -433,9 +442,22 @@
 					}
 
 				],
-
 				ruleValidate: {
-
+					 ClassRoom: [
+                        { required: true, message: '必填', trigger: 'change',}
+                    ],
+                    ClassesName: [
+                        { required: true, message: '必填', trigger: 'blur' },
+                    ],
+//                  time: [
+//                      { required: true, message: '必填', trigger: 'change',type:'date'}
+//                  ],
+                    Teacher: [
+                        { required: true, message: '请选择授课老师', trigger: 'change',type:'number'}
+                    ],
+                    ClassesLeader: [
+                        { required: true,  message:'请选择班主任', trigger: 'change',type:'number' }
+                    ],
 				},
 				name1: '',
 				classesData: [],
@@ -444,7 +466,6 @@
 				upClassesDepartment: false,
 				aaa: false,
 				bbb: false,
-				ccc: false,
 				add: '',
 				see: '',
 				model11: '',
@@ -483,7 +504,7 @@
 		},
 		methods: {
 			Add() {
-				this.formValidate = [];
+				this.$refs.formValidate.resetFields(); 
 				this.StudentData = [];
 				this.AddDepartment = true;
 				this.add = true;
@@ -524,6 +545,7 @@
 				removeByValue(this.BatchDeleteList, row.Id);
 			},
 			dblclickUpData(index) {
+				this.$refs.formValidate.resetFields(); 
 				console.log(index)
 				this.detailedClassesId = index.Id
 				this.FromClasses = index.ClassesName
@@ -562,8 +584,9 @@
 			cancel() {
 				this.$Message.info('已取消');
 			},
-			queryData() {
-
+			queryData1(data) {
+				this.formValidate.OpenDate = data[0];
+				this.formValidate.CloseDate = data[1];
 			},
 			//移除班级学员
 			handleDeleteDetail(params) {
@@ -593,31 +616,25 @@
 			//确认添加
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
-					if(valid) {
-						if(this.add = true) {
+					if(valid && this.formValidate.Id == undefined || this.formValidate.Id == "") {
 							Create(this.Interface, this.formValidate).then(res => {
 								console.log(res.data)
 								this.classesId = res.data.Data.Id;
-								this.$Message.info('请添加班级学员');
+								this.$Message.info('请在添加班级学员');
 							}).catch(err => {
 								console.log(err)
 							})
-						} else if(this.see = true) {
-							Update(this.Interface, this.formValidate).then(res => {
+					}else{
+						Update(this.Interface, this.formValidate).then(res => {
 								console.log(res.data)
 							}).catch(err => {
 								console.log(err)
 							})
-						}
-
 					}
 				})
 			},
 			timeCourse() {
 				this.bbb = !this.bbb
-			},
-			timeCourse1() {
-				this.ccc = !this.ccc
 			},
 			SearchModal() {
 				this.name1 = true;
@@ -626,6 +643,37 @@
 			},
 			selectStore(value) {
 				this.formValidate.StoreId = value;
+				//请求门店下的教室
+				GetEntities("ClassRoom", {
+					Filters: [{
+						Relational: "And",
+						Conditions: [{
+							FilterField: "Store",
+							Relational: "Equal",
+							FilterValue: value
+						}]
+					}]
+				}).then(res=>{
+					this.classesRoomLIst = res.data
+				}).catch(err=>{
+					console.log(err)
+				});
+				//请求门店下的人员
+				GetEntities("BusinessUser", {
+					Filters: [{
+						Relational: "And",
+						Conditions: [{
+							FilterField: "Store",
+							Relational: "Equal",
+							FilterValue: value
+						}]
+					}]
+				}).then(res=>{
+					//console.log(res.data)
+				}).catch(err=>{
+					console.log(err)
+				})
+
 			},
 			childByValue(childValue) {
 				this.name = childValue
@@ -662,43 +710,42 @@
 				})
 			},
 			//查询联动
-//			ConditionalQuery() {
-//				GetEntities(this.Interface, {
-//					Relational: "And",
-//					Conditions: [{
-//							FilterField: ClassesName, //字段名
-//							Relational: "Equal",
-//							FilterValue: this.RadioBusinessType //字段名里面的值
-//						},
-//						{
-//							FilterField: StoreType, //字段名
-//							Relational: "Equal",
-//							FilterValue: this.RadioStoreType //字段名里面的值
-//						},
-//						{
-//							FilterField: Status, //字段名
-//							Relational: "Equal",
-//							FilterValue: this.RadioStatus //字段名里面的值
-//						},
-//						{
-//							FilterField: this.querySelect, //字段名
-//							Relational: "Contain",
-//							FilterValue: this.queryvalue //字段名里面的值
-//						}
-//					]
-//				}).then(res => {
-//					console.log(res.data)
-//				}).catch(err => {
-//					console.log(err)
-//				})
-//			}
+			//			ConditionalQuery() {
+			//				GetEntities(this.Interface, {
+			//					Relational: "And",
+			//					Conditions: [{
+			//							FilterField: ClassesName, //字段名
+			//							Relational: "Equal",
+			//							FilterValue: this.RadioBusinessType //字段名里面的值
+			//						},
+			//						{
+			//							FilterField: StoreType, //字段名
+			//							Relational: "Equal",
+			//							FilterValue: this.RadioStoreType //字段名里面的值
+			//						},
+			//						{
+			//							FilterField: Status, //字段名
+			//							Relational: "Equal",
+			//							FilterValue: this.RadioStatus //字段名里面的值
+			//						},
+			//						{
+			//							FilterField: this.querySelect, //字段名
+			//							Relational: "Contain",
+			//							FilterValue: this.queryvalue //字段名里面的值
+			//						}
+			//					]
+			//				}).then(res => {
+			//					console.log(res.data)
+			//				}).catch(err => {
+			//					console.log(err)
+			//				})
+			//			}
 
 		},
 		mounted() {
 			//获取已有的班级
 			GetEntities(this.Interface, this.getTableData).then(res => {
 				this.classesData = res.data;
-				console.log(this.classesData)
 			}).catch(err => {
 				console.log(err)
 			})
@@ -714,12 +761,6 @@
 			}).catch(err => {
 				console.log(err)
 			})
-			//获取教室
-			GetEntities("ClassRoom", this.getTableData).then(res => {
-				this.classesRoomLIst = res.data;
-			}).catch(err => {
-				console.log(err)
-			})
 			//人员实体
 			GetEntities("BusinessUser", this.getTableData).then(res => {
 				this.peopleUserList = res.data;
@@ -730,6 +771,8 @@
 			let userInfo = sessionStorage.getItem('userInfo');
 			let userData = JSON.parse(userInfo);
 			this.formValidate.BusinessGroup = userData.BusinessGroup
+			this.formValidate.BusinessUnit = userData.BusinessUnit
+			this.formValidate.BusinessUnitId = userData.BusinessUnitId
 		}
 	}
 </script>

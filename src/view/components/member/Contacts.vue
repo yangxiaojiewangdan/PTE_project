@@ -182,7 +182,39 @@
 				CustomerData1: {
 					"Filters": {},
 				},
-				ruleValidate: {},
+				ruleValidate: {
+					LastName: [{
+						required: true,
+						message: '必填',
+						trigger: 'blur'
+					}],
+					CustomerId: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					RelationType: [{
+						required: true,
+						message: '必填',
+						trigger: 'change'
+					}],
+					TelPhone: [{
+						required: true,
+						message: '请输入正确格式',
+						trigger: 'blur',
+						pattern:/^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/
+					}],
+					QQ: [{
+						message: '格式不正确',
+						trigger: 'blur',
+						pattern:/[1-9][0-9]{4,}/
+					}],
+					Email: [{
+						message: '格式不正确',
+						trigger: 'blur',
+						type: 'email',
+					}],
+				},
 				columns4: [{
 						type: 'selection',
 						width: 50,
@@ -301,11 +333,10 @@
 		},
 		methods: {
 			AddTo() {
+				this.$refs.formValidate.resetFields();  
 				this.AddDepartment = true;
 				this.add = true;
 				this.see = false;
-				this.formValidate = {};
-
 			},
 			deleteList() {
 				if(this.BatchDeleteList.length == 0) {
@@ -392,11 +423,11 @@
 				this.$Message.info('已取消添加部门');
 			},
 			upDataBusinessUnit(index) {
+				this.$refs.formValidate.resetFields();  
 				this.add = false;
 				this.see = true;
 				this.AddDepartment = true;
 				this.formValidate = index;
-				console.log(index)
 			},
 		},
 		mounted() {

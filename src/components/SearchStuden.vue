@@ -155,8 +155,8 @@
 					this.toClassesList = res.data;
 					this.$emit('childStudenList',this.toClassesList)
 					this.AddPrise = false;
+					//this.reload();
 					this.$Message.success('添加成功!')
-					
 				}).catch(err=>{
 					console.log(err)
 				})
@@ -175,6 +175,7 @@
 			},
 			//勾选中触发
 			BatchDelete(selection, row) {
+				console.log(selection)
 				for(var i = 0; i < selection.length; i++) {
 					this.BatchDeleteList.push(selection[i].Id);
 				};
