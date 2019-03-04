@@ -24,9 +24,9 @@ export const DistrictGetArea = (ParentId) => {
   });
 };
 //  根据数据主键(Id)查询单条数据
-export const DistrictGetEntity = (Interface,keyId) => {
+export const DistrictGetEntity = (Interface, keyId) => {
   return axios.request({
-    url: apiUrl + "/api/"+ Interface + "/GetEntity?keyId=" + keyId,
+    url: apiUrl + "/api/" + Interface + "/GetEntity?keyId=" + keyId,
     method: "get"
   });
 };
@@ -251,35 +251,20 @@ export const EducationalGetTimeTableByDate = Data => {
   });
 }
 //查询周课表摘要汇总信息
-export const EducationalGetTimeTableSummaryByWeek = (StoreId,DateInQuery) => {
+export const EducationalGetTimeTableSummaryByWeek = (StoreId, DateInQuery) => {
   return axios.request({
-    url: apiUrl + "/api/Educational/GetTimeTableSummaryByWeek?StoreId="+StoreId+"&DateInQuery="+DateInQuery,
+    url: apiUrl + "/api/Educational/GetTimeTableSummaryByWeek?StoreId=" + StoreId + "&DateInQuery=" + DateInQuery,
     method: "get"
   });
 }
 //查询月课表摘要汇总信息
-export const EducationalGetTimeTableSummaryByMonth = (StoreId,DateInQuery) => {
+export const EducationalGetTimeTableSummaryByMonth = (StoreId, DateInQuery) => {
   return axios.request({
-    url: apiUrl + "/api/Educational/GetTimeTableSummaryByMonth?StoreId="+StoreId+"&DateInQuery="+DateInQuery,
+    url: apiUrl + "/api/Educational/GetTimeTableSummaryByMonth?StoreId=" + StoreId + "&DateInQuery=" + DateInQuery,
     method: "get"
   });
-
 }
-//获取加盟商门店信息
-//获取直营门店
-//获取所有大区的数据 
-export const GetDirectStore = () => {
-  return axios.request({
-    url: apiUrl + "/api/BusinessStore/GetDirectStore",
-    method: "get"
-  });
-};
-export const GetFranchiseStore = (FranchiserId) => {
-  return axios.request({
-    url: apiUrl + "/api/BusinessStore/GetFranchiseStore?FranchiserId="+ FranchiserId,
-    method: "get"
-  });
-};
+
 
 //单次排课
 export const SingleArrangement = Data => {
@@ -329,5 +314,18 @@ export const UpClasses = Data => {
     method: "post"
   });
 }
-
-
+//获取加盟商门店信息
+//获取直营门店
+//获取所有大区的数据 
+export const GetDirectStore = () => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/GetDirectStore",
+    method: "get"
+  });
+};
+export const GetFranchiseStore = (FranchiserId) => {
+  return axios.request({
+    url: apiUrl + "/api/BusinessStore/GetFranchiseStore?FranchiserId=" + FranchiserId,
+    method: "get"
+  });
+};
