@@ -1,10 +1,11 @@
 <template>
 	<div class="classes">
 		<Row>
-			<Col span="24" style="height:50px;">
-			<h1 class="queryHeader">班级信息</h1>
+			<Col span="24" style="height:50px;background: #fff;">
+			<p class="queryHeader">班级信息</p>
 			</Col>
 		</Row>
+		<hr>
 		<!--查询条件-->
 		<Row>
 			<Col span="24" class="querycriteria" style="height: 120px;">
@@ -34,7 +35,7 @@
 			</Col>
 		</Row>
 		<!--增删改查按钮-->
-		<Row>
+		<Row style="background: #FFFFFF;">
 			<Col span="15" class="queryEnd">
 			<h2>查询结果</h2>
 			</Col>
@@ -51,7 +52,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="550" size="small" highlight-row stripe border ref="selection" :columns="classes" :data="classesData" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId"></Table>
+			<Table height="550" size="small" highlight-row stripe  ref="selection" :columns="classes" :data="classesData" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId"></Table>
 
 			</Col>
 			<Col span="24">
@@ -161,7 +162,7 @@
 				<Button class="tableTops" @click="SearchModal" style="margin-bottom: 10px;">添加上课学员</Button>
 				</Col>
 				<Col span="24" push="1">
-				<tables disabled-hover search-place="top" height="400" ref="tables" size="small" editable v-model="StudentData" :columns="StudentDataHeader" @on-delete="handleDeleteDetail" border stripe @on-row-dblclick="dblclickUpDetail" />
+				<tables disabled-hover search-place="top" height="400" ref="tables" size="small" editable v-model="StudentData" :columns="StudentDataHeader" @on-delete="handleDeleteDetail"  stripe @on-row-dblclick="dblclickUpDetail" />
 				</Col>
 				</Col>
 			</Row>

@@ -1,10 +1,11 @@
 <template>
 	<div id="CustomerProfile">
 		<Row>
-			<Col span="24" style="height:50px;">
-			<h1 class="queryHeader">学员档案</h1>
+			<Col span="24" style="height:50px; background: #FFFFFF;">
+			<p class="queryHeader">学员档案</p>
 			</Col>
 		</Row>
+		<hr>
 		<!--查询条件-->
 		<Row>
 			<Col span="24" class="querycriteria" style="height: 200px;">
@@ -65,7 +66,7 @@
 			</Col>
 		</Row>
 		<!--增删改查-->
-		<Row>
+		<Row style="background:#FFFFFF;">
 			<Col span="15" class="queryEnd">
 			<h2>查询结果</h2>
 			</Col>
@@ -82,7 +83,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="550" size="small" highlight-row stripe border ref="selection" :columns="CustomerTable" :data="CustomerData" @on-select="BatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="BatchDelete"></Table>
+			<Table height="550" size="small" highlight-row stripe  ref="selection" :columns="CustomerTable" :data="CustomerData" @on-select="BatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="BatchDelete"></Table>
 			</Col>
 			<Col span="24">
 			<!-- 分页 -->
@@ -192,23 +193,14 @@
 								</FormItem>
 								<FormItem label="来源渠道" prop="ChannelCode">
 									<Select v-model="formValidate.ChannelCode" style="width: 200px;">
-										<Option value="beijing">New York</Option>
-										<Option value="shanghai">London</Option>
-										<Option value="shenzhen">Sydney</Option>
 									</Select>
 								</FormItem>
 								<FormItem label="市场分类" prop="MarketClass">
 									<Select v-model="formValidate.MarketClass" style="width: 200px;">
-										<Option value="beijing">New York</Option>
-										<Option value="shanghai">London</Option>
-										<Option value="shenzhen">Sydney</Option>
 									</Select>
 								</FormItem>
 								<FormItem label="市场代码" prop="MarketCode">
 									<Select v-model="formValidate.MarketCode" style="width: 200px;">
-										<Option value="beijing">New York</Option>
-										<Option value="shanghai">London</Option>
-										<Option value="shenzhen">Sydney</Option>
 									</Select>
 								</FormItem>
 
@@ -238,9 +230,6 @@
 								<Col span="8">
 								<FormItem label="所在小区" prop="VillageCode">
 									<Select v-model="formValidate.VillageCode" style="width: 150px;">
-										<Option value="beijing">New York</Option>
-										<Option value="shanghai">London</Option>
-										<Option value="shenzhen">Sydney</Option>
 									</Select>
 								</FormItem>
 								</Col>
@@ -886,6 +875,14 @@
 
 		},
 		mounted() {
+			let userInfo = sessionStorage.getItem('userInfo');
+			let array = JSON.parse(userInfo);
+			console.log(array)
+			let BusinessGroupData = array.BusinessGroup 
+			//业务部门
+			this.formValidate.BusinessUnit = array.BusinessUnit
+			//负责人
+			this.formValidate.Owner = array.LastName
 			//获取表格数据
 			GetEntities(this.Interface, this.CustomerData1).then(res => {
 				this.CustomerData = res.data;
@@ -904,39 +901,40 @@
 				console.log(err)
 			});
 			//性别
-			DataDictionaryGetEntities("GENDER_TYPE").then(res => {
+			DataDictionaryGetEntities("GENDER_TYPE",BusinessGroupData).then(res => {
 				this.radioList = res.data
 			}).catch(err => {
 				console.log(err)
 			});
 			//客户类型
-			DataDictionaryGetEntities("CUSTOMER_TYPE").then(res => {
+			DataDictionaryGetEntities("CUSTOMER_TYPE",BusinessGroupData).then(res => {
 				this.customerTypeData = res.data
 				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
 			//会员类型
-			DataDictionaryGetEntities("MEMBERSHIP_TYPE").then(res => {
+			DataDictionaryGetEntities("MEMBERSHIP_TYPE",BusinessGroupData).then(res => {
 				this.MemberTypeData = res.data
 				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
 			//关系、
-			DataDictionaryGetEntities("CUSTOMER_RELATION_TYPE").then(res => {
+			DataDictionaryGetEntities("CUSTOMER_RELATION_TYPE",BusinessGroupData).then(res => {
 				this.relationship = res.data
 				console.log(res.data)
 			}).catch(err => {
 				console.log(err)
 			});
-			let userInfo = sessionStorage.getItem('userInfo');
-			let array = JSON.parse(userInfo);
-			console.log(array)
-			//业务部门
-			this.formValidate.BusinessUnit = array.BusinessUnit
-			//负责人
-			this.formValidate.Owner = array.LastName
+			//获取省
+			DistrictGetProvince().then(res=>{
+				console.log(res.data)
+				this.province = res.data
+			}).catch(err=>{
+				console.log(err)
+			})
+			
 		}
 	}
 </script>

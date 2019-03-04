@@ -108,9 +108,9 @@ export const ValidateUnique = (Interface, Code, BusinessGroup) => {
 };
 
 // 查询数据字典的数据项
-export const DataDictionaryGetEntities = (dataCategory) => {
+export const DataDictionaryGetEntities = (dataCategory,BusinessGroup) => {
   return axios.request({
-    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=" + dataCategory + "&BusinessGroup=*",
+    url: apiUrl + "/api/DataDictionary/GetEntities?dataCategory=" + dataCategory + "&BusinessGroup=" + BusinessGroup,
     method: "get"
   });
 };

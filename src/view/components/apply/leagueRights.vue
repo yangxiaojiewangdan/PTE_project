@@ -196,9 +196,9 @@
                 @on-row-click="rowclick"
                 @on-delete="handleDelete"
               />
-               <Button type="text" @click="AddRoyalty = true" style="margin-left:48%;" size="small">
+               <!--<Button type="text" @click="AddRoyalty = true" style="margin-left:48%;" size="small">
                  <Icon type="md-add" size="25"  />
-               </Button>
+               </Button>-->
             </Card>
             
           </Col>

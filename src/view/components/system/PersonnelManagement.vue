@@ -2,9 +2,10 @@
 	<div id="PersonnelManagement">
 		<Row>
 			<Col span="24" style="height:100px;">
-			<h1 class="setHeader">人员管理设置</h1>
+			<p class="queryHeader">人员管理设置</p>
 			</Col>
 		</Row>
+		<hr>
 		<Row class="content">
 			<Col span="6" style="height:750px;">
 			<Col span="24" style="height:40px;">
@@ -37,7 +38,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" size="small" @on-row-dblclick="onEditMoney" highlight-row stripe border ref="selection" :columns="columns4" :data="data1" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" :loading=loading></Table>
+			<Table height="560" size="small" @on-row-dblclick="onEditMoney" highlight-row stripe  ref="selection" :columns="columns4" :data="data1" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" :loading=loading></Table>
 			<!-- 表格 end-->
 			</Col>
 			<Col span="24">
@@ -122,11 +123,11 @@
 					</FormItem>
 					</Col>
 					<Col span="8">
-					<FormItem label="部门名称" prop="BusinessUnit">
-						<!--<Select v-model="formValidate.BusinessUnit" placeholder="请选择" :label-in-value="true" @on-change="getItemName" disabled>
+					<FormItem label="部门名称" prop="BusinessUnitId">
+						<Select v-model="formValidate.BusinessUnitId" placeholder="请选择" :label-in-value="true">
 							<Option v-for="item in BusinessUnitList" :value="item.Id" :key="item.value">{{ item.Description }}</Option>
-						</Select>-->
-						<Input v-model="formValidate.BusinessUnit" placeholder="请输入"  disabled/>
+						</Select>
+						<!--<Input v-model="formValidate.BusinessUnit" placeholder="请输入"  disabled/>-->
 					</FormItem>
 					</Col>
 					</Col>
@@ -183,6 +184,11 @@
 					<Col span="4">
 					<FormItem label="" prop="IsAdministrtor" style="width:100px ;">
 						<Checkbox v-model="formValidate.IsAdministrtor" style="width: 80px;">管理员</Checkbox>
+					</FormItem>
+					</Col>
+					<Col span="2">
+					<FormItem label="" prop="IsSupervisor " style="width:90px ;">
+						<Checkbox v-model="formValidate.IsSupervisor " style="width: 70px;">主管标识</Checkbox>
 					</FormItem>
 					</Col>
 					<Col span="2">
@@ -292,7 +298,8 @@
 					RoleName: [{
 						required: true,
 						message: '必填项',
-						trigger: 'change'
+						trigger: 'change',
+						type:"number"
 					}],
 					IsAdministrtor: [{
 						required: true,
@@ -322,7 +329,7 @@
 				},
 
 				Interface: 'BusinessUser',
-				radioList: '',
+				radioList:[],
 				loading: true,
 				// input框中的值
 				value: '',
@@ -630,10 +637,12 @@
 					IsSupervisor: true,
 					Enabled: true,
 					IsAdministrtor: true,
+					Id:'',
 				},
 				IsSupervisorList: [],
 				FranchiseeList:[],
 				StoreList:[],
+				BusinessGroupData:'',
 			}
 		},
 		//		computed:{
@@ -687,7 +696,7 @@
 				this.see = false;
 			},
 			selectChange(dataList) {
-				console.log(dataList[0].ParentId);
+				//console.log(dataList[0].ParentId);
 				this.ParentIdData = dataList[0].ParentId
 //				dataList.forEach(item => {
 //					console.log(item)
@@ -792,7 +801,7 @@
 					if(valid && this.formValidate.Id == undefined || this.formValidate.Id == "") {
 						//如果正则正确就调用接口发送数据
 						Create(this.Interface, this.formValidate).then(res => {
-							this.$Message.success('成功!');
+							this.$Message.success('添加成功!');
 							this.reload();
 							//this.AddDepartment = false;
 						}).catch(err => {
@@ -827,10 +836,16 @@
 
 		},
 		mounted() {
-			//this.formValidate.Account = this.formValidate.TelPhone
+			//获取用户信息
+			let userInfo = sessionStorage.getItem('userInfo');
+			let userData = JSON.parse(userInfo);
+			this.formValidate.BusinessGroup = userData.BusinessGroup
+			this.formValidate.BusinessUnitId  = userData.BusinessUnitId
+			this.BusinessGroupData = userData.BusinessGroup
 			//人员表格
 			GetEntities(this.Interface, this.data4).then(res => {
 				this.data1 = res.data
+				console.log(this.data1)
 				this.data1.forEach(item => {
 					if(item.IsSupervisor == true) {
 						this.IsSupervisorList.push(item)
@@ -841,14 +856,15 @@
 				console.log(err)
 			});
 			//树形结构
-			GetBusinessUnit("BusinessUnit").then(res => {
+			GetBusinessUnit("BusinessUnit",this.BusinessGroupData).then(res => {
 				this.treeList = res.data
 			}).catch(err => {
 				console.log(err)
 			});
 			//获取数字字典
-			DataDictionaryGetEntities("GENDER_TYPE").then(res => {
+			DataDictionaryGetEntities("GENDER_TYPE",this.BusinessGroupData).then(res => {
 				this.radioList = res.data
+				console.log(this.radioList)
 			}).catch(err => {
 				console.log(err)
 			});
@@ -872,12 +888,6 @@
 			}).catch(err => {
 				console.log(err)
 			})
-			//获取用户信息
-			let userInfo = sessionStorage.getItem('userInfo');
-			let userData = JSON.parse(userInfo);
-			this.formValidate.BusinessGroup = userData.BusinessGroup
-			this.formValidate.BusinessUnitId  = userData.BusinessUnitId 
-
 		}
 	}
 </script>
