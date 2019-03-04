@@ -98,6 +98,7 @@ export default {
 				}).then(res => {
 					//debugger;
 					const data = res.data.Data
+					console.log(data)
 					//将用户信息保存在sessionStorage中
 					sessionStorage.setItem('userInfo', JSON.stringify(res.data.Data))
 					let ttoken = JSON.parse(sessionStorage.getItem('userInfo'))

@@ -541,14 +541,14 @@
 			queryMethodStoreId(value){
 				console.log(value)
 				this.formValidate.StoreId = value;
-			}
-				
+			},
 		},
 		mounted() {
 			//获取用户信息
 			let userInfo = sessionStorage.getItem('userInfo');
 			let userData = JSON.parse(userInfo);
 			this.BusinessGroupData = userData.BusinessGroup
+			console.log(userData)
 			//console.log(userData)
 			//获取树形结构
 			GetBusinessUnit(this.Interface, this.BusinessGroupData).then(res => {
