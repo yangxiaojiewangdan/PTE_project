@@ -1,10 +1,11 @@
 <template>
 	<div class="Contacts">
 		<Row>
-			<Col span="24" style="height:50px;">
-			<h1 class="queryHeader">联系人</h1>
+			<Col span="24" style="height:50px;background: #FFFFFF;">
+			<p class="queryHeader">联系人</p>
 			</Col>
 		</Row>
+		<hr>
 		<!--查询条件-->
 		<Row>
 			<Col span="24" class="querycriteria" style="height: 120px;">
@@ -29,7 +30,7 @@
 			</Col>
 		</Row>
 		<!--增删改查-->
-		<Row>
+		<Row style="background: #FFFFFF;">
 			<Col span="15" class="queryEnd">
 			<h2>查询结果</h2>
 			</Col>
@@ -46,7 +47,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border size="small" ref="selection" :columns="columns4" :data="data1" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" @on-row-dblclick="upDataBusinessUnit">
+			<Table height="560"  size="small" ref="selection" :columns="columns4" :data="data1" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" @on-row-dblclick="upDataBusinessUnit">
 			</Table>
 			</Col>
 			<Col span="24">
@@ -431,7 +432,11 @@
 			},
 		},
 		mounted() {
-			DataDictionaryGetEntities("CUSTOMER_RELATION_TYPE").then(res => {
+			//获取用户信息
+			let userInfo = sessionStorage.getItem("userInfo");
+			let array = JSON.parse(userInfo);
+			let BusinessGroupData = array.BusinessGroup;
+			DataDictionaryGetEntities("CUSTOMER_RELATION_TYPE",BusinessGroupData).then(res => {
 				this.relationship = res.data
 				console.log(res.data)
 			}).catch(err => {

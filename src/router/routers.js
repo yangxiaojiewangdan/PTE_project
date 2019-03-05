@@ -433,7 +433,8 @@ export default [
 				name: 'member_studentFiles',
 				meta: {
 					icon: 'md-add',
-					title: '学员档案'
+					title: '学员档案',
+					access:['12010','12011','12012','12013','12014']
 				},
 				component: () =>
 					import('@/view/components/member/studentFiles.vue')
@@ -443,7 +444,8 @@ export default [
 				name: 'member_Contacts',
 				meta: {
 					icon: 'md-download',
-					title: '联系人'
+					title: '联系人',
+					access:['12020','12021','12022','12023']
 				},
 				component: () =>
 					import('@/view/components/member/Contacts.vue')
@@ -463,7 +465,8 @@ export default [
 				name: 'member_order',
 				meta: {
 					icon: 'md-add',
-					title: '订单管理'
+					title: '订单管理',
+					access:['11010','11011','11012','11013','11014','11015','11016','11017','11018']
 				},
 				component: () =>
 					import('@/view/components/member/order.vue')
@@ -483,7 +486,7 @@ export default [
 				name: 'member_studentCourse',
 				meta: {
 					icon: 'md-download',
-					title: '学员课程'
+					title: '学员课程',
 				},
 				component: () =>
 					import('@/view/components/member/studentCourse.vue')
@@ -525,7 +528,8 @@ export default [
 				name: 'edAd_course',
 				meta: {
 					icon: 'ios-infinite',
-					title: '课程管理'
+					title: '课程管理',
+					access:['13010','13011','13012']
 				},
 				component: () =>
 					import('@/view/components/edAd/course.vue')
@@ -535,7 +539,8 @@ export default [
 				name: 'edAd_classpackage',
 				meta: {
 					icon: 'ios-infinite',
-					title: '课包管理'
+					title: '课包管理',
+					access:['13020','13021','13022','13023']
 				},
 				component: () =>
 					import('@/view/components/edAd/classpackage.vue')
@@ -545,7 +550,8 @@ export default [
 				name: 'edAd_Calendar',
 				meta: {
 					icon: 'md-git-branch',
-					title: '课表天日历'
+					title: '课表天日历',
+					access:['13040','13041','13042','13043','13044','13045','13046','13047']
 				},
 				component: () =>
 					import('@/view/components/edAd/Calendar.vue')
@@ -555,7 +561,8 @@ export default [
 				name: 'edAd_SundayCalendar',
 				meta: {
 					icon: 'md-git-branch',
-					title: '课表周日历'
+					title: '课表周日历',
+					access:['13040','13041','13042','13043','13044','13045','13046','13047']
 				},
 				component: () =>
 					import('@/view/components/edAd/SundayCalendar.vue')
@@ -565,7 +572,8 @@ export default [
 				name: 'edAd_MonthlyCalendar',
 				meta: {
 					icon: 'md-git-branch',
-					title: '课表月日历'
+					title: '课表月日历',
+					access:['13040','13041','13042','13043','13044','13045','13046','13047']
 				},
 				component: () =>
 					import('@/view/components/edAd/MonthlyCalendar.vue')
@@ -585,7 +593,8 @@ export default [
 				name: 'edAd_classes',
 				meta: {
 					icon: 'md-crop',
-					title: '班级'
+					title: '班级',
+					access:['13030','13031','13032'],
 				},
 				component: () =>
 					import('@/view/components/edAd/classes.vue')
@@ -607,7 +616,8 @@ export default [
 				name: 'store_storeManagement',
 				meta: {
 					icon: 'md-trending-up',
-					title: '门店管理'
+					title: '门店管理',
+					access:['12010','12011','12012','12013','12014','12020','12021','12022','12023','13030','13031','13032','13040','13041','13042','13043','13044','13045','13046','13047','11010','11011','11012','11013','11014','11015','11016','11017','11018']
 				},
 				component: () =>
 					import('@/view/components/store/storeManagement.vue')
@@ -970,7 +980,8 @@ export default [
 				name: 'apply_data',
 				meta: {
 					icon: 'md-trending-up',
-					title: '基础数据字典'
+					title: '基础数据字典',
+					access:['20020','20021']
 				},
 				component: () =>
 					import('@/view/components/apply/data.vue')
@@ -1000,7 +1011,8 @@ export default [
 				name: 'apply_marke',
 				meta: {
 					icon: 'md-crop',
-					title: '市场设置'
+					title: '市场设置',
+					access:['20030','20031','20032','20033','20034','20035','20036','20037']
 				},
 				component: () =>
 					import('@/view/components/apply/marke.vue')
@@ -1030,7 +1042,8 @@ export default [
 				name: 'apply_trade',
 				meta: {
 					icon: 'md-grid',
-					title: '交易设置'
+					title: '交易设置',
+					access:['20050','20051','20052','20053','20054','20055','20056','20057']
 				},
 				component: () =>
 					import('@/view/components/apply/trade.vue')
@@ -1085,8 +1098,7 @@ export default [
 				name: 'system_business',
 				meta: {
 					icon: 'md-trending-up',
-					title: '业务线设置',
-
+					title: '业务线设置'
 				},
 				component: () =>
 					import('@/view/components/system/business.vue')
@@ -1097,7 +1109,7 @@ export default [
 				meta: {
 					icon: 'ios-infinite',
 					title: '组织结构',
-
+					access:['21010','21011','21012']
 				},
 				component: () =>
 					import('@/view/components/system/organization.vue')
@@ -1107,7 +1119,8 @@ export default [
 				name: 'system_role',
 				meta: {
 					icon: 'md-crop',
-					title: '系统角色'
+					title: '系统角色',
+					access:['21020','21021','21012']
 				},
 				component: () =>
 					import('@/view/components/system/role.vue')
@@ -1118,6 +1131,7 @@ export default [
 				meta: {
 					icon: 'md-grid',
 					title: '人员管理',
+					access:['21030','21031','21032','21033','21034','21035']
 				},
 				component: () =>
 					import('@/view/components/system/PersonnelManagement.vue')
@@ -1127,7 +1141,8 @@ export default [
 				name: 'system_parameter',
 				meta: {
 					icon: 'md-crop',
-					title: '系统参数'
+					title: '系统参数',
+					access:['21040']
 				},
 				component: () =>
 					import('@/view/components/system/parameter.vue')
@@ -1137,7 +1152,8 @@ export default [
 				name: 'system_journal',
 				meta: {
 					icon: 'md-grid',
-					title: '系统日志'
+					title: '系统日志',
+					access:['21050','21051']
 				},
 				component: () =>
 					import('@/view/components/system/journal.vue')

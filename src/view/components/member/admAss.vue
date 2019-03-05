@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div>
       <button @click="aa">11111111111</button>
@@ -35,3 +36,5 @@ import QRCode from 'qrcode'
 
 </script>
 
+=======
+>>>>>>> 3c979113829020bf7bfeb356d90c2f7912337828

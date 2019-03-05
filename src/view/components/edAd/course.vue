@@ -1,10 +1,11 @@
 <template>
 	<div>
 		<Row>
-			<Col span="24" style="height:50px;">
-			<h1 class="queryHeader">课程信息</h1>
+			<Col span="24" style="height:50px;background: #FFFFFF;">
+			<p class="queryHeader">课程信息</p>
 			</Col>
 		</Row>
+		<hr>
 		<!--查询条件-->
 		<Row>
 			<Col span="24" class="querycriteria" style="height: 160px;">
@@ -38,14 +39,14 @@
 			</Col>
 		</Row>
 		<!--增删改查-->
-		<Row>
+		<Row style="background: #FFFFFF;">
 			<Col span="15" class="queryEnd">
 			<h2>查询结果</h2>
 			</Col>
 			<Col span="8">
 			<div class="tableTop">
-				<Button type="success" class="tableTops" @click="Add">添加</Button>
-				<Button @click="deleteList" type="error" class="tableTops">删除</Button>
+				<Button class="tableTops" @click="Add">添加</Button>
+				<Button @click="deleteList" class="tableTops">删除</Button>
 				<Select v-model="querySelect" :label-in-value="true" style="width:120px">
 					<Option v-for="item in querySelectList" :value="item.value" :key="item.value">{{ item.label }}</Option>
 				</Select>
@@ -55,7 +56,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="550" size="small" highlight-row stripe border ref="selection" :columns="CourseTable" :data="CourseData" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId"></Table>
+			<Table height="550" size="small" highlight-row stripe  ref="selection" :columns="CourseTable" :data="CourseData" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId"></Table>
 			</Col>
 			<Col span="24">
 			<!-- 分页 -->
@@ -139,11 +140,10 @@
 				</Row>
 				<Row>
 					<div class="line">课程阶段明细</div>
-					<tables disabled-hover search-place="top" ref="tables" size="small" v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete" border stripe height="200" @on-row-dblclick="dblclickUpDetail" />
-
-					<Button type="info" @click="AddRoyalty1" class="addMessage">
-            <Icon type="md-add"/>添加阶段信息
-          </Button>
+					<tables disabled-hover search-place="top" ref="tables" size="small" v-model="dataRoyaltyCodeDetail" :columns="columnsRoyaltyCodeDetail" @on-delete="handleDelete" stripe height="200" @on-row-dblclick="dblclickUpDetail" />
+					<Button type="text" @click="AddRoyalty1" class="addMessage" size="small" style="margin-left:48%;">
+            <Icon type="md-add" size="25"  />
+         </Button>
 				</Row>
 			</Form>
 			<div slot="footer">
@@ -809,6 +809,13 @@
 			}
 		},
 		mounted() {
+			//获取用户信息
+			let userInfo = sessionStorage.getItem("userInfo");
+			let array = JSON.parse(userInfo);
+			this.CourseForm.BusinessGroup = array.BusinessGroup;
+			let BusinessGroupData = array.BusinessGroup;
+			//上级代码
+			this.CourseForm.ParentId = array.SupervisorId;
 			//获取信息接口
 			GetEntities(this.Interface, this.CourseData1)
 				.then(res => {
@@ -828,7 +835,7 @@
 					console.log(err);
 				});
 			//课程类型
-			DataDictionaryGetEntities("COURSE_TYPE")
+			DataDictionaryGetEntities("COURSE_TYPE",BusinessGroupData)
 				.then(res => {
 					this.radioList = res.data;
 				})
@@ -844,14 +851,7 @@
 				.catch(err => {
 					console.log(err);
 				});
-			//sessionStorage里取业务群
-			let userInfo = sessionStorage.getItem("userInfo");
-			let array = JSON.parse(userInfo);
-			this.CourseForm.BusinessGroup = array.BusinessGroup;
-			//上级代码
-			this.CourseForm.ParentId = array.SupervisorId;
-			//this.BusinessTypeList = JSON.parse(localStorage.STORE_BUSINESS_TYPE);
-			console.log(this.BusinessTypeList);
+			
 		}
 	};
 </script>
@@ -861,7 +861,7 @@
 	}
 	
 	.line {
-		font-size: 16px;
+		font-size: 14px;
 		font-weight: 600;
 		color: #000;
 		width: 100%;

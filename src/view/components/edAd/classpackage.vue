@@ -1,10 +1,11 @@
 <template>
 	<div class="classPackage">
 		<Row>
-			<Col span="24" style="height:50px;">
-			<h1 class="queryHeader">课包信息</h1>
+			<Col span="24" style="height:50px;background: #fff;">
+			<p class="queryHeader">课包信息</p>
 			</Col>
 		</Row>
+		<hr>
 		<!--查询条件-->
 		<Row>
 			<Col span="24" class="querycriteria" style="height: 120px;">
@@ -24,7 +25,7 @@
 			</Col>
 		</Row>
 		<!--增删改查-->
-		<Row>
+		<Row style="background:#fff;"> 
 			<Col span="15" class="queryEnd">
 			<h2>查询结果</h2>
 			</Col>
@@ -41,7 +42,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="550" size="small" highlight-row stripe border ref="selection" :columns="CoursePackage" :data="CoursePackageData" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId"></Table>
+			<Table height="550" size="small" highlight-row stripe  ref="selection" :columns="CoursePackage" :data="CoursePackageData" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-row-dblclick="dblclickUpData" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId"></Table>
 
 			</Col>
 			<Col span="24">
@@ -170,9 +171,9 @@
 					<div class="line">
 						课包明细实体
 					</div>
-					<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="DetailedPackage" :columns="colDetailedPackage" @on-delete="handleDeleteDetail" border stripe height="200" @on-row-dblclick="dblclickUpDetail" />
-					<Button type="info" @click="AddDetailHiding">
-              <Icon type="md-add"/>添加课包明细实体
+					<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="DetailedPackage" :columns="colDetailedPackage" @on-delete="handleDeleteDetail"  stripe height="200" @on-row-dblclick="dblclickUpDetail" />
+					<Button type="text" @click="AddDetailHiding" size="small" style="margin-left:48%;">
+               <Icon type="md-add" size="25"  />
             </Button>
 				</Row>
 				<!--课包价格实体-->
@@ -180,9 +181,9 @@
 				<div class="line">
 					课包价格实体
 				</div>
-				<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="PricePackage" :columns="colPricePackage" @on-delete="handleDeletePrise" border stripe height="200" @on-row-dblclick="dblclickUpPrise" />
-				<Button type="info" @click="AddPriseHiding">
-              <Icon type="md-add"/>添加课包价格实体
+				<tables disabled-hover search-place="top" ref="tables" size="small" editable v-model="PricePackage" :columns="colPricePackage" @on-delete="handleDeletePrise" stripe height="200" @on-row-dblclick="dblclickUpPrise" />
+				<Button type="text" @click="AddPriseHiding" size="small" style="margin-left:49%;">
+               <Icon type="md-add" size="25"  />
             </Button>
             </template>
 			</Form>
@@ -898,7 +899,7 @@
 						//接口发送上边的data
 						Create(this.Interface, this.formValidate).then(res => {
 							console.log(res.data)
-							
+							this.$Message.success("添加成功");
 							//拿课包的Id和明细价格
 							this.packageId = res.data.Data.Id
 							this.packageDetail = JSON.parse(
@@ -924,7 +925,7 @@
 								}).then(res => {
 									console.log(res.data)
 									this.$Message.success("添加成功");
-									
+									this.reload();
 								}).catch(err => {
 									console.log(err)
 								})
@@ -1217,7 +1218,7 @@
 	}
 	
 	.line {
-		font-size: 16px;
+		font-size: 14px;
 		font-weight: 600;
 		color: #000;
 		width: 100%;

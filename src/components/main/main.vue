@@ -141,14 +141,12 @@ export default {
       if (name.length === 0) {
         return;
       }
-      console.log(this.menuList);
       this.menuList.forEach((item, index) => {
         if (name[0] === item.name) {
           this.muneList = item.children;
           return;
         }
       });
-      console.log(this.muneList);
     },
 
     turnToPage(route) {

@@ -1,14 +1,15 @@
 <template>
 	<div class="role">
 		<Row>
-			<Col span="24" style="height:100px;">
-			<h1 class="setHeader">系统角色设置</h1>
+			<Col span="24" style="height:50px;background: #FFFFFF;">
+			<p class="queryHeader">系统角色设置</p>
 			</Col>
 		</Row>
+		<hr>
 		<Row>
 			<!--增删改查-->
 			<Col span="7" push="16">
-			<div class="organization">
+			<div class="organization" style="margin-top: 20px;">
 				<Button class="organization_tableTop" @click="AddBtn">添加</Button>
 				<Button class="organization_tableTop" @click="deleteList">删除</Button>
 				<Select v-model="model1" style="width:100px" class="organization_tableTop">

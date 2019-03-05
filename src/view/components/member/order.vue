@@ -548,8 +548,10 @@
             <Col span="23" >
               <FormItem label="支付方式" prop="PaymentCode">
                 <RadioGroup v-model="formPaymentOrder.PaymentCode" @on-change="RadioGroupchange">
-                    <Radio  v-for="item in PaymentCodeList"
-                    :key="item.Code"  :label="item.Code" >{{ item.Description }}</Radio>
+                    <Radio label="手工入账" disabled></Radio>
+                    <Radio label="支付宝" disabled></Radio>
+                    <Radio label="微信" disabled></Radio>
+                    <Radio label="银联"></Radio>
                 </RadioGroup>
               </FormItem>
             </Col>
@@ -1048,7 +1050,7 @@ export default {
         //   PaymentAmt: this.formPaymentOrder.PaymentAmt
         // })
         //   .then(res => {
-        //     this.$Message.success("成功!");
+        //     this.$Message.success("成功!");  
         //     this.reload();-
         //   })
         //   .catch(err => {
@@ -1056,8 +1058,7 @@ export default {
         //   });
         CustomerOrderPaymentRequest(this.formValidate.Id,this.formPaymentOrder.PaymentCode,this.TrxCode)
           .then(res => {
-
-            // this.canvasQR = true;
+            console.log(res.data.ErrMessage)
           })
           .catch(err => {
             this.$Message.success("该订单有未完成的支付请求，请先完成或取消!");

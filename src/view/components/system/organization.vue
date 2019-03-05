@@ -1,10 +1,11 @@
 <template>
 	<div id="PersonnelManagement">
 		<Row>
-			<Col span="24" style="height:100px;">
-			<h1 class="setHeader">组织架构设置</h1>
+			<Col span="24" style="height:50px;background: #fff;">
+			<p class="queryHeader">组织架构设置</p>
 			</Col>
 		</Row>
+		  <hr>
 		<Row class="content">
 			<Col span="6" style="height:750px;">
 			<Col span="24" style="height:40px;">
@@ -38,7 +39,7 @@
 			</Col>
 			<Col span="24">
 			<!-- 表格 -->
-			<Table height="560" border ref="selection" :columns="columns4" :data="data1" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" @on-row-dblclick="upDataBusinessUnit" :loading=loading>
+			<Table height="560"  ref="selection" :columns="columns4" :data="data1" @on-select="BatchDelete" @on-select-cancel="CancelBatchDelete" @on-select-all="allselectionId" @on-select-all-cancel="allcancelselectionId" @on-row-dblclick="upDataBusinessUnit" :loading=loading>
 			</Table>
 			<!-- 表格 end-->
 			</Col>
@@ -166,6 +167,8 @@
 	</div>
 </template>
 <script>
+	import { hasOneOf } from '@/libs/tools'
+	import store from '@/store'
 	//import { getTreeList, getBusinessUnitData, addBusinessUnit, deleteBusinessUnit, BusinessUnitGetEntities, upBusinessUnit } from '@/api/data'
 	import { GetEntities, GetEntity, Create, Update, Delete, BatchDelete, Copy, GetBusinessUnit, ValidateUnique, DataDictionaryGetEntities,GetDirectStore,GetFranchiseStore} from '@/api/api'
 
@@ -541,15 +544,15 @@
 			queryMethodStoreId(value){
 				console.log(value)
 				this.formValidate.StoreId = value;
-			}
-				
+			},
 		},
 		mounted() {
 			//获取用户信息
 			let userInfo = sessionStorage.getItem('userInfo');
 			let userData = JSON.parse(userInfo);
+			console.log(userData)
 			this.BusinessGroupData = userData.BusinessGroup
-			//console.log(userData)
+			console.log(this.BusinessGroupData)
 			//获取树形结构
 			GetBusinessUnit(this.Interface, this.BusinessGroupData).then(res => {
 				this.treeList = res.data
@@ -589,6 +592,22 @@
 			}).catch(err => {
 				console.log(err)
 			})
+			let PermissionList = userData.PermissionCollection
+				var accessRouter = []
+				for(var i in PermissionList) {
+					accessRouter.push(PermissionList[i]);
+				}
+			//console.log(accessRouter)
+			let targetAccess = this.$store.state.user.access;
+			//console.log(targetAccess)
+			//console.log(hasOneOf(targetAccess,accessRouter))
+			//全都是返回true;
+			if(hasOneOf(targetAccess,accessRouter)){
+				
+			}else{
+				
+			}
+			
 			
 		}
 	}
